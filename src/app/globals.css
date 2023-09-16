@@ -1,27 +1,14 @@
 @tailwind base;
 @tailwind components;
+
+.lesson-button {
+  box-shadow: 0px 2px 0 #46a302, 0px 4px 0 #46a302, 0px 5px 0 #46a302,
+    0px 6px 0 #46a302, 0px 7px 0 #46a302, 0px 8px 0 #46a302; /* Box shadow for the circle */
+}
+.lesson-button:disabled {
+  box-shadow: 0px 2px 0 rgb(175, 175, 175), 0px 4px 0 rgb(175, 175, 175),
+    0px 5px 0 rgb(175, 175, 175), 0px 6px 0 rgb(175, 175, 175),
+    0px 7px 0 rgb(175, 175, 175), 0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
+}
+
 @tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
