@@ -1,7 +1,5 @@
-"use client";
 import "./globals.css";
 import type { Metadata } from "next";
-import { usePathname } from "next/navigation";
 import { Nunito } from "next/font/google";
 import SideBar from "./components/SideBar/page";
 
@@ -16,19 +14,13 @@ export default function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const pathname = usePathname();
-    console.log(pathname);
     return (
         <html lang="en">
             <body
                 className={`${nunito.className} flex mx-auto`}
                 suppressHydrationWarning={true}
             >
-                {pathname === "/Login" ? (
-                    <></>
-                ) : (
-                    <SideBar authLevel={"admin"} />
-                )}
+                <SideBar authLevel={"admin"} />
                 {children}
             </body>
         </html>

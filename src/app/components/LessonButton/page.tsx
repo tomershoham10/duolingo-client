@@ -52,9 +52,9 @@ const LessonButton: React.FC<LessonButton> = ({ isDisabled }) => {
                 disabled={isDisabled}
             >
                 {isDisabled ? (
-                    <FontAwesomeIcon icon="fa-solid fa-lock" />
+                    <FontAwesomeIcon icon={faLock} />
                 ) : (
-                    <FontAwesomeIcon icon="fa-solid fa-star" />
+                    <FontAwesomeIcon icon={faStar} />
                 )}
             </button>
         </div>

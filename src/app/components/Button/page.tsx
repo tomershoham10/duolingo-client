@@ -54,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({ label, icon, color, onClick }) => {
                 {icon && (
                     <FontAwesomeIcon
                         className="h-6 w-6 mr-4 ml-2"
-                        icon={`fa-xs fa-solid ${icon}`}
+                        icon={icon}
                     />
                 )}
                 {label}

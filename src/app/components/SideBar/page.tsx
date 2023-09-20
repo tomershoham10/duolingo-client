@@ -27,16 +27,16 @@ const SideBar: React.FC<SideBarProps> = ({ authLevel }) => {
 
     const sidebarItems = {
         admin: [
-            { label: "DASHBOARD", icon: "fa-home" },
-            { label: "USERS", icon: "fa-user" },
-            { label: "SETTINGS", icon: "fa-cog" },
+            { label: "DASHBOARD", icon: faHome },
+            { label: "USERS", icon: faUser },
+            { label: "SETTINGS", icon: faCog },
         ],
         student: [
-            { label: "DASHBOARD", icon: "fa-home" },
-            { label: "USERS", icon: "fa-user" },
+            { label: "DASHBOARD", icon: faHome },
+            { label: "USERS", icon: faUser },
         ],
         teacher: [
-            { label: "DASHBOARD", icon: "fa-home" },
+            { label: "DASHBOARD", icon: faHome },
             // Other items...
         ],
     };
@@ -63,9 +63,10 @@ const SideBar: React.FC<SideBarProps> = ({ authLevel }) => {
                             onClick={() => setSelected(index)}
                         >
                             <FontAwesomeIcon
-                                className="h-6 w-6 mr-4 ml-2"
-                                icon={`fa-xs fa-solid ${item.icon}`}
+                                className="h-6 w-6 mr-4 ml-2 fa-xs fa-solid "
+                                icon={item.icon}
                             />
+
                             <label className="flex h-full cursor-pointer">
                                 {item.label}
                             </label>
@@ -76,7 +77,7 @@ const SideBar: React.FC<SideBarProps> = ({ authLevel }) => {
 
             <Button
                 label="Loggin"
-                icon="fa-right-to-bracket"
+                icon={faRightToBracket}
                 color={Color.blue}
                 onClick={openLogin}
             />
