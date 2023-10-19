@@ -1,15 +1,18 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import jwt from "jsonwebtoken";
 import Input, { Types } from "../components/Input/page";
 import Button, { Color } from "../components/Button/page";
-import { NextResponse } from "next/server";
+import { useUser } from "@/app/utils/context/UserContext";
 
-export default function Page() {
-    const API_KEY: string = "DaveGrayTeachingCode";
+const Page: React.FC = () => {
+    const router = useRouter();
+
+    const { setUserRole, setLoggedIn } = useUser();
 
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [data, setData] = useState(null);
 
     const handleUser = (value: string) => {
         setUser(value);
@@ -19,12 +22,11 @@ export default function Page() {
         setPassword(value);
     };
 
-    const handleAuth = async (user: string, password: string) => {
+    const handleAuth = async () => {
         try {
             console.log(user, password);
             const response = await fetch(
-                "http://localhost:4000/api/users/login/",
-
+                "http://localhost:4001/api/users/login/",
                 {
                     method: "POST",
                     credentials: "include",
@@ -36,22 +38,43 @@ export default function Page() {
                         password: password,
                     }),
                 },
-            ).then((response) => {
+            );
+
+            if (response.status === 200) {
+                console.log("response", response);
                 const tokenHeader = response.headers.get(
                     "Authorization",
                 ) as string;
-                const token = tokenHeader.split(" ")[1];
-                console.log(token);
-                token !== null && token !== undefined
-                    ? localStorage.setItem("jwtToken", token)
-                    : alert("user is not authoraized!");
-            });
-        } catch (error) {
-            console.error("Authentication Error:");
+                console.log("tokenHeader", tokenHeader);
+                if (tokenHeader) {
+                    const token = tokenHeader.split(" ")[1];
+                    if (token) {
+                        const decodedToken = jwt.decode(
+                            token,
+                        ) as jwt.JwtPayload;
+                        const role = decodedToken.role as string;
+                        console.log(token, jwt.decode(token));
+                        localStorage.setItem("jwtToken", token);
+                        setUserRole(role);
+                        setLoggedIn(true);
+                        localStorage.setItem("userRole", role);
 
+                        localStorage.setItem("isLoggedIn", "true");
+                        router.push("/", { scroll: false });
+                    } else {
+                        alert("Authorization header not found in response");
+                    }
+                }
+            } else if (response.status === 401) {
+                alert("The username or password is incorrect.");
+            } else {
+                alert("Unknown error occurred.");
+            }
+        } catch (error) {
             console.error("Authentication Error:", error);
         }
     };
+
     return (
         <div className="flex flex-col justify-start items-center pt-10 mx-auto w-[350px]">
             <label className="font-extrabold text-2xl">Log in</label>
@@ -59,21 +82,22 @@ export default function Page() {
                 type={Types.text}
                 placeholder="Username"
                 value={user}
-                isPassword={false}
                 onChange={handleUser}
             />
             <Input
                 type={Types.password}
                 placeholder="Password"
                 value={password}
-                isPassword={true}
                 onChange={handlePassword}
             />
             <Button
                 label="LOG IN"
                 color={Color.blue}
-                onClick={() => handleAuth(user, password)}
+                onClick={handleAuth}
+                href={""}
             />
         </div>
     );
-}
+};
+
+export default Page;

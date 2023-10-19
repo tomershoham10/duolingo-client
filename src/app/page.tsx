@@ -1,14 +1,21 @@
+"use client";
 
-import LessonButton from "./components/LessonButton/page";
-import UnitSection from "./components/UnitSection/page";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useLoggedIn, useUser } from "./utils/context/UserContext";
 
 export default function Home() {
+    const isLoggedIn = useLoggedIn();
+    const { userRole } = useUser();
+    const router = useRouter();
 
-    return (
-        <div className="p-4">
-            <h1>Hi</h1>
-            <UnitSection />
-            <LessonButton isDisabled={false} />
-        </div>
-    );
+    useEffect(() => {
+        console.log("/", isLoggedIn, "isLoggedIn", "userRole", userRole);
+        !isLoggedIn
+            ? router.push("/Login")
+            : userRole === "admin"
+            ? router.push("/classroom")
+            : router.push("/learn");
+    }, [isLoggedIn, router, userRole]);
+    return <></>;
 }

@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
 .lesson-button {
   box-shadow: 0px 2px 0 #46a302, 0px 4px 0 #46a302, 0px 5px 0 #46a302,
@@ -11,4 +12,15 @@
     0px 7px 0 rgb(175, 175, 175), 0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
 }
 
-@tailwind utilities;
+::-webkit-scrollbar {
+    @apply w-2 bg-opacity-100;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply p-4 my-4 bg-opacity-100 opacity-0;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-[#E5E5E5];
+  }
+  

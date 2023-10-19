@@ -1,5 +1,8 @@
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { useRouter } from "next/navigation";
 
 export enum Color {
     blue = "Blue",
@@ -12,9 +15,20 @@ interface ButtonProps {
     icon?: IconDefinition;
     color: Color;
     onClick: () => void;
+    href?: string;
+    style?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ label, icon, color, onClick }) => {
+const Button: React.FC<ButtonProps> = ({
+    label,
+    icon,
+    color,
+    onClick,
+    href,
+    style,
+}) => {
+    const router = useRouter();
+
     let buttonColor: string = "";
     let buttonBorderColor: string = "";
     let buttonHoverColor: string = "";
@@ -44,12 +58,19 @@ const Button: React.FC<ButtonProps> = ({ label, icon, color, onClick }) => {
 
     return (
         <div
-            className={`${buttonBorderColor} ${textColor} text-xl w-full flex flex-col justify-end
-    mb-2 mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent active:border-0`}
+            className={`${buttonBorderColor} ${textColor} w-full flex flex-col justify-end ${style} text-md font-extrabold
+    mb-2 mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent active:border-0 active:shadow-none active:translate-y-[4px]`}
         >
             <button
-                className={`flex flex-row justify-start items-center group ${buttonColor} pt-2 pb-2 pl-3 pr-3 w-full rounded-2xl ${buttonHoverColor}`}
-                onClick={onClick}
+                className={`flex flex-col justify-start items-center group ${buttonColor} pt-2 pb-2 pl-3 pr-3 w-full rounded-2xl ${buttonHoverColor}`}
+                onClick={() => {
+                    if (onClick) {
+                        onClick();
+                    }
+                    if (href) {
+                        router.push(href);
+                    }
+                }}
             >
                 {icon && (
                     <FontAwesomeIcon

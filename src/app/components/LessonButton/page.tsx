@@ -1,8 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faLock, faStar } from "@fortawesome/free-solid-svg-icons";
-import { LessonButton } from "../../../../types";
 library.add(faLock, faStar);
+
+interface LessonButton {
+    isDisabled: boolean;
+}
 
 const LessonButton: React.FC<LessonButton> = ({ isDisabled }) => {
     return (
