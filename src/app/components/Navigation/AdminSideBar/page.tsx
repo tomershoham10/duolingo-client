@@ -73,7 +73,7 @@ const AdminSideBar: React.FC = () => {
     }[] = [
         { label: "DASHBOARD", icon: faHome, href: "/Dashboard" },
         {
-            label: "NEW STUDENT",
+            label: "NEW USER",
             icon: faSquarePlus,
         },
         { label: "SETTINGS", icon: faCog },

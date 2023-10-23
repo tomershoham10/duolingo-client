@@ -1,4 +1,5 @@
-"use client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
 export enum Types {
     text = "text",
@@ -11,6 +12,7 @@ interface InputProps {
     value: string;
     onChange: (value: string) => void;
     className?: string;
+    failed?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -19,20 +21,28 @@ const Input: React.FC<InputProps> = ({
     value,
     onChange,
     className,
+    failed,
 }) => {
     return (
-        <form
-            className={`${className} mb-4 text-[16px] w-full text-[#AFAFAF] flex flex-row items-center justify-center h-fit content-center`}
-        >
+        <div className={`relative ${className} w-full`}>
             <input
                 type={type}
-                className="bg-[#F7F7F7] border-2 border-[#E5E5E5] rounded-lg px-3 py-2 w-full 
-                focus:outline-none text-[#4B4B4B]"
+                className={`bg-[#F7F7F7] border-2 rounded-xl p-3 w-full focus:outline-none text-[#4B4B4B] ${
+                    failed
+                        ? 'border-[#FFB2B2]'
+                        : 'border-[#E5E5E5]'
+                }`}
                 placeholder={placeholder}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
             />
-        </form>
+            {failed && (
+                <FontAwesomeIcon
+                    icon={faExclamation}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#EA2B2B] rounded-full border-2 border-[#EA2B2B] w-4 p-[0.1rem]"
+                />
+            )}
+        </div>
     );
 };
 export default Input;

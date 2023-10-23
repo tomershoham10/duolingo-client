@@ -4,6 +4,7 @@ import NavBar from "@/app/components/Navigation/NavBar/page";
 import { CourseProvider } from "../utils/context/CourseConext";
 import { PopupProvider } from "../utils/context/PopupContext";
 import CreateNewUser from "../popups/CreateNewUser/page";
+import Alert from "../components/Alert/page";
 
 export default function RootLayout({
     children,
@@ -15,6 +16,7 @@ export default function RootLayout({
             <CourseProvider>
                 <PopupProvider>
                     <body suppressHydrationWarning={true}>
+                        <Alert />
                         <CreateNewUser />
                         <AdminSideBar />
                         <div className="flex flex-col w-full">

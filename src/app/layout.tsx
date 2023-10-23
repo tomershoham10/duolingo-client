@@ -1,8 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import SideBar from "./components/Navigation/StudentSideBar/page";
-import { UserProvider, useUserRole } from "./utils/context/UserContext";
+import { UserProvider } from "./utils/context/UserContext";
+import { AlertProvider } from "./utils/context/AlertContext";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -18,12 +18,14 @@ export default function RootLayout({
     return (
         <html lang="en">
             <UserProvider>
-                <body
-                    className={`${nunito.className} flex mx-auto`}
-                    suppressHydrationWarning={true}
-                >
-                    {children}
-                </body>
+                <AlertProvider>
+                    <body
+                        className={`${nunito.className} flex mx-auto`}
+                        suppressHydrationWarning={true}
+                    >
+                        {children}
+                    </body>
+                </AlertProvider>
             </UserProvider>
         </html>
     );
