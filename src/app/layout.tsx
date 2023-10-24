@@ -1,7 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import { UserProvider } from "./utils/context/UserContext";
+// import { Providers } from "./GlobalRedux/provider";
+// import { UserProvider } from "./utils/context/UserContext";
 import { AlertProvider } from "./utils/context/AlertContext";
 
 const nunito = Nunito({ subsets: ["latin"] });
@@ -17,16 +18,14 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <UserProvider>
-                <AlertProvider>
-                    <body
-                        className={`${nunito.className} flex mx-auto`}
-                        suppressHydrationWarning={true}
-                    >
-                        {children}
-                    </body>
-                </AlertProvider>
-            </UserProvider>
+            <AlertProvider>
+                <body
+                    className={`${nunito.className} flex mx-auto`}
+                    suppressHydrationWarning={true}
+                >
+                    {children}
+                </body>
+            </AlertProvider>
         </html>
     );
 }

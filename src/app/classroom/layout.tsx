@@ -12,20 +12,18 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <CourseProvider>
-                <PopupProvider>
-                    <body suppressHydrationWarning={true}>
-                        <Alert />
-                        <CreateNewUser />
-                        <AdminSideBar />
-                        <div className="flex flex-col w-full">
-                            <NavBar />
-                            {children}
-                        </div>
-                    </body>
-                </PopupProvider>
-            </CourseProvider>
-        </html>
+        <CourseProvider>
+            <PopupProvider>
+                <section className="flex flex-row w-full">
+                    <Alert />
+                    <CreateNewUser />
+                    <AdminSideBar />
+                    <div className="flex flex-col w-full">
+                        <NavBar />
+                        {children}
+                    </div>
+                </section>
+            </PopupProvider>
+        </CourseProvider>
     );
 }

@@ -100,7 +100,7 @@ const SideBar: React.FC = () => {
                             cousersList.map((item: any, index: any) => (
                                 <li
                                     key={index}
-                                    className="pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center" // Add text-center class
+                                    className="pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
                                 >
                                     {item.className}
                                 </li>

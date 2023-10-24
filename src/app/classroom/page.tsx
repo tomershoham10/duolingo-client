@@ -1,20 +1,33 @@
 "use client";
+
 import { useContext } from "react";
-import { useUserRole } from "@/app/utils/context/UserContext";
 import { PopupContext } from "@/app/utils/context/PopupContext";
-import CreateNewUser from "../popups/CreateNewUser/page";
+import useStore from "../store/useStore";
+import { useUserStore } from "../store/stores/useUserStore";
+
+enum TypesOfUser {
+    LOGGEDOUT = "loggedOut",
+    ADMIN = "admin",
+    SEARIDER = "searider",
+    SENIOR = "senior",
+    TEACHER = "teacher",
+    CREW = "crew",
+}
 
 const Dashboard: React.FC = () => {
-    const userRole = useUserRole();
+    const userRole = useStore(useUserStore, (state) => state.userRole);
+
     const { selectedPopup } = useContext(PopupContext);
     return (
         <>
-            {userRole === "admin" ? (
+            {userRole === TypesOfUser.ADMIN ? (
                 <div className="flex flex-col">
                     <div>Dashboard Admin {selectedPopup}</div>
                 </div>
             ) : (
-                <div>Dashboard Not Admin</div>
+                <div className="flex flex-col">
+                    <div>Dashboard Not Admin</div>
+                </div>  
             )}
         </>
     );

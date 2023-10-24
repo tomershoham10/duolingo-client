@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,11 +10,24 @@ import {
     faSquarePlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useUserRole, useLoggedIn } from "@/app/utils/context/UserContext";
-import { useCourse } from "@/app/utils/context/CourseConext";
+import {
+    CourseContext,
+    TypesOfCourses,
+} from "@/app/utils/context/CourseConext";
 import { usePopup } from "@/app/utils/context/PopupContext";
 
 import Link from "next/link";
+import useStore from "@/app/store/useStore";
+import { useUserStore } from "@/app/store/stores/useUserStore";
+
+enum TypesOfUser {
+    LOGGEDOUT = "loggedOut",
+    ADMIN = "admin",
+    SEARIDER = "searider",
+    SENIOR = "senior",
+    TEACHER = "teacher",
+    CREW = "crew",
+}
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
@@ -30,11 +43,21 @@ const getCourses = async () => {
 
         if (response.ok) {
             const data = await response.json();
-            const coursesObject = data.courses;
-            const coursesList = Object.values(coursesObject).map(
-                (course: any) => ({ courseName: course.type }),
+            const coursesObject = data.courses as {
+                _id: string;
+                type: TypesOfCourses;
+            }[];
+
+            const coursesList: {
+                courseId: string;
+                courseType: TypesOfCourses;
+            }[] = Object.values(coursesObject).map(
+                (course: { _id: string; type: TypesOfCourses }) => ({
+                    courseId: course._id as string,
+                    courseType: course.type as TypesOfCourses,
+                }),
             );
-            console.log("coursesList:", coursesList);
+            console.log(coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
@@ -47,21 +70,26 @@ const getCourses = async () => {
 };
 
 const AdminSideBar: React.FC = () => {
-    const userRole = useUserRole();
-    const { CourseType } = useCourse();
-    const isLoggedIn = useLoggedIn();
+    const userRole = useStore(useUserStore, (state) => state.userRole);
+    const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
+
+    // const { userRole, isLoggedIn } = useUserStore();
+
+    const { CourseType, CoursesList, setCoursesList } =
+        useContext(CourseContext);
+
     const [selected, setSelected] = useState<number>();
-    const [coursesList, setCoursesList] = useState<{ courseName: string }[]>(
-        [],
-    );
 
     const setSelectedPopup = usePopup();
 
     useEffect(() => {
         if (userRole === "admin") {
             getCourses().then((coursesList) => {
-                console.log("coursesList1", coursesList, coursesList.length);
                 setCoursesList(coursesList);
+                console.log(
+                    "set course list (adminsidebar component)",
+                    coursesList,
+                );
             });
         }
     }, [userRole]);
@@ -81,7 +109,7 @@ const AdminSideBar: React.FC = () => {
 
     return (
         <>
-            {userRole === "admin" && isLoggedIn ? (
+            {userRole === TypesOfUser.ADMIN && isLoggedIn ? (
                 <div
                     className="min-w-[12.5rem] lg:min-w-[13rem] 
                     bg-[#F7F5F7] flex flex-col justify-center border-r-2 h-screen tracking-wide 
@@ -93,21 +121,21 @@ const AdminSideBar: React.FC = () => {
 
                     <div className="border-b-2 flex justify-center items-center">
                         <ul className="w-full">
-                            {coursesList.length > 0 ? (
-                                coursesList.map((item: any, index: any) => (
+                            {CoursesList.length > 0 ? (
+                                CoursesList.map((item: any, index: any) => (
                                     <li
                                         key={index}
                                         className={
                                             CourseType?.toLocaleLowerCase() ===
-                                            item.courseName.toLocaleLowerCase()
+                                            item.courseType.toLocaleLowerCase()
                                                 ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-[#DDF4FF] w-full text-center"
                                                 : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-[#4B4B4B] hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
                                         }
                                     >
                                         <Link
-                                            href={`/classroom/courses/${item.courseName.toLocaleLowerCase()}/students`}
+                                            href={`/classroom/courses/${item.courseType.toLocaleLowerCase()}/students`}
                                         >
-                                            {item.courseName}
+                                            {item.courseType}
                                         </Link>
                                     </li>
                                 ))

@@ -1,21 +1,52 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import useStore from "../store/useStore";
+import { useUserStore } from "../store/stores/useUserStore";
+
 import jwt from "jsonwebtoken";
 import Input, { Types } from "../components/Input/page";
 import Button, { Color } from "../components/Button/page";
-import { useUser } from "@/app/utils/context/UserContext";
 
-const Page: React.FC = () => {
+enum TypesOfUser {
+    LOGGEDOUT = "loggedOut",
+    ADMIN = "admin",
+    SEARIDER = "searider",
+    SENIOR = "senior",
+    TEACHER = "teacher",
+    CREW = "crew",
+}
+
+const Login: React.FC = () => {
     const router = useRouter();
-
-    const { setUserRole, setLoggedIn } = useUser();
-
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const updateUserName = useUserStore.getState().updateUserName;
+    const updateAccessToken = useUserStore.getState().updateAccessToken;
+    const updateUserRole = useUserStore.getState().updateUserRole;
+    const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
+
+    const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
+    const userRole = useStore(useUserStore, (state) => state.userRole);
+    console.log("login", isLoggedIn, userRole);
+    useEffect(() => {
+        if (isLoggedIn && userRole) {
+            if (userRole === TypesOfUser.ADMIN) {
+                router.push("/classroom");
+            } else {
+                router.push("/learn");
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoggedIn, userRole]);
+
     const handleUser = (value: string) => {
         setUser(value);
+        if (updateUserName) {
+            updateUserName(value);
+        }
     };
 
     const handlePassword = (value: string) => {
@@ -24,7 +55,6 @@ const Page: React.FC = () => {
 
     const handleAuth = async () => {
         try {
-            console.log(user, password);
             const response = await fetch(
                 "http://localhost:4001/api/users/login/",
                 {
@@ -41,25 +71,41 @@ const Page: React.FC = () => {
             );
 
             if (response.status === 200) {
-                console.log("response", response);
+                // console.log("response", response);
                 const tokenHeader = response.headers.get(
                     "Authorization",
                 ) as string;
-                console.log("tokenHeader", tokenHeader);
+                // console.log("tokenHeader", tokenHeader);
                 if (tokenHeader) {
                     const token = tokenHeader.split(" ")[1];
                     if (token) {
                         const decodedToken = jwt.decode(
                             token,
                         ) as jwt.JwtPayload;
-                        const role = decodedToken.role as string;
-                        console.log(token, jwt.decode(token));
+                        const role = decodedToken.role as TypesOfUser;
+                        // console.log(token, jwt.decode(token));
                         localStorage.setItem("jwtToken", token);
-                        setUserRole(role);
-                        setLoggedIn(true);
-                        localStorage.setItem("userRole", role);
+                        if (updateUserRole) {
+                            updateUserRole(role);
+                        }
+                        if (updateIsLoggedIn) {
+                            updateIsLoggedIn(true);
+                        }
+                        if (updateAccessToken) {
+                            updateAccessToken(token);
+                        }
 
-                        localStorage.setItem("isLoggedIn", "true");
+                        const userData = {
+                            userName: user,
+                            isLoggedIn: true,
+                            userPermission: role,
+                            accessToken: token,
+                        };
+
+                        localStorage.setItem(
+                            "userData",
+                            JSON.stringify(userData),
+                        );
                         router.push("/", { scroll: false });
                     } else {
                         alert("Authorization header not found in response");
@@ -76,28 +122,35 @@ const Page: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col justify-start items-center pt-10 mx-auto w-[350px]">
-            <label className="font-extrabold text-2xl">Log in</label>
-            <Input
-                type={Types.text}
-                placeholder="Username"
-                value={user}
-                onChange={handleUser}
-            />
-            <Input
-                type={Types.password}
-                placeholder="Password"
-                value={password}
-                onChange={handlePassword}
-            />
-            <Button
-                label="LOG IN"
-                color={Color.blue}
-                onClick={handleAuth}
-                href={""}
-            />
+        <div
+            className="flex flex-col justify-start items-center pt-10 mx-auto w-[350px] space-y-3"
+            suppressHydrationWarning
+        >
+            {isLoggedIn ? null : (
+                <>
+                    <label className="font-extrabold text-2xl">Log in</label>
+                    <Input
+                        type={Types.text}
+                        placeholder="Username"
+                        value={user}
+                        onChange={handleUser}
+                    />
+                    <Input
+                        type={Types.password}
+                        placeholder="Password"
+                        value={password}
+                        onChange={handlePassword}
+                    />
+                    <Button
+                        label="LOG IN"
+                        color={Color.blue}
+                        onClick={handleAuth}
+                        href={""}
+                    />
+                </>
+            )}
         </div>
     );
 };
 
-export default Page;
+export default Login;
