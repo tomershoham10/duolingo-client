@@ -31,7 +31,7 @@ const Table = <T,>({ headers, data }: TableProps<T>) => {
     const keys = headers as (keyof T)[];
 
     return (
-        <div className="flex flex-col  border-2 border-[#E5E5E5] w-fit rounded-md mt-5">
+        <div className="flex flex-col  border-2 border-[#E5E5E5] w-fit rounded-md mt-5 pb-1">
             <div className="overflow-x-auto mr-1">
                 <div className="max-h-[70vh] max-w-[60vw] overflow-y-auto p-1.5 inline-block align-middle">
                     <table className="rounded-lg divide-y-2 divide-[#E5E5E5]">

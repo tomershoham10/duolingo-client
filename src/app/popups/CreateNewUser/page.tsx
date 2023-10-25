@@ -1,11 +1,11 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-import { PopupContext, usePopup } from "@/app/utils/context/PopupContext";
+// import { PopupContext, usePopup } from "@/app/utils/context/PopupContext";
 
 import { AlertSizes, useAlertStore } from "@/app/store/stores/useAlertStore";
 
@@ -13,16 +13,19 @@ import Input, { Types } from "@/app/components/Input/page";
 import Button, { Color } from "@/app/components/Button/page";
 import Dropdown from "@/app/components/Dropdown/page";
 import useStore from "@/app/store/useStore";
+import { usePopupStore } from "@/app/store/stores/usePopupStore";
 
 library.add(faXmark);
 
 const CreateNewUser: React.FC = () => {
-    const { selectedPopup } = useContext(PopupContext);
-    const setSelectedPopup = usePopup();
-
-    // const alerts = useStore(useAlertStore, (state) => state.alerts);
-
+    // const { selectedPopup } = useContext(PopupContext);
+    // const setSelectedPopup = usePopup();
+    const selectedPopup = useStore(
+        usePopupStore,
+        (state) => state.selectedPopup,
+    );
     const addAlert = useAlertStore.getState().addAlert;
+    const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -132,14 +135,11 @@ const CreateNewUser: React.FC = () => {
                     : "opacity-0 z-0 transition ease-in duration-200"
             }
         >
-            {/* {selectedPopup === "NEW USER" ? (
-                <Alert message={"try"} buttonText={"close"} />
-            ) : null} */}
             {selectedPopup === "NEW USER" ? (
                 <div className="flex bg-white w-[40rem] h-[30rem] rounded-md m-5 p-5">
                     <button
                         onClick={() => {
-                            setSelectedPopup("");
+                            updateSelectedPopup("");
                         }}
                         className="flex-none h-fit w-fit rounded-md text-[#AFAFAF]"
                     >

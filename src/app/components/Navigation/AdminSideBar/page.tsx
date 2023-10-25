@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,12 +10,6 @@ import {
     faSquarePlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-// import {
-//     CourseContext,
-//     TypesOfCourses,
-// } from "@/app/utils/context/CourseConext";
-import { usePopup } from "@/app/utils/context/PopupContext";
-
 import Link from "next/link";
 import useStore from "@/app/store/useStore";
 import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
@@ -23,6 +17,7 @@ import {
     TypesOfCourses,
     useCourseStore,
 } from "@/app/store/stores/useCourseStore";
+import { usePopupStore } from "@/app/store/stores/usePopupStore";
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
@@ -73,12 +68,14 @@ const AdminSideBar: React.FC = () => {
 
     const updateCoursesList = useCourseStore.getState().updateCoursesList;
 
+    const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
     // const { CourseType, CoursesList, setCoursesList } =
     //     useContext(CourseContext);
 
     const [selected, setSelected] = useState<number>();
 
-    const setSelectedPopup = usePopup();
+    // const setSelectedPopup = usePopup();
 
     useEffect(() => {
         if (userRole === "admin" && updateCoursesList) {
@@ -157,7 +154,9 @@ const AdminSideBar: React.FC = () => {
                             >
                                 <button
                                     className="flex flex-row justify-center items-center cursor-pointer pr-2"
-                                    onClick={() => setSelectedPopup(item.label)}
+                                    onClick={() =>
+                                        updateSelectedPopup(item.label)
+                                    }
                                 >
                                     <FontAwesomeIcon
                                         className="h-6 w-6 mr-4 ml-2 fa-xs fa-solid"
