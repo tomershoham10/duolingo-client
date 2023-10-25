@@ -37,15 +37,4 @@ if (process.env.NODE_ENV === 'development') {
     mountStoreDevtool('CourseStore', useCourseStore);
 }
 
-// if (typeof window !== 'undefined' && localStorage) {
-//     const userData = localStorage.getItem("userData");
-//     if (userData) {
-//         const parsedData = JSON.parse(userData);
-//         console.log("parsedData", parsedData);
-//         useCourseStore.getState().updateCourseType(parsedData.TypesOfCourses);
-//         useCourseStore.getState().updateCourseId(parsedData.id);
-//         useCourseStore.getState().updateCoursesList(parsedData.isLoggedIn);
-//         console.log("getState", useCourseStore.getState())
-//     }
-// }
 

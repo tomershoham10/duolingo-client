@@ -6,33 +6,38 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { PopupContext, usePopup } from "@/app/utils/context/PopupContext";
-import {
-    AlertSizes,
-    useAlertMessge,
-    useAlertSize,
-    useAlertToggle,
-} from "@/app/utils/context/AlertContext";
+
+import { AlertSizes, useAlertStore } from "@/app/store/stores/useAlertStore";
 
 import Input, { Types } from "@/app/components/Input/page";
 import Button, { Color } from "@/app/components/Button/page";
 import Dropdown from "@/app/components/Dropdown/page";
+import useStore from "@/app/store/useStore";
 
 library.add(faXmark);
 
 const CreateNewUser: React.FC = () => {
     const { selectedPopup } = useContext(PopupContext);
     const setSelectedPopup = usePopup();
-    const setAlerSize = useAlertSize();
+
+    // const alerts = useStore(useAlertStore, (state) => state.alerts);
+
+    const addAlert = useAlertStore.getState().addAlert;
 
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [tId, setTId] = useState<string>("");
     const [role, setRole] = useState<string>("");
-
-    const setIsAlertOpened = useAlertToggle();
-    const setAlertMessage = useAlertMessge();
-
     const [failedFeilds, setFailedFeilds] = useState<string[]>([]);
+    // const [alertId, setAlertId] = useState<number>();
+
+    // useEffect(() => {
+    //     if (alerts) {
+    //         if (alerts.length > 0) {
+    //             setAlertId(Math.random());
+    //         }
+    //     }
+    // }, [alerts]);
 
     const handleUserName = (value: string) => {
         setUserName(value);
@@ -70,7 +75,7 @@ const CreateNewUser: React.FC = () => {
             role === ""
         ) {
             if (userName.length < 3) {
-                alert("Please enter a valid user name.");
+                addAlert("Please enter a valid user name.", AlertSizes.small);
                 addFailedFeilds("userName");
             }
 
@@ -78,17 +83,17 @@ const CreateNewUser: React.FC = () => {
                 (0 < tId.length && tId.length < 9) ||
                 (!tId.includes("t") && tId.length === 9)
             ) {
-                alert("Please enter a valid T-Id.");
+                addAlert("Please enter a valid T-Id.", AlertSizes.small);
                 addFailedFeilds("tId");
             }
 
             if (password.length < 8) {
-                alert("Password too short.");
+                addAlert("Password too short.", AlertSizes.small);
                 addFailedFeilds("password");
             }
 
             if (role === "") {
-                alert("Please select a role.");
+                addAlert("Please select a role.", AlertSizes.small);
                 addFailedFeilds("role");
             }
             return;
@@ -111,15 +116,11 @@ const CreateNewUser: React.FC = () => {
         if (response.status === 200) {
             const resFromServer = await response.json();
             console.log(resFromServer);
-            setIsAlertOpened(true);
-            setAlertMessage("User created successfully.");
-            setAlerSize(AlertSizes.large);
+            addAlert("User created successfully.", AlertSizes.small);
         }
 
         if (response.status === 409) {
-            setIsAlertOpened(true);
-            setAlertMessage("User already existed!");
-            setAlerSize(AlertSizes.large);
+            addAlert("User already existed!", AlertSizes.small);
         }
     };
 

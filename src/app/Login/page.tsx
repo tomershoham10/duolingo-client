@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import useStore from "../store/useStore";
 import { useUserStore } from "../store/stores/useUserStore";
+import { useAlertStore, AlertSizes } from "../store/stores/useAlertStore";
 
 import jwt from "jsonwebtoken";
 import Input, { Types } from "../components/Input/page";
@@ -30,6 +31,9 @@ const Login: React.FC = () => {
 
     const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
     const userRole = useStore(useUserStore, (state) => state.userRole);
+
+    const addAlert = useAlertStore.getState().addAlert;
+
     console.log("login", isLoggedIn, userRole);
     useEffect(() => {
         if (isLoggedIn && userRole) {
@@ -39,7 +43,7 @@ const Login: React.FC = () => {
                 router.push("/learn");
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn, userRole]);
 
     const handleUser = (value: string) => {
@@ -108,13 +112,19 @@ const Login: React.FC = () => {
                         );
                         router.push("/", { scroll: false });
                     } else {
-                        alert("Authorization header not found in response");
+                        addAlert(
+                            "Authorization header not found in response.",
+                            AlertSizes.small,
+                        );
                     }
                 }
             } else if (response.status === 401) {
-                alert("The username or password is incorrect.");
+                addAlert(
+                    "The username or password is incorrect.",
+                    AlertSizes.small,
+                );
             } else {
-                alert("Unknown error occurred.");
+                addAlert("Unknown error occurred.", AlertSizes.small);
             }
         } catch (error) {
             console.error("Authentication Error:", error);
