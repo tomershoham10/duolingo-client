@@ -1,7 +1,17 @@
 "use client"
 import { create } from 'zustand';
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 
-enum TypesOfUser {
+//*********************************************************************//
+// to import a store value :
+// // const userRole = useStore(useUserStore, (state) => state.userRole);
+
+// to import a store function :
+// // const updateUserRole = useUserStore.getState().updateUserRole;
+//*********************************************************************//
+
+
+export enum TypesOfUser {
     LOGGEDOUT = "loggedOut",
     ADMIN = "admin",
     SEARIDER = "searider",
@@ -50,12 +60,8 @@ if (typeof window !== 'undefined' && localStorage) {
         useUserStore.getState().updateAccessToken(parsedData.accessToken);
         console.log("getState", useUserStore.getState())
     }
-    // useUserStore.setState((state: any) => ({
-    //     ...state,
-    //     userName: parsedData.userName,
-    //     userRole: parsedData.userPermission,
-    //     isLoggedIn: parsedData.isLoggedIn,
-    //     accessToken: parsedData.accessToken,
-    // }));
 }
 
+if (process.env.NODE_ENV === 'development') {
+    mountStoreDevtool('UserStore', useUserStore);
+}

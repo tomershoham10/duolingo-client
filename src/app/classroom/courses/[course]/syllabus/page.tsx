@@ -1,11 +1,16 @@
 "use client";
+import { useCourseStore } from "@/app/store/stores/useCourseStore";
 import { useUserStore } from "@/app/store/stores/useUserStore";
 import useStore from "@/app/store/useStore";
-import { CourseContext } from "@/app/utils/context/CourseConext";
-import { useContext } from "react";
+// import { CourseContext } from "@/app/utils/context/CourseConext";
+// import { useContext } from "react";
 
 const Syllabus: React.FC = () => {
-    const { CourseId } = useContext(CourseContext);
+    // const { CourseId } = useContext(CourseContext);
+    
+    const courseId = useStore(useCourseStore, (state) => state.courseId);
+
+
     const userRole = useStore(useUserStore, (state) => state.userRole);
 
     const getUnits = async () => {
@@ -32,7 +37,7 @@ const Syllabus: React.FC = () => {
         }
     };
 
-    return <div>syllabus {CourseId}</div>;
+    return <div>syllabus {courseId}</div>;
 };
 
 export default Syllabus;

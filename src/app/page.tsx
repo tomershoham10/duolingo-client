@@ -3,16 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useStore from "./store/useStore";
-import { useUserStore } from "./store/stores/useUserStore";
-
-enum TypesOfUser {
-    LOGGEDOUT = "loggedOut",
-    ADMIN = "admin",
-    SEARIDER = "searider",
-    SENIOR = "senior",
-    TEACHER = "teacher",
-    CREW = "crew",
-}
+import { useUserStore, TypesOfUser } from "./store/stores/useUserStore";
 
 export default function Home() {
     const userRole = useStore(useUserStore, (state) => state.userRole);

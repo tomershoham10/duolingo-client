@@ -10,24 +10,19 @@ import {
     faSquarePlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {
-    CourseContext,
-    TypesOfCourses,
-} from "@/app/utils/context/CourseConext";
+// import {
+//     CourseContext,
+//     TypesOfCourses,
+// } from "@/app/utils/context/CourseConext";
 import { usePopup } from "@/app/utils/context/PopupContext";
 
 import Link from "next/link";
 import useStore from "@/app/store/useStore";
-import { useUserStore } from "@/app/store/stores/useUserStore";
-
-enum TypesOfUser {
-    LOGGEDOUT = "loggedOut",
-    ADMIN = "admin",
-    SEARIDER = "searider",
-    SENIOR = "senior",
-    TEACHER = "teacher",
-    CREW = "crew",
-}
+import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
+import {
+    TypesOfCourses,
+    useCourseStore,
+} from "@/app/store/stores/useCourseStore";
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
@@ -73,26 +68,29 @@ const AdminSideBar: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);
     const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
 
-    // const { userRole, isLoggedIn } = useUserStore();
+    const courseType = useStore(useCourseStore, (state) => state.courseType);
+    const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
-    const { CourseType, CoursesList, setCoursesList } =
-        useContext(CourseContext);
+    const updateCoursesList = useCourseStore.getState().updateCoursesList;
+
+    // const { CourseType, CoursesList, setCoursesList } =
+    //     useContext(CourseContext);
 
     const [selected, setSelected] = useState<number>();
 
     const setSelectedPopup = usePopup();
 
     useEffect(() => {
-        if (userRole === "admin") {
+        if (userRole === "admin" && updateCoursesList) {
             getCourses().then((coursesList) => {
-                setCoursesList(coursesList);
+                updateCoursesList(coursesList);
                 console.log(
                     "set course list (adminsidebar component)",
                     coursesList,
                 );
             });
         }
-    }, [userRole]);
+    }, [updateCoursesList, userRole]);
 
     const sidebarItems: {
         label: string;
@@ -121,27 +119,29 @@ const AdminSideBar: React.FC = () => {
 
                     <div className="border-b-2 flex justify-center items-center">
                         <ul className="w-full">
-                            {CoursesList.length > 0 ? (
-                                CoursesList.map((item: any, index: any) => (
-                                    <li
-                                        key={index}
-                                        className={
-                                            CourseType?.toLocaleLowerCase() ===
-                                            item.courseType.toLocaleLowerCase()
-                                                ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-[#DDF4FF] w-full text-center"
-                                                : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-[#4B4B4B] hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
-                                        }
-                                    >
-                                        <Link
-                                            href={`/classroom/courses/${item.courseType.toLocaleLowerCase()}/students`}
+                            {coursesList ? (
+                                coursesList.length > 0 ? (
+                                    coursesList.map((item: any, index: any) => (
+                                        <li
+                                            key={index}
+                                            className={
+                                                courseType?.toLocaleLowerCase() ===
+                                                item.courseType.toLocaleLowerCase()
+                                                    ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-[#DDF4FF] w-full text-center"
+                                                    : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-[#4B4B4B] hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
+                                            }
                                         >
-                                            {item.courseType}
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : (
-                                <p>problem</p>
-                            )}
+                                            <Link
+                                                href={`/classroom/courses/${item.courseType.toLocaleLowerCase()}/students`}
+                                            >
+                                                {item.courseType}
+                                            </Link>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <p>problem</p>
+                                )
+                            ) : null}
                         </ul>
                     </div>
 

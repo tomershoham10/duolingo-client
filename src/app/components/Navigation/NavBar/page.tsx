@@ -1,42 +1,60 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+// import {
+//     CourseContext,
+//     TypesOfCourses,
+//     useCourseType,
+//     useSetCourseType,
+// } from "@/app/utils/context/CourseConext";
+
+import useStore from "@/app/store/useStore";
 import {
-    CourseContext,
     TypesOfCourses,
-    useCourseType,
-    useSetCourseType,
-} from "@/app/utils/context/CourseConext";
+    useCourseStore,
+} from "@/app/store/stores/useCourseStore";
 
 const NavBar: React.FC = () => {
     const [selected, setSelected] = useState<string>();
 
-    const courseType = useCourseType();
-    const setCourseType = useSetCourseType();
+    const courseType = useStore(useCourseStore, (state) => state.courseType);
+    const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
-    const { CoursesList, setCourseId } = useContext(CourseContext);
+    const updateCourseType = useCourseStore.getState().updateCourseType;
+    const updateCourseId = useCourseStore.getState().updateCourseId;
+
+    // const courseType = useCourseType();
+    // const setCourseType = useSetCourseType();
+
+    // const { CoursesList, setCourseId } = useContext(CourseContext);
 
     const pathname = usePathname();
 
     useEffect(() => {
         if (pathname.includes("searider")) {
-            setCourseType(TypesOfCourses.searider);
+            updateCourseType(TypesOfCourses.searider);
         } else if (pathname.includes("senior")) {
-            setCourseType(TypesOfCourses.senior);
+            updateCourseType(TypesOfCourses.senior);
         }
 
-        for (let i: number = 0; i < Object.values(CoursesList).length; i++) {
-            console.log(
-                "admin sidebar",
-                courseType,
-                CoursesList[i].courseType,
-                CoursesList[i].courseId,
-            );
-            courseType === CoursesList[i].courseType
-                ? setCourseId(CoursesList[i].courseId)
-                : null;
+        if (coursesList) {
+            for (
+                let i: number = 0;
+                i < Object.values(coursesList).length;
+                i++
+            ) {
+                console.log(
+                    "admin sidebar",
+                    courseType,
+                    coursesList[i].courseType,
+                    coursesList[i].courseId,
+                );
+                courseType === coursesList[i].courseType
+                    ? updateCourseId(coursesList[i].courseId)
+                    : null;
+            }
         }
 
         for (let i: number = 0; i < navItems.length; i++) {
@@ -44,7 +62,7 @@ const NavBar: React.FC = () => {
                 ? setSelected(navItems[i].label)
                 : "";
         }
-    }, [pathname]);
+    }, [pathname, coursesList]);
 
     const navItems: {
         label: string;
