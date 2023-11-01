@@ -47,7 +47,7 @@ const getCourses = async () => {
                     courseType: course.type as TypesOfCourses,
                 }),
             );
-            console.log(coursesList);
+            // console.log(coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
@@ -70,21 +70,16 @@ const AdminSideBar: React.FC = () => {
 
     const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
-    // const { CourseType, CoursesList, setCoursesList } =
-    //     useContext(CourseContext);
-
     const [selected, setSelected] = useState<number>();
-
-    // const setSelectedPopup = usePopup();
 
     useEffect(() => {
         if (userRole === "admin" && updateCoursesList) {
             getCourses().then((coursesList) => {
                 updateCoursesList(coursesList);
-                console.log(
-                    "set course list (adminsidebar component)",
-                    coursesList,
-                );
+                // console.log(
+                //     "set course list (adminsidebar component)",
+                //     coursesList,
+                // );
             });
         }
     }, [updateCoursesList, userRole]);
@@ -107,15 +102,15 @@ const AdminSideBar: React.FC = () => {
             {userRole === TypesOfUser.ADMIN && isLoggedIn ? (
                 <div
                     className="min-w-[12.5rem] lg:min-w-[13rem] 
-                    bg-[#F7F5F7] flex flex-col justify-center border-r-2 h-screen tracking-wide 
-                border-[#EBEAEB] text-[#939293] font-extrabold"
+                    bg-duoGray-lighter flex flex-col justify-center border-r-2 h-screen tracking-wide 
+                border-duoGray-light text-duoGray-darker font-extrabold"
                 >
-                    <label className="text-[2rem] font-[850] text-[#20A6EC] pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
+                    <label className="text-[2rem] font-[850] text-adminTheme pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
                         doulingo
                     </label>
 
                     <div className="border-b-2 flex justify-center items-center">
-                        <ul className="w-full">
+                        <ul className="w-full uppercase">
                             {coursesList ? (
                                 coursesList.length > 0 ? (
                                     coursesList.map((item: any, index: any) => (
@@ -124,8 +119,8 @@ const AdminSideBar: React.FC = () => {
                                             className={
                                                 courseType?.toLocaleLowerCase() ===
                                                 item.courseType.toLocaleLowerCase()
-                                                    ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-[#DDF4FF] w-full text-center"
-                                                    : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-[#4B4B4B] hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
+                                                    ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-duoBlue-lighter w-full text-center"
+                                                    : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoGray-darkest hover:text-sky-400 hover:bg-duoBlue-lighter w-full text-center"
                                             }
                                         >
                                             <Link
@@ -148,8 +143,8 @@ const AdminSideBar: React.FC = () => {
                                 key={index}
                                 className={`${
                                     selected === index
-                                        ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-[#DDF4FF]"
-                                        : "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-[#ECECEC]"
+                                        ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-duoBlue-lighter"
+                                        : "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-duoGray-hover"
                                 }`}
                             >
                                 <button

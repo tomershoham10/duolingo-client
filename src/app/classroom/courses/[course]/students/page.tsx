@@ -2,7 +2,6 @@
 import Table from "@/app/components/Table/page";
 import useStore from "@/app/store/useStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
-// import { CourseContext } from "@/app/utils/context/CourseConext";
 import { useEffect, useState } from "react";
 
 interface UserType {
@@ -15,11 +14,10 @@ interface UserType {
 const Students = () => {
     const courseType = useStore(useCourseStore, (state) => state.courseType);
 
-    // const { CourseType } = useContext(CourseContext);
     const [users, setUsers] = useState<UserType[]>([]);
 
     useEffect(() => {
-        console.log("CourseType in students page.tsx", courseType);
+        // console.log("CourseType in students page.tsx", courseType);
 
         if (courseType) {
             const getStudents = async () => {
@@ -39,15 +37,15 @@ const Students = () => {
             getStudents();
         }
     }, [courseType]);
-    console.log(`students in ${courseType} course: `, users);
+    // console.log(`students in ${courseType} course: `, users);
 
     const headers = ["userName", "permission", "password"];
 
     return (
         <>
             {courseType ? (
-                <div className="m-10">
-                    <p className="text-2xl text-[#4B4B4B] font-extrabold">
+                <div className="ml-10 mt-6">
+                    <p className="text-2xl text-duoGray-darkest font-extrabold">
                         {Object.values(users).length} students
                     </p>
 

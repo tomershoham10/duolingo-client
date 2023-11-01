@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-// import { PopupContext, usePopup } from "@/app/utils/context/PopupContext";
-
 import { AlertSizes, useAlertStore } from "@/app/store/stores/useAlertStore";
 
 import Input, { Types } from "@/app/components/Input/page";
@@ -18,8 +16,6 @@ import { usePopupStore } from "@/app/store/stores/usePopupStore";
 library.add(faXmark);
 
 const CreateNewUser: React.FC = () => {
-    // const { selectedPopup } = useContext(PopupContext);
-    // const setSelectedPopup = usePopup();
     const selectedPopup = useStore(
         usePopupStore,
         (state) => state.selectedPopup,
@@ -141,7 +137,7 @@ const CreateNewUser: React.FC = () => {
                         onClick={() => {
                             updateSelectedPopup("");
                         }}
-                        className="flex-none h-fit w-fit rounded-md text-[#AFAFAF]"
+                        className="flex-none h-fit w-fit rounded-md text-duoGray-dark"
                     >
                         <FontAwesomeIcon
                             className="flex-none fa-lg fa-solid"
@@ -154,12 +150,12 @@ const CreateNewUser: React.FC = () => {
                     >
                         <p
                             className=" flex-none col-span-4 font-extrabold text-2xl flex justify-center 
-                        items-center text-[#4B4B4B]"
+                        items-center text-duoGray-darkest"
                         >
                             CREATE NEW USER
                         </p>
 
-                        <p className="flex-none col-span-1 font-bold text-lg text-[#4B4B4B]">
+                        <p className="flex-none col-span-1 font-bold text-lg text-duoGray-darkest">
                             User Name:
                         </p>
 
@@ -177,7 +173,7 @@ const CreateNewUser: React.FC = () => {
                             />
                         </div>
 
-                        <p className="flex-none col-span-1 font-bold text-lg text-[#4B4B4B]">
+                        <p className="flex-none col-span-1 font-bold text-lg text-duoGray-darkest">
                             T-ID:
                         </p>
 
@@ -193,7 +189,7 @@ const CreateNewUser: React.FC = () => {
                             />
                         </div>
 
-                        <p className="flex-none col-span-1 font-bold text-lg text-[#4B4B4B]">
+                        <p className="flex-none col-span-1 font-bold text-lg text-duoGray-darkest">
                             Password:
                         </p>
 
@@ -210,7 +206,7 @@ const CreateNewUser: React.FC = () => {
                                 }
                             />
                         </div>
-                        <p className="flex-none col-span-1 font-bold text-lg text-[#4B4B4B]">
+                        <p className="flex-none col-span-1 font-bold text-lg text-duoGray-darkest">
                             Role:
                         </p>
                         <div className="flex-none col-span-3 flex flex-col justify-center items-center mx-4">

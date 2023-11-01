@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .lesson-button {
   box-shadow: 0px 2px 0 #46a302, 0px 4px 0 #46a302, 0px 5px 0 #46a302,
     0px 6px 0 #46a302, 0px 7px 0 #46a302, 0px 8px 0 #46a302; /* Box shadow for the circle */
@@ -23,6 +24,6 @@
 }
   
 ::-webkit-scrollbar-thumb {
-    @apply rounded-md bg-[#E5E5E5];
+    @apply rounded-md bg-duoGray-default;
 }
   

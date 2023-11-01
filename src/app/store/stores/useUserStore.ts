@@ -53,12 +53,12 @@ if (typeof window !== 'undefined' && localStorage) {
     const userData = localStorage.getItem("userData");
     if (userData) {
         const parsedData = JSON.parse(userData);
-        console.log("parsedData", parsedData);
+        // console.log("parsedData", parsedData);
         useUserStore.getState().updateUserName(parsedData.userName);
         useUserStore.getState().updateUserRole(parsedData.userPermission);
         useUserStore.getState().updateIsLoggedIn(parsedData.isLoggedIn);
         useUserStore.getState().updateAccessToken(parsedData.accessToken);
-        console.log("getState", useUserStore.getState())
+        // console.log("getState", useUserStore.getState())
     }
 }
 

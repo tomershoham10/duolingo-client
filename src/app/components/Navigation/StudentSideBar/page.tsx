@@ -11,8 +11,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Button, { Color } from "../../Button/page";
 
-import { useUserRole, useLoggedIn } from "@/app/utils/context/UserContext";
 import Link from "next/link";
+import useStore from "@/app/store/useStore";
+import { useUserStore } from "@/app/store/stores/useUserStore";
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
 
@@ -45,8 +46,9 @@ const getCourses = async () => {
 };
 
 const SideBar: React.FC = () => {
-    const userRole = useUserRole();
-    const isLoggedIn = useLoggedIn();
+    const userRole = useStore(useUserStore, (state) => state.userRole);
+    const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
+
     const [selected, setSelected] = useState<number>();
     const [cousersList, setCousersList] = useState<object[]>([]); // Correct the typo here
 
@@ -79,17 +81,17 @@ const SideBar: React.FC = () => {
         teacher: [{ label: "DASHBOARD", icon: faHome }],
     };
 
-    const items = sidebarItems[userRole] || [];
+    const items = userRole ? sidebarItems[userRole] : [];
 
     return (
         <div
             className={`${
                 userRole === "admin"
-                    ? "bg-[#F7F5F7] flex flex-col justify-center border-r-2 h-screen tracking-wide border-[#EBEAEB] text-[#939293] font-extrabold"
+                    ? "bg-duoGray-lighter flex flex-col justify-center border-r-2 h-screen tracking-wide border-duoGray-light text-duoGray-darker font-extrabold"
                     : "flex flex-col justify-center border-r-2 h-screen tracking-wide border-zinc-500/25 text-sm text-gray-500 font-extrabold"
             }`}
         >
-            <label className="text-[2rem] font-[850] text-[#58CC02] pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
+            <label className="text-[2rem] font-[850] text-duoGreen-default pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
                 doulingo
             </label>
 
@@ -100,7 +102,7 @@ const SideBar: React.FC = () => {
                             cousersList.map((item: any, index: any) => (
                                 <li
                                     key={index}
-                                    className="pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg hover:text-sky-400 hover:bg-[#DDF4FF] w-full text-center"
+                                    className="pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg hover:text-sky-400 hover:bg-duoBlue-lighter w-full text-center"
                                 >
                                     {item.className}
                                 </li>
@@ -121,10 +123,10 @@ const SideBar: React.FC = () => {
                         className={`${
                             selected === index
                                 ? userRole === "admin"
-                                    ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-[#DDF4FF]"
-                                    : "text-sky-400 pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl border-2 border-sky-300 bg-[#DDF4FF]"
+                                    ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-duoBlue-lighter"
+                                    : "text-sky-400 pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl border-2 border-sky-300 bg-duoBlue-lighter"
                                 : userRole === "admin"
-                                ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-[#ECECEC]"
+                                ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-duoGray-hover"
                                 : "pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl hover-bg-zinc-100 border-2 border-transparent"
                         }`}
                     >

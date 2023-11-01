@@ -27,10 +27,10 @@ const Input: React.FC<InputProps> = ({
         <div className={`relative ${className} w-full`}>
             <input
                 type={type}
-                className={`bg-[#F7F7F7] border-2 rounded-xl p-3 w-full focus:outline-none text-[#4B4B4B] ${
+                className={`bg-duoGray-lighter border-2 rounded-xl p-3 w-full focus:outline-none text-duoGray-darkest ${
                     failed
-                        ? 'border-[#FFB2B2]'
-                        : 'border-[#E5E5E5]'
+                        ? 'border-duoRed-light'
+                        : 'border-duoGray-default'
                 }`}
                 placeholder={placeholder}
                 value={value}
@@ -39,7 +39,7 @@ const Input: React.FC<InputProps> = ({
             {failed && (
                 <FontAwesomeIcon
                     icon={faExclamation}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#EA2B2B] rounded-full border-2 border-[#EA2B2B] w-4 p-[0.1rem]"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-duoRed-default rounded-full border-2 border-duoRed-default w-4 p-[0.1rem]"
                 />
             )}
         </div>

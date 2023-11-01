@@ -54,9 +54,9 @@ const Alert: React.FC = () => {
         >
             {isAlertOpened && alertId ? (
                 <div
-                    className={`mt-5 bg-white rounded-xl ${boxHight} min-w-[15rem] max-w-[25rem] grid grid-cols-3 grid-rows-2 flex-none cursor-default px-4 pt-3 pb-2 shadow-sm border-2 border-[#EBEAEB]`}
+                    className={`mt-5 bg-white rounded-xl ${boxHight} min-w-[15rem] max-w-[25rem] grid grid-cols-3 grid-rows-2 flex-none cursor-default px-4 pt-3 pb-2 shadow-sm border-2 border-duoGray-light`}
                 >
-                    <span className="col-span-3 h-fit font-semibold flex-none text-[#4B4B4B]">
+                    <span className="col-span-3 h-fit font-semibold flex-none text-duoGray-darkest">
                         {alertMessage}
                     </span>
                     <Button

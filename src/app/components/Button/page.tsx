@@ -36,22 +36,22 @@ const Button: React.FC<ButtonProps> = ({
 
     switch (color) {
         case "Blue":
-            buttonColor = "bg-[#27B6F5]";
-            buttonBorderColor = "bg-[#1A87BC]";
-            buttonHoverColor = "hover:bg-[#1FC2FF]";
+            buttonColor = "bg-duoBlue-buton";
+            buttonBorderColor = "bg-duoBlue-buttonBorder";
+            buttonHoverColor = "hover:bg-duoBlue-buttonHover";
             textColor = "text-white";
             break;
         case "Green":
-            buttonColor = "bg-[#59D101]";
-            buttonBorderColor = "bg-[#61B800]";
-            buttonHoverColor = "hover:bg-[#61E002]";
+            buttonColor = "bg-duoGreen-button";
+            buttonBorderColor = "bg-duoGreen-buttonBorder";
+            buttonHoverColor = "hover:bg-duoGreen-buttonHover";
             textColor = "text-white";
             break;
 
         case "Gray":
-            buttonColor = "bg-stone-500";
-            buttonBorderColor = "bg-stone-700";
-            buttonHoverColor = "hover:bg-[#8A837D]";
+            buttonColor = "bg-duoGreen-button-default";
+            buttonBorderColor = "bg-duoGreen-buttonBorder";
+            buttonHoverColor = "hover:bg-duoGreen-buttonHover";
             textColor = "text-white";
             break;
     }

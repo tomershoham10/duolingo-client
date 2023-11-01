@@ -53,8 +53,8 @@ const Dropdown: React.FC<DropdownProps> = ({
             <button
                 className={
                     failed
-                        ? "flex justify-between items-center p-3 bg-[#F7F7F7] border-2 border-[#FFB2B2] w-full rounded-xl cursor-pointer text-[#4B4B4B] uppercase font-bold"
-                        : "flex justify-between items-center p-3 bg-[#F7F7F7] border-2 border-[#E5E5E5] w-full rounded-xl cursor-pointer text-[#4B4B4B] uppercase font-bold"
+                        ? "flex justify-between items-center p-3 bg-duoGray-lighter border-2 border-duoRed-light w-full rounded-xl cursor-pointer text-duoGray-darkest uppercase font-bold"
+                        : "flex justify-between items-center p-3 bg-duoGray-lighter border-2 border-duoGray-default w-full rounded-xl cursor-pointer text-duoGray-darkest uppercase font-bold"
                 }
                 onClick={() => setIsOpen(!isOpen)}
             >
@@ -63,18 +63,18 @@ const Dropdown: React.FC<DropdownProps> = ({
             </button>
             {isOpen && (
                 <div
-                    className="absolute flex flex-col justify-center items-start mt-2 w-full bg-[#F7F7F7] border-2 border-[#E5E5E5]
-                    rounded-xl text-[#AFAFAF] uppercase font-bold"
+                    className="absolute flex flex-col justify-center items-start mt-2 w-full bg-duoGray-lighter border-2 border-duoGray-default
+                    rounded-xl text-duoGray-dark uppercase font-bold"
                 >
                     {items.map((item, index) => (
                         <div
                             key={index}
                             className={
                                 index === 0
-                                    ? "p-2 cursor-pointer hover:bg-[#E0E0E0] w-full rounded-t-md"
+                                    ? "p-2 cursor-pointer hover:bg-duoGray-hover w-full rounded-t-md"
                                     : index === items.length - 1
-                                    ? "p-2 cursor-pointer hover:bg-[#E0E0E0] w-full rounded-b-md"
-                                    : "p-2 cursor-pointer hover:bg-[#E0E0E0] w-full"
+                                    ? "p-2 cursor-pointer hover:bg-duoGray-hover w-full rounded-b-md"
+                                    : "p-2 cursor-pointer hover:bg-duoGray-hover w-full"
                             }
                             onClick={() => handleItemClick(item)}
                         >

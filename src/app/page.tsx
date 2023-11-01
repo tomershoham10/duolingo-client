@@ -12,7 +12,7 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
-        console.log("/", isLoggedIn, "isLoggedIn", "userRole", userRole);
+        // console.log("/", isLoggedIn, "isLoggedIn", "userRole", userRole);
         !isLoggedIn
             ? router.push("/Login")
             : userRole === TypesOfUser.ADMIN

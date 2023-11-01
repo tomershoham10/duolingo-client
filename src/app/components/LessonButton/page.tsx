@@ -49,8 +49,8 @@ const LessonButton: React.FC<LessonButton> = ({ isDisabled }) => {
             <button
                 className={`${
                     isDisabled
-                        ? "left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[55px] bg-[#E5E5E5] rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-[#AFAFAF] text-2xl"
-                        : "left-0 top-0 lesson-button absolute justify-center items-center ml-[16px] mt-[16px] w-[70px] h-[55px] bg-[#58cc02] rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-white text-3xl"
+                        ? "left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[55px] bg-duoGray-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-duoGray-dark text-2xl"
+                        : "left-0 top-0 lesson-button absolute justify-center items-center ml-[16px] mt-[16px] w-[70px] h-[55px] bg-duoGreen-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-white text-3xl"
                 }`}
                 disabled={isDisabled}
             >
