@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 // import { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

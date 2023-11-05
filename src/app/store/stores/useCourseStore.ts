@@ -3,10 +3,10 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 export enum TypesOfCourses {
-    undefined = "undefined",
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
+    UNDEFINED = "undefined",
+    SEARIDER = "searider",
+    CREW = "crew",
+    SENIOR = "senior",
 }
 
 type CourseState = {

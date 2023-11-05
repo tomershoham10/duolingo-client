@@ -1,12 +1,8 @@
 "use client";
+import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
 import { usePathname } from "next/navigation";
 import { ReactNode, createContext, useContext, useState } from "react";
 
-export enum TypesOfCourses {
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
-}
 
 interface CourseContextType {
     CourseType: TypesOfCourses | undefined;

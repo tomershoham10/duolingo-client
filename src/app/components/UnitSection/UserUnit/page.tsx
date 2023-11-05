@@ -1,15 +1,80 @@
+"use client";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { useUserStore } from "@/app/store/stores/useUserStore";
+import { useStore } from "zustand";
+import { useCourseStore } from "@/app/store/stores/useCourseStore";
+import { useEffect } from "react";
+import { getUnitsData } from "@/app/API/classes-service/courses/functions";
 library.add(faBook);
 
-const UnitSection = () => {
+const UserUnitSection = () => {
+    const userRole = useStore(useUserStore, (state) => state.userRole);
+    const courseId = useStore(useCourseStore, (state) => state.courseId);
+    const [units, setUnits] = useState<UnitType[]>([]);
+
+
+
+    console.log("userRole", userRole);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (courseId) {
+                await getUnitsData(courseId, setUnits);
+            }
+        };
+        fetchData();
+    }, [courseId]);
+
+    useEffect(() => {
+        const fetchSections = async () => {
+            const promises = units.map(async (unit) => {
+                // await getSectionsData(unit._id, setSections);
+                const sectionsData = await getSectionsData(unit._id);
+                return { unitId: unit._id, sections: sectionsData };
+            });
+            const result = await Promise.all(promises);
+            setSections(result);
+        };
+        if (units.length > 0) {
+            fetchSections();
+        }
+    }, [units]);
+
+    useEffect(() => {
+        const fetchLessons = async () => {
+            const allSections: { sectionId: string; lessons: LessonType[] }[] =
+                [];
+            sections.forEach((unit) => {
+                unit.sections?.forEach((section) => {
+                    allSections.push({ sectionId: section._id, lessons: [] });
+                });
+            });
+
+            const promises = allSections.map(async (section) => {
+                const lessonsData = await getLessonsData(section.sectionId);
+                console.log("lessonsData", lessonsData);
+                section.lessons = lessonsData;
+                console.log(section);
+                return section;
+            });
+
+            const result = await Promise.all(promises);
+            setLessons(result);
+        };
+
+        if (sections.length > 0) {
+            fetchLessons();
+        }
+    }, [sections]);
+
     return (
         <div
             className="grid grid-rows-2 grid-col-3 grid-flow-col  
     bg-duoGreen-default w-[35rem] h-[6rem] rounded-xl text-white mb-5"
         >
-            <label className="col-span-2 flex justify-start items-center pt-4 pl-4 font-extrabold text-xl">
+            <label className="col-span-2 flex justify-start items-center pt-4 pl-4 font-extrabold text-2xl">
                 Unit 1
             </label>
             <label className="col-span-2 flex justify-start items-center pb-3 pl-4">
@@ -34,4 +99,4 @@ const UnitSection = () => {
     );
 };
 
-export default UnitSection;
+export default UserUnitSection;

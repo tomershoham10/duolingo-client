@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useStore from "@/app/store/useStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
-import { getUnitsData } from "@/app/API/classes-service/courses/functions";
+import { UnitType, getUnitsData } from "@/app/API/classes-service/courses/functions";
 import { getSectionsData } from "@/app/API/classes-service/units/functions";
 import { getLessonsData } from "@/app/API/classes-service/sections/functions";
 import { getExercisesData } from "@/app/API/classes-service/lessons/functions";
@@ -23,12 +23,6 @@ import {
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
-interface UnitType {
-    _id: string;
-    sections?: string[];
-    guidebook?: string;
-    description?: string;
-}
 
 interface SectionType {
     _id: string;

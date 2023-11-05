@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-interface UnitType {
+export interface UnitType {
     _id: string;
     sections?: string[];
     guidebook?: string;
