@@ -8,13 +8,14 @@ export enum Color {
     blue = "Blue",
     green = "Green",
     gray = "Gray",
+    white = "White",
 }
 
 interface ButtonProps {
     label: string;
     icon?: IconDefinition;
     color: Color;
-    onClick: () => void;
+    onClick?: () => void;
     href?: string;
     style?: string;
 }
@@ -36,7 +37,7 @@ const Button: React.FC<ButtonProps> = ({
 
     switch (color) {
         case "Blue":
-            buttonColor = "bg-duoBlue-buton";
+            buttonColor = "bg-duoBlue-button";
             buttonBorderColor = "bg-duoBlue-buttonBorder";
             buttonHoverColor = "hover:bg-duoBlue-buttonHover";
             textColor = "text-white";
@@ -49,17 +50,23 @@ const Button: React.FC<ButtonProps> = ({
             break;
 
         case "Gray":
-            buttonColor = "bg-duoGreen-button-default";
-            buttonBorderColor = "bg-duoGreen-buttonBorder";
-            buttonHoverColor = "hover:bg-duoGreen-buttonHover";
+            buttonColor = "bg-duoGray-button-default";
+            buttonBorderColor = "bg-duoGray-buttonBorder";
+            buttonHoverColor = "hover:bg-duoGray-buttonHover";
             textColor = "text-white";
+            break;
+        case "White":
+            buttonColor = "bg-white";
+            buttonBorderColor = "bg-duoGreen-lightest";
+            buttonHoverColor = "hover:text-duoGreen-buttonHover";
+            textColor = "text-duoGreen-default";
             break;
     }
 
     return (
         <div
             className={`${buttonBorderColor} ${textColor} w-full flex flex-col justify-end ${style} text-md font-extrabold
-    mb-2 mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent active:border-0 active:shadow-none active:translate-y-[4px]`}
+    mb-2 mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent active:border-0 active:translate-y-[4px]`}
         >
             <button
                 className={`flex flex-col justify-start items-center group ${buttonColor} pt-2 pb-2 pl-3 pr-3 w-full rounded-2xl ${buttonHoverColor}`}

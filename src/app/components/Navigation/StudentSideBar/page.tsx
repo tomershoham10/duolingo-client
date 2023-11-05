@@ -45,7 +45,7 @@ const getCourses = async () => {
     }
 };
 
-const SideBar: React.FC = () => {
+const StudentSideBar: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);
     const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
 
@@ -84,70 +84,41 @@ const SideBar: React.FC = () => {
     const items = userRole ? sidebarItems[userRole] : [];
 
     return (
-        <div
-            className={`${
-                userRole === "admin"
-                    ? "bg-duoGray-lighter flex flex-col justify-center border-r-2 h-screen tracking-wide border-duoGray-light text-duoGray-darker font-extrabold"
-                    : "flex flex-col justify-center border-r-2 h-screen tracking-wide border-zinc-500/25 text-sm text-gray-500 font-extrabold"
-            }`}
-        >
+        <div className="flex flex-col justify-center border-r-2 h-screen tracking-wide border-zinc-500/25 text-sm text-gray-500 font-extrabold">
             <label className="text-[2rem] font-[850] text-duoGreen-default pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
                 doulingo
             </label>
 
-            {userRole === "admin" ? (
-                <div className="border-b-2 flex justify-center items-center">
-                    <ul className="w-full">
-                        {cousersList.length > 0 ? (
-                            cousersList.map((item: any, index: any) => (
-                                <li
-                                    key={index}
-                                    className="pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg hover:text-sky-400 hover:bg-duoBlue-lighter w-full text-center"
-                                >
-                                    {item.className}
-                                </li>
-                            ))
-                        ) : (
-                            <p>problem</p>
-                        )}
-                    </ul>
-                </div>
-            ) : (
-                <></>
-            )}
-
             <ul className="flex-grow">
-                {items.map((item, index) => (
-                    <li
-                        key={index}
-                        className={`${
-                            selected === index
-                                ? userRole === "admin"
-                                    ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-duoBlue-lighter"
-                                    : "text-sky-400 pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl border-2 border-sky-300 bg-duoBlue-lighter"
-                                : userRole === "admin"
-                                ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-duoGray-hover"
-                                : "pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl hover-bg-zinc-100 border-2 border-transparent"
-                        }`}
-                    >
-                        <button
-                            className="flex flex-row justify-center items-center cursor-pointer pr-2"
-                            onClick={() => setSelected(index)}
-                        >
-                            <FontAwesomeIcon
-                                className="h-6 w-6 mr-4 ml-2 fa-xs fa-solid"
-                                icon={item.icon}
-                            />
+                {items
+                    ? items.map((item, index) => (
+                          <li
+                              key={index}
+                              className={`${
+                                  selected === index
+                                      ? "text-duoBlue-light pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl border-2 border-duoBlue-lighter bg-duoBlue-lightest"
+                                      : "pl-3 pr-3 pt-2 pb-2 mb-2 mt-2 cursor-pointer rounded-xl hover-bg-zinc-100 border-2 border-transparent"
+                              }`}
+                          >
+                              <button
+                                  className="flex flex-row justify-center items-center cursor-pointer pr-2"
+                                  onClick={() => setSelected(index)}
+                              >
+                                  <FontAwesomeIcon
+                                      className="h-6 w-6 mr-4 ml-2 fa-xs fa-solid"
+                                      icon={item.icon}
+                                  />
 
-                            <Link
-                                className="flex h-full cursor-pointer"
-                                href={item.href ? item.href : ""}
-                            >
-                                {item.label}
-                            </Link>
-                        </button>
-                    </li>
-                ))}
+                                  <Link
+                                      className="flex h-full cursor-pointer"
+                                      href={item.href ? item.href : ""}
+                                  >
+                                      {item.label}
+                                  </Link>
+                              </button>
+                          </li>
+                      ))
+                    : null}
             </ul>
             {isLoggedIn ? (
                 <></>
@@ -166,4 +137,4 @@ const SideBar: React.FC = () => {
     );
 };
 
-export default SideBar;
+export default StudentSideBar;

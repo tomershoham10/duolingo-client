@@ -7,6 +7,7 @@ import Alert from "../components/Alert/page";
 import InfoBar from "../components/InfoBar/page";
 import useStore from "../store/useStore";
 import { useUserStore, TypesOfUser } from "../store/stores/useUserStore";
+import StudentSideBar from "../components/Navigation/StudentSideBar/page";
 
 export default function RootLayout({
     children,
@@ -17,14 +18,11 @@ export default function RootLayout({
 
     return (
         <div className="flex flex-row w-full h-screen">
-            {userRole === TypesOfUser.ADMIN ? (
+            {userRole !== TypesOfUser.ADMIN ? (
                 <>
                     <Alert />
-                    <AdminSideBar />
-                    <CreateNewUser />
-                    <CreateNewUnit />
+                    <StudentSideBar />
                     <div className="flex flex-col w-full h-screen">
-                        <NavBar />
                         <div className="flex flex-row h-full w-full justify-between overflow-hidden">
                             {children}
                             <InfoBar />

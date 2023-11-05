@@ -105,7 +105,7 @@ const AdminSideBar: React.FC = () => {
                     bg-duoGray-lighter flex flex-col justify-center border-r-2 h-screen tracking-wide 
                 border-duoGray-light text-duoGray-darker font-extrabold"
                 >
-                    <label className="text-[2rem] font-[850] text-adminTheme pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
+                    <label className="text-[2rem] font-[850] text-duoBlue-default pl-6 pr-6 pt-6 pb-2 mb-2 mt-2">
                         doulingo
                     </label>
 
@@ -119,8 +119,8 @@ const AdminSideBar: React.FC = () => {
                                             className={
                                                 courseType?.toLocaleLowerCase() ===
                                                 item.courseType.toLocaleLowerCase()
-                                                    ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-sky-400 bg-duoBlue-lighter w-full text-center"
-                                                    : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoGray-darkest hover:text-sky-400 hover:bg-duoBlue-lighter w-full text-center"
+                                                    ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoBlue-light bg-duoBlue-lightest w-full text-center"
+                                                    : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoGray-darkest hover:text-duoBlue-light hover:bg-duoBlue-lightest w-full text-center"
                                             }
                                         >
                                             <Link
@@ -143,7 +143,7 @@ const AdminSideBar: React.FC = () => {
                                 key={index}
                                 className={`${
                                     selected === index
-                                        ? "text-sky-400 pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-duoBlue-lighter"
+                                        ? "text-duoBlue-light pl-3 pr-3 pt-3 pb-3 cursor-pointer bg-duoBlue-lightest"
                                         : "pl-3 pr-3 pt-3 pb-3 cursor-pointer hover:bg-duoGray-hover"
                                 }`}
                             >

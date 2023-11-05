@@ -13,7 +13,7 @@ interface LessonType {
     type: TypesOfLessons;
 }
 
-export const getLessonsData = async (sectionId: string, setLessons: Dispatch<SetStateAction<{
+export const getLessonsData = async (sectionId: string, setLessons?: Dispatch<SetStateAction<{
     sectionId: string;
     lessons: LessonType[];
 }[]>>) => {
@@ -31,11 +31,13 @@ export const getLessonsData = async (sectionId: string, setLessons: Dispatch<Set
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
-            console.log("resLessons", resLessons);
-            setLessons((pervArr) => [
-                ...pervArr,
-                { sectionId: sectionId, lessons: resLessons },
-            ]);
+            // console.log("resLessons", resLessons);
+            // setLessons((pervArr) => [
+            //     ...pervArr,
+            //     { sectionId: sectionId, lessons: resLessons },
+            // ]);
+
+            return resLessons;
         } else {
             console.error("Failed to fetch lessons by id.");
             return [];

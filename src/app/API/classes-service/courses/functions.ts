@@ -22,7 +22,7 @@ export const getUnitsData = async (courseId: string, setUnits: Dispatch<SetState
         if (response.ok) {
             const data = await response.json();
             const resUnits = data.units;
-            console.log(resUnits);
+            // console.log(resUnits);
             setUnits(resUnits);
         } else {
             console.error("Failed to fetch course by id.");

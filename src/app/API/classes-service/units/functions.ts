@@ -5,7 +5,7 @@ interface SectionType {
     lessons?: string[];
 }
 
-export const getSectionsData = async (unitId: string, setSections: Dispatch<SetStateAction<{
+export const getSectionsData = async (unitId: string, setSections?: Dispatch<SetStateAction<{
     unitId: string;
     sections: SectionType[];
 }[]>>) => {
@@ -23,11 +23,14 @@ export const getSectionsData = async (unitId: string, setSections: Dispatch<SetS
         if (response.ok) {
             const data = await response.json();
             const resSections = data.sections;
-            console.log("resSections", resSections);
-            setSections((pervArr) => [
-                ...pervArr,
-                { unitId: unitId, sections: resSections },
-            ]);
+
+            // setSections((pervArr) => [
+            //     ...pervArr,
+            //     { unitId: unitId, sections: resSections },
+            // ]);
+
+            return resSections;
+
         } else {
             console.error("Failed to fetch unit by id.");
             return [];

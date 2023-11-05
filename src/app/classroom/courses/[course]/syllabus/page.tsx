@@ -88,7 +88,7 @@ const Syllabus: React.FC = () => {
     };
 
     return (
-        <div className="mx-10 mt-6 w-full flex h-fit">
+        <div className="w-full h-full overflow-y-auto mx-1">
             {unitsIds ? (
                 unitsIds.length > 0 ? (
                     <AdminUnit />

@@ -26,6 +26,7 @@ const config: Config = {
                     buttonHover: '#61E002',
                     buttonDisabled: '#58CC02',
 
+                    lightest:'#CDF0B4',
                     default: '#58CC02',
 
                     dark: '#4AAB02',
@@ -33,17 +34,18 @@ const config: Config = {
 
                     textHover: '#DEF5CC',
                 },
-                
+
                 'duoBlue': {
                     button: '#27B6F5',
                     buttonBorder: '#1A87BC',
                     buttonHover: '#1FC2FF',
 
-                    lighter: '#DDF4FF',
+                    lightest: '#DDF4FF',
+                    lighter: '#7DD3FC',
                     light: '#1CB0F6',
-                    default: '#20A6EC'
+                    default: '#20A6EC',
                 },
-                
+
                 'duoGray': {
                     //button === default
                     buttonBorder: '#44403c',
