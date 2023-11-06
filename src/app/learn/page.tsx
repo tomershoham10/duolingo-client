@@ -10,8 +10,7 @@ const Dashboard: React.FC = () => {
     );
 
     return (
-        <div className="flex flex-col">
-            <div>Dashboard Student {selectedPopup}</div>
+        <div className="w-full flex flex-col justify-start items-center">
             <UserUnitSection />
         </div>
     );

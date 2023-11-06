@@ -34,9 +34,9 @@ const NavBar: React.FC = () => {
 
     useEffect(() => {
         if (pathname.includes("searider")) {
-            updateCourseType(TypesOfCourses.searider);
+            updateCourseType(TypesOfCourses.SENIOR);
         } else if (pathname.includes("senior")) {
-            updateCourseType(TypesOfCourses.senior);
+            updateCourseType(TypesOfCourses.SENIOR);
         }
 
         if (coursesList && courseType) {

@@ -9,6 +9,8 @@ import { useAlertStore, AlertSizes } from "../store/stores/useAlertStore";
 import jwt from "jsonwebtoken";
 import Input, { Types } from "../components/Input/page";
 import Button, { Color } from "../components/Button/page";
+import { getCourseByType } from "../API/classes-service/courses/functions";
+import { TypesOfCourses } from "../store/stores/useCourseStore";
 
 enum TypesOfUser {
     LOGGEDOUT = "loggedOut",
@@ -34,6 +36,22 @@ const Login: React.FC = () => {
 
     const addAlert = useAlertStore.getState().addAlert;
 
+    const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
+        // Map user roles to course types here
+        switch (userRole) {
+            case TypesOfUser.SEARIDER:
+                return TypesOfCourses.SEARIDER;
+            case TypesOfUser.SENIOR:
+                return TypesOfCourses.SENIOR;
+            case TypesOfUser.TEACHER:
+                return TypesOfCourses.UNDEFINED;
+            case TypesOfUser.CREW:
+                return TypesOfCourses.CREW;
+            default:
+                return TypesOfCourses.UNDEFINED;
+        }
+    };
+
     console.log("login", isLoggedIn, userRole);
     useEffect(() => {
         if (isLoggedIn && userRole) {
@@ -43,7 +61,6 @@ const Login: React.FC = () => {
                 router.push("/learn");
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn, userRole]);
 
     const handleUser = (value: string) => {
@@ -97,6 +114,12 @@ const Login: React.FC = () => {
                         }
                         if (updateAccessToken) {
                             updateAccessToken(token);
+                        }
+
+                        if (role !== TypesOfUser.ADMIN) {
+                            await getCourseByType(
+                                mapUserRoleToCourseType(role),
+                            );
                         }
 
                         const userData = {

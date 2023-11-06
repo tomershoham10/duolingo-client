@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-interface SectionType {
+export interface SectionType {
     _id: string;
     lessons?: string[];
 }

@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 
-enum TypesOfLessons {
+export enum TypesOfLessons {
     searider = "searider",
     crew = "crew",
     senior = "senior",
 }
 
-interface LessonType {
+export interface LessonType {
     _id: string;
     name: string;
     exercises: string[];

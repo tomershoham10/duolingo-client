@@ -24,14 +24,24 @@ type Action = {
 
 export const useCourseStore = create<CourseState & Action>(
     (set) => ({
-        courseType: TypesOfCourses.undefined,
+        courseType: TypesOfCourses.UNDEFINED,
         courseId: undefined,
-        coursesList: [{ courseType: TypesOfCourses.undefined, courseId: undefined }],
+        coursesList: [{ courseType: TypesOfCourses.UNDEFINED, courseId: undefined }],
         updateCourseType: (courseType) => set(() => ({ courseType: courseType })),
         updateCourseId: (courseId) => set(() => ({ courseId: courseId })),
         updateCoursesList: (coursesList) => set(() => ({ coursesList: coursesList })),
     })
 )
+
+if (typeof window !== 'undefined' && localStorage) {
+    const userData = localStorage.getItem("courseData");
+    if (userData) {
+        const parsedData = JSON.parse(userData);
+        // console.log("useCourseStore parsedData", parsedData)
+        useCourseStore.getState().updateCourseId(parsedData._id);
+        useCourseStore.getState().updateCourseType(parsedData.type);
+    }
+}
 
 if (process.env.NODE_ENV === 'development') {
     mountStoreDevtool('CourseStore', useCourseStore);

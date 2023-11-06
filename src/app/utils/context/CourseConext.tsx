@@ -38,14 +38,14 @@ export function CourseProvider({ children }: { children: ReactNode }) {
 
     if (
         pathname.includes("/classroom/courses/searider") &&
-        courseType !== TypesOfCourses.searider
+        courseType !== TypesOfCourses.SEARIDER
     ) {
-        setCourseType(TypesOfCourses.searider);
+        setCourseType(TypesOfCourses.SEARIDER);
     } else if (
         pathname.includes("/classroom/courses/senior") &&
-        courseType !== TypesOfCourses.senior
+        courseType !== TypesOfCourses.SENIOR
     ) {
-        setCourseType(TypesOfCourses.senior);
+        setCourseType(TypesOfCourses.SENIOR);
     }
 
     return (

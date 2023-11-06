@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import useStore from "@/app/store/useStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
 import { UnitType, getUnitsData } from "@/app/API/classes-service/courses/functions";
-import { getSectionsData } from "@/app/API/classes-service/units/functions";
-import { getLessonsData } from "@/app/API/classes-service/sections/functions";
-import { getExercisesData } from "@/app/API/classes-service/lessons/functions";
+import { SectionType, getSectionsData } from "@/app/API/classes-service/units/functions";
+import { LessonType, getLessonsData } from "@/app/API/classes-service/sections/functions";
+import { FSAType, getExercisesData } from "@/app/API/classes-service/lessons/functions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -23,42 +23,6 @@ import {
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
-
-interface SectionType {
-    _id: string;
-    lessons?: string[];
-}
-
-enum TypesOfLessons {
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
-}
-
-interface LessonType {
-    _id: string;
-    name: string;
-    exercises: string[];
-    type: TypesOfLessons;
-}
-
-enum DifficultyLevel {
-    Easy = "Easy",
-    Medium = "Medium",
-    Hard = "Hard",
-}
-
-interface FSAType {
-    _id: string;
-    filesKeys: string[];
-    difficultyLevel: DifficultyLevel;
-    options: string[];
-    answers: string[]; //my be 2 correct answers
-    firstTimeBuffer: number; //in minutes
-    secondTimeBuffer: number; //in minutes
-    description: string;
-    dateCreated: Date;
-}
 
 const AdminUnit: React.FC = () => {
     const courseId = useStore(useCourseStore, (state) => state.courseId);

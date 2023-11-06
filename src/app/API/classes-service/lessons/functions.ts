@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 
-enum DifficultyLevel {
+export enum DifficultyLevel {
     Easy = "Easy",
     Medium = "Medium",
     Hard = "Hard",
 }
 
-interface FSAType {
-    id: string;
+export interface FSAType {
+    _id: string;
     filesKeys: string[];
     difficultyLevel: DifficultyLevel;
     options: string[];

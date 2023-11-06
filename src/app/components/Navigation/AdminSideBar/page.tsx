@@ -13,51 +13,11 @@ import {
 import Link from "next/link";
 import useStore from "@/app/store/useStore";
 import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
-import {
-    TypesOfCourses,
-    useCourseStore,
-} from "@/app/store/stores/useCourseStore";
+import { useCourseStore } from "@/app/store/stores/useCourseStore";
 import { usePopupStore } from "@/app/store/stores/usePopupStore";
+import { getCourses } from "@/app/API/classes-service/courses/functions";
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
-
-const getCourses = async () => {
-    try {
-        const response = await fetch("http://localhost:8080/api/courses/", {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const coursesObject = data.courses as {
-                _id: string;
-                type: TypesOfCourses;
-            }[];
-
-            const coursesList: {
-                courseId: string;
-                courseType: TypesOfCourses;
-            }[] = Object.values(coursesObject).map(
-                (course: { _id: string; type: TypesOfCourses }) => ({
-                    courseId: course._id as string,
-                    courseType: course.type as TypesOfCourses,
-                }),
-            );
-            // console.log(coursesList);
-            return coursesList;
-        } else {
-            console.error("Failed to fetch courses.");
-            return [];
-        }
-    } catch (error) {
-        console.error("Error fetching courses:", error);
-        return [];
-    }
-};
 
 const AdminSideBar: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);
@@ -73,15 +33,18 @@ const AdminSideBar: React.FC = () => {
     const [selected, setSelected] = useState<number>();
 
     useEffect(() => {
-        if (userRole === "admin" && updateCoursesList) {
-            getCourses().then((coursesList) => {
-                updateCoursesList(coursesList);
-                // console.log(
-                //     "set course list (adminsidebar component)",
-                //     coursesList,
-                // );
-            });
-        }
+        const fetchData = async () => {
+            if (userRole === TypesOfUser.ADMIN && updateCoursesList) {
+                try {
+                    const coursesList = await getCourses();
+                    updateCoursesList(coursesList);
+                } catch (error) {
+                    console.error("Error fetching courses:", error);
+                }
+            }
+        };
+
+        fetchData();
     }, [updateCoursesList, userRole]);
 
     const sidebarItems: {
