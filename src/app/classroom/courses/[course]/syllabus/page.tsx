@@ -42,7 +42,7 @@ const Syllabus: React.FC = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        unitData: { sections: [] },
+                        unitData: { levels: [] },
                         courseId: courseId,
                     }),
                 },

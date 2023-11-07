@@ -13,13 +13,13 @@ export interface LessonType {
     type: TypesOfLessons;
 }
 
-export const getLessonsData = async (sectionId: string, setLessons?: Dispatch<SetStateAction<{
-    sectionId: string;
+export const getLessonsData = async (levelId: string, setLessons?: Dispatch<SetStateAction<{
+    levelId: string;
     lessons: LessonType[];
 }[]>>) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/sections/getLessonsById/${sectionId}`,
+            `http://localhost:8080/api/levels/getLessonsById/${levelId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -34,7 +34,7 @@ export const getLessonsData = async (sectionId: string, setLessons?: Dispatch<Se
             // console.log("resLessons", resLessons);
             // setLessons((pervArr) => [
             //     ...pervArr,
-            //     { sectionId: sectionId, lessons: resLessons },
+            //     { levelId: levelId, lessons: resLessons },
             // ]);
 
             return resLessons;
@@ -43,7 +43,7 @@ export const getLessonsData = async (sectionId: string, setLessons?: Dispatch<Se
             return [];
         }
     } catch (error) {
-        console.error("Error fetching section:", error);
+        console.error("Error fetching level:", error);
         return [];
     }
 };

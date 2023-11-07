@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import useStore from "@/app/store/useStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
 import { UnitType, getUnitsData } from "@/app/API/classes-service/courses/functions";
-import { SectionType, getSectionsData } from "@/app/API/classes-service/units/functions";
-import { LessonType, getLessonsData } from "@/app/API/classes-service/sections/functions";
+import { LevelType, getLevelsData } from "@/app/API/classes-service/units/functions";
+import { LessonType, getLessonsData } from "@/app/API/classes-service/levels/functions";
 import { FSAType, getExercisesData } from "@/app/API/classes-service/lessons/functions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,11 +30,11 @@ const AdminUnit: React.FC = () => {
     const updateFieldId = useEditSyllabusStore.getState().updateFieldId;
 
     const [units, setUnits] = useState<UnitType[]>([]);
-    const [sections, setSections] = useState<
-        { unitId: string; sections: SectionType[] }[]
+    const [levels, setLevels] = useState<
+        { unitId: string; levels: LevelType[] }[]
     >([]);
     const [lessons, setLessons] = useState<
-        { sectionId: string; lessons: LessonType[] }[]
+        { levelId: string; lessons: LessonType[] }[]
     >([]);
     const [exercises, setExercises] = useState<
         { lessonId: string; exercises: FSAType[] }[]
@@ -50,46 +50,46 @@ const AdminUnit: React.FC = () => {
     }, [courseId]);
 
     useEffect(() => {
-        const fetchSections = async () => {
+        const fetchLevels = async () => {
             const promises = units.map(async (unit) => {
-                // await getSectionsData(unit._id, setSections);
-                const sectionsData = await getSectionsData(unit._id);
-                return { unitId: unit._id, sections: sectionsData };
+                // await getLevelsData(unit._id, setLevels);
+                const levelsData = await getLevelsData(unit._id);
+                return { unitId: unit._id, levels: levelsData };
             });
             const result = await Promise.all(promises);
-            setSections(result);
+            setLevels(result);
         };
         if (units.length > 0) {
-            fetchSections();
+            fetchLevels();
         }
     }, [units]);
 
     useEffect(() => {
         const fetchLessons = async () => {
-            const allSections: { sectionId: string; lessons: LessonType[] }[] =
+            const allLevels: { levelId: string; lessons: LessonType[] }[] =
                 [];
-            sections.forEach((unit) => {
-                unit.sections?.forEach((section) => {
-                    allSections.push({ sectionId: section._id, lessons: [] });
+            levels.forEach((unit) => {
+                unit.levels?.forEach((level) => {
+                    allLevels.push({ levelId: level._id, lessons: [] });
                 });
             });
 
-            const promises = allSections.map(async (section) => {
-                const lessonsData = await getLessonsData(section.sectionId);
+            const promises = allLevels.map(async (level) => {
+                const lessonsData = await getLessonsData(level.levelId);
                 console.log("lessonsData", lessonsData);
-                section.lessons = lessonsData;
-                console.log(section);
-                return section;
+                level.lessons = lessonsData;
+                console.log(level);
+                return level;
             });
 
             const result = await Promise.all(promises);
             setLessons(result);
         };
 
-        if (sections.length > 0) {
+        if (levels.length > 0) {
             fetchLessons();
         }
-    }, [sections]);
+    }, [levels]);
 
     useEffect(() => {
         const fetchExercises = async () => {
@@ -115,8 +115,8 @@ const AdminUnit: React.FC = () => {
     }, [units]);
 
     useEffect(() => {
-        console.log("sections", sections);
-    }, [sections]);
+        console.log("levels", levels);
+    }, [levels]);
 
     useEffect(() => {
         console.log("lessons", lessons);
@@ -197,33 +197,33 @@ const AdminUnit: React.FC = () => {
                                     </button>
                                 </div>
                                 <div className="flex flex-col">
-                                    {sections && sections.length > 0
-                                        ? sections.map(
+                                    {levels && levels.length > 0
+                                        ? levels.map(
                                               (
-                                                  sectionsObject,
-                                                  sectionsObjectIndex,
+                                                  levelsObject,
+                                                  levelsObjectIndex,
                                               ) => (
                                                   <div
-                                                      key={sectionsObjectIndex}
+                                                      key={levelsObjectIndex}
                                                   >
-                                                      {sectionsObject.unitId ===
+                                                      {levelsObject.unitId ===
                                                       unit._id ? (
                                                           <div className="flex flex-col">
-                                                              {sectionsObject
-                                                                  .sections
+                                                              {levelsObject
+                                                                  .levels
                                                                   .length > 0
-                                                                  ? sectionsObject.sections.map(
+                                                                  ? levelsObject.levels.map(
                                                                         (
-                                                                            section,
-                                                                            sectionIndex,
+                                                                            level,
+                                                                            levelIndex,
                                                                         ) => (
                                                                             <div
                                                                                 key={
-                                                                                    sectionIndex
+                                                                                    levelIndex
                                                                                 }
                                                                                 className={
-                                                                                    sectionIndex ===
-                                                                                    sections.length
+                                                                                    levelIndex ===
+                                                                                    levels.length
                                                                                         ? "border-2 border-t-0 border-duoGray-light rounded-b-lg h-fit px-6 py-3 flex flex-col"
                                                                                         : "border-2 border-t-0 border-duoGray-light h-fit px-6 py-3 flex flex-col"
                                                                                 }
@@ -242,8 +242,8 @@ const AdminUnit: React.FC = () => {
                                                                                                           lessonsObjectIndex
                                                                                                       }
                                                                                                   >
-                                                                                                      {lessonsObject.sectionId ===
-                                                                                                      section._id ? (
+                                                                                                      {lessonsObject.levelId ===
+                                                                                                      level._id ? (
                                                                                                           <div className="divide-y-2 divide-duoGray-hover">
                                                                                                               {lessonsObject
                                                                                                                   .lessons
@@ -271,7 +271,7 @@ const AdminUnit: React.FC = () => {
                                                                                                                                                 className=""
                                                                                                                                             />
                                                                                                                                             <span className="text-[11px] h-fit">
-                                                                                                                                                {sectionIndex +
+                                                                                                                                                {levelIndex +
                                                                                                                                                     1}
 
                                                                                                                                                 -

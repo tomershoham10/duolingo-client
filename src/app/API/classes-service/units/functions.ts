@@ -1,17 +1,17 @@
 import { Dispatch, SetStateAction } from "react";
 
-export interface SectionType {
+export interface LevelType {
     _id: string;
     lessons?: string[];
 }
 
-export const getSectionsData = async (unitId: string, setSections?: Dispatch<SetStateAction<{
+export const getLevelsData = async (unitId: string, setLevels?: Dispatch<SetStateAction<{
     unitId: string;
-    sections: SectionType[];
+    levels: LevelType[];
 }[]>>) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/getSectionsById/${unitId}`,
+            `http://localhost:8080/api/units/getLevelsById/${unitId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -22,14 +22,14 @@ export const getSectionsData = async (unitId: string, setSections?: Dispatch<Set
         );
         if (response.ok) {
             const data = await response.json();
-            const resSections = data.sections;
+            const resLevels = data.levels;
 
-            // setSections((pervArr) => [
+            // setLevels((pervArr) => [
             //     ...pervArr,
-            //     { unitId: unitId, sections: resSections },
+            //     { unitId: unitId, levels: resLevels },
             // ]);
 
-            return resSections;
+            return resLevels;
 
         } else {
             console.error("Failed to fetch unit by id.");

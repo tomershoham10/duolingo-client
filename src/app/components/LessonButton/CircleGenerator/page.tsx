@@ -1,5 +1,6 @@
-// import React from "react";
+"use client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface CircleGeneratorProps {
     numberOfTotalLessons: number;
@@ -10,33 +11,56 @@ const CircleGenerator: React.FC<CircleGeneratorProps> = ({
     numberOfTotalLessons,
     numberOfLessonsMade,
 }) => {
-    let svgFile = "";
+    const [svgFile, setSvgFile] = useState<string>("");
 
-    if (numberOfLessonsMade === 0) {
-        svgFile = "/svgs/circles/fullGrayCircle.svg";
-    } else if (numberOfLessonsMade === numberOfTotalLessons) {
-        svgFile = "/svgs/circles/fullGreenCircle.svg";
-    } else {
-        switch (numberOfTotalLessons) {
-            case 3:
-                svgFile = `/svgs/circles/thirds/${numberOfLessonsMade}/circle.svg`;
-                break;
-            case 4:
-                svgFile = `/svgs/circles/quarters/${numberOfLessonsMade}/circle.svg`;
-                break;
-            case 5:
-                svgFile = `/svgs/circles/fifths/${numberOfLessonsMade}/circle.svg`;
-                break;
-            case 6:
-                svgFile = `/svgs/circles/sixes/${numberOfLessonsMade}/circle.svg`;
-                break;
-            default:
-                svgFile = "";
+    useEffect(() => {
+        if (numberOfLessonsMade === 0) {
+            setSvgFile("/svgs/circles/fullGrayCircle.svg");
+        } else if (numberOfLessonsMade === numberOfTotalLessons) {
+            setSvgFile("/svgs/circles/fullGreenCircle.svg");
+        } else {
+            switch (numberOfTotalLessons) {
+                case 2:
+                    setSvgFile(
+                        `/svgs/circles/halfs/${numberOfLessonsMade}/circle.svg`,
+                    );
+                    break;
+                case 3:
+                    setSvgFile(
+                        `/svgs/circles/thirds/${numberOfLessonsMade}/circle.svg`,
+                    );
+                    break;
+                case 4:
+                    setSvgFile(
+                        `/svgs/circles/quarters/${numberOfLessonsMade}/circle.svg`,
+                    );
+                    break;
+                case 5:
+                    setSvgFile(
+                        `/svgs/circles/fifths/${numberOfLessonsMade}/circle.svg`,
+                    );
+                    break;
+                case 6:
+                    setSvgFile(
+                        `/svgs/circles/sixes/${numberOfLessonsMade}/circle.svg`,
+                    );
+                    break;
+            }
         }
-    }
+    }, [numberOfLessonsMade, numberOfTotalLessons]);
 
     return (
-        <Image priority src={svgFile} alt="circle" width={102} height={98} />
+        <>
+            {svgFile !== "" ? (
+                <Image
+                    priority
+                    src={svgFile}
+                    alt="circle"
+                    width={102}
+                    height={98}
+                />
+            ) : null}
+        </>
     );
 };
 

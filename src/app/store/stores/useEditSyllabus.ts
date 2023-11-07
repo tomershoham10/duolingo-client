@@ -13,7 +13,7 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 export enum fieldToEditType {
     UNIT = "unit",
-    SECTION = "section",
+    LEVEL = "level",
     LESSON = "lesson",
     EXERCISE = "exercise",
 }

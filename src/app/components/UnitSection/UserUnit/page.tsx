@@ -11,13 +11,13 @@ import {
     getUnitsData,
 } from "@/app/API/classes-service/courses/functions";
 import {
-    SectionType,
-    getSectionsData,
+    LevelType,
+    getLevelsData,
 } from "@/app/API/classes-service/units/functions";
 import {
     LessonType,
     getLessonsData,
-} from "@/app/API/classes-service/sections/functions";
+} from "@/app/API/classes-service/levels/functions";
 import LessonButton, { Status } from "../../LessonButton/page";
 import { possitionByModularAddition } from "@/app/utils/functions/possitionByModularAddition";
 import Tooltip from "../../Tooltip/page";
@@ -27,11 +27,11 @@ const UserUnitSection: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);
     const courseId = useStore(useCourseStore, (state) => state.courseId);
     const [units, setUnits] = useState<UnitType[]>([]);
-    const [sections, setSections] = useState<
-        { unitId: string; sections: SectionType[] }[]
+    const [levels, setLevels] = useState<
+        { unitId: string; levels: LevelType[] }[]
     >([]);
     const [lessons, setLessons] = useState<
-        { sectionId: string; lessons: LessonType[] }[]
+        { levelId: string; lessons: LessonType[] }[]
     >([]);
 
     useEffect(() => {
@@ -44,44 +44,44 @@ const UserUnitSection: React.FC = () => {
     }, [courseId]);
 
     useEffect(() => {
-        const fetchSections = async () => {
+        const fetchLevels = async () => {
             const promises = units.map(async (unit) => {
-                // await getSectionsData(unit._id, setSections);
-                const sectionsData = await getSectionsData(unit._id);
-                return { unitId: unit._id, sections: sectionsData };
+                // await getLevelsData(unit._id, setLevels);
+                const levelsData = await getLevelsData(unit._id);
+                return { unitId: unit._id, levels: levelsData };
             });
             const result = await Promise.all(promises);
-            setSections(result);
+            setLevels(result);
         };
         if (units.length > 0) {
-            fetchSections();
+            fetchLevels();
         }
     }, [units]);
 
     useEffect(() => {
         const fetchLessons = async () => {
-            const allSections: { sectionId: string; lessons: LessonType[] }[] =
+            const allLevels: { levelId: string; lessons: LessonType[] }[] =
                 [];
-            sections.forEach((unit) => {
-                unit.sections?.forEach((section) => {
-                    allSections.push({ sectionId: section._id, lessons: [] });
+            levels.forEach((unit) => {
+                unit.levels?.forEach((level) => {
+                    allLevels.push({ levelId: level._id, lessons: [] });
                 });
             });
 
-            const promises = allSections.map(async (section) => {
-                const lessonsData = await getLessonsData(section.sectionId);
-                section.lessons = lessonsData;
-                return section;
+            const promises = allLevels.map(async (level) => {
+                const lessonsData = await getLessonsData(level.levelId);
+                level.lessons = lessonsData;
+                return level;
             });
 
             const result = await Promise.all(promises);
             setLessons(result);
         };
 
-        if (sections.length > 0) {
+        if (levels.length > 0) {
             fetchLessons();
         }
-    }, [sections]);
+    }, [levels]);
 
     useEffect(() => {
         console.log("courseId", courseId);
@@ -92,8 +92,8 @@ const UserUnitSection: React.FC = () => {
     }, [units]);
 
     useEffect(() => {
-        console.log("sections", sections);
-    }, [sections]);
+        console.log("levels", levels);
+    }, [levels]);
 
     return (
         <div className="h-full py-6 px-3 w-full flex flex-col justify-center items-center">
@@ -126,51 +126,61 @@ const UserUnitSection: React.FC = () => {
                                           </div>
                                       </div>
                                       <div className="basis-full h-full">
-                                          {sections && sections.length > 0
-                                              ? sections.map(
+                                          {levels && levels.length > 0
+                                              ? levels.map(
                                                     (
-                                                        sectionsObject,
-                                                        sectionsObjectIndex,
+                                                        levelsObject,
+                                                        levelsObjectIndex,
                                                     ) => (
                                                         <div
                                                             key={
-                                                                sectionsObjectIndex
+                                                                levelsObjectIndex
                                                             }
                                                             className="h-full"
                                                         >
-                                                            {sectionsObject.unitId ===
+                                                            {levelsObject.unitId ===
                                                             unit._id ? (
                                                                 <div className="flex flex-col items-center h-full my-6">
-                                                                    {sectionsObject
-                                                                        .sections
+                                                                    {levelsObject
+                                                                        .levels
                                                                         .length >
                                                                     0
-                                                                        ? sectionsObject.sections.map(
+                                                                        ? levelsObject.levels.map(
                                                                               (
-                                                                                  section,
-                                                                                  sectionIndex,
+                                                                                  level,
+                                                                                  levelIndex,
                                                                               ) => (
                                                                                   <div
                                                                                       key={
-                                                                                          sectionIndex
+                                                                                          levelIndex
                                                                                       }
                                                                                       className={`flex relative ${possitionByModularAddition(
-                                                                                          sectionIndex,
-                                                                                      )} my-2 w-fit h-fit`}
+                                                                                          levelIndex,
+                                                                                      )} my-10 w-fit h-fit`}
                                                                                   >
-                                                                                      <Tooltip />
+                                                                                      {level.lessons &&
+                                                                                      level
+                                                                                          .lessons
+                                                                                          .length >
+                                                                                          0 ? (
+                                                                                          <>
+                                                                                              <Tooltip />
 
-                                                                                      <LessonButton
-                                                                                          status={
-                                                                                              Status.PROGRESS
-                                                                                          }
-                                                                                          numberOfLessonsMade={
-                                                                                              2
-                                                                                          }
-                                                                                          numberOfTotalLessons={
-                                                                                              5
-                                                                                          }
-                                                                                      />
+                                                                                              <LessonButton
+                                                                                                  status={
+                                                                                                      Status.PROGRESS
+                                                                                                  }
+                                                                                                  numberOfLessonsMade={
+                                                                                                      1
+                                                                                                  }
+                                                                                                  numberOfTotalLessons={
+                                                                                                      level
+                                                                                                          .lessons
+                                                                                                          .length
+                                                                                                  }
+                                                                                              />
+                                                                                          </>
+                                                                                      ) : null}
                                                                                   </div>
                                                                               ),
                                                                           )

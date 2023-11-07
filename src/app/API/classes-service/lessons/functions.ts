@@ -52,3 +52,39 @@ export const getExercisesData = async (lessonId: string, setExercises?: Dispatch
         return [];
     }
 };
+
+
+export const getResultsData = async (lessonId: string, setResults?: Dispatch<SetStateAction<{
+    lessonId: string;
+    exercises: FSAType[];
+}[]>>) => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/lessons/getResultsById/${lessonId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resResults = data.exercises;
+            console.log("resResults", lessonId, resResults);
+            // setExercises((pervArr) => [
+            //     ...pervArr,
+            //     { lessonId: lessonId, exercises: resExercises },
+            // ]);
+
+            return resResults;
+        } else {
+            console.error("Failed to fetch results by id.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching lesson:", error);
+        return [];
+    }
+};

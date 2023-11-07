@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface UnitType {
     _id: string;
-    sections?: string[];
+    levels?: string[];
     guidebook?: string;
     description?: string;
 }
