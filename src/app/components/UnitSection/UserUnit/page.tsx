@@ -21,10 +21,15 @@ import {
 import LessonButton, { Status } from "../../LessonButton/page";
 import { possitionByModularAddition } from "@/app/utils/functions/possitionByModularAddition";
 import Tooltip from "../../Tooltip/page";
+import {
+    ResultType,
+    getResultsData,
+} from "@/app/API/classes-service/lessons/functions";
 library.add(faBook);
 
 const UserUnitSection: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);
+    const userId = useStore(useUserStore, (state) => state.userId);
     const courseId = useStore(useCourseStore, (state) => state.courseId);
     const [units, setUnits] = useState<UnitType[]>([]);
     const [levels, setLevels] = useState<
@@ -33,6 +38,13 @@ const UserUnitSection: React.FC = () => {
     const [lessons, setLessons] = useState<
         { levelId: string; lessons: LessonType[] }[]
     >([]);
+    const [results, setResults] = useState<
+        { lessonId: string; results: ResultType[] }[]
+    >([]);
+    const [nextExerciseId, setNextExerciseId] = useState<string>();
+    const [lockedLessons, setLockedLessons] = useState<string[]>([]);
+    const [lockedLevels, setLockedLevels] = useState<string[]>([]);
+    const [finisedLevels, setFinisedLevels] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,8 +72,7 @@ const UserUnitSection: React.FC = () => {
 
     useEffect(() => {
         const fetchLessons = async () => {
-            const allLevels: { levelId: string; lessons: LessonType[] }[] =
-                [];
+            const allLevels: { levelId: string; lessons: LessonType[] }[] = [];
             levels.forEach((unit) => {
                 unit.levels?.forEach((level) => {
                     allLevels.push({ levelId: level._id, lessons: [] });
@@ -84,8 +95,31 @@ const UserUnitSection: React.FC = () => {
     }, [levels]);
 
     useEffect(() => {
-        console.log("courseId", courseId);
-    }, [courseId]);
+        const fetchResults = async () => {
+            if (userId) {
+                const allLessons = lessons.reduce(
+                    (acc, cur) => acc.concat(cur.lessons),
+                    [] as LessonType[],
+                );
+                const promises = allLessons.map(async (lesson) => {
+                    const resultsData = await getResultsData(
+                        lesson._id,
+                        userId,
+                    );
+                    return { lessonId: lesson._id, results: resultsData };
+                });
+                const result = await Promise.all(promises);
+                setResults(result);
+            }
+        };
+        if (lessons.length > 0 && userId !== undefined) {
+            fetchResults();
+        }
+    }, [lessons, setResults]);
+
+    // useEffect(() => {
+    //     console.log("courseId", courseId);
+    // }, [courseId]);
 
     useEffect(() => {
         console.log("units", units);
@@ -94,6 +128,101 @@ const UserUnitSection: React.FC = () => {
     useEffect(() => {
         console.log("levels", levels);
     }, [levels]);
+
+    useEffect(() => {
+        console.log("lessons", lessons);
+    }, [lessons]);
+
+    useEffect(() => {
+        if (results) {
+            for (let r: number = 0; r < results.length; r++) {
+                if (results[r].results.length === 0) {
+                    setLockedLessons((pervLessons) => [
+                        ...pervLessons,
+                        results[r].lessonId,
+                    ]);
+                }
+            }
+        }
+    }, [results]);
+
+    useEffect(() => {
+        if (levels && lessons) {
+            for (let i: number = 0; i < levels.length; i++) {
+                const currentlevels = levels[i].levels;
+                for (let j: number = 0; j < currentlevels.length; j++) {
+                    const currentLevelId = currentlevels[j]._id;
+                    const currentLessons = lessons.find(
+                        (lesson) => lesson.levelId === currentLevelId,
+                    )?.lessons;
+                    const lessonsIds = currentLessons?.map((item) => item._id);
+                    const isLevelLocked = lessonsIds?.every((item) =>
+                        lockedLessons.includes(item),
+                    );
+
+                    const isLevelFinished = lessonsIds?.every(
+                        (item) => !lockedLessons.includes(item),
+                    );
+
+                    isLevelLocked && !lockedLevels.includes(currentLevelId)
+                        ? setLockedLevels((pervLessons) => [
+                              ...pervLessons,
+                              currentLevelId,
+                          ])
+                        : null;
+
+                    isLevelFinished
+                        ? setFinisedLevels((pervLessons) => [
+                              ...pervLessons,
+                              currentLevelId,
+                          ])
+                        : null;
+                }
+            }
+        }
+    }, [lockedLessons]);
+
+    useEffect(() => {
+        console.log("lockedLevels", lockedLevels);
+    }, [lockedLevels]);
+
+    useEffect(() => {
+        console.log("finisedLevels", finisedLevels);
+    }, [finisedLevels]);
+
+    // useEffect(() => {
+    //     console.log("nextExerciseId", nextExerciseId);
+    // }, [nextExerciseId]);
+
+    // const getNextExerciseId = () => {
+    //     if (results && lessons) {
+    //         console.log("try", Object.values(lessons)[0]);
+
+    //         for (let i: number = 0; i < lessons.length; i++) {
+    //             const currentLevelId = lessons[i].levelId;
+    //             const currentlessonsInLevel = lessons[i].lessons;
+    //             for (let j: number = 0; j < currentlessonsInLevel.length; j++) {
+    //                 const currentLesson = currentlessonsInLevel[j];
+    //                 const lessonId = currentLesson._id;
+    //                 const numOfExercises = currentLesson.exercises.length;
+    //                 // console.log("lessonId", lessonId, numOfExercises);
+    //                 // console.log("results check", results);
+    //                 for (let r: number = 0; r < results.length; r++) {
+    //                     if (lessonId === results[r].lessonId) {
+    //                         if (numOfExercises > results[r].results.length) {
+    //                             setNextExerciseId(
+    //                                 currentLesson.exercises[
+    //                                     results[r].results.length
+    //                                 ],
+    //                             );
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // };
 
     return (
         <div className="h-full py-6 px-3 w-full flex flex-col justify-center items-center">
@@ -149,40 +278,70 @@ const UserUnitSection: React.FC = () => {
                                                                               (
                                                                                   level,
                                                                                   levelIndex,
-                                                                              ) => (
-                                                                                  <div
-                                                                                      key={
-                                                                                          levelIndex
-                                                                                      }
-                                                                                      className={`flex relative ${possitionByModularAddition(
-                                                                                          levelIndex,
-                                                                                      )} my-10 w-fit h-fit`}
-                                                                                  >
-                                                                                      {level.lessons &&
-                                                                                      level
-                                                                                          .lessons
-                                                                                          .length >
-                                                                                          0 ? (
-                                                                                          <>
-                                                                                              <Tooltip />
+                                                                              ) => {
+                                                                                  return (
+                                                                                      <section
+                                                                                          key={
+                                                                                              levelIndex
+                                                                                          }
+                                                                                      >
+                                                                                          {level &&
+                                                                                          level.lessons &&
+                                                                                          level
+                                                                                              .lessons
+                                                                                              ?.length >
+                                                                                              0 ? (
+                                                                                              lockedLevels.includes(
+                                                                                                  level._id,
+                                                                                              ) ? (
+                                                                                                  <div
+                                                                                                      key={
+                                                                                                          levelIndex
+                                                                                                      }
+                                                                                                      className={`flex relative ${possitionByModularAddition(
+                                                                                                          levelIndex,
+                                                                                                      )} mt-2 w-fit h-fit`}
+                                                                                                  >
+                                                                                                      <>
+                                                                                                          <LessonButton
+                                                                                                              status={
+                                                                                                                  Status.LOCKED
+                                                                                                              }
+                                                                                                          />
+                                                                                                      </>
+                                                                                                  </div>
+                                                                                              ) : (
+                                                                                                  <div
+                                                                                                      key={
+                                                                                                          levelIndex
+                                                                                                      }
+                                                                                                      className={`flex relative ${possitionByModularAddition(
+                                                                                                          levelIndex,
+                                                                                                      )} mt-10 w-fit h-fit`}
+                                                                                                  >
+                                                                                                      <>
+                                                                                                          <Tooltip />
 
-                                                                                              <LessonButton
-                                                                                                  status={
-                                                                                                      Status.PROGRESS
-                                                                                                  }
-                                                                                                  numberOfLessonsMade={
-                                                                                                      1
-                                                                                                  }
-                                                                                                  numberOfTotalLessons={
-                                                                                                      level
-                                                                                                          .lessons
-                                                                                                          .length
-                                                                                                  }
-                                                                                              />
-                                                                                          </>
-                                                                                      ) : null}
-                                                                                  </div>
-                                                                              ),
+                                                                                                          <LessonButton
+                                                                                                              status={
+                                                                                                                  Status.PROGRESS
+                                                                                                              }
+                                                                                                              numberOfLessonsMade={
+                                                                                                                  1
+                                                                                                              }
+                                                                                                              numberOfTotalLessons={
+                                                                                                                  level
+                                                                                                                      .lessons
+                                                                                                                      .length
+                                                                                                              }
+                                                                                                          />
+                                                                                                      </>
+                                                                                                  </div>
+                                                                                              )
+                                                                                          ) : null}
+                                                                                      </section>
+                                                                                  );
+                                                                              },
                                                                           )
                                                                         : null}
                                                                 </div>

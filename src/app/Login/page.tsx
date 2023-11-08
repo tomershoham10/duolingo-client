@@ -4,13 +4,9 @@ import { useRouter } from "next/navigation";
 
 import useStore from "../store/useStore";
 import { useUserStore } from "../store/stores/useUserStore";
-import { useAlertStore, AlertSizes } from "../store/stores/useAlertStore";
-
-import jwt from "jsonwebtoken";
 import Input, { Types } from "../components/Input/page";
 import Button, { Color } from "../components/Button/page";
-import { getCourseByType } from "../API/classes-service/courses/functions";
-import { TypesOfCourses } from "../store/stores/useCourseStore";
+import { handleAuth } from "../API/users-service/users/functions";
 
 enum TypesOfUser {
     LOGGEDOUT = "loggedOut",
@@ -27,32 +23,10 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState<string>("");
 
     const updateUserName = useUserStore.getState().updateUserName;
-    const updateAccessToken = useUserStore.getState().updateAccessToken;
-    const updateUserRole = useUserStore.getState().updateUserRole;
-    const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
 
     const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
     const userRole = useStore(useUserStore, (state) => state.userRole);
 
-    const addAlert = useAlertStore.getState().addAlert;
-
-    const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
-        // Map user roles to course types here
-        switch (userRole) {
-            case TypesOfUser.SEARIDER:
-                return TypesOfCourses.SEARIDER;
-            case TypesOfUser.SENIOR:
-                return TypesOfCourses.SENIOR;
-            case TypesOfUser.TEACHER:
-                return TypesOfCourses.UNDEFINED;
-            case TypesOfUser.CREW:
-                return TypesOfCourses.CREW;
-            default:
-                return TypesOfCourses.UNDEFINED;
-        }
-    };
-
-    console.log("login", isLoggedIn, userRole);
     useEffect(() => {
         if (isLoggedIn && userRole) {
             if (userRole === TypesOfUser.ADMIN) {
@@ -72,86 +46,6 @@ const Login: React.FC = () => {
 
     const handlePassword = (value: string) => {
         setPassword(value);
-    };
-
-    const handleAuth = async () => {
-        try {
-            const response = await fetch(
-                "http://localhost:4001/api/users/login/",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        userName: user,
-                        password: password,
-                    }),
-                },
-            );
-
-            if (response.status === 200) {
-                // console.log("response", response);
-                const tokenHeader = response.headers.get(
-                    "Authorization",
-                ) as string;
-                // console.log("tokenHeader", tokenHeader);
-                if (tokenHeader) {
-                    const token = tokenHeader.split(" ")[1];
-                    if (token) {
-                        const decodedToken = jwt.decode(
-                            token,
-                        ) as jwt.JwtPayload;
-                        const role = decodedToken.role as TypesOfUser;
-                        // console.log(token, jwt.decode(token));
-                        localStorage.setItem("jwtToken", token);
-                        if (updateUserRole) {
-                            updateUserRole(role);
-                        }
-                        if (updateIsLoggedIn) {
-                            updateIsLoggedIn(true);
-                        }
-                        if (updateAccessToken) {
-                            updateAccessToken(token);
-                        }
-
-                        if (role !== TypesOfUser.ADMIN) {
-                            await getCourseByType(
-                                mapUserRoleToCourseType(role),
-                            );
-                        }
-
-                        const userData = {
-                            userName: user,
-                            isLoggedIn: true,
-                            userPermission: role,
-                            accessToken: token,
-                        };
-
-                        localStorage.setItem(
-                            "userData",
-                            JSON.stringify(userData),
-                        );
-                        router.push("/", { scroll: false });
-                    } else {
-                        addAlert(
-                            "Authorization header not found in response.",
-                            AlertSizes.small,
-                        );
-                    }
-                }
-            } else if (response.status === 401) {
-                addAlert(
-                    "The username or password is incorrect.",
-                    AlertSizes.small,
-                );
-            } else {
-                addAlert("Unknown error occurred.", AlertSizes.small);
-            }
-        } catch (error) {
-            console.error("Authentication Error:", error);
-        }
     };
 
     return (
@@ -177,7 +71,7 @@ const Login: React.FC = () => {
                     <Button
                         label="LOG IN"
                         color={Color.blue}
-                        onClick={handleAuth}
+                        onClick={() => handleAuth(user, password)}
                         href={""}
                     />
                 </>

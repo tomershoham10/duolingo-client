@@ -74,6 +74,7 @@ export const getCourseByType = async (courseType: TypesOfCourses): Promise<Cours
                 "courseData",
                 JSON.stringify(course),
             );
+            console.log("getCourseByType", course);
             return course;
         } else {
             console.error("Failed to fetch courses.");

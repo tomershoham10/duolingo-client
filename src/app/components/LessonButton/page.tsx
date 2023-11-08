@@ -34,7 +34,11 @@ const LessonButton: React.FC<LessonButton> = ({
             ) : null}
 
             {status === Status.LOCKED && (
-                <button className="left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[57px] bg-duoGray-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-duoGray-dark text-2xl">
+                <button
+                    disabled
+                    className="left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[57px]
+                 bg-duoGray-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-duoGray-dark text-2xl"
+                >
                     <FontAwesomeIcon icon={faLock} className="text-md" />
                 </button>
             )}

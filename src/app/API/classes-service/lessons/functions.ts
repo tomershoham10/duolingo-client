@@ -18,6 +18,15 @@ export interface FSAType {
     dateCreated: Date;
 }
 
+export interface ResultType {
+    _id: string;
+    userId: string;
+    date: Date;
+    exerciseId: string;
+    answers: string[];
+    score: number;
+}
+
 export const getExercisesData = async (lessonId: string, setExercises?: Dispatch<SetStateAction<{
     lessonId: string;
     exercises: FSAType[];
@@ -54,13 +63,10 @@ export const getExercisesData = async (lessonId: string, setExercises?: Dispatch
 };
 
 
-export const getResultsData = async (lessonId: string, setResults?: Dispatch<SetStateAction<{
-    lessonId: string;
-    exercises: FSAType[];
-}[]>>) => {
+export const getResultsData = async (lessonId: string, userId: string) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/lessons/getResultsById/${lessonId}`,
+            `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -71,17 +77,17 @@ export const getResultsData = async (lessonId: string, setResults?: Dispatch<Set
         );
         if (response.ok) {
             const data = await response.json();
-            const resResults = data.exercises;
-            console.log("resResults", lessonId, resResults);
+            const resResults = data.results;
+            // console.log("resResults", `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`, resResults);
             // setExercises((pervArr) => [
             //     ...pervArr,
             //     { lessonId: lessonId, exercises: resExercises },
             // ]);
 
-            return resResults;
+            return resResults as ResultType[];
         } else {
             console.error("Failed to fetch results by id.");
-            return null;
+            return [];
         }
     } catch (error) {
         console.error("Error fetching lesson:", error);
