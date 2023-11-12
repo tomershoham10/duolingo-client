@@ -11,16 +11,18 @@ export enum Status {
     LOCKED = "locked",
 }
 
-interface LessonButton {
+interface LessonButtonProps {
     status: Status;
     numberOfTotalLessons?: number;
     numberOfLessonsMade?: number;
+    onClick?: () => void;
 }
 
-const LessonButton: React.FC<LessonButton> = ({
+const LessonButton: React.FC<LessonButtonProps> = ({
     status,
     numberOfTotalLessons,
     numberOfLessonsMade,
+    onClick,
 }) => {
     // console.log(
     //     "status",
@@ -56,7 +58,14 @@ const LessonButton: React.FC<LessonButton> = ({
                 </button>
             )}
             {status === Status.PROGRESS && (
-                <button className="left-0 top-0 lesson-button absolute justify-center items-center ml-[16px] mt-[17px] w-[70px] h-[57px] bg-duoGreen-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-white text-3xl">
+                <button
+                    onClick={() => {
+                        if (onClick) {
+                            onClick();
+                        }
+                    }}
+                    className="left-0 top-0 lesson-button absolute justify-center items-center ml-[16px] mt-[17px] w-[70px] h-[57px] bg-duoGreen-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-white text-3xl"
+                >
                     <FontAwesomeIcon icon={faStar} className="text-md" />
                 </button>
             )}

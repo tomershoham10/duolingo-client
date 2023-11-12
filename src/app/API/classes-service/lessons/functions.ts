@@ -63,7 +63,7 @@ export const getExercisesData = async (lessonId: string, setExercises?: Dispatch
 };
 
 
-export const getResultsData = async (lessonId: string, userId: string): Promise<{ numOfExercises: number, results: ResultType[] } | null | undefined> => {
+export const getResultsData = async (lessonId: string, userId: string): Promise<any> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`,
@@ -84,18 +84,13 @@ export const getResultsData = async (lessonId: string, userId: string): Promise<
             //     { lessonId: lessonId, exercises: resExercises },
             // ]);
 
-
-            const results = resResults.results as ResultType[]
-            if (results.length > 0) {
-                return { numOfExercises: resResults.numOfExercises, results: results } as { numOfExercises: number, results: ResultType[] };
-
-            }
+            return resResults as { numOfExercises: number, results: ResultType[] };
         } else {
             console.error("Failed to fetch results by id.");
-            return null;
+            return [];
         }
     } catch (error) {
         console.error("Error fetching lesson:", error);
-        return null;
+        return [];
     }
 };

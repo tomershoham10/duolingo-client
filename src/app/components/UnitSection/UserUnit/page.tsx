@@ -113,20 +113,7 @@ const UserUnitSection: React.FC = () => {
                     return { lessonId: lesson._id, results: resultsData };
                 });
                 const result = await Promise.all(promises);
-                const filteredResults = result.filter(
-                    (item) =>
-                        item.results !== null && item.results !== undefined,
-                );
-                const resultsToSet: ResultsState = filteredResults.map(
-                    (item) => ({
-                        lessonId: item.lessonId,
-                        results: item.results as {
-                            numOfExercises: number;
-                            results: ResultType[];
-                        },
-                    }),
-                );
-                setResults(resultsToSet);
+                setResults(result);
             }
         };
         if (lessons.length > 0 && userId !== undefined) {
