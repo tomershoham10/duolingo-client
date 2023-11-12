@@ -12,6 +12,7 @@ const CircleGenerator: React.FC<CircleGeneratorProps> = ({
     numberOfLessonsMade,
 }) => {
     const [svgFile, setSvgFile] = useState<string>("");
+    // console.log("numberOfLessonsMade = ", numberOfLessonsMade);
 
     useEffect(() => {
         if (numberOfLessonsMade === 0) {

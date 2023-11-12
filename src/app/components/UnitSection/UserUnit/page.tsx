@@ -28,7 +28,6 @@ import {
 library.add(faBook);
 
 const UserUnitSection: React.FC = () => {
-    const userRole = useStore(useUserStore, (state) => state.userRole);
     const userId = useStore(useUserStore, (state) => state.userId);
     const courseId = useStore(useCourseStore, (state) => state.courseId);
     const [units, setUnits] = useState<UnitType[]>([]);
@@ -38,10 +37,15 @@ const UserUnitSection: React.FC = () => {
     const [lessons, setLessons] = useState<
         { levelId: string; lessons: LessonType[] }[]
     >([]);
-    const [results, setResults] = useState<
-        { lessonId: string; results: ResultType[] }[]
-    >([]);
-    const [nextExerciseId, setNextExerciseId] = useState<string>();
+
+    type ResultsState = {
+        lessonId: string;
+        results: { numOfExercises: number; results: ResultType[] };
+    }[];
+
+    const [results, setResults] = useState<ResultsState>([]);
+
+    const [nextLessonId, setNextLessonId] = useState<string>();
     const [lockedLessons, setLockedLessons] = useState<string[]>([]);
     const [lockedLevels, setLockedLevels] = useState<string[]>([]);
     const [finisedLevels, setFinisedLevels] = useState<string[]>([]);
@@ -109,7 +113,20 @@ const UserUnitSection: React.FC = () => {
                     return { lessonId: lesson._id, results: resultsData };
                 });
                 const result = await Promise.all(promises);
-                setResults(result);
+                const filteredResults = result.filter(
+                    (item) =>
+                        item.results !== null && item.results !== undefined,
+                );
+                const resultsToSet: ResultsState = filteredResults.map(
+                    (item) => ({
+                        lessonId: item.lessonId,
+                        results: item.results as {
+                            numOfExercises: number;
+                            results: ResultType[];
+                        },
+                    }),
+                );
+                setResults(resultsToSet);
             }
         };
         if (lessons.length > 0 && userId !== undefined) {
@@ -117,9 +134,9 @@ const UserUnitSection: React.FC = () => {
         }
     }, [lessons, setResults]);
 
-    // useEffect(() => {
-    //     console.log("courseId", courseId);
-    // }, [courseId]);
+    useEffect(() => {
+        console.log("courseId", courseId);
+    }, [courseId]);
 
     useEffect(() => {
         console.log("units", units);
@@ -134,13 +151,31 @@ const UserUnitSection: React.FC = () => {
     }, [lessons]);
 
     useEffect(() => {
+        console.log("results", results);
+    }, [results]);
+
+    useEffect(() => {
         if (results) {
             for (let r: number = 0; r < results.length; r++) {
-                if (results[r].results.length === 0) {
-                    setLockedLessons((pervLessons) => [
-                        ...pervLessons,
-                        results[r].lessonId,
-                    ]);
+                const numOfResultsInCurrentLesson =
+                    results[r].results.results.length;
+                const numOfExercisesInCurrentLesson =
+                    results[r].results.numOfExercises;
+                // console.log(
+                // "check",
+                // results[r].lessonId,
+                // numOfExercisesInCurrentLesson,
+                // numOfResultsInCurrentLesson,
+                // );
+                if (
+                    numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson
+                ) {
+                    !lockedLessons.includes(results[r].lessonId)
+                        ? setLockedLessons((pervLessons) => [
+                              ...pervLessons,
+                              results[r].lessonId,
+                          ])
+                        : null;
                 }
             }
         }
@@ -164,7 +199,9 @@ const UserUnitSection: React.FC = () => {
                         (item) => !lockedLessons.includes(item),
                     );
 
-                    isLevelLocked && !lockedLevels.includes(currentLevelId)
+                    j > 0 &&
+                    isLevelLocked &&
+                    !lockedLevels.includes(currentLevelId)
                         ? setLockedLevels((pervLessons) => [
                               ...pervLessons,
                               currentLevelId,
@@ -182,6 +219,10 @@ const UserUnitSection: React.FC = () => {
         }
     }, [lockedLessons]);
 
+    // useEffect(() => {
+    //     console.log("lockedLessons", lockedLessons);
+    // }, [lockedLessons]);
+
     useEffect(() => {
         console.log("lockedLevels", lockedLevels);
     }, [lockedLevels]);
@@ -190,39 +231,9 @@ const UserUnitSection: React.FC = () => {
         console.log("finisedLevels", finisedLevels);
     }, [finisedLevels]);
 
-    // useEffect(() => {
-    //     console.log("nextExerciseId", nextExerciseId);
-    // }, [nextExerciseId]);
-
-    // const getNextExerciseId = () => {
-    //     if (results && lessons) {
-    //         console.log("try", Object.values(lessons)[0]);
-
-    //         for (let i: number = 0; i < lessons.length; i++) {
-    //             const currentLevelId = lessons[i].levelId;
-    //             const currentlessonsInLevel = lessons[i].lessons;
-    //             for (let j: number = 0; j < currentlessonsInLevel.length; j++) {
-    //                 const currentLesson = currentlessonsInLevel[j];
-    //                 const lessonId = currentLesson._id;
-    //                 const numOfExercises = currentLesson.exercises.length;
-    //                 // console.log("lessonId", lessonId, numOfExercises);
-    //                 // console.log("results check", results);
-    //                 for (let r: number = 0; r < results.length; r++) {
-    //                     if (lessonId === results[r].lessonId) {
-    //                         if (numOfExercises > results[r].results.length) {
-    //                             setNextExerciseId(
-    //                                 currentLesson.exercises[
-    //                                     results[r].results.length
-    //                                 ],
-    //                             );
-    //                             break;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // };
+    useEffect(() => {
+        console.log("nextLessonId", nextLessonId);
+    }, [nextLessonId]);
 
     return (
         <div className="h-full py-6 px-3 w-full flex flex-col justify-center items-center">
@@ -267,8 +278,10 @@ const UserUnitSection: React.FC = () => {
                                                             }
                                                             className="h-full"
                                                         >
-                                                            {levelsObject.unitId ===
-                                                            unit._id ? (
+                                                            {lockedLevels.length >
+                                                                0 &&
+                                                            levelsObject.unitId ===
+                                                                unit._id ? (
                                                                 <div className="flex flex-col items-center h-full my-6">
                                                                     {levelsObject
                                                                         .levels
@@ -279,6 +292,96 @@ const UserUnitSection: React.FC = () => {
                                                                                   level,
                                                                                   levelIndex,
                                                                               ) => {
+                                                                                  const currentLessonsIds =
+                                                                                      level.lessons;
+                                                                                  let numOfLessonsMade: number = 0;
+
+                                                                                  if (
+                                                                                      currentLessonsIds &&
+                                                                                      currentLessonsIds.length >
+                                                                                          0 &&
+                                                                                      !lockedLevels.includes(
+                                                                                          level._id,
+                                                                                      ) &&
+                                                                                      !finisedLevels.includes(
+                                                                                          level._id,
+                                                                                      )
+                                                                                  ) {
+                                                                                      for (
+                                                                                          let i: number = 0;
+                                                                                          i <
+                                                                                          currentLessonsIds.length;
+                                                                                          i++
+                                                                                      ) {
+                                                                                          let nextLesson: string;
+                                                                                          if (
+                                                                                              nextLessonId ===
+                                                                                              undefined
+                                                                                          ) {
+                                                                                              if (
+                                                                                                  level.lessons
+                                                                                              ) {
+                                                                                                  if (
+                                                                                                      lockedLessons.includes(
+                                                                                                          level
+                                                                                                              .lessons[0],
+                                                                                                      )
+                                                                                                  ) {
+                                                                                                      nextLesson =
+                                                                                                          level
+                                                                                                              .lessons[0];
+                                                                                                      setNextLessonId(
+                                                                                                          nextLesson,
+                                                                                                      );
+                                                                                                      break;
+                                                                                                  }
+                                                                                              }
+                                                                                              if (
+                                                                                                  !lockedLessons.includes(
+                                                                                                      currentLessonsIds[
+                                                                                                          i
+                                                                                                      ],
+                                                                                                  ) &&
+                                                                                                  level.lessons &&
+                                                                                                  i >
+                                                                                                      0
+                                                                                              ) {
+                                                                                                  //   console.log(
+                                                                                                  //       i,
+                                                                                                  //       "currentLesson",
+                                                                                                  //       currentLessonsIds[
+                                                                                                  //           i
+                                                                                                  //       ],
+                                                                                                  //   );
+
+                                                                                                  nextLesson =
+                                                                                                      currentLessonsIds[
+                                                                                                          i +
+                                                                                                              1
+                                                                                                      ];
+
+                                                                                                  //   console.log(
+                                                                                                  //       "next level",
+                                                                                                  //       nextLesson,
+                                                                                                  //   );
+
+                                                                                                  setNextLessonId(
+                                                                                                      nextLesson,
+                                                                                                  );
+                                                                                                  break;
+                                                                                              }
+                                                                                          }
+                                                                                      }
+                                                                                      if (
+                                                                                          nextLessonId &&
+                                                                                          level.lessons
+                                                                                      ) {
+                                                                                          numOfLessonsMade =
+                                                                                              level.lessons.indexOf(
+                                                                                                  nextLessonId,
+                                                                                              );
+                                                                                      }
+                                                                                  }
                                                                                   return (
                                                                                       <section
                                                                                           key={
@@ -310,7 +413,26 @@ const UserUnitSection: React.FC = () => {
                                                                                                           />
                                                                                                       </>
                                                                                                   </div>
-                                                                                              ) : (
+                                                                                              ) : finisedLevels.includes(
+                                                                                                    level._id,
+                                                                                                ) ? (
+                                                                                                  <div
+                                                                                                      key={
+                                                                                                          levelIndex
+                                                                                                      }
+                                                                                                      className={`flex relative ${possitionByModularAddition(
+                                                                                                          levelIndex,
+                                                                                                      )} mt-2 w-fit h-fit`}
+                                                                                                  >
+                                                                                                      <LessonButton
+                                                                                                          status={
+                                                                                                              Status.DONE
+                                                                                                          }
+                                                                                                      />
+                                                                                                  </div>
+                                                                                              ) : currentLessonsIds &&
+                                                                                                nextLessonId !==
+                                                                                                    undefined ? (
                                                                                                   <div
                                                                                                       key={
                                                                                                           levelIndex
@@ -321,13 +443,12 @@ const UserUnitSection: React.FC = () => {
                                                                                                   >
                                                                                                       <>
                                                                                                           <Tooltip />
-
                                                                                                           <LessonButton
                                                                                                               status={
                                                                                                                   Status.PROGRESS
                                                                                                               }
                                                                                                               numberOfLessonsMade={
-                                                                                                                  1
+                                                                                                                  numOfLessonsMade
                                                                                                               }
                                                                                                               numberOfTotalLessons={
                                                                                                                   level
@@ -337,7 +458,7 @@ const UserUnitSection: React.FC = () => {
                                                                                                           />
                                                                                                       </>
                                                                                                   </div>
-                                                                                              )
+                                                                                              ) : null
                                                                                           ) : null}
                                                                                       </section>
                                                                                   );
@@ -345,7 +466,12 @@ const UserUnitSection: React.FC = () => {
                                                                           )
                                                                         : null}
                                                                 </div>
-                                                            ) : null}
+                                                            ) : (
+                                                                <p>
+                                                                    unit
+                                                                    finished
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     ),
                                                 )

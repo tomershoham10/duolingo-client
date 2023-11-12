@@ -22,15 +22,28 @@ const LessonButton: React.FC<LessonButton> = ({
     numberOfTotalLessons,
     numberOfLessonsMade,
 }) => {
+    // console.log(
+    //     "status",
+    //     status,
+    //     "numberOfTotalLessons",
+    //     numberOfTotalLessons,
+    //     "numberOfLessonsMade",
+    //     numberOfLessonsMade,
+    //     status === Status.PROGRESS &&
+    //         numberOfTotalLessons !== undefined &&
+    //         numberOfLessonsMade !== undefined,
+    // );
     return (
         <div className="relative h-[98px] w-[102px] z-10">
             {status === Status.PROGRESS &&
-            numberOfTotalLessons &&
-            numberOfLessonsMade ? (
-                <CircleGenerator
-                    numberOfTotalLessons={numberOfTotalLessons}
-                    numberOfLessonsMade={numberOfLessonsMade}
-                />
+            numberOfTotalLessons !== undefined &&
+            numberOfLessonsMade !== undefined ? (
+                <>
+                    <CircleGenerator
+                        numberOfTotalLessons={numberOfTotalLessons}
+                        numberOfLessonsMade={numberOfLessonsMade}
+                    />
+                </>
             ) : null}
 
             {status === Status.LOCKED && (
