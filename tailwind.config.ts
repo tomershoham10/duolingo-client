@@ -27,6 +27,7 @@ const config: Config = {
                     buttonDisabled: '#58CC02',
 
                     lightest: '#CDF0B4',
+                    light: '#79D635',
                     default: '#58CC02',
 
                     dark: '#4AAB02',

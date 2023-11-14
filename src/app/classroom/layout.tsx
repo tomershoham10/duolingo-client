@@ -7,14 +7,16 @@ import Alert from "../components/Alert/page";
 import InfoBar from "../components/InfoBar/page";
 import useStore from "../store/useStore";
 import { useUserStore, TypesOfUser } from "../store/stores/useUserStore";
+import { useRouter } from "next/navigation";
 
 export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const router = useRouter();
     const userRole = useStore(useUserStore, (state) => state.userRole);
-
+    console.log(userRole);
     return (
         <div className="flex flex-row w-full h-screen">
             {userRole === TypesOfUser.ADMIN ? (
@@ -32,7 +34,13 @@ export default function RootLayout({
                     </div>
                 </>
             ) : (
-                <>{userRole ? <h1>PERMISSION DENIED!</h1> : null}</>
+                <>
+                    {userRole === TypesOfUser.LOGGEDOUT ? (
+                        router.push("/login")
+                    ) : (
+                        <h1>PERMISSION DENIED!</h1>
+                    )}
+                </>
             )}
         </div>
     );

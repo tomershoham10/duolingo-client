@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         if (!isLoggedIn) {
-            router.push("/Login");
+            router.push("/login");
         }
         if (userRole === TypesOfUser.ADMIN) {
             router.push("/classroom");

@@ -130,7 +130,7 @@ const StudentSideBar: React.FC = () => {
                     onClick={() => {
                         console.log("log in clicked.");
                     }}
-                    href={"/Login"}
+                    href={"/login"}
                 />
             )}
         </div>

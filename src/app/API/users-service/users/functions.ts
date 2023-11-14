@@ -1,4 +1,4 @@
-import { useUserStore,TypesOfUser } from "@/app/store/stores/useUserStore";
+import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 
 
@@ -7,6 +7,7 @@ import { getCourseByType } from "../../classes-service/courses/functions";
 import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
 const updateUserRole = useUserStore.getState().updateUserRole;
 const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
+const updateNextLessonId = useUserStore.getState().updateNextLessonId;
 
 const updateAccessToken = useUserStore.getState().updateAccessToken;
 
@@ -50,18 +51,20 @@ export const handleAuth = async (userName: string, password: string) => {
             const tokenHeader = response.headers.get(
                 "Authorization",
             ) as string;
-            console.log("tokenHeader", tokenHeader);
+            // console.log("tokenHeader", tokenHeader);
             if (tokenHeader) {
                 const token = tokenHeader.split(" ")[1];
                 if (token) {
                     const decodedToken = jwt.decode(
                         token,
                     ) as jwt.JwtPayload;
+                    console.log("api decodedToken",decodedToken);
                     const role = decodedToken.role as TypesOfUser;
                     const userId = decodedToken.userId as string;
+                    const nextLessonId = decodedToken.nextLessonId as string;
 
-                    console.log("role", role);
-                    console.log("userId", userId);
+                    // console.log("role", role);
+                    console.log("api nextLessonId", nextLessonId);
 
                     localStorage.setItem("jwtToken", token);
                     if (updateUserRole) {
@@ -70,11 +73,15 @@ export const handleAuth = async (userName: string, password: string) => {
                     if (updateIsLoggedIn) {
                         updateIsLoggedIn(true);
                     }
+                    if (updateNextLessonId) {
+                        updateNextLessonId(nextLessonId);
+                    }
                     if (updateAccessToken) {
                         updateAccessToken(token);
                     }
 
                     if (role !== TypesOfUser.ADMIN) {
+                        console.log('getting course data to local storage');
                         await getCourseByType(
                             mapUserRoleToCourseType(role),
                         );
@@ -85,6 +92,7 @@ export const handleAuth = async (userName: string, password: string) => {
                         userId: userId,
                         isLoggedIn: true,
                         userPermission: role,
+                        nextLessonId: nextLessonId,
                         accessToken: token,
                     };
 

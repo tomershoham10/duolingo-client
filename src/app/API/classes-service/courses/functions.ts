@@ -58,6 +58,7 @@ export const getCourses = async () => {
 
 export const getCourseByType = async (courseType: TypesOfCourses): Promise<CoursesType | null> => {
     try {
+        console.log("courses api - courseType", courseType);
         const response = await fetch(`http://localhost:8080/api/courses/getByType/${courseType}`, {
             method: "GET",
             credentials: "include",
@@ -65,16 +66,19 @@ export const getCourseByType = async (courseType: TypesOfCourses): Promise<Cours
                 "Content-Type": "application/json",
             },
         });
+        console.log("courses api - response", response);
 
         if (response.ok) {
             const data = await response.json();
             const course = data.course as CoursesType;
-            // console.log("getCourseByType", course)
+            // console.log("api getCourseByType", course);
+            console.log("courses api - course", data, course);
+
             localStorage.setItem(
                 "courseData",
                 JSON.stringify(course),
             );
-            console.log("getCourseByType", course);
+            // console.log("getCourseByType", course);
             return course;
         } else {
             console.error("Failed to fetch courses.");
@@ -86,9 +90,9 @@ export const getCourseByType = async (courseType: TypesOfCourses): Promise<Cours
     }
 };
 
-
-export const getUnitsData = async (courseId: string, setUnits: Dispatch<SetStateAction<UnitType[]>>) => {
+export const getUnitsData = async (courseId: string) => {
     try {
+        // console.log("getUnitsData", courseId);
         const response = await fetch(
             `http://localhost:8080/api/courses/getUnitsById/${courseId}`,
             {
@@ -102,14 +106,14 @@ export const getUnitsData = async (courseId: string, setUnits: Dispatch<SetState
         if (response.ok) {
             const data = await response.json();
             const resUnits = data.units;
-            // console.log(resUnits);
-            setUnits(resUnits);
+            // console.log("resUnits", resUnits);
+            return resUnits
         } else {
             console.error("Failed to fetch course by id.");
-            return [];
+            return null;
         }
     } catch (error) {
         console.error("Error fetching courses:", error);
-        return [];
+        return null;
     }
 };

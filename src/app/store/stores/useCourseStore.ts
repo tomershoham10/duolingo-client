@@ -37,7 +37,7 @@ if (typeof window !== 'undefined' && localStorage) {
     const userData = localStorage.getItem("courseData");
     if (userData) {
         const parsedData = JSON.parse(userData);
-        // console.log("useCourseStore parsedData", parsedData)
+        console.log("useCourseStore parsedData", parsedData)
         useCourseStore.getState().updateCourseId(parsedData._id);
         useCourseStore.getState().updateCourseType(parsedData.type);
     }

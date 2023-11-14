@@ -13,10 +13,7 @@ export interface LessonType {
     type: TypesOfLessons;
 }
 
-export const getLessonsData = async (levelId: string, setLessons?: Dispatch<SetStateAction<{
-    levelId: string;
-    lessons: LessonType[];
-}[]>>) => {
+export const getLessonsData = async (levelId: string) => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/levels/getLessonsById/${levelId}`,
@@ -31,7 +28,7 @@ export const getLessonsData = async (levelId: string, setLessons?: Dispatch<SetS
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
-            // console.log("resLessons", resLessons);
+            console.log("leves api - resLessons", resLessons);
             // setLessons((pervArr) => [
             //     ...pervArr,
             //     { levelId: levelId, lessons: resLessons },

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,15 +16,19 @@ import useStore from "@/app/store/useStore";
 import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
 import { usePopupStore } from "@/app/store/stores/usePopupStore";
-import { getCourses } from "@/app/API/classes-service/courses/functions";
+import {
+    CoursesType,
+    getCourses,
+} from "@/app/API/classes-service/courses/functions";
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
 const AdminSideBar: React.FC = () => {
+    const pathname = usePathname();
+
     const userRole = useStore(useUserStore, (state) => state.userRole);
     const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
 
-    const courseType = useStore(useCourseStore, (state) => state.courseType);
     const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
     const updateCoursesList = useCourseStore.getState().updateCoursesList;
@@ -80,8 +85,9 @@ const AdminSideBar: React.FC = () => {
                                         <li
                                             key={index}
                                             className={
-                                                courseType?.toLocaleLowerCase() ===
-                                                item.courseType.toLocaleLowerCase()
+                                                pathname.includes(
+                                                    item.courseType.toLocaleLowerCase(),
+                                                )
                                                     ? "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoBlue-light bg-duoBlue-lightest w-full text-center"
                                                     : "pl-3 pr-3 pt-3 pb-3 cursor-pointer text-lg text-duoGray-darkest hover:text-duoBlue-light hover:bg-duoBlue-lightest w-full text-center"
                                             }

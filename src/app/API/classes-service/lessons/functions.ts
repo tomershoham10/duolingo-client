@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 export enum DifficultyLevel {
     Easy = "Easy",
     Medium = "Medium",
@@ -27,10 +25,7 @@ export interface ResultType {
     score: number;
 }
 
-export const getExercisesData = async (lessonId: string, setExercises?: Dispatch<SetStateAction<{
-    lessonId: string;
-    exercises: FSAType[];
-}[]>>) => {
+export const getExercisesData = async (lessonId: string) => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
@@ -45,16 +40,10 @@ export const getExercisesData = async (lessonId: string, setExercises?: Dispatch
         if (response.ok) {
             const data = await response.json();
             const resExercises = data.exercises;
-            // console.log("resExercises", lessonId, resExercises);
-            // setExercises((pervArr) => [
-            //     ...pervArr,
-            //     { lessonId: lessonId, exercises: resExercises },
-            // ]);
-
             return resExercises;
         } else {
             console.error("Failed to fetch exercises by id.");
-            return null;
+            return response;
         }
     } catch (error) {
         console.error("Error fetching lesson:", error);

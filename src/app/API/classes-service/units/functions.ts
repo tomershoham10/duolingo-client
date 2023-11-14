@@ -5,10 +5,7 @@ export interface LevelType {
     lessons?: string[];
 }
 
-export const getLevelsData = async (unitId: string, setLevels?: Dispatch<SetStateAction<{
-    unitId: string;
-    levels: LevelType[];
-}[]>>) => {
+export const getLevelsData = async (unitId: string) => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/units/getLevelsById/${unitId}`,
@@ -23,6 +20,7 @@ export const getLevelsData = async (unitId: string, setLevels?: Dispatch<SetStat
         if (response.ok) {
             const data = await response.json();
             const resLevels = data.levels;
+            // console.log("api units - getlevels res", data, resLevels);
 
             // setLevels((pervArr) => [
             //     ...pervArr,

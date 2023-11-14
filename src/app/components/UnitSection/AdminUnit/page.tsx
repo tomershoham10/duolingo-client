@@ -1,10 +1,27 @@
 import { useEffect, useState } from "react";
 import useStore from "@/app/store/useStore";
-import { useCourseStore } from "@/app/store/stores/useCourseStore";
-import { UnitType, getUnitsData } from "@/app/API/classes-service/courses/functions";
-import { LevelType, getLevelsData } from "@/app/API/classes-service/units/functions";
-import { LessonType, getLessonsData } from "@/app/API/classes-service/levels/functions";
-import { FSAType, getExercisesData } from "@/app/API/classes-service/lessons/functions";
+import {
+    TypesOfCourses,
+    useCourseStore,
+} from "@/app/store/stores/useCourseStore";
+import {
+    CoursesType,
+    UnitType,
+    getCourseByType,
+    getUnitsData,
+} from "@/app/API/classes-service/courses/functions";
+import {
+    LevelType,
+    getLevelsData,
+} from "@/app/API/classes-service/units/functions";
+import {
+    LessonType,
+    getLessonsData,
+} from "@/app/API/classes-service/levels/functions";
+import {
+    FSAType,
+    getExercisesData,
+} from "@/app/API/classes-service/lessons/functions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -20,12 +37,15 @@ import {
     fieldToEditType,
     useEditSyllabusStore,
 } from "@/app/store/stores/useEditSyllabus";
+import { usePathname } from "next/navigation";
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
-
 const AdminUnit: React.FC = () => {
-    const courseId = useStore(useCourseStore, (state) => state.courseId);
+    const pathname = usePathname();
+
+    const [course, setCourse] = useState<CoursesType | undefined>();
+
     const updateFieldToEdit = useEditSyllabusStore.getState().updateFieldToEdit;
     const updateFieldId = useEditSyllabusStore.getState().updateFieldId;
 
@@ -41,13 +61,43 @@ const AdminUnit: React.FC = () => {
     >([]);
 
     useEffect(() => {
+        let courseType: TypesOfCourses = TypesOfCourses.UNDEFINED;
+        if (pathname.includes("searider")) {
+            courseType = TypesOfCourses.SEARIDER;
+        } else if (pathname.includes("senior")) {
+            courseType = TypesOfCourses.SENIOR;
+        }
         const fetchData = async () => {
-            if (courseId) {
-                await getUnitsData(courseId, setUnits);
+            const response = await getCourseByType(courseType);
+            if (response) {
+                setCourse(response);
             }
         };
         fetchData();
-    }, [courseId]);
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (course?._id) {
+                const response = await getUnitsData(course?._id);
+                if (response) {
+                    // console.log("getUnitsData", response);
+                    setUnits(response);
+                }
+            }
+        };
+        fetchData();
+    }, [course]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (course) {
+                const response = await getUnitsData(course._id);
+                setUnits(response);
+            }
+        };
+        fetchData();
+    }, [course]);
 
     useEffect(() => {
         const fetchLevels = async () => {
@@ -66,19 +116,15 @@ const AdminUnit: React.FC = () => {
 
     useEffect(() => {
         const fetchLessons = async () => {
-            const allLevels: { levelId: string; lessons: LessonType[] }[] =
-                [];
-            levels.forEach((unit) => {
-                unit.levels?.forEach((level) => {
+            const allLevels: { levelId: string; lessons: LessonType[] }[] = [];
+            levels.forEach((levelObject) => {
+                levelObject.levels.forEach((level) => {
                     allLevels.push({ levelId: level._id, lessons: [] });
                 });
             });
-
             const promises = allLevels.map(async (level) => {
                 const lessonsData = await getLessonsData(level.levelId);
-                console.log("lessonsData", lessonsData);
                 level.lessons = lessonsData;
-                console.log(level);
                 return level;
             });
 
@@ -146,16 +192,16 @@ const AdminUnit: React.FC = () => {
     );
 
     return (
-        <div className="w-full" >
-            <div className="w-fit mx-10 h-full text-black">
+        <div className="w-full flex">
+            <div className="w-full mx-24 h-full text-black">
                 {units &&
                     units.length > 0 &&
                     units.map((unit, unitIndex) => (
-                        <div key={unitIndex} className="py-[2rem]">
-                            <div className="flex flex-col">
-                                <div className="grid grid-rows-2 grid-col-3 grid-flow-col flex-none h-[6.5rem] sm:h-fit bg-duoGreen-default w-full rounded-t-lg text-white pl-4 py-3 justify-between items-center">
+                        <div key={unitIndex} className="py-[2rem] flex-none">
+                            <div className="flex-col">
+                                <div className="grid grid-rows-2 grid-col-3 grid-flow-col h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] sm:h-fit bg-duoGreen-default w-full rounded-t-lg text-white pl-4 py-3 justify-between items-center">
                                     <button
-                                        className="col-span-1 flex justify-start items-center font-extrabold text-xl cursor-pointer"
+                                        className="col-span-1 flex-none justify-start items-center font-extrabold text-xl cursor-pointer"
                                         onClick={() => {
                                             updateFieldToEdit(
                                                 fieldToEditType.UNIT,
@@ -167,10 +213,10 @@ const AdminUnit: React.FC = () => {
                                             Unit {unitIndex + 1}
                                         </label>
                                     </button>
-                                    <label className="col-span-2 flex-none font-semibold justify-center items-center w-[90%]">
+                                    <label className="col-span-2 font-semibold justify-center items-center w-[90%]">
                                         {unit.description}
                                     </label>
-                                    <div className="row-span-2 flex justify-end items-start">
+                                    <div className="row-span-2 flex justify-end items-start mr-5">
                                         {unit.guidebook ? (
                                             <button className="flex flex-row justify-start items-center w-40 text-sm font-bold border-b-[4px] border-[2.5px] border-duoGreen-darker bg-duoGreen-button p-3 rounded-2xl hover:border-duoGreen-dark hover:bg-duoGreen-default hover:text-duoGreen-textHover active:border-[2.5px] cursor-pointer">
                                                 <FontAwesomeIcon
@@ -184,7 +230,7 @@ const AdminUnit: React.FC = () => {
                                                 </Link>
                                             </button>
                                         ) : (
-                                            <div>
+                                            <div className="">
                                                 <Button
                                                     label={"CREATE GUIDEBOOK"}
                                                     color={Color.white}
@@ -192,9 +238,9 @@ const AdminUnit: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <button className="flex-none top-0 right-0 mx-3 h-fit">
+                                    {/* <button className="top-0 right-0 mx-3 h-fit">
                                         <FontAwesomeIcon icon={faPenToSquare} />
-                                    </button>
+                                    </button> */}
                                 </div>
                                 <div className="flex flex-col">
                                     {levels && levels.length > 0
@@ -203,9 +249,7 @@ const AdminUnit: React.FC = () => {
                                                   levelsObject,
                                                   levelsObjectIndex,
                                               ) => (
-                                                  <div
-                                                      key={levelsObjectIndex}
-                                                  >
+                                                  <div key={levelsObjectIndex} className="flex-none">
                                                       {levelsObject.unitId ===
                                                       unit._id ? (
                                                           <div className="flex flex-col">
