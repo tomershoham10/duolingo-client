@@ -9,7 +9,8 @@ interface DropdownProps {
     value: string;
     onChange: (value: string) => void;
     className?: string;
-    failed?: boolean;
+    isFailed?: boolean;
+    isDisabled?: boolean;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -18,7 +19,8 @@ const Dropdown: React.FC<DropdownProps> = ({
     value,
     onChange,
     className,
-    failed,
+    isFailed,
+    isDisabled,
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [selectedValue, setSelectedValue] = useState<string | undefined>(
@@ -52,7 +54,9 @@ const Dropdown: React.FC<DropdownProps> = ({
         <div ref={dropdownRef} className={`relative ${className} w-full`}>
             <button
                 className={
-                    failed
+                    isDisabled
+                        ? "flex justify-between items-center p-3 bg-duoGray-light border-2 border-duoGray-default w-full rounded-xl cursor-default text-duoGray-dark uppercase font-bold"
+                        : isFailed
                         ? "flex justify-between items-center p-3 bg-duoGray-lighter border-2 border-duoRed-light w-full rounded-xl cursor-pointer text-duoGray-darkest uppercase font-bold"
                         : "flex justify-between items-center p-3 bg-duoGray-lighter border-2 border-duoGray-default w-full rounded-xl cursor-pointer text-duoGray-darkest uppercase font-bold"
                 }
@@ -61,7 +65,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 <span>{selectedValue || placeholder}</span>
                 <FontAwesomeIcon icon={faChevronDown} />
             </button>
-            {isOpen && (
+            {isOpen && !isDisabled && (
                 <div
                     className="absolute flex flex-col justify-center items-start mt-2 w-full bg-duoGray-lighter border-2 border-duoGray-default
                     rounded-xl text-duoGray-dark uppercase font-bold"

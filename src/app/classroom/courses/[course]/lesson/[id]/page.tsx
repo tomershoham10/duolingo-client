@@ -1,5 +1,5 @@
 "use client";
-import { getExercisesData } from "@/app/API/classes-service/lessons/functions";
+import { FSAType, getExercisesData } from "@/app/API/classes-service/lessons/functions";
 import ProgressBar from "@/app/components/ProgressBar/page";
 import { useEffect, useState } from "react";
 
@@ -7,18 +7,6 @@ enum DifficultyLevel {
     Easy = "Easy",
     Medium = "Medium",
     Hard = "Hard",
-}
-
-interface FSAType {
-    _id: string;
-    filesKeys: string[];
-    difficultyLevel: DifficultyLevel;
-    options: string[];
-    answers: string[]; //my be 2 correct answers
-    firstTimeBuffer: number; //in minutes
-    secondTimeBuffer: number; //in minutes
-    description: string;
-    dateCreated: Date;
 }
 
 export default function Page({ params }: { params: { id: string } }) {

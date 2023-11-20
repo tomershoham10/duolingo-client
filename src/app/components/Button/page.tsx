@@ -9,6 +9,7 @@ export enum Color {
     green = "Green",
     gray = "Gray",
     white = "White",
+    purple = "Purple",
 }
 
 interface ButtonProps {
@@ -60,6 +61,12 @@ const Button: React.FC<ButtonProps> = ({
             buttonBorderColor = "bg-duoGreen-lightest";
             buttonHoverColor = "hover:text-duoGreen-buttonHover";
             textColor = "text-duoGreen-default";
+            break;
+        case "Purple":
+            buttonColor = "bg-duoPurple-default";
+            buttonBorderColor = "bg-duoPurple-darker";
+            buttonHoverColor = "hover:bg-duoPurple-light";
+            textColor = "text-white";
             break;
     }
     if (!style) {

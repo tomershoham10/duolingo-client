@@ -221,7 +221,7 @@ const CreateNewUser: React.FC = () => {
                                 placeholder="role"
                                 value={role}
                                 onChange={handleRole}
-                                failed={
+                                isFailed={
                                     failedFeilds.includes("role") ? true : false
                                 }
                             />

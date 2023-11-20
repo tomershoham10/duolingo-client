@@ -13,6 +13,7 @@ const config: Config = {
             'lg': '1024px',
             'xl': '1280px',
             '2xl': '1920px',
+            '3xl': '2560px',
         },
         extend: {
             backgroundImage: {
@@ -40,11 +41,12 @@ const config: Config = {
                     button: '#27B6F5',
                     buttonBorder: '#1A87BC',
                     buttonHover: '#1FC2FF',
-
                     lightest: '#DDF4FF',
                     lighter: '#7DD3FC',
                     light: '#1CB0F6',
                     default: '#20A6EC',
+                    dark: '#84D8FF',
+                    text: '#1899D6'
                 },
 
                 'duoGray': {
@@ -58,6 +60,7 @@ const config: Config = {
                     lighter: '#F7F7F7',
                     light: '#EBEAEB',
                     default: '#E5E5E5',
+                    regular: '#DCDCDC',
                     dark: '#AFAFAF',
                     darker: '#8B8B8B',
                     darkest: '#4B4B4B'
@@ -66,6 +69,13 @@ const config: Config = {
                 'duoRed': {
                     light: '#FFB2B2',
                     default: '#EA2B2B'
+                },
+
+                'duoPurple': {
+                    lighter: '#ECD7FB',
+                    light: '#D296FF',
+                    default: '#C87FFB',
+                    darker: '#9C6AE5'
                 }
             },
         },

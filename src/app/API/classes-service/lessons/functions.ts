@@ -8,8 +8,8 @@ export interface FSAType {
     _id: string;
     filesKeys: string[];
     difficultyLevel: DifficultyLevel;
-    options: string[];
-    answers: string[]; //my be 2 correct answers
+    relevant: string[];
+    answers: string[]; //may be 2 correct answers
     firstTimeBuffer: number; //in minutes
     secondTimeBuffer: number; //in minutes
     description: string;

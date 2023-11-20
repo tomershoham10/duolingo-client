@@ -72,8 +72,8 @@ const UserUnitSection: React.FC = () => {
                 const levelsData = await getLevelsData(unit._id);
                 return { unitId: unit._id, levels: levelsData };
             });
-            const result = await Promise.all(promises);
-            setLevels(result);
+            const response = await Promise.all(promises);
+            setLevels(response);
         };
         if (units.length > 0) {
             fetchLevels();
@@ -95,8 +95,8 @@ const UserUnitSection: React.FC = () => {
                 return level;
             });
 
-            const result = await Promise.all(promises);
-            setLessons(result);
+            const response = await Promise.all(promises);
+            setLessons(response);
         };
 
         if (levels.length > 0) {
@@ -148,18 +148,29 @@ const UserUnitSection: React.FC = () => {
     }, [results]);
 
     useEffect(() => {
-        if (results) {
+        if (results && results.length > 0) {
             for (let r: number = 0; r < results.length; r++) {
-                const numOfResultsInCurrentLesson =
+                let numOfResultsInCurrentLesson =
                     results[r].results.results.length;
+
                 const numOfExercisesInCurrentLesson =
                     results[r].results.numOfExercises;
-                // console.log(
-                // "check",
-                // results[r].lessonId,
-                // numOfExercisesInCurrentLesson,
-                // numOfResultsInCurrentLesson,
-                // );
+
+                for (
+                    let t: number = 0;
+                    t < results[r].results.results.length;
+                    t++
+                ) {
+                    const res = results[r].results.results[t];
+
+                    // res.score = -1 means that the user started the exercise but hasnt finished it yet
+                    // means he still needs to complete the lesson even though he started it
+
+                    if (res.score === -1) {
+                        numOfResultsInCurrentLesson =
+                            numOfResultsInCurrentLesson - 1;
+                    }
+                }
                 if (
                     numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson
                 ) {
@@ -234,7 +245,7 @@ const UserUnitSection: React.FC = () => {
                 {units
                     ? units.length > 0
                         ? units.map((unit, unitIndex) => (
-                              <div key={unitIndex} className="basis-full ">
+                              <div key={unitIndex} className="basis-full">
                                   <section
                                       key={unitIndex}
                                       className="absolute h-full"

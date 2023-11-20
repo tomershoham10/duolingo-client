@@ -414,13 +414,11 @@ const AdminUnit: React.FC = () => {
                                                                                                                                                                                         </div>
                                                                                                                                                                                         <div className="flex flex-col">
                                                                                                                                                                                             <span className="font-bold">
-                                                                                                                                                                                                options
-                                                                                                                                                                                                and
-                                                                                                                                                                                                answers
+                                                                                                                                                                                                relevant
                                                                                                                                                                                             </span>
                                                                                                                                                                                             <span>
                                                                                                                                                                                                 {
-                                                                                                                                                                                                    exercise.options
+                                                                                                                                                                                                    exercise.relevant
                                                                                                                                                                                                 }
                                                                                                                                                                                             </span>
                                                                                                                                                                                         </div>
