@@ -5,7 +5,7 @@ import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { useUserStore } from "@/app/store/stores/useUserStore";
 import { useStore } from "zustand";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     UnitType,
     getUnitsData,
@@ -25,7 +25,7 @@ import {
     ResultType,
     getResultsData,
 } from "@/app/API/classes-service/lessons/functions";
-import { usePopupStore } from "@/app/store/stores/usePopupStore";
+import { PopupsTypes, usePopupStore } from "@/app/store/stores/usePopupStore";
 import StartLessonPopup from "@/app/popups/StartLessonPopup/page";
 library.add(faBook);
 
@@ -33,6 +33,10 @@ const UserUnitSection: React.FC = () => {
     const userId = useStore(useUserStore, (state) => state.userId);
     const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
     const courseId = useStore(useCourseStore, (state) => state.courseId);
+    const selectedPopup = useStore(
+        usePopupStore,
+        (state) => state.selectedPopup,
+    );
 
     const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
@@ -54,6 +58,11 @@ const UserUnitSection: React.FC = () => {
     const [lockedLessons, setLockedLessons] = useState<string[]>([]);
     const [lockedLevels, setLockedLevels] = useState<string[]>([]);
     const [finisedLevels, setFinisedLevels] = useState<string[]>([]);
+    const [isNextLessonPopupVisible, setIsNextLessonPopupVisible] =
+        useState<boolean>(false);
+
+    const startLessonRef = useRef<HTMLDivElement>(null);
+    const levelButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -239,6 +248,35 @@ const UserUnitSection: React.FC = () => {
         console.log("nextLessonId", nextLessonId);
     }, [nextLessonId]);
 
+    const handleOutsideClick = (event: MouseEvent) => {
+        if (
+            startLessonRef.current &&
+            !startLessonRef.current.contains(event.target as Node) &&
+            levelButtonRef.current &&
+            !levelButtonRef.current.contains(event.target as Node)
+        ) {
+            // console.log("handleOutsideClick");
+            setIsNextLessonPopupVisible(false);
+            updateSelectedPopup(PopupsTypes.CLOSED);
+        }
+    };
+
+    useEffect(() => {
+        // console.log("isNextLessonPopupVisible", isNextLessonPopupVisible);
+        if (isNextLessonPopupVisible) {
+            document.addEventListener("mousedown", handleOutsideClick);
+            updateSelectedPopup(PopupsTypes.STARTLESSON);
+        } else {
+            // console.log("check1");
+            document.removeEventListener("mousedown", handleOutsideClick);
+            updateSelectedPopup(PopupsTypes.CLOSED);
+        }
+        return () => {
+            // console.log("check2");
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [isNextLessonPopupVisible]);
+
     return (
         <div className="h-full py-6 px-3 w-full flex flex-col justify-center items-center">
             <div className="flex flex-wrap relative h-full w-[40rem] m-auto">
@@ -390,7 +428,10 @@ const UserUnitSection: React.FC = () => {
                                                                                                       )} mt-10 w-fit h-fit`}
                                                                                                   >
                                                                                                       <>
-                                                                                                          <Tooltip />
+                                                                                                          {selectedPopup ===
+                                                                                                          PopupsTypes.STARTLESSON ? null : (
+                                                                                                              <Tooltip />
+                                                                                                          )}
                                                                                                           <LessonButton
                                                                                                               status={
                                                                                                                   Status.PROGRESS
@@ -404,9 +445,12 @@ const UserUnitSection: React.FC = () => {
                                                                                                                       .length
                                                                                                               }
                                                                                                               onClick={() =>
-                                                                                                                  updateSelectedPopup(
-                                                                                                                      "START LESSON",
+                                                                                                                  setIsNextLessonPopupVisible(
+                                                                                                                      !isNextLessonPopupVisible,
                                                                                                                   )
+                                                                                                              }
+                                                                                                              buttonRef={
+                                                                                                                  levelButtonRef
                                                                                                               }
                                                                                                           />
                                                                                                           <StartLessonPopup
@@ -421,6 +465,9 @@ const UserUnitSection: React.FC = () => {
                                                                                                               }
                                                                                                               nextLessonId={
                                                                                                                   nextLessonId
+                                                                                                              }
+                                                                                                              startLessonRef={
+                                                                                                                  startLessonRef
                                                                                                               }
                                                                                                           />
                                                                                                       </>

@@ -15,7 +15,7 @@ import Link from "next/link";
 import useStore from "@/app/store/useStore";
 import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
 import { useCourseStore } from "@/app/store/stores/useCourseStore";
-import { usePopupStore } from "@/app/store/stores/usePopupStore";
+import { PopupsTypes, usePopupStore } from "@/app/store/stores/usePopupStore";
 import {
     CoursesType,
     getCourses,
@@ -53,16 +53,16 @@ const AdminSideBar: React.FC = () => {
     }, [updateCoursesList, userRole]);
 
     const sidebarItems: {
-        label: string;
+        label: PopupsTypes;
         icon: any;
         href?: string;
     }[] = [
-        { label: "DASHBOARD", icon: faHome, href: "/Dashboard" },
+        { label: PopupsTypes.CLOSED, icon: faHome, href: "/Dashboard" },
         {
-            label: "NEW USER",
+            label: PopupsTypes.CLOSED,
             icon: faSquarePlus,
         },
-        { label: "SETTINGS", icon: faCog },
+        { label: PopupsTypes.CLOSED, icon: faCog },
     ];
 
     return (

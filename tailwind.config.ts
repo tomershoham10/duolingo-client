@@ -46,6 +46,7 @@ const config: Config = {
                     light: '#1CB0F6',
                     default: '#20A6EC',
                     dark: '#84D8FF',
+                    darkest: '#001F3F',
                     text: '#1899D6'
                 },
 

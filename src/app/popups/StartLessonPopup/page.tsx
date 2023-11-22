@@ -1,27 +1,23 @@
 "use client";
-import { useState } from "react";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import useStore from "@/app/store/useStore";
-import { usePopupStore } from "@/app/store/stores/usePopupStore";
+import { PopupsTypes, usePopupStore } from "@/app/store/stores/usePopupStore";
 import Button, { Color } from "@/app/components/Button/page";
 import { useRouter } from "next/navigation";
-
-library.add(faXmark);
+import { LegacyRef } from "react";
 
 interface StartLessonPopup {
     numberOfLessonsMade: number | undefined;
     numberOfTotalLessons: number | undefined;
     nextLessonId: string | undefined;
+    startLessonRef: LegacyRef<HTMLDivElement>;
 }
 
 const StartLessonPopup: React.FC<StartLessonPopup> = ({
     numberOfLessonsMade,
     numberOfTotalLessons,
     nextLessonId,
+    startLessonRef,
 }) => {
     const router = useRouter();
 
@@ -44,8 +40,12 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
         }
     };
     return (
-        <div className="absolute z-20 left-1/2" id="start-lesson">
-            {selectedPopup === "START LESSON" ? (
+        <div
+            className="absolute z-20 left-1/2"
+            ref={startLessonRef}
+            id="start-lesson"
+        >
+            {selectedPopup === PopupsTypes.STARTLESSON ? (
                 <div className="relative">
                     {numberOfLessonsMade &&
                     numberOfTotalLessons &&

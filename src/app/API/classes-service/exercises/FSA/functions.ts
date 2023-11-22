@@ -1,33 +1,3 @@
-export enum TypesOfTargets {
-    VESSEL = "vessel",
-    SONAR = "sonar",
-    TORPEDO = "torpedo"
-}
-
-enum TypesOfVessels {
-    FRIGATE = "frigate",
-    SUBMARINE = "submarine",
-    COASTPATROL = "coastPatrol",
-    CARGO = "cargo",
-    TUGBOAT = "tugboat",
-}
-
-enum TypesOfTorpedos {
-    ELECTRIC = "electric"
-}
-
-enum TypesOfSonars {
-    REGULAR = "regular"
-}
-
-export interface TargetType {
-    id: string;
-    name: string;
-    countryId: string;
-    type: TypesOfTargets;
-    subType: TypesOfVessels | TypesOfTorpedos | TypesOfSonars;
-}
-
 export const getRelevantByFSAId = async (currentExerciseId: string) => {
     try {
         // console.log(`http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`);

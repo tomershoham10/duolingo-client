@@ -13,7 +13,6 @@ import { useEffect, useMemo, useState } from "react";
 import useStore from "../store/useStore";
 import { useUserStore } from "../store/stores/useUserStore";
 import {
-    TargetType,
     getAnswersByExerciseId,
     getResultByUserAndFSAId,
     getRelevantByFSAId,
@@ -21,10 +20,13 @@ import {
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { TbClockHour12 } from "react-icons/tb";
 import {
+    getResultsByLessonAndUser,
     startExercise,
     submitExercise,
 } from "../API/classes-service/results/functions";
-import Dropdown from "../components/Dropdown/page";
+import Dropdown, { DropdownSizes } from "../components/Dropdown/page";
+import { TargetType, useTargetStore } from "../store/stores/useTargetStore";
+import { getTargetsList } from "../API/classes-service/targets/functions";
 
 library.add(faClock);
 
@@ -32,12 +34,15 @@ export default function Page() {
     const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
     const userId = useStore(useUserStore, (state) => state.userId);
 
+    const targetsList = useStore(useTargetStore, (state) => state.targets);
+
     const [exercisesData, setExercisesData] = useState<FSAType[]>([]);
+    const [lessonResults, setLessonResults] = useState<ResultType[]>();
     const [exercisesIds, setExercisesIds] = useState<string[]>([]);
     const [currentExercise, setCurrentExercise] = useState<FSAType>();
     const [relevant, setRelevant] = useState<TargetType[]>([]);
     const [currentAnswers, setCurrentAnswers] = useState<TargetType[]>([]);
-    const [resultData, setResultData] = useState<ResultType>();
+    const [currentResult, setCurrentResult] = useState<ResultType>();
 
     const [isExerciseStarted, setIsExerciseStarted] = useState<boolean>(false);
 
@@ -49,6 +54,16 @@ export default function Page() {
     const [selectedTarget, setSelectedTarget] = useState<number>();
 
     useEffect(() => {
+        const fetchTargets = async () => {
+            await getTargetsList();
+        };
+        const targetData = localStorage.getItem("targetsList");
+        if (!targetData) {
+            fetchTargets();
+        }
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             if (nextLessonId) {
                 const response = await getExercisesData(nextLessonId);
@@ -58,8 +73,22 @@ export default function Page() {
                 setExercisesData(response);
             }
         };
+
+        const fetchResultsList = async () => {
+            if (nextLessonId && userId) {
+                const response = await getResultsByLessonAndUser(
+                    nextLessonId,
+                    userId,
+                );
+                if (response) {
+                    setLessonResults(response);
+                }
+            }
+        };
+
         fetchData();
-    }, [nextLessonId]);
+        fetchResultsList();
+    }, [nextLessonId, userId]);
 
     useEffect(() => {
         exercisesData.map((exercise) =>
@@ -69,14 +98,21 @@ export default function Page() {
         );
     }, [exercisesData]);
 
-    // useEffect(() => {
-    //     const fecthData = async () => {
-    //         if (exercisesIds.length > 0) {
-    //             const response = await getAllExistedResults(nextLessonId);
-    //         }
-    //     };
-    //     fecthData();
-    // }, [exercisesIds]);
+    useEffect(() => {
+        if (lessonResults && exercisesData && exercisesData.length > 0) {
+            if (lessonResults.length === 0) {
+                setCurrentExercise(exercisesData[0]);
+            } else {
+                if (lessonResults[lessonResults.length - 1].score === -1) {
+                    setCurrentExercise(exercisesData[lessonResults.length - 1]);
+                    setCurrentResult(lessonResults[lessonResults.length - 1]);
+                } else {
+                    setCurrentExercise(exercisesData[lessonResults.length]);
+                    setCurrentResult(undefined);
+                }
+            }
+        }
+    }, [exercisesData, lessonResults]);
 
     useEffect(() => {
         const fetchRelevantData = async () => {
@@ -96,35 +132,43 @@ export default function Page() {
             }
         };
 
-        const fetchResultData = async () => {
-            if (currentExercise && userId) {
-                const currentExerciseId = currentExercise._id;
-                const response = await getResultByUserAndFSAId(
-                    currentExerciseId,
-                    userId,
-                );
-                if (response !== 404) setResultData(response);
-            }
-        };
+        // const fetchResultData = async () => {
+        //     if (currentExercise && userId) {
+        //         const currentExerciseId = currentExercise._id;
+        //         const response = await getResultByUserAndFSAId(
+        //             currentExerciseId,
+        //             userId,
+        //         );
+        //         if (response !== 404) setCurrentResult(response);
+        //     }
+        // };
 
         fetchRelevantData();
         fetchAnswersData();
-        fetchResultData();
+        // fetchResultData();
     }, [currentExercise, userId, isExerciseStarted]);
 
     useEffect(() => {
-        if (resultData && currentExercise) {
-            if (resultData.exerciseId === currentExercise._id) {
-                if (resultData.date && resultData.score === -1) {
+        if (currentResult && currentExercise) {
+            if (currentResult.exerciseId === currentExercise._id) {
+                if (currentResult.date && currentResult.score === -1) {
                     setIsExerciseStarted(true);
                 } else setIsExerciseStarted(false);
             } else setIsExerciseStarted(false);
         } else setIsExerciseStarted(false);
-    }, [resultData, currentExercise]);
+    }, [currentResult, currentExercise]);
 
     useEffect(() => {
-        console.log("currentExercise", currentExercise);
-    }, [currentExercise]);
+        console.log("nextLessonId", nextLessonId);
+    }, [nextLessonId]);
+
+    useEffect(() => {
+        console.log("exercisesData", exercisesData);
+    }, [exercisesData]);
+
+    useEffect(() => {
+        console.log("lessonResults", lessonResults);
+    }, [lessonResults]);
 
     useEffect(() => {
         console.log("exercisesIds", exercisesIds);
@@ -143,8 +187,8 @@ export default function Page() {
     }, [currentAnswers]);
 
     useEffect(() => {
-        console.log("resultData", resultData);
-    }, [resultData]);
+        console.log("currentResult", currentResult);
+    }, [currentResult]);
 
     useEffect(() => {
         console.log("isExerciseStarted", isExerciseStarted);
@@ -165,7 +209,7 @@ export default function Page() {
             currentExercise &&
             currentExercise.firstTimeBuffer &&
             currentExercise.secondTimeBuffer &&
-            resultData &&
+            currentResult &&
             isExerciseStarted
         ) {
             console.log("started");
@@ -173,7 +217,7 @@ export default function Page() {
                 currentExercise.firstTimeBuffer +
                 currentExercise.secondTimeBuffer;
 
-            const startDate = resultData.date;
+            const startDate = currentResult.date;
             const timerInterval = setInterval(() => {
                 setTimeRemaining(() => {
                     const newTimeRemaining = calculateTimeRemaining(
@@ -192,14 +236,18 @@ export default function Page() {
 
             return () => clearInterval(timerInterval);
         }
-    }, [currentExercise, resultData, isExerciseStarted]);
+    }, [currentExercise, currentResult, isExerciseStarted]);
 
     useEffect(() => {
         console.log("timeRemaining", timeRemaining);
     }, [timeRemaining]);
 
-    const startCurrentExercise = async (exerciseId: string, userId: string) => {
-        const response = await startExercise(exerciseId, userId);
+    const startCurrentExercise = async (
+        nextLessonId: string,
+        exerciseId: string,
+        userId: string,
+    ) => {
+        const response = await startExercise(nextLessonId, exerciseId, userId);
         if (response) {
             console.log("clicked");
             setIsExerciseStarted(true);
@@ -210,8 +258,8 @@ export default function Page() {
         exerciseId: string,
         userId: string,
     ) => {
-        if (resultData) {
-            const resultId = resultData._id;
+        if (currentResult) {
+            const resultId = currentResult._id;
             const response = await submitExercise(resultId, exerciseId, userId);
             if (response) {
             }
@@ -267,7 +315,7 @@ export default function Page() {
                             <div className="relative w-[80%] h-full outline-none">
                                 <div className="absolute h-full w-full font-semibold text-xl text-duoGray-darkest">
                                     <div className="grid grid-rows-[min-content] justify-center items-start text-center w-[80%] mx-auto 3xl:h-fit">
-                                        <div className="w-full 3xl:h-[30rem] text-left">
+                                        <div className="w-full text-left">
                                             {currentExercise.description}
                                         </div>
                                         <span className="flex items-end mt-10 font-extrabold text-2xl tracking-wider">
@@ -331,14 +379,33 @@ export default function Page() {
                                         <span className="flex items-end mt-10 font-extrabold text-2xl tracking-wider">
                                             Select target:
                                         </span>
-                                        <Dropdown
-                                            placeholder={"target"}
-                                            items={["saar5", "saar6"]}
-                                            value={""}
-                                            onChange={() => console.log("")}
-                                            isDisabled={!isExerciseStarted}
-                                            className={"w-[18rem] mt-5"}
-                                        />
+                                        {targetsList ? (
+                                            <Dropdown
+                                                placeholder={"target"}
+                                                items={targetsList.map(
+                                                    (target) => target.name,
+                                                )}
+                                                value={""}
+                                                onChange={() => console.log("")}
+                                                isDisabled={!isExerciseStarted}
+                                                size={DropdownSizes.SMALL}
+                                                className={
+                                                    "w-[16rem] mt-5 z-10"
+                                                }
+                                            />
+                                        ) : (
+                                            <Dropdown
+                                                placeholder={"target"}
+                                                items={[""]}
+                                                value={""}
+                                                onChange={() => console.log("")}
+                                                isDisabled={!isExerciseStarted}
+                                                size={DropdownSizes.SMALL}
+                                                className={
+                                                    "w-[16rem] mt-5 z-10"
+                                                }
+                                            />
+                                        )}
                                         {/* </div> */}
                                         {/* </div> */}
                                     </div>
@@ -346,12 +413,12 @@ export default function Page() {
                             </div>
                             <div className="h-full w-[20%] flex flex-col justify-start items-center text-center">
                                 <div className="w-[80%] border-2 rounded-2xl py-6 px-4 text-duoGray-darker flex flex-col">
-                                    <span className="font-extrabold text-2xl 3xl:mb-12 xl:mb-6">
+                                    <span className="font-extrabold  md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6  3xl:text-4xl">
                                         Unit 1 - Level 1
-                                        <br />
+                                        <br className="3xl:text-4xl" />
                                         Lesson 1
                                     </span>
-                                    <div className="font-bold flex flex-row items-center justify-center text-3xl">
+                                    <div className="font-bold flex flex-row items-center justify-center text-3xl 3xl:text-4xl">
                                         <TbClockHour12
                                             className={
                                                 timeRemaining.minutes === 0 &&
@@ -376,14 +443,14 @@ export default function Page() {
                                 </div>
                             </div>
                         </div>
-                        <div className="relative flex items-center justify-center mb-5">
+                        <div className="relative flex items-center justify-center mb-5 3xl:mb-10">
                             <div className="absolute bottom-0 active:-translate-y-1">
                                 {isExerciseStarted ? (
                                     <Button
                                         label={"SUBMIT"}
                                         color={Color.purple}
                                         style={
-                                            "w-[15rem] 3xl:w-[30rem] text-2xl tracking-widest"
+                                            "w-[15rem] 3xl:w-[20rem] text-2xl tracking-widest"
                                         }
                                         onClick={() => {
                                             submitCurrentExercise(
@@ -401,6 +468,7 @@ export default function Page() {
                                         }
                                         onClick={() => {
                                             startCurrentExercise(
+                                                nextLessonId,
                                                 currentExercise._id,
                                                 userId,
                                             );

@@ -10,7 +10,10 @@ const Dashboard: React.FC = () => {
     );
 
     return (
-        <div className="w-full flex flex-col justify-start items-center">
+        <div
+            className="w-full flex flex-col justify-start items-center"
+            // bg-gradient-to-b from-duoBlue-lightest to-duoBlue-darkest overflow-auto
+        >
             <UserUnitSection />
         </div>
     );

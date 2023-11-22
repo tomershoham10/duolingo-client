@@ -3,6 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
+export enum DropdownSizes {
+    SMALL = "small",
+    DEFAULT = "default",
+    LARGE = "large",
+}
+
 interface DropdownProps {
     placeholder: string;
     items: string[];
@@ -11,6 +17,7 @@ interface DropdownProps {
     className?: string;
     isFailed?: boolean;
     isDisabled?: boolean;
+    size: DropdownSizes;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -21,8 +28,10 @@ const Dropdown: React.FC<DropdownProps> = ({
     className,
     isFailed,
     isDisabled,
+    size,
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [maxHight, setMaxHight] = useState<string>();
     const [selectedValue, setSelectedValue] = useState<string | undefined>(
         value,
     );
@@ -50,8 +59,22 @@ const Dropdown: React.FC<DropdownProps> = ({
         };
     }, []);
 
+    useEffect(() => {
+        const setHigh = () => {
+            switch (size) {
+                case DropdownSizes.SMALL:
+                    return "xl:h-32 3xl:h-52";
+                case DropdownSizes.DEFAULT:
+                    return "";
+                case DropdownSizes.LARGE:
+                    return "xl:h-64 3xl:h-96";
+            }
+        };
+        setMaxHight(setHigh);
+    }, [size]);
+
     return (
-        <div ref={dropdownRef} className={`relative ${className} w-full`}>
+        <div ref={dropdownRef} className={`relative ${className} z-10`}>
             <button
                 className={
                     isDisabled
@@ -67,8 +90,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             </button>
             {isOpen && !isDisabled && (
                 <div
-                    className="absolute flex flex-col justify-center items-start mt-2 w-full bg-duoGray-lighter border-2 border-duoGray-default
-                    rounded-xl text-duoGray-dark uppercase font-bold"
+                    className={`absolute flex flex-col justify-start items-start ${maxHight} mt-2 w-full bg-duoGray-lighter border-2 border-duoGray-default rounded-xl text-duoGray-dark uppercase font-bold overflow-auto`}
                 >
                     {items.map((item, index) => (
                         <div

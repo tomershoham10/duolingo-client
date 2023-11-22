@@ -11,7 +11,7 @@ const updateNextLessonId = useUserStore.getState().updateNextLessonId;
 
 const updateAccessToken = useUserStore.getState().updateAccessToken;
 
-const addAlert = useAlertStore.getState().addAlert;
+const addAlert = useAlertStore.getState().addAlert; 
 
 const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
     // Map user roles to course types here
@@ -47,7 +47,7 @@ export const handleAuth = async (userName: string, password: string) => {
         );
 
         if (response.status === 200) {
-            console.log("response", response);
+            // console.log("response", response);
             const tokenHeader = response.headers.get(
                 "Authorization",
             ) as string;
@@ -58,13 +58,13 @@ export const handleAuth = async (userName: string, password: string) => {
                     const decodedToken = jwt.decode(
                         token,
                     ) as jwt.JwtPayload;
-                    console.log("api decodedToken",decodedToken);
+                    // console.log("api decodedToken",decodedToken);
                     const role = decodedToken.role as TypesOfUser;
                     const userId = decodedToken.userId as string;
                     const nextLessonId = decodedToken.nextLessonId as string;
 
                     // console.log("role", role);
-                    console.log("api nextLessonId", nextLessonId);
+                    // console.log("api nextLessonId", nextLessonId);
 
                     localStorage.setItem("jwtToken", token);
                     if (updateUserRole) {
@@ -81,7 +81,7 @@ export const handleAuth = async (userName: string, password: string) => {
                     }
 
                     if (role !== TypesOfUser.ADMIN) {
-                        console.log('getting course data to local storage');
+                        // console.log('getting course data to local storage');
                         await getCourseByType(
                             mapUserRoleToCourseType(role),
                         );
@@ -96,7 +96,7 @@ export const handleAuth = async (userName: string, password: string) => {
                         accessToken: token,
                     };
 
-                    console.log("userData", userData);
+                    // console.log("userData", userData);
 
                     localStorage.setItem(
                         "userData",

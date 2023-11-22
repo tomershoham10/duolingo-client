@@ -9,9 +9,9 @@ import { AlertSizes, useAlertStore } from "@/app/store/stores/useAlertStore";
 
 import Input, { Types } from "@/app/components/Input/page";
 import Button, { Color } from "@/app/components/Button/page";
-import Dropdown from "@/app/components/Dropdown/page";
+import Dropdown, { DropdownSizes } from "@/app/components/Dropdown/page";
 import useStore from "@/app/store/useStore";
-import { usePopupStore } from "@/app/store/stores/usePopupStore";
+import { PopupsTypes, usePopupStore } from "@/app/store/stores/usePopupStore";
 
 library.add(faXmark);
 
@@ -126,16 +126,16 @@ const CreateNewUser: React.FC = () => {
     return (
         <div
             className={
-                selectedPopup === "NEW USER"
+                selectedPopup === PopupsTypes.NEWUSER
                     ? "z-20 fixed flex justify-center items-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] w-full h-full transition ease-out duration-200"
                     : "opacity-0 z-0 transition ease-in duration-200"
             }
         >
-            {selectedPopup === "NEW USER" ? (
+            {selectedPopup === PopupsTypes.NEWUSER ? (
                 <div className="flex bg-white w-[40rem] h-[30rem] rounded-md m-5 p-5">
                     <button
                         onClick={() => {
-                            updateSelectedPopup("");
+                            updateSelectedPopup(PopupsTypes.CLOSED);
                         }}
                         className="flex-none h-fit w-fit rounded-md text-duoGray-dark"
                     >
@@ -224,6 +224,7 @@ const CreateNewUser: React.FC = () => {
                                 isFailed={
                                     failedFeilds.includes("role") ? true : false
                                 }
+                                size={DropdownSizes.DEFAULT}
                             />
                         </div>
 

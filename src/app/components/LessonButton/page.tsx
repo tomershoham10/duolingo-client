@@ -1,3 +1,5 @@
+"use client";
+import { LegacyRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faLock, faStar, faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +18,7 @@ interface LessonButtonProps {
     numberOfTotalLessons?: number;
     numberOfLessonsMade?: number;
     onClick?: () => void;
+    buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 const LessonButton: React.FC<LessonButtonProps> = ({
@@ -23,6 +26,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({
     numberOfTotalLessons,
     numberOfLessonsMade,
     onClick,
+    buttonRef,
 }) => {
     // console.log(
     //     "status",
@@ -59,6 +63,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({
             )}
             {status === Status.PROGRESS && (
                 <button
+                    ref={buttonRef}
                     onClick={() => {
                         if (onClick) {
                             onClick();

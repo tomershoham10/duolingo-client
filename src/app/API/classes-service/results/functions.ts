@@ -6,7 +6,37 @@ export interface ResultType {
     answers: string[];
     score: number;
 }
-export const startExercise = async (exerciseId: string, userId: string): Promise<ResultType | null> => {
+export const getResultsByLessonAndUser = async (lessonId: string, userId: string): Promise<ResultType[] | null> => {
+    try {
+        // console.log(`http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`);
+        const response = await fetch(
+            `http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            // console.log("ResultsByLessonAndUser data", data);
+            const results = data.results as ResultType[];
+            if (results) {
+                return results
+            } else return null
+        } else {
+            console.error("Failed to fetch Results By LessonAndUser.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching ResultsByLessonAndUser:", error);
+        return null;
+    }
+};
+
+export const startExercise = async (lessonId: string, exerciseId: string, userId: string): Promise<ResultType | null> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/results/`,
@@ -18,6 +48,7 @@ export const startExercise = async (exerciseId: string, userId: string): Promise
                 },
                 body: JSON.stringify({
                     userId: userId,
+                    lessonId: lessonId,
                     exerciseId: exerciseId,
                     answers: [],
                     score: -1
