@@ -12,7 +12,7 @@ export enum DropdownSizes {
 interface DropdownProps {
     placeholder: string;
     items: string[];
-    value: string;
+    value: string | null;
     onChange: (value: string) => void;
     className?: string;
     isFailed?: boolean;
@@ -32,10 +32,12 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [maxHight, setMaxHight] = useState<string>();
-    const [selectedValue, setSelectedValue] = useState<string | undefined>(
-        value,
-    );
+    const [selectedValue, setSelectedValue] = useState<string | null>(value);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        setSelectedValue(value);
+    }, [value]);
 
     const handleItemClick = (item: string) => {
         setSelectedValue(item);
@@ -63,7 +65,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         const setHigh = () => {
             switch (size) {
                 case DropdownSizes.SMALL:
-                    return "xl:h-32 3xl:h-52";
+                    return "xl:max-h-32 3xl:max-h-52";
                 case DropdownSizes.DEFAULT:
                     return "";
                 case DropdownSizes.LARGE:

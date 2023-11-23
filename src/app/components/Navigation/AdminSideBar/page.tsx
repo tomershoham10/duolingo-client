@@ -53,16 +53,23 @@ const AdminSideBar: React.FC = () => {
     }, [updateCoursesList, userRole]);
 
     const sidebarItems: {
+        name: string;
         label: PopupsTypes;
         icon: any;
         href?: string;
     }[] = [
-        { label: PopupsTypes.CLOSED, icon: faHome, href: "/Dashboard" },
         {
+            name: "dashboard",
+            label: PopupsTypes.CLOSED,
+            icon: faHome,
+            href: "/Dashboard",
+        },
+        {
+            name: "new user",
             label: PopupsTypes.CLOSED,
             icon: faSquarePlus,
         },
-        { label: PopupsTypes.CLOSED, icon: faCog },
+        { name: "settings", label: PopupsTypes.CLOSED, icon: faCog },
     ];
 
     return (
@@ -134,7 +141,7 @@ const AdminSideBar: React.FC = () => {
                                             {item.label}
                                         </Link>
                                     ) : (
-                                        <span>{item.label}</span>
+                                        <span>{item.name}</span>
                                     )}
                                 </button>
                             </li>
