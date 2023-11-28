@@ -34,7 +34,9 @@ const config: Config = {
 
                     dark: '#4AAB02',
                     darker: '#459F00',
-
+                    text: '#7EC137',
+                    midText: '#61B800',
+                    darkText: '#58A700',
                     textHover: '#DEF5CC',
                 },
 
@@ -54,6 +56,8 @@ const config: Config = {
                 'duoGray': {
                     //button === default
                     buttonBorder: '#44403c',
+                    buttonBorderHover: '#CECECE',
+
                     buttonHover: '#8A837D',
 
                     //in dropdown for example
@@ -65,14 +69,15 @@ const config: Config = {
                     regular: '#DCDCDC',
                     dark: '#AFAFAF',
                     darker: '#8B8B8B',
-                    darkest: '#4B4B4B'
+                    darkest: '#4B4B4B',
+                    darkText: '#9D9D9D'
                 },
 
                 'duoRed': {
                     buttonBorder: '#CC0000',
                     buttonHover: '#FF5252',
                     button: '#FF4040',
-                    
+
                     lighter: '#FFDFE0',
                     light: '#FFB2B2',
                     default: '#EA2B2B'

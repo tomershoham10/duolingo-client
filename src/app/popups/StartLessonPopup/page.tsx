@@ -19,6 +19,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
     nextLessonId,
     startLessonRef,
 }) => {
+    console.log();
     const router = useRouter();
 
     const selectedPopup = useStore(
@@ -33,6 +34,10 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
             ? setIsOpen(true)
             : setIsOpen(false);
     }, [selectedPopup]);
+    console.log(
+        "start lesson popup",
+        numberOfLessonsMade && numberOfTotalLessons && nextLessonId,
+    );
 
     return (
         <div
@@ -64,10 +69,25 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
                             </div>
                         </div>
                     ) : (
-                        <p>
-                            lesson {numberOfLessonsMade} of{" "}
-                            {numberOfTotalLessons}
-                        </p>
+                        <div className="inline-flex">
+                            <div className="absolute w-72 h-36 left-1/2 -translate-x-1/2 px-4 py-3 text-white font-extrabold tracking-wider bg-duoGreen-default rounded-2xl uppercase text-center">
+                                <div className="absolute pt-2 pl-1 font-black">
+                                    {`Lesson ${numberOfLessonsMade} of 
+                                    ${numberOfTotalLessons}`}
+                                </div>
+                                <Button
+                                    label={"START"}
+                                    color={Color.WHITE}
+                                    style={
+                                        "relative inset-x-0 top-16 w-[90%] mx-auto"
+                                    }
+                                    onClick={() => router.push("/lesson")}
+                                />
+                                <div className="absolute left-1/2 top-full transform -translate-x-1/2 -translate-y-[945%] rotate-45 bg-duoGreen-default h-4 w-4 origin-center text-transparent rounded-sm">
+                                    <div className="origin-center"></div>
+                                </div>
+                            </div>
+                        </div>
                     )
                 ) : null}
             </div>

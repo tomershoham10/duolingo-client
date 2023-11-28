@@ -120,19 +120,6 @@ const StudentSideBar: React.FC = () => {
                       ))
                     : null}
             </ul>
-            {isLoggedIn ? (
-                <></>
-            ) : (
-                <Button
-                    label="Loggin"
-                    icon={faRightToBracket}
-                    color={Color.BLUE}
-                    onClick={() => {
-                        console.log("log in clicked.");
-                    }}
-                    href={"/login"}
-                />
-            )}
         </div>
     );
 };

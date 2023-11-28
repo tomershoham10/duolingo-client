@@ -41,7 +41,7 @@
 
 .bounce-and-pop {
     animation:
-        bounce-tooltip 1s infinite,
+        bounce-tooltip 1.5s infinite,
         pop 0.5s ease;
 }
 
@@ -78,39 +78,16 @@
 ::-webkit-scrollbar-thumb {
     @apply rounded-md bg-duoGray-default;
 }
+
 @keyframes bounce-tooltip {
     0%,
     100% {
-        transform: translateY(-25%);
+        transform: translateY(-30%);
         animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
     }
     50% {
         transform: none;
         animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
-}
-
-@keyframes tooltip-pop {
-    0% {
-        transform: scale(0.1);
-    }
-    50% {
-        transform: scale(1.15);
-    }
-    100% {
-        transform: scale(1) translateY(-100%);
-    }
-}
-
-@keyframes slideDown {
-    0% {
-        -webkit-transform: translateY(-100%);
-    }
-    50% {
-        -webkit-transform: translateY(-50%);
-    }
-    100% {
-        -webkit-transform: translateY(0);
     }
 }
 

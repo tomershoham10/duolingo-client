@@ -9,13 +9,10 @@ import {
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { TbClockHour12 } from "react-icons/tb";
+import { FaCheck } from "react-icons/fa6";
 import { FaXmark } from "react-icons/fa6";
 import { FiFlag } from "react-icons/fi";
-
-// import { FaCircleXmark } from "react-icons/fa6";
 
 import Button, { Color } from "@/app/components/Button/page";
 import Alert from "@/app/components/Alert/page";
@@ -43,10 +40,8 @@ import {
 } from "../API/classes-service/results/functions";
 import { getTargetsList } from "../API/classes-service/targets/functions";
 import SortableItem from "../components/SortableItem/page";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { updateNextLessonIdForUser } from "../API/users-service/users/functions";
 
-library.add(faCircleXmark);
 export default function Page() {
     const router = useRouter();
 
@@ -64,7 +59,8 @@ export default function Page() {
     const [relevant, setRelevant] = useState<TargetType[]>([]);
     const [currentAnswers, setCurrentAnswers] = useState<TargetType[]>([]);
     const [currentResult, setCurrentResult] = useState<ResultType>();
-    const [score, setScore] = useState<number>(0);
+    const [grabbedTargetId, setGrabbedTargetId] = useState<string>();
+    const [totalScore, setTotalScore] = useState<number>(-1);
 
     const [isExerciseStarted, setIsExerciseStarted] = useState<boolean>(false);
     const [isExerciseFinished, setIsExerciseFinished] =
@@ -408,7 +404,6 @@ export default function Page() {
             addAlert("The target has already been selected.", AlertSizes.small);
         }
     };
-    const [grabbedTargetId, setGrabbedTargetId] = useState<string>();
 
     const handleDragMove = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -442,6 +437,9 @@ export default function Page() {
         exerciseId: string,
         userId: string,
     ) => {
+        let scoreByTargets: number = -1;
+        let scoreByTime: number = -1;
+        let totalScoreToSubmit: number = -1;
         if (targetsToSubmit.length === 0) {
             addAlert("Please select a target.", AlertSizes.small);
             return;
@@ -465,19 +463,58 @@ export default function Page() {
             const correctAnswers = targetsToSubmit.filter((target) =>
                 answersIds.includes(target.id),
             );
+            console.log("correctAnswers", correctAnswers);
             if (correctAnswers.length === 0) {
                 //all tragets was guessed wrong
-                setScore(0);
+                totalScoreToSubmit = 0;
             } else if (correctAnswers.length === answersIds.length) {
-                //all tragets was guessed right
-                //need to check the order of the answers (? - maybe the order doesn't matter)
-                // if the order was indeed matter + correct
+                scoreByTargets = 100;
             } else if (targetsToSubmit.length > answersIds.length) {
-                //was correct but guessed more targets that needed
-                //need to check the order of the answers
+                const firstAnswer: string = correctAnswers[0].id;
+                if (answersIds.indexOf(firstAnswer) === 0) {
+                    scoreByTargets = 90;
+                } else scoreByTargets = 80;
             } else if (correctAnswers.length < answersIds.length) {
-                //was correct but didnt guessed all targets in the exercise
-                //need to check the order of the answers
+                scoreByTargets = 85;
+            }
+            console.log(
+                "time",
+                currentExercise.firstTimeBuffer +
+                    currentExercise.secondTimeBuffer,
+                currentExercise.secondTimeBuffer,
+                timeRemaining.minutes,
+                timeRemaining.seconds,
+                timeRemaining.minutes + timeRemaining.seconds / 60,
+            );
+            if (
+                currentExercise.firstTimeBuffer +
+                    currentExercise.secondTimeBuffer >
+                    timeRemaining.minutes &&
+                timeRemaining.minutes + timeRemaining.seconds / 60 >=
+                    currentExercise.secondTimeBuffer
+            ) {
+                scoreByTime = 100;
+            } else if (
+                currentExercise.secondTimeBuffer > timeRemaining.minutes &&
+                timeRemaining.minutes + timeRemaining.seconds >= 0
+            ) {
+                scoreByTime = 75;
+            } else {
+                scoreByTime = 60;
+            }
+            totalScoreToSubmit !== 0
+                ? (totalScoreToSubmit =
+                      0.6 * scoreByTargets + 0.4 * scoreByTime)
+                : null;
+            console.log("totalScoreToSubmit", totalScoreToSubmit);
+            setTotalScore(totalScoreToSubmit);
+            if (
+                totalScoreToSubmit === -1 ||
+                scoreByTime === -1 ||
+                scoreByTargets === -1
+            ) {
+                addAlert("error", AlertSizes.small);
+                return;
             }
 
             const resultToSubmit = {
@@ -486,7 +523,7 @@ export default function Page() {
                 lessonId: nextLessonId,
                 exerciseId: currentExercise._id,
                 answers: answersIds,
-                score: score,
+                score: totalScoreToSubmit,
             };
 
             const response = await submitExercise(resultToSubmit);
@@ -580,7 +617,7 @@ export default function Page() {
                                                         >
                                                             <div className="relative flex items-center self-end">
                                                                 <div
-                                                                    className={`border-2 border-b-4 rounded-xl sm:min-w-[7rem] lg:min-w-[10rem] py-4 pl-[45px] pr-[30px] 
+                                                                    className={`group border-2 border-b-4 rounded-xl sm:min-w-[7rem] lg:min-w-[10rem] py-4 pl-[45px] pr-[30px] 
                                                                 border-border-duoGray-regular font-bold flex flex-row justify-center items-center
                                                                 text-lg  ${
                                                                     isExerciseStarted
@@ -595,7 +632,7 @@ export default function Page() {
                                                                    relevantTargetIndex ===
                                                                        selectedTargetIndex
                                                                        ? "bg-duoBlue-lightest border-duoBlue-dark text-duoBlue-text"
-                                                                       : "border-border-duoGray-regular hover:bg-duoGray-lighter text-duoGray-dark"
+                                                                       : "border-border-duoGray-regular hover:bg-duoGray-lighter hover:border-duoGray-buttonBorderHover text-duoGray-dark group-hover:text-duoGray-darkText"
                                                                }
                                                                 `}
                                                                     onClick={() => {
@@ -621,7 +658,7 @@ export default function Page() {
                                                                         relevantTargetIndex ===
                                                                             selectedTargetIndex
                                                                             ? "border-duoBlue-dark text-duoBlue-text"
-                                                                            : "text-duoGray-dark"
+                                                                            : "text-duoGray-dark group-hover:border-duoGray-buttonBorderHover group-hover:text-duoGray-darkText"
                                                                     }
                                                                     `}
                                                                     >
@@ -792,9 +829,9 @@ export default function Page() {
                         <div
                             className={
                                 isExerciseFinished
-                                    ? score === 100
+                                    ? totalScore === 100
                                         ? "relative flex items-center justify-center col-span-2 bg-duoGreen-lighter"
-                                        : score === 0
+                                        : totalScore === 0
                                         ? "relative flex items-center justify-center col-span-2 bg-duoRed-lighter"
                                         : "relative flex items-center justify-center col-span-2 bg-duoOrange-lighter"
                                     : "relative flex items-center justify-center border-t-2 col-span-2"
@@ -810,25 +847,28 @@ export default function Page() {
                                 }
                             >
                                 {isExerciseFinished ? (
-                                    score === 100 ? (
-                                        <>
-                                            <Button
-                                                label={"CONTINUE"}
-                                                color={Color.PURPLE}
-                                                style={
-                                                    "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
-                                                }
-                                                onClick={() => {
-                                                    console.log("continue 100");
-                                                }}
-                                            />
-                                        </>
-                                    ) : score === 0 ? (
-                                        <>
-                                            <div className="flex flex-row h-full">
+                                    <>
+                                        <div className="ablsolute h-full">
+                                            {totalScore === 100 ? (
+                                                <FaCheck className="pop-animation rounded-full text-duoGreen-darkText bg-white text-6xl p-3 mr-4" />
+                                            ) : (
                                                 <FaXmark className="pop-animation rounded-full bg-white fill-duoRed-buttonBorder text-7xl p-2 mr-4" />
-                                                <div className="abolute flex flex-col justify-between text-duoRed-default">
-                                                    <div>
+                                            )}
+                                            <div
+                                                className={`abolute flex flex-col justify-between ${
+                                                    totalScore === 100
+                                                        ? "text-duoGreen-darkText"
+                                                        : totalScore === 0
+                                                        ? "text-duoRed-default"
+                                                        : "text-duoOrange-FFA07A"
+                                                }`}
+                                            >
+                                                {totalScore === 100 ? (
+                                                    <span className="text-2xl font-extrabold">
+                                                        Currect!
+                                                    </span>
+                                                ) : (
+                                                    <div className="flex flex-row">
                                                         <span className="text-2xl font-extrabold">
                                                             Correct answers:
                                                         </span>
@@ -853,38 +893,30 @@ export default function Page() {
                                                                 )}
                                                             </ul>
                                                         </div>
-                                                        <button className="flex flex-row justify-start items-center">
-                                                            <FiFlag className="-scale-x-100 mr-2" />
-                                                            <span> report</span>
-                                                        </button>
                                                     </div>
-                                                </div>
+                                                )}
+
+                                                <button className="flex flex-row justify-start items-center uppercase text-duoGreen-text hover:text-duoGreen-midText font-extrabold">
+                                                    <FiFlag className="-scale-x-100 mr-2" />
+                                                    <span> report</span>
+                                                </button>
                                             </div>
-                                            <Button
-                                                label={"CONTINUE"}
-                                                color={Color.RED}
-                                                style={
-                                                    "w-[15rem] 3xl:w-[22rem] text-2xl tracking-widest"
-                                                }
-                                                onClick={continueLesson}
-                                            />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Button
-                                                label={"CONTINUE"}
-                                                color={Color.ORANGE}
-                                                style={
-                                                    "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
-                                                }
-                                                onClick={() => {
-                                                    console.log(
-                                                        "continue 0<score<100",
-                                                    );
-                                                }}
-                                            />
-                                        </>
-                                    )
+                                        </div>{" "}
+                                        <Button
+                                            label={"CONTINUE"}
+                                            color={
+                                                totalScore === 100
+                                                    ? Color.GREEN
+                                                    : totalScore === 0
+                                                    ? Color.RED
+                                                    : Color.ORANGE
+                                            }
+                                            style={
+                                                "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
+                                            }
+                                            onClick={continueLesson}
+                                        />
+                                    </>
                                 ) : isExerciseStarted ? (
                                     <>
                                         <Button

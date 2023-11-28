@@ -55,9 +55,12 @@ const UserUnitSection: React.FC = () => {
 
     const [results, setResults] = useState<ResultsState>([]);
 
+    const [currentLevelId, setCurrentLevelId] = useState<string>();
+    const [currentUnitId, setCurrentUnitId] = useState<string>();
+
     const [lockedLessons, setLockedLessons] = useState<string[]>([]);
-    const [lockedLevels, setLockedLevels] = useState<string[]>([]);
-    const [finisedLevels, setFinisedLevels] = useState<string[]>([]);
+    const [lockedLevelsIds, setLockedLevelsIds] = useState<string[]>([]);
+    const [finisedLevelsIds, setFinisedLevelsIds] = useState<string[]>([]);
     const [isNextLessonPopupVisible, setIsNextLessonPopupVisible] =
         useState<boolean>(false);
 
@@ -195,54 +198,119 @@ const UserUnitSection: React.FC = () => {
     }, [results]);
 
     useEffect(() => {
-        if (levels && lessons) {
-            for (let i: number = 0; i < levels.length; i++) {
-                const currentlevels = levels[i].levels;
-                for (let j: number = 0; j < currentlevels.length; j++) {
-                    const currentLevelId = currentlevels[j]._id;
-                    const currentLessons = lessons.find(
-                        (lesson) => lesson.levelId === currentLevelId,
-                    )?.lessons;
-                    const lessonsIds = currentLessons?.map((item) => item._id);
-                    const isLevelLocked = lessonsIds?.every((item) =>
-                        lockedLessons.includes(item),
-                    );
-
-                    const isLevelFinished = lessonsIds?.every(
-                        (item) => !lockedLessons.includes(item),
-                    );
-
-                    j > 0 &&
-                    isLevelLocked &&
-                    !lockedLevels.includes(currentLevelId)
-                        ? setLockedLevels((pervLessons) => [
-                              ...pervLessons,
-                              currentLevelId,
-                          ])
-                        : null;
-
-                    isLevelFinished
-                        ? setFinisedLevels((pervLessons) => [
-                              ...pervLessons,
-                              currentLevelId,
-                          ])
-                        : null;
+        if (nextLessonId && lessons) {
+            for (let i: number = 0; i < lessons.length; i++) {
+                const lessonsIds = lessons[i].lessons.map(
+                    (lesson) => lesson._id,
+                );
+                if (lessonsIds.includes(nextLessonId)) {
+                    setCurrentLevelId(lessons[i].levelId);
+                    return;
                 }
             }
         }
-    }, [lockedLessons]);
-
-    // useEffect(() => {
-    //     console.log("lockedLessons", lockedLessons);
-    // }, [lockedLessons]);
+    }, [nextLessonId, lessons]);
 
     useEffect(() => {
-        console.log("lockedLevels", lockedLevels);
-    }, [lockedLevels]);
+        if (currentLevelId && units) {
+            for (let i: number = 0; i < units.length; i++) {
+                const levelsIds = units[i].levels;
+                if (levelsIds && levelsIds.includes(currentLevelId)) {
+                    setCurrentUnitId(units[i]._id);
+                    const finisedLevels = levelsIds.slice(
+                        0,
+                        levelsIds.indexOf(currentLevelId),
+                    );
+
+                    console.log("finisedLevels1", finisedLevels);
+                    for (let f: number = 0; f < finisedLevels.length; f++) {
+                        if (!finisedLevelsIds.includes(finisedLevels[f])) {
+                            setFinisedLevelsIds((pervLevels) => [
+                                ...pervLevels,
+                                finisedLevels[f],
+                            ]);
+                        }
+                    }
+                    let lockedLevels: string[];
+                    if (
+                        levelsIds.indexOf(currentLevelId) + 1 ===
+                        levelsIds.length
+                    ) {
+                        lockedLevels = [
+                            levelsIds[levelsIds.indexOf(currentLevelId) + 1],
+                        ];
+                    } else {
+                        lockedLevels = levelsIds.slice(
+                            levelsIds.indexOf(currentLevelId) + 1,
+                        );
+                    }
+                    console.log("lockedLevels1", lockedLevels);
+
+                    for (let l: number = 0; l < lockedLevels.length; l++) {
+                        if (!lockedLevelsIds.includes(lockedLevels[l])) {
+                            setLockedLevelsIds((pervLevels) => [
+                                ...pervLevels,
+                                lockedLevels[l],
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+    }, [currentLevelId, units]);
 
     useEffect(() => {
-        console.log("finisedLevels", finisedLevels);
-    }, [finisedLevels]);
+        if (currentUnitId && units) {
+            const unitsIds = units.map((unit) => unit._id);
+            const activeUnitIndex = unitsIds.indexOf(currentUnitId);
+            const finisedUnits = unitsIds.slice(0, activeUnitIndex);
+            const lockedUnits = unitsIds.slice(activeUnitIndex + 1);
+            console.log("activeUnitIndex", activeUnitIndex);
+
+            for (let f: number = 0; f < finisedUnits.length; f++) {
+                const finishedUnit = units.filter(
+                    (unit) => unit._id === finisedUnits[f],
+                )[0];
+                const finishedLevels = finishedUnit.levels;
+                if (finishedLevels) {
+                    for (let fl: number = 0; fl < finishedLevels.length; fl++) {
+                        const finishedLevel = finishedLevels[fl];
+                        if (!finisedLevelsIds.includes(finishedLevel)) {
+                            setFinisedLevelsIds((pervLevels) => [
+                                ...pervLevels,
+                                finishedLevel,
+                            ]);
+                        }
+                    }
+                }
+            }
+            for (let l: number = 0; l < lockedUnits.length; l++) {
+                const lockedUnit = units.filter(
+                    (unit) => unit._id === lockedUnits[l],
+                )[0];
+                const lockedLevels = lockedUnit.levels;
+                if (lockedLevels) {
+                    for (let ll: number = 0; ll < lockedLevels.length; ll++) {
+                        const lockedLevel = lockedLevels[ll];
+                        if (!lockedLevels.includes(lockedLevel)) {
+                            setLockedLevelsIds((pervLevels) => [
+                                ...pervLevels,
+                                lockedLevel,
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+    }, [currentUnitId, units]);
+
+    useEffect(() => {
+        console.log("lockedLevelsIds", lockedLevelsIds);
+    }, [lockedLevelsIds]);
+
+    useEffect(() => {
+        console.log("finisedLevelsIds", finisedLevelsIds);
+    }, [finisedLevelsIds]);
 
     useEffect(() => {
         console.log("nextLessonId", nextLessonId);
@@ -322,7 +390,7 @@ const UserUnitSection: React.FC = () => {
                                                             }
                                                             className="h-full"
                                                         >
-                                                            {lockedLevels.length >
+                                                            {lockedLevelsIds.length >
                                                                 0 &&
                                                             levelsObject.unitId ===
                                                                 unit._id ? (
@@ -344,10 +412,10 @@ const UserUnitSection: React.FC = () => {
                                                                                       currentLessonsIds &&
                                                                                       currentLessonsIds.length >
                                                                                           0 &&
-                                                                                      !lockedLevels.includes(
+                                                                                      !lockedLevelsIds.includes(
                                                                                           level._id,
                                                                                       ) &&
-                                                                                      !finisedLevels.includes(
+                                                                                      !finisedLevelsIds.includes(
                                                                                           level._id,
                                                                                       )
                                                                                   ) {
@@ -380,7 +448,7 @@ const UserUnitSection: React.FC = () => {
                                                                                               .lessons
                                                                                               ?.length >
                                                                                               0 ? (
-                                                                                              lockedLevels.includes(
+                                                                                              lockedLevelsIds.includes(
                                                                                                   level._id,
                                                                                               ) ? (
                                                                                                   <div
@@ -399,7 +467,7 @@ const UserUnitSection: React.FC = () => {
                                                                                                           />
                                                                                                       </>
                                                                                                   </div>
-                                                                                              ) : finisedLevels.includes(
+                                                                                              ) : finisedLevelsIds.includes(
                                                                                                     level._id,
                                                                                                 ) ? (
                                                                                                   <div
@@ -428,10 +496,8 @@ const UserUnitSection: React.FC = () => {
                                                                                                       )} mt-10 w-fit h-fit`}
                                                                                                   >
                                                                                                       <>
-                                                                                                          {selectedPopup ===
-                                                                                                          PopupsTypes.STARTLESSON ? null : (
-                                                                                                              <Tooltip />
-                                                                                                          )}
+                                                                                                          <Tooltip />
+
                                                                                                           <LessonButton
                                                                                                               status={
                                                                                                                   Status.PROGRESS
@@ -453,6 +519,7 @@ const UserUnitSection: React.FC = () => {
                                                                                                                   levelButtonRef
                                                                                                               }
                                                                                                           />
+
                                                                                                           <StartLessonPopup
                                                                                                               numberOfLessonsMade={
                                                                                                                   numOfLessonsMade +
