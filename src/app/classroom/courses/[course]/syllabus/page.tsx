@@ -102,7 +102,7 @@ const Syllabus: React.FC = () => {
                     </span>
                     <Button
                         label={"START COURSE"}
-                        color={Color.blue}
+                        color={Color.BLUE}
                         onClick={() => {
                             AddUnit();
                         }}

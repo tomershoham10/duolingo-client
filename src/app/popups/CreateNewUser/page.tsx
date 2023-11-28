@@ -231,7 +231,7 @@ const CreateNewUser: React.FC = () => {
                         <div className="flex-none col-span-2 col-start-2 justify-center mt-2">
                             <Button
                                 label={"CREATE"}
-                                color={Color.blue}
+                                color={Color.BLUE}
                                 onClick={() =>
                                     createUser(userName, tId, password, role)
                                 }

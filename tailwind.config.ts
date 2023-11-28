@@ -28,6 +28,7 @@ const config: Config = {
                     buttonDisabled: '#58CC02',
 
                     lightest: '#CDF0B4',
+                    lighter: '#D7FFB8',
                     light: '#79D635',
                     default: '#58CC02',
 
@@ -68,6 +69,11 @@ const config: Config = {
                 },
 
                 'duoRed': {
+                    buttonBorder: '#CC0000',
+                    buttonHover: '#FF5252',
+                    button: '#FF4040',
+                    
+                    lighter: '#FFDFE0',
                     light: '#FFB2B2',
                     default: '#EA2B2B'
                 },
@@ -77,6 +83,14 @@ const config: Config = {
                     light: '#D296FF',
                     default: '#C87FFB',
                     darker: '#9C6AE5'
+                },
+
+                'duoOrange': {
+                    buttonBorder: '#FF4500',
+                    buttonHover: '#FF9640',
+                    button: '#FF8C00',
+
+                    lighter: '#FFA07A'
                 }
             },
         },

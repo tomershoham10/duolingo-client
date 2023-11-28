@@ -61,7 +61,7 @@ const Alert: React.FC = () => {
                         {alertMessage}
                     </span>
                     <Button
-                        color={Color.blue}
+                        color={Color.BLUE}
                         label={"Close"}
                         style={
                             " col-span-1 col-start-3 h-fit self-end flex-none"

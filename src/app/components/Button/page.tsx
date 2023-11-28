@@ -5,11 +5,13 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { useRouter } from "next/navigation";
 
 export enum Color {
-    blue = "Blue",
-    green = "Green",
-    gray = "Gray",
-    white = "White",
-    purple = "Purple",
+    BLUE = "Blue",
+    GREEN = "Green",
+    GRAY = "Gray",
+    WHITE = "White",
+    PURPLE = "Purple",
+    RED = "Red",
+    ORANGE = "Orange",
 }
 
 interface ButtonProps {
@@ -66,6 +68,18 @@ const Button: React.FC<ButtonProps> = ({
             buttonColor = "bg-duoPurple-default";
             buttonBorderColor = "bg-duoPurple-darker";
             buttonHoverColor = "hover:bg-duoPurple-light";
+            textColor = "text-white";
+            break;
+        case "Red":
+            buttonColor = "bg-duoRed-button";
+            buttonBorderColor = "bg-duoRed-buttonBorder";
+            buttonHoverColor = "hover:bg-duoRed-buttonHover";
+            textColor = "text-white";
+            break;
+        case "Orange":
+            buttonColor = "bg-duoOrange-button";
+            buttonBorderColor = "bg-duoOrange-buttonBorder";
+            buttonHoverColor = "hover:bg-duoOrange-buttonHover";
             textColor = "text-white";
             break;
     }

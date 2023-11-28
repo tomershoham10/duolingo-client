@@ -70,7 +70,7 @@ const Login: React.FC = () => {
                     />
                     <Button
                         label="LOG IN"
-                        color={Color.blue}
+                        color={Color.BLUE}
                         onClick={() => handleAuth(user, password)}
                         href={""}
                     />

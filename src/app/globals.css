@@ -21,8 +21,37 @@
         0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
 }
 
+#exrcise-grid {
+    display: grid;
+    grid-template-rows: 100px 1fr;
+}
+
 #lesson-grid {
-    grid-template-rows: 100px 1fr 140px;
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-template-rows: 1fr 140px;
+}
+.pop-animation {
+    animation: pop 0.5s ease-out;
+}
+
+.tooltip {
+    animation: bounce-tooltip 1s infinite;
+}
+
+.bounce-and-pop {
+    animation:
+        bounce-tooltip 1s infinite,
+        pop 0.5s ease;
+}
+
+.lesson-popup-open {
+    animation: pop-no-scale 0.4s;
+}
+
+.lesson-popup-closed {
+    animation: slideaway 200ms ease-in-out;
+    display: none;
 }
 
 .draggable-item {
@@ -48,4 +77,69 @@
 
 ::-webkit-scrollbar-thumb {
     @apply rounded-md bg-duoGray-default;
+}
+@keyframes bounce-tooltip {
+    0%,
+    100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: none;
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+@keyframes tooltip-pop {
+    0% {
+        transform: scale(0.1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1) translateY(-100%);
+    }
+}
+
+@keyframes slideDown {
+    0% {
+        -webkit-transform: translateY(-100%);
+    }
+    50% {
+        -webkit-transform: translateY(-50%);
+    }
+    100% {
+        -webkit-transform: translateY(0);
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.5);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pop-no-scale {
+    0% {
+        transform: scale(0.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideaway {
+    from {
+        display: block;
+    }
+    to {
+        transform: scale(0.1);
+    }
 }

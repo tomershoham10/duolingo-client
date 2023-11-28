@@ -233,7 +233,7 @@ const AdminUnit: React.FC = () => {
                                             <div className="">
                                                 <Button
                                                     label={"CREATE GUIDEBOOK"}
-                                                    color={Color.white}
+                                                    color={Color.WHITE}
                                                 />
                                             </div>
                                         )}

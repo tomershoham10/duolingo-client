@@ -11,7 +11,7 @@ const updateNextLessonId = useUserStore.getState().updateNextLessonId;
 
 const updateAccessToken = useUserStore.getState().updateAccessToken;
 
-const addAlert = useAlertStore.getState().addAlert; 
+const addAlert = useAlertStore.getState().addAlert;
 
 const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
     // Map user roles to course types here
@@ -122,3 +122,26 @@ export const handleAuth = async (userName: string, password: string) => {
         console.error("Authentication Error:", error);
     }
 };
+
+export const updateNextLessonIdForUser = async (userId: string): Promise<any | null> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4001/api/users/updateNextLessonId/${userId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        console.log("updateNextLessonIdForUser - response", response);
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else return null
+    } catch (error) {
+        console.error("updating user Error:", error);
+        return null;
+    }
+}

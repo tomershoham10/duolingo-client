@@ -126,7 +126,7 @@ const StudentSideBar: React.FC = () => {
                 <Button
                     label="Loggin"
                     icon={faRightToBracket}
-                    color={Color.blue}
+                    color={Color.BLUE}
                     onClick={() => {
                         console.log("log in clicked.");
                     }}

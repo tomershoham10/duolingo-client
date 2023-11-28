@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState, DragEvent } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import {
@@ -11,6 +12,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { TbClockHour12 } from "react-icons/tb";
+import { FaXmark } from "react-icons/fa6";
+import { FiFlag } from "react-icons/fi";
+
+// import { FaCircleXmark } from "react-icons/fa6";
 
 import Button, { Color } from "@/app/components/Button/page";
 import Alert from "@/app/components/Alert/page";
@@ -38,8 +43,13 @@ import {
 } from "../API/classes-service/results/functions";
 import { getTargetsList } from "../API/classes-service/targets/functions";
 import SortableItem from "../components/SortableItem/page";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { updateNextLessonIdForUser } from "../API/users-service/users/functions";
 
+library.add(faCircleXmark);
 export default function Page() {
+    const router = useRouter();
+
     const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
     const userId = useStore(useUserStore, (state) => state.userId);
     const targetsList = useStore(useTargetStore, (state) => state.targets);
@@ -49,12 +59,16 @@ export default function Page() {
     const [exercisesData, setExercisesData] = useState<FSAType[]>([]);
     const [lessonResults, setLessonResults] = useState<ResultType[]>();
     const [exercisesIds, setExercisesIds] = useState<string[]>([]);
+    const [numOfExercisesMade, setNumOfExercisesMade] = useState<number>(0);
     const [currentExercise, setCurrentExercise] = useState<FSAType>();
     const [relevant, setRelevant] = useState<TargetType[]>([]);
     const [currentAnswers, setCurrentAnswers] = useState<TargetType[]>([]);
     const [currentResult, setCurrentResult] = useState<ResultType>();
+    const [score, setScore] = useState<number>(0);
 
     const [isExerciseStarted, setIsExerciseStarted] = useState<boolean>(false);
+    const [isExerciseFinished, setIsExerciseFinished] =
+        useState<boolean>(false);
 
     const [timeRemaining, setTimeRemaining] = useState<{
         minutes: number;
@@ -104,7 +118,7 @@ export default function Page() {
 
         fetchData();
         fetchResultsList();
-    }, [nextLessonId, userId]);
+    }, [nextLessonId, userId, isExerciseStarted]);
 
     useEffect(() => {
         exercisesData.map((exercise) =>
@@ -158,11 +172,41 @@ export default function Page() {
         //         if (response !== 404) setCurrentResult(response);
         //     }
         // };
+        if (currentExercise) {
+            // if (
+            //     exercisesIds.indexOf(currentExercise._id) + 1 ===
+            //         exercisesIds.length &&
+            //     isExerciseFinished
+            // ) {
+            //     setNumOfExercisesMade(exercisesIds.length);
+            // }
+            // {
+            console.log(
+                isExerciseFinished,
+                exercisesIds.indexOf(currentExercise._id),
+            );
+            if (!isExerciseFinished) {
+                setNumOfExercisesMade(
+                    exercisesIds.indexOf(currentExercise._id),
+                );
+            } else {
+                setNumOfExercisesMade(
+                    exercisesIds.indexOf(currentExercise._id) + 1,
+                );
+            }
+            // }
+        }
 
         fetchRelevantData();
         fetchAnswersData();
         // fetchResultData();
-    }, [currentExercise, userId, isExerciseStarted]);
+    }, [
+        currentExercise,
+        userId,
+        isExerciseStarted,
+        isExerciseFinished,
+        exercisesIds,
+    ]);
 
     useEffect(() => {
         if (currentResult && currentExercise) {
@@ -221,14 +265,23 @@ export default function Page() {
     }, [currentExercise]);
 
     useEffect(() => {
+        console.log(
+            "started1",
+            currentExercise,
+            currentExercise?.firstTimeBuffer,
+            currentExercise?.secondTimeBuffer,
+            currentResult,
+            isExerciseStarted,
+        );
         if (
             currentExercise &&
             currentExercise.firstTimeBuffer &&
             currentExercise.secondTimeBuffer &&
             currentResult &&
-            isExerciseStarted
+            isExerciseStarted &&
+            !isExerciseFinished
         ) {
-            console.log("started");
+            console.log("started2");
             const totalMinutesForExercise =
                 currentExercise.firstTimeBuffer +
                 currentExercise.secondTimeBuffer;
@@ -252,7 +305,7 @@ export default function Page() {
 
             return () => clearInterval(timerInterval);
         }
-    }, [currentExercise, currentResult, isExerciseStarted]);
+    }, [currentExercise, currentResult, isExerciseStarted, isExerciseFinished]);
 
     useEffect(() => {
         console.log("timeRemaining", timeRemaining);
@@ -373,12 +426,10 @@ export default function Page() {
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
-        console.log("ids", active.id, over?.id);
         setGrabbedTargetId("released");
 
         if (over && active.id !== over.id) {
             setTargetsToSubmit((items) => {
-                console.log("items1", items);
                 const ids = items.map((item) => item.id);
                 const activeIndex = ids.indexOf(active.id as string);
                 const overIndex = ids.indexOf(over.id as string);
@@ -391,11 +442,100 @@ export default function Page() {
         exerciseId: string,
         userId: string,
     ) => {
-        if (currentResult) {
+        if (targetsToSubmit.length === 0) {
+            addAlert("Please select a target.", AlertSizes.small);
+            return;
+        }
+        if (currentResult && currentExercise) {
             const resultId = currentResult._id;
-            // const response = await submitExercise(resultId, exerciseId, userId);
-            // if (response) {
-            // }
+            console.log(
+                "submit exercise",
+                "resultId: ",
+                resultId,
+                "currentExercise: ",
+                currentExercise,
+                "userId: ",
+                userId,
+                "targetsToSubmit: ",
+                targetsToSubmit,
+                "timeRemaining: ",
+                timeRemaining,
+            );
+            const answersIds = currentExercise.answers;
+            const correctAnswers = targetsToSubmit.filter((target) =>
+                answersIds.includes(target.id),
+            );
+            if (correctAnswers.length === 0) {
+                //all tragets was guessed wrong
+                setScore(0);
+            } else if (correctAnswers.length === answersIds.length) {
+                //all tragets was guessed right
+                //need to check the order of the answers (? - maybe the order doesn't matter)
+                // if the order was indeed matter + correct
+            } else if (targetsToSubmit.length > answersIds.length) {
+                //was correct but guessed more targets that needed
+                //need to check the order of the answers
+            } else if (correctAnswers.length < answersIds.length) {
+                //was correct but didnt guessed all targets in the exercise
+                //need to check the order of the answers
+            }
+
+            const resultToSubmit = {
+                _id: resultId,
+                userId: userId,
+                lessonId: nextLessonId,
+                exerciseId: currentExercise._id,
+                answers: answersIds,
+                score: score,
+            };
+
+            const response = await submitExercise(resultToSubmit);
+            if (response) {
+                setIsExerciseFinished(true);
+                // const lengthOfLesson = exercisesData.length;
+                // const indexOfCurrentExercise =
+                //     exercisesData.indexOf(currentExercise);
+                // console.log(
+                //     "lengthOfLesson",
+                //     lengthOfLesson,
+                //     indexOfCurrentExercise,
+                // );
+
+                // if (lengthOfLesson === indexOfCurrentExercise + 1) {
+                //     //finish lesson
+                //     console.log("finished");
+                //     addAlert("lesson finished", AlertSizes.small);
+                // }
+                // if (lengthOfLesson > indexOfCurrentExercise + 1) {
+                //     setCurrentExercise(
+                //         exercisesData[indexOfCurrentExercise + 1],
+                //     );
+                // }
+            }
+        }
+    };
+
+    const continueLesson = async () => {
+        if (currentExercise && userId) {
+            const lengthOfLesson = exercisesData.length;
+            const indexOfCurrentExercise =
+                exercisesData.indexOf(currentExercise);
+            console.log(
+                "lengthOfLesson",
+                lengthOfLesson,
+                indexOfCurrentExercise,
+            );
+            if (lengthOfLesson === indexOfCurrentExercise + 1) {
+                //last exercise
+                console.log("last exercise");
+                const response = await updateNextLessonIdForUser(userId);
+                console.log("last exercise- response", response);
+                if (response) {
+                    router.push("/learn");
+                }
+            } else {
+                setCurrentExercise(exercisesData[indexOfCurrentExercise + 1]);
+            }
         }
     };
 
@@ -403,162 +543,353 @@ export default function Page() {
         <div className="relative w-full">
             <Alert />
             {nextLessonId && currentExercise && relevant && userId ? (
-                <div className="absolute inset-x-0 inset-y-0 w-[80%]">
+                <div className="absolute inset-x-0 inset-y-0">
                     <div
-                        className="absolute grid gap-0 h-screen
-                    grid-cols-1 p-0 overflow-hidden w-full  top-0 left-0"
+                        className="absolute gap-0 w-full h-screen
+                     p-0 overflow-hidden top-0 left-0"
                         id="lesson-grid"
                     >
-                        <div className="h-2">
+                        <div className="w-full h-full" id="exrcise-grid">
                             <ProgressBar
                                 totalNumOfExercises={exercisesIds.length}
-                                numOfExercisesMade={exercisesIds.indexOf(
-                                    currentExercise._id,
-                                )}
+                                numOfExercisesMade={numOfExercisesMade}
                             />
-                        </div>
-                        <div className="flex flex-row w-full outline-none ">
-                            <div className="relative w-full h-full outline-none">
-                                <div className="absolute h-full w-full font-semibold text-xl text-duoGray-darkest">
-                                    <div className="grid grid-rows-[min-content] justify-center items-start text-center w-[80%] mx-auto 3xl:h-fit">
-                                        <div className="w-full text-left">
-                                            {currentExercise.description}
-                                        </div>
-                                        <span className="flex items-end mt-10 font-extrabold text-2xl tracking-wider">
-                                            Relevant list:
-                                        </span>
-                                        <div
-                                            className={`self-center items-end w-full mx-auto flex flex-row my-4 cursor-default`}
-                                            // grid grid-col-1 gap-[5rem]
-                                        >
-                                            {relevant.map(
-                                                (
-                                                    relevantTarget,
-                                                    relevantTargetIndex,
-                                                ) => (
-                                                    <div
-                                                        key={
-                                                            relevantTargetIndex
-                                                        }
-                                                        className="flex flex-row items-end self-end mr-5"
-                                                    >
-                                                        <div className="relative flex items-center self-end">
-                                                            <div
-                                                                className={`border-2 border-b-4 rounded-xl min-w-[10rem] py-4 pl-[45px] pr-[30px] 
+                            <div className="flex flex-row w-full outline-none">
+                                <div className="relative w-full h-full outline-none">
+                                    <div className="absolute h-full w-full font-semibold text-duoGray-darkest">
+                                        <div className="grid grid-rows-[min-content] justify-center items-start text-center w-[80%] mx-auto 3xl:h-fit">
+                                            <div className="w-full text-left sm:text-sm xl:text-xl 3xl:text-2xl">
+                                                {currentExercise.description}
+                                            </div>
+                                            <span className="flex items-end sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
+                                                Relevant list:
+                                            </span>
+                                            <div
+                                                className={`self-center items-end w-full mx-auto flex flex-row mt-4 cursor-default`}
+                                            >
+                                                {relevant.map(
+                                                    (
+                                                        relevantTarget,
+                                                        relevantTargetIndex,
+                                                    ) => (
+                                                        <div
+                                                            key={
+                                                                relevantTargetIndex
+                                                            }
+                                                            className="flex flex-row items-end self-end mr-5"
+                                                        >
+                                                            <div className="relative flex items-center self-end">
+                                                                <div
+                                                                    className={`border-2 border-b-4 rounded-xl sm:min-w-[7rem] lg:min-w-[10rem] py-4 pl-[45px] pr-[30px] 
                                                                 border-border-duoGray-regular font-bold flex flex-row justify-center items-center
-                                                                text-lg cursor-pointer active:border-b-2 active:translate-y-[1px]
+                                                                text-lg  ${
+                                                                    isExerciseStarted
+                                                                        ? !isExerciseFinished
+                                                                            ? "active:border-b-2 active:translate-y-[1px] cursor-pointer"
+                                                                            : "cursor-default"
+                                                                        : "cursor-default"
+                                                                }
                                                                ${
+                                                                   isExerciseStarted &&
+                                                                   !isExerciseFinished &&
                                                                    relevantTargetIndex ===
-                                                                   selectedTargetIndex
+                                                                       selectedTargetIndex
                                                                        ? "bg-duoBlue-lightest border-duoBlue-dark text-duoBlue-text"
                                                                        : "border-border-duoGray-regular hover:bg-duoGray-lighter text-duoGray-dark"
                                                                }
                                                                 `}
-                                                                onClick={() => {
-                                                                    setSelectedTargetIndex(
-                                                                        relevantTargetIndex,
-                                                                    );
-                                                                    setTargetFromDropdown(
-                                                                        null,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <span
-                                                                    className={`h-[30px] w-[30px] border-2 rounded-lg absolute left-3 
-                                                                    inline-flex items-center justify-center shrink-0 text-lg font-bold                                                                     
+                                                                    onClick={() => {
+                                                                        if (
+                                                                            !isExerciseFinished &&
+                                                                            isExerciseStarted
+                                                                        ) {
+                                                                            setSelectedTargetIndex(
+                                                                                relevantTargetIndex,
+                                                                            );
+                                                                            setTargetFromDropdown(
+                                                                                null,
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <span
+                                                                        className={`lg:h-[30px] lg:w-[30px] sm:h-[25px] sm:w-[25px] border-2 rounded-lg absolute left-3 
+                                                                    inline-flex items-center justify-center shrink-0 sm:text-sm xl:text-xl font-bold                                                                     
                                                                     ${
+                                                                        isExerciseStarted &&
+                                                                        !isExerciseFinished &&
                                                                         relevantTargetIndex ===
-                                                                        selectedTargetIndex
+                                                                            selectedTargetIndex
                                                                             ? "border-duoBlue-dark text-duoBlue-text"
                                                                             : "text-duoGray-dark"
                                                                     }
                                                                     `}
-                                                                >
-                                                                    {relevantTargetIndex +
-                                                                        1}
-                                                                </span>
+                                                                    >
+                                                                        {relevantTargetIndex +
+                                                                            1}
+                                                                    </span>
 
-                                                                <span className="flex items-center justify-center relative text-center text-ellipsis">
-                                                                    {
-                                                                        relevantTarget.name
-                                                                    }
-                                                                </span>
+                                                                    <span className="flex items-center justify-center relative text-center text-ellipsis sm:text-lg lg:text-xl">
+                                                                        {
+                                                                            relevantTarget.name
+                                                                        }
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ),
+                                                    ),
+                                                )}
+                                            </div>
+                                            <span className="flex items-end sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
+                                                Select target:
+                                            </span>
+                                            {targetsList ? (
+                                                <Dropdown
+                                                    placeholder={"target"}
+                                                    items={targetsList.map(
+                                                        (target) => target.name,
+                                                    )}
+                                                    value={
+                                                        showPlaceholder
+                                                            ? null
+                                                            : targetFromDropdown
+                                                            ? targetFromDropdown.name
+                                                            : null
+                                                    }
+                                                    onChange={
+                                                        handleTargetsDropdown
+                                                    }
+                                                    isDisabled={
+                                                        !isExerciseStarted ||
+                                                        isExerciseFinished
+                                                    }
+                                                    size={DropdownSizes.SMALL}
+                                                    className={
+                                                        "w-[16rem] mt-5 z-10"
+                                                    }
+                                                />
+                                            ) : (
+                                                <Dropdown
+                                                    placeholder={"target"}
+                                                    items={[""]}
+                                                    value={""}
+                                                    onChange={() =>
+                                                        console.log("")
+                                                    }
+                                                    isDisabled={
+                                                        !isExerciseStarted
+                                                    }
+                                                    size={DropdownSizes.SMALL}
+                                                    className={
+                                                        "w-[16rem] mt-5 z-10"
+                                                    }
+                                                />
                                             )}
                                         </div>
-                                        <span className="flex items-end mt-10 font-extrabold text-2xl tracking-wider">
-                                            Select target:
-                                        </span>
-                                        {targetsList ? (
-                                            <Dropdown
-                                                placeholder={"target"}
-                                                items={targetsList.map(
-                                                    (target) => target.name,
-                                                )}
-                                                value={
-                                                    showPlaceholder
-                                                        ? null
-                                                        : targetFromDropdown
-                                                        ? targetFromDropdown.name
-                                                        : null
-                                                }
-                                                onChange={handleTargetsDropdown}
-                                                isDisabled={!isExerciseStarted}
-                                                size={DropdownSizes.SMALL}
-                                                className={
-                                                    "w-[16rem] mt-5 z-10"
-                                                }
-                                            />
-                                        ) : (
-                                            <Dropdown
-                                                placeholder={"target"}
-                                                items={[""]}
-                                                value={""}
-                                                onChange={() => console.log("")}
-                                                isDisabled={!isExerciseStarted}
-                                                size={DropdownSizes.SMALL}
-                                                className={
-                                                    "w-[16rem] mt-5 z-10"
-                                                }
-                                            />
-                                        )}
-                                        {/* </div> */}
-                                        {/* </div> */}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="relative flex items-center justify-center mb-5 3xl:mb-10">
-                            {/* <div className="absolute left-[8%] bottom-0 active:-translate-y-1">
-                                <Button
-                                    label={"ADD TARGET"}
-                                    color={Color.blue}
-                                    style={
-                                        "w-[15rem] 3xl:w-[20rem] text-2xl tracking-widest"
-                                    }
-                                    onClick={() => {
-                                        submitCurrentExercise(
-                                            currentExercise._id,
-                                            userId,
-                                        );
-                                    }}
-                                />
-                            </div> */}
+
+                        <div className="flex flex-col justify-start items-center right-0">
+                            <div className="w-[80%] mt-5 border-2 rounded-2xl sm:py-2 sm:px-1 xl:py-6 xl:px-4 text-duoGray-darker flex text-center flex-col mb-3 3xl:mb-5">
+                                <span className="font-extrabold lg:block sm:hidden md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6  3xl:text-4xl">
+                                    Unit 1 - Level 1
+                                    <br className="3xl:text-4xl" />
+                                    Lesson 1
+                                </span>
+                                <div className="font-bold flex flex-row items-center justify-center sm:text-xl xl:text-2xl 3xl:text-4xl">
+                                    <TbClockHour12
+                                        className={
+                                            timeRemaining.minutes === 0 &&
+                                            timeRemaining.seconds === 0
+                                                ? "text-duoRed-default fill-duoRed-light opacity-100 mx-2 sm:text-3xl xl:text-4xl"
+                                                : isExerciseStarted &&
+                                                  !isExerciseFinished
+                                                ? "animate-spin text-duoPurple-default fill-duoPurple-lighter opacity-100 mx-2 sm:text-3xl xl:text-4xl"
+                                                : "text-duoPurple-default fill-duoPurple-lighter opacity-100 mx-2 sm:text-3xl xl:text-4xl"
+                                        }
+                                    />
+                                    <span className="font-extrabold">
+                                        {timeRemaining.minutes < 10
+                                            ? `0${timeRemaining.minutes}`
+                                            : timeRemaining.minutes}
+                                        :
+                                        {timeRemaining.seconds < 10
+                                            ? `0${timeRemaining.seconds}`
+                                            : timeRemaining.seconds}
+                                    </span>
+                                </div>
+                            </div>
+                            {targetsToSubmit.length > 0 ? (
+                                <div className="w-[80%] flex h-fit border-2 rounded-2xl py-6 px-4">
+                                    <div className="w-full h-fit text-duoGray-darker flex flex-col justify-start items-center">
+                                        <span className="w-full font-extrabold md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6 3xl:text-4xl self-start">
+                                            Suspected targets
+                                        </span>
+                                        <div className="w-full h-fit">
+                                            <div className="font-bold flex flex-col w-full h-fit items-center justify-center text-3xl 3xl:text-4xl">
+                                                <DndContext
+                                                    collisionDetection={
+                                                        closestCenter
+                                                    }
+                                                    onDragStart={(
+                                                        event: DragEndEvent,
+                                                    ) => {
+                                                        const { active } =
+                                                            event;
+                                                        setGrabbedTargetId(
+                                                            active.id.toString(),
+                                                        );
+                                                    }}
+                                                    onDragMove={handleDragMove}
+                                                    onDragEnd={handleDragEnd}
+                                                >
+                                                    <SortableContext
+                                                        items={targetsToSubmit}
+                                                        strategy={
+                                                            verticalListSortingStrategy
+                                                        }
+                                                    >
+                                                        <div className="h-full w-full flex flex-col items-center justify-center">
+                                                            {targetsToSubmit.map(
+                                                                (
+                                                                    targetObject,
+                                                                    targetObjectIndex,
+                                                                ) => (
+                                                                    <SortableItem
+                                                                        id={
+                                                                            targetObject.id
+                                                                        }
+                                                                        name={
+                                                                            targetObject.name
+                                                                        }
+                                                                        key={
+                                                                            targetObjectIndex
+                                                                        }
+                                                                        isGrabbed={
+                                                                            grabbedTargetId
+                                                                                ? grabbedTargetId ===
+                                                                                  targetObject.id
+                                                                                : false
+                                                                        }
+                                                                        isDisabled={
+                                                                            isExerciseFinished
+                                                                        }
+                                                                    />
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    </SortableContext>
+                                                </DndContext>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        <div
+                            className={
+                                isExerciseFinished
+                                    ? score === 100
+                                        ? "relative flex items-center justify-center col-span-2 bg-duoGreen-lighter"
+                                        : score === 0
+                                        ? "relative flex items-center justify-center col-span-2 bg-duoRed-lighter"
+                                        : "relative flex items-center justify-center col-span-2 bg-duoOrange-lighter"
+                                    : "relative flex items-center justify-center border-t-2 col-span-2"
+                            }
+                        >
                             <div
                                 className={
                                     isExerciseStarted
-                                        ? "absolute flex justify-between bottom-0 w-[45%] 3xl:w-[30%]"
-                                        : "absolute bottom-0 active:-translate-y-1"
+                                        ? isExerciseFinished
+                                            ? "absolute flex justify-between w-[55%] 3xl:w-[40%]"
+                                            : "absolute flex justify-between w-[45%] 3xl:w-[30%]"
+                                        : "absolute active:-translate-y-1"
                                 }
                             >
-                                {isExerciseStarted ? (
+                                {isExerciseFinished ? (
+                                    score === 100 ? (
+                                        <>
+                                            <Button
+                                                label={"CONTINUE"}
+                                                color={Color.PURPLE}
+                                                style={
+                                                    "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
+                                                }
+                                                onClick={() => {
+                                                    console.log("continue 100");
+                                                }}
+                                            />
+                                        </>
+                                    ) : score === 0 ? (
+                                        <>
+                                            <div className="flex flex-row h-full">
+                                                <FaXmark className="pop-animation rounded-full bg-white fill-duoRed-buttonBorder text-7xl p-2 mr-4" />
+                                                <div className="abolute flex flex-col justify-between text-duoRed-default">
+                                                    <div>
+                                                        <span className="text-2xl font-extrabold">
+                                                            Correct answers:
+                                                        </span>
+                                                        <div className="text-md">
+                                                            <ul>
+                                                                {currentAnswers.map(
+                                                                    (
+                                                                        answer,
+                                                                        answerKey,
+                                                                    ) => (
+                                                                        <li
+                                                                            key={
+                                                                                answerKey
+                                                                            }
+                                                                        >
+                                                                            {answerKey !==
+                                                                            0
+                                                                                ? `, ${answer.name}`
+                                                                                : answer.name}
+                                                                        </li>
+                                                                    ),
+                                                                )}
+                                                            </ul>
+                                                        </div>
+                                                        <button className="flex flex-row justify-start items-center">
+                                                            <FiFlag className="-scale-x-100 mr-2" />
+                                                            <span> report</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <Button
+                                                label={"CONTINUE"}
+                                                color={Color.RED}
+                                                style={
+                                                    "w-[15rem] 3xl:w-[22rem] text-2xl tracking-widest"
+                                                }
+                                                onClick={continueLesson}
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                label={"CONTINUE"}
+                                                color={Color.ORANGE}
+                                                style={
+                                                    "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
+                                                }
+                                                onClick={() => {
+                                                    console.log(
+                                                        "continue 0<score<100",
+                                                    );
+                                                }}
+                                            />
+                                        </>
+                                    )
+                                ) : isExerciseStarted ? (
                                     <>
                                         <Button
                                             label={"ADD TARGET"}
-                                            color={Color.blue}
+                                            color={Color.BLUE}
                                             style={
                                                 "w-[15rem] 3xl:w-[20rem] flex-none text-2xl tracking-widest"
                                             }
@@ -568,9 +899,9 @@ export default function Page() {
                                         />
                                         <Button
                                             label={"SUBMIT"}
-                                            color={Color.green}
+                                            color={Color.GREEN}
                                             style={
-                                                "w-[15rem] 3xl:w-[20rem] text-2xl  flex-none tracking-widest"
+                                                "w-[15rem] 3xl:w-[20rem] text-2xl flex-none tracking-widest"
                                             }
                                             onClick={() => {
                                                 submitCurrentExercise(
@@ -583,7 +914,7 @@ export default function Page() {
                                 ) : (
                                     <Button
                                         label={"START CLOCK"}
-                                        color={Color.purple}
+                                        color={Color.PURPLE}
                                         style={
                                             "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
                                         }
@@ -603,94 +934,6 @@ export default function Page() {
             ) : (
                 <div>lesson not found.</div>
             )}
-
-            <div className="h-screen w-[20%] flex flex-col justify-start items-center absolute right-0">
-                <div className="w-[80%] mt-5 border-2 rounded-2xl py-6 px-4 text-duoGray-darker flex text-center flex-col mb-3 3xl:mb-5">
-                    <span className="font-extrabold  md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6  3xl:text-4xl">
-                        Unit 1 - Level 1
-                        <br className="3xl:text-4xl" />
-                        Lesson 1
-                    </span>
-                    <div className="font-bold flex flex-row items-center justify-center text-3xl 3xl:text-4xl">
-                        <TbClockHour12
-                            className={
-                                timeRemaining.minutes === 0 &&
-                                timeRemaining.seconds === 0
-                                    ? "text-duoRed-default fill-duoRed-light opacity-100 mx-2"
-                                    : isExerciseStarted
-                                    ? "animate-spin text-duoPurple-default fill-duoPurple-lighter opacity-100 mx-2"
-                                    : "text-duoPurple-default fill-duoPurple-lighter opacity-100 mx-2"
-                            }
-                            size={45}
-                        />
-                        <span className="">
-                            {timeRemaining.minutes < 10
-                                ? `0${timeRemaining.minutes}`
-                                : timeRemaining.minutes}
-                            :
-                            {timeRemaining.seconds < 10
-                                ? `0${timeRemaining.seconds}`
-                                : timeRemaining.seconds}
-                        </span>
-                    </div>
-                </div>
-                {targetsToSubmit.length > 0 ? (
-                    <div className="w-[80%] flex h-fit border-2 rounded-2xl py-6 px-4">
-                        <div className="w-full h-fit text-duoGray-darker flex flex-col justify-start items-center">
-                            <span className="w-full font-extrabold md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6 3xl:text-4xl self-start">
-                                Suspected targets
-                            </span>
-                            <div className="w-full h-fit">
-                                <div className="font-bold flex flex-col w-full h-fit items-center justify-center text-3xl 3xl:text-4xl">
-                                    <DndContext
-                                        collisionDetection={closestCenter}
-                                        onDragStart={(event: DragEndEvent) => {
-                                            const { active } = event;
-                                            setGrabbedTargetId(
-                                                active.id.toString(),
-                                            );
-                                        }}
-                                        onDragMove={handleDragMove}
-                                        onDragEnd={handleDragEnd}
-                                    >
-                                        <SortableContext
-                                            items={targetsToSubmit}
-                                            strategy={
-                                                verticalListSortingStrategy
-                                            }
-                                        >
-                                            <div className="h-full w-full flex flex-col items-center justify-center">
-                                                {targetsToSubmit.map(
-                                                    (
-                                                        targetObject,
-                                                        targetObjectIndex,
-                                                    ) => (
-                                                        <SortableItem
-                                                            id={targetObject.id}
-                                                            name={
-                                                                targetObject.name
-                                                            }
-                                                            key={
-                                                                targetObjectIndex
-                                                            }
-                                                            isGrabbed={
-                                                                grabbedTargetId
-                                                                    ? grabbedTargetId ===
-                                                                      targetObject.id
-                                                                    : false
-                                                            }
-                                                        />
-                                                    ),
-                                                )}
-                                            </div>
-                                        </SortableContext>
-                                    </DndContext>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ) : null}
-            </div>
         </div>
     );
 }
