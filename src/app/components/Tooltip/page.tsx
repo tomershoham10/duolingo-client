@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import useStore from "@/app/store/useStore";
 import { PopupsTypes, usePopupStore } from "@/app/store/stores/usePopupStore";
 
@@ -9,15 +9,27 @@ const Tooltip: React.FC = () => {
         (state) => state.selectedPopup,
     );
 
+    const [isPopEffect, setIsPopEffect] = useState<boolean>(false);
+
     useEffect(() => {
-        const tooltipElement = document.getElementById("tooltip-main-div");
-
-        if (tooltipElement && selectedPopup === PopupsTypes.CLOSED) {
-            tooltipElement.classList.remove("tooltip");
-
-            tooltipElement.classList.add("bounce-and-pop");
+        console.log("tooltip", selectedPopup);
+        if (selectedPopup === PopupsTypes.STARTLESSON) {
+            setIsPopEffect(true);
         }
     }, [selectedPopup]);
+
+    useEffect(() => {
+        const tooltipElement = document.getElementById("tooltip-main-div");
+        console.log("isPopEffect", isPopEffect, tooltipElement);
+        if (
+            tooltipElement &&
+            isPopEffect &&
+            selectedPopup !== PopupsTypes.STARTLESSON
+        ) {
+            tooltipElement.classList.remove("tooltip");
+            tooltipElement.classList.add("bounce-and-pop");
+        }
+    }, [isPopEffect, selectedPopup]);
     return (
         <>
             {selectedPopup !== PopupsTypes.STARTLESSON ? (

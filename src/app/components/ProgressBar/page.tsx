@@ -28,11 +28,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                         className="relative h-full rounded-2xl bg-duoGreen-default flex justify-start items-center"
                         style={{
                             width: `${newwidth}%`,
-                            transition: "width 0.5s ease-in-out",
+                            transition: "width 0.5s ease-in-out 0.5s",
                         }}
                     >
-                        <div className="w-full mx-2 mb-[2.5px]">
-                            <div className="max-h-[5px] rounded-3xl bottom-[20rem] w-full bg-duoGreen-light">
+                        <div className="w-[80%] mx-[10%] sm:w-[92%] sm:mx-[4%] md:w-full md:mx-2 mb-[2.5px]">
+                            <div className="max-h-[5px] rounded-3xl w-full bg-duoGreen-light">
                                 {" "}
                                 {newwidth}
                             </div>

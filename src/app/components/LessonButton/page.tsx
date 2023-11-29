@@ -1,5 +1,4 @@
 "use client";
-import { LegacyRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faLock, faStar, faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -28,17 +27,6 @@ const LessonButton: React.FC<LessonButtonProps> = ({
     onClick,
     buttonRef,
 }) => {
-    // console.log(
-    //     "status",
-    //     status,
-    //     "numberOfTotalLessons",
-    //     numberOfTotalLessons,
-    //     "numberOfLessonsMade",
-    //     numberOfLessonsMade,
-    //     status === Status.PROGRESS &&
-    //         numberOfTotalLessons !== undefined &&
-    //         numberOfLessonsMade !== undefined,
-    // );
     return (
         <div className="relative h-[98px] w-[102px] z-10">
             {status === Status.PROGRESS &&
@@ -55,8 +43,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({
             {status === Status.LOCKED && (
                 <button
                     disabled
-                    className="left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[57px]
-                 bg-duoGray-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-duoGray-dark text-2xl"
+                    className="left-0 top-0 lesson-button absolute justify-center items-center ml-[18px] mt-[19px] w-[70px] h-[57px] bg-duoGray-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-duoGray-dark text-2xl"
                 >
                     <FontAwesomeIcon icon={faLock} className="text-md" />
                 </button>
@@ -76,7 +63,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({
             )}
 
             {status === Status.DONE && (
-                <button className="left-0 top-0 lesson-button absolute justify-center items-center ml-[16px] mt-[17px] w-[70px] h-[57px] bg-duoGreen-default rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px] text-white text-3xl">
+                <button className="left-0 top-0 lesson-button absolute justify-center items-center bg-duoGreen-default text-white ml-[16px] mt-[17px] w-[70px] h-[57px] rounded-[50%] cursor-pointer active:shadow-none active:translate-y-[8px]text-white text-3xl">
                     <FontAwesomeIcon icon={faCheck} className="text-md" />
                 </button>
             )}

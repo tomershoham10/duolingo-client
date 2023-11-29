@@ -34,10 +34,6 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
             ? setIsOpen(true)
             : setIsOpen(false);
     }, [selectedPopup]);
-    console.log(
-        "start lesson popup",
-        numberOfLessonsMade && numberOfTotalLessons && nextLessonId,
-    );
 
     return (
         <div

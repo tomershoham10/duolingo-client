@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
@@ -78,6 +78,11 @@ export default function Page() {
     const [targetFromDropdown, setTargetFromDropdown] =
         useState<TargetType | null>(null);
     const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
+    const [fadeEffect, setFadeEffect] = useState<boolean>(true);
+
+    const exerciseRef = useRef<HTMLDivElement | null>(null);
+    const infoBarRaf = useRef<HTMLDivElement | null>(null);
+    // const buttonsBarRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const fetchTargets = async () => {
@@ -106,6 +111,7 @@ export default function Page() {
                     nextLessonId,
                     userId,
                 );
+
                 if (response) {
                     setLessonResults(response);
                 }
@@ -158,29 +164,7 @@ export default function Page() {
             }
         };
 
-        // const fetchResultData = async () => {
-        //     if (currentExercise && userId) {
-        //         const currentExerciseId = currentExercise._id;
-        //         const response = await getResultByUserAndFSAId(
-        //             currentExerciseId,
-        //             userId,
-        //         );
-        //         if (response !== 404) setCurrentResult(response);
-        //     }
-        // };
         if (currentExercise) {
-            // if (
-            //     exercisesIds.indexOf(currentExercise._id) + 1 ===
-            //         exercisesIds.length &&
-            //     isExerciseFinished
-            // ) {
-            //     setNumOfExercisesMade(exercisesIds.length);
-            // }
-            // {
-            console.log(
-                isExerciseFinished,
-                exercisesIds.indexOf(currentExercise._id),
-            );
             if (!isExerciseFinished) {
                 setNumOfExercisesMade(
                     exercisesIds.indexOf(currentExercise._id),
@@ -190,12 +174,10 @@ export default function Page() {
                     exercisesIds.indexOf(currentExercise._id) + 1,
                 );
             }
-            // }
         }
 
         fetchRelevantData();
         fetchAnswersData();
-        // fetchResultData();
     }, [
         currentExercise,
         userId,
@@ -215,40 +197,67 @@ export default function Page() {
     }, [currentResult, currentExercise]);
 
     useEffect(() => {
-        console.log("nextLessonId", nextLessonId);
-    }, [nextLessonId]);
+        console.log(" !isExerciseFinished", !isExerciseFinished);
+        !isExerciseFinished ? setFadeEffect(true) : null;
+    }, [isExerciseFinished]);
+
+    // useEffect(() => {
+    //     console.log("userId", userId);
+    // }, [userId]);
+    // useEffect(() => {
+    //     console.log("nextLessonId", nextLessonId);
+    // }, [nextLessonId]);
+
+    // useEffect(() => {
+    //     console.log("exercisesData", exercisesData);
+    // }, [exercisesData]);
+
+    // useEffect(() => {
+    //     console.log("lessonResults", lessonResults);
+    // }, [lessonResults]);
+
+    // useEffect(() => {
+    //     console.log("exercisesIds", exercisesIds);
+    // }, [exercisesIds]);
+
+    // useEffect(() => {
+    //     console.log("currentExercise", currentExercise);
+    // }, [currentExercise]);
+
+    // useEffect(() => {
+    //     console.log("relevant", relevant);
+    // }, [relevant]);
+
+    // useEffect(() => {
+    //     console.log("currentAnswers", currentAnswers);
+    // }, [currentAnswers]);
+
+    // useEffect(() => {
+    //     console.log("currentResult", currentResult);
+    // }, [currentResult]);
+
+    // useEffect(() => {
+    //     console.log("isExerciseStarted", isExerciseStarted);
+    // }, [isExerciseStarted]);
 
     useEffect(() => {
-        console.log("exercisesData", exercisesData);
-    }, [exercisesData]);
-
-    useEffect(() => {
-        console.log("lessonResults", lessonResults);
-    }, [lessonResults]);
-
-    useEffect(() => {
-        console.log("exercisesIds", exercisesIds);
-    }, [exercisesIds]);
-
-    useEffect(() => {
-        console.log("currentExercise", currentExercise);
-    }, [currentExercise]);
-
-    useEffect(() => {
-        console.log("relevant", relevant);
-    }, [relevant]);
-
-    useEffect(() => {
-        console.log("currentAnswers", currentAnswers);
-    }, [currentAnswers]);
-
-    useEffect(() => {
-        console.log("currentResult", currentResult);
-    }, [currentResult]);
-
-    useEffect(() => {
-        console.log("isExerciseStarted", isExerciseStarted);
-    }, [isExerciseStarted]);
+        console.log("fadeEffect", fadeEffect);
+        const keyframes = [
+            { transform: "translateX(15%)", opacity: 0 },
+            { transform: "translateX(0)", opacity: 1 },
+        ];
+        const options = {
+            duration: 500,
+            iterations: 1,
+        };
+        if (fadeEffect && exerciseRef.current) {
+            exerciseRef.current.animate(keyframes, options);
+        }
+        if (fadeEffect && infoBarRaf.current) {
+            infoBarRaf.current.animate(keyframes, options);
+        }
+        setFadeEffect(false);
+    }, [fadeEffect]);
 
     useEffect(() => {
         if (currentExercise) {
@@ -261,14 +270,6 @@ export default function Page() {
     }, [currentExercise]);
 
     useEffect(() => {
-        console.log(
-            "started1",
-            currentExercise,
-            currentExercise?.firstTimeBuffer,
-            currentExercise?.secondTimeBuffer,
-            currentResult,
-            isExerciseStarted,
-        );
         if (
             currentExercise &&
             currentExercise.firstTimeBuffer &&
@@ -277,7 +278,6 @@ export default function Page() {
             isExerciseStarted &&
             !isExerciseFinished
         ) {
-            console.log("started2");
             const totalMinutesForExercise =
                 currentExercise.firstTimeBuffer +
                 currentExercise.secondTimeBuffer;
@@ -303,9 +303,7 @@ export default function Page() {
         }
     }, [currentExercise, currentResult, isExerciseStarted, isExerciseFinished]);
 
-    useEffect(() => {
-        console.log("timeRemaining", timeRemaining);
-    }, [timeRemaining]);
+    useEffect(() => {}, [timeRemaining]);
 
     const startCurrentExercise = async (
         nextLessonId: string,
@@ -314,7 +312,6 @@ export default function Page() {
     ) => {
         const response = await startExercise(nextLessonId, exerciseId, userId);
         if (response) {
-            console.log("clicked");
             setIsExerciseStarted(true);
         }
     };
@@ -328,7 +325,6 @@ export default function Page() {
         const now = new Date().getTime();
 
         const isTimePassed = finalTime.getTime() - now;
-        console.log("isTimePassed", isTimePassed);
         if (isTimePassed <= 0) {
             // If the finalTime is in the past, set timeRemaining to 0
             return { minutes: 0, seconds: 0 };
@@ -357,7 +353,6 @@ export default function Page() {
             );
 
             if (selectedTarget) {
-                console.log("TargetFromDropdown", selectedTarget);
                 setTargetFromDropdown(selectedTarget);
             }
         }
@@ -379,10 +374,7 @@ export default function Page() {
                 { id: _id, name: name },
             ]);
 
-            console.log("selectedTarget", relevant[selectedTargetIndex]);
             setSelectedTargetIndex(-1);
-
-            // setShowPlaceholder(true);
         } else if (
             targetFromDropdown &&
             !targetsIdsList.includes(targetFromDropdown._id)
@@ -394,10 +386,6 @@ export default function Page() {
                 ...pervTargets,
                 { id: _id, name: name },
             ]);
-            // setTargetsToSubmit((pervTargets) => [
-            //     ...pervTargets,
-            //     targetFromDropdown,
-            // ]);
             setTargetFromDropdown(null);
             setShowPlaceholder(true);
         } else {
@@ -407,10 +395,8 @@ export default function Page() {
 
     const handleDragMove = (event: DragEndEvent) => {
         const { active, over } = event;
-        console.log("ids", active.id, over?.id);
         if (over && active.id !== over.id) {
             setTargetsToSubmit((items) => {
-                console.log("items2", items);
                 const ids = items.map((item) => item.id);
                 const activeIndex = ids.indexOf(active.id as string);
                 const overIndex = ids.indexOf(over.id as string);
@@ -433,10 +419,7 @@ export default function Page() {
         }
     };
 
-    const submitCurrentExercise = async (
-        exerciseId: string,
-        userId: string,
-    ) => {
+    const submitCurrentExercise = async () => {
         let scoreByTargets: number = -1;
         let scoreByTime: number = -1;
         let totalScoreToSubmit: number = -1;
@@ -446,20 +429,9 @@ export default function Page() {
         }
         if (currentResult && currentExercise) {
             const resultId = currentResult._id;
-            console.log(
-                "submit exercise",
-                "resultId: ",
-                resultId,
-                "currentExercise: ",
-                currentExercise,
-                "userId: ",
-                userId,
-                "targetsToSubmit: ",
-                targetsToSubmit,
-                "timeRemaining: ",
-                timeRemaining,
-            );
+
             const answersIds = currentExercise.answers;
+            console.log("answersIds", answersIds, answersIds.length);
             const correctAnswers = targetsToSubmit.filter((target) =>
                 answersIds.includes(target.id),
             );
@@ -467,25 +439,28 @@ export default function Page() {
             if (correctAnswers.length === 0) {
                 //all tragets was guessed wrong
                 totalScoreToSubmit = 0;
-            } else if (correctAnswers.length === answersIds.length) {
+                scoreByTargets = 0;
+            } else if (
+                correctAnswers.length === answersIds.length &&
+                targetsToSubmit.length === answersIds.length
+            ) {
                 scoreByTargets = 100;
+                console.log("scoreByTargets", scoreByTargets);
             } else if (targetsToSubmit.length > answersIds.length) {
                 const firstAnswer: string = correctAnswers[0].id;
                 if (answersIds.indexOf(firstAnswer) === 0) {
                     scoreByTargets = 90;
-                } else scoreByTargets = 80;
+
+                    console.log("scoreByTargets", scoreByTargets);
+                } else {
+                    scoreByTargets = 80;
+                    console.log("scoreByTargets", scoreByTargets);
+                }
             } else if (correctAnswers.length < answersIds.length) {
                 scoreByTargets = 85;
+                console.log("scoreByTargets", scoreByTargets);
             }
-            console.log(
-                "time",
-                currentExercise.firstTimeBuffer +
-                    currentExercise.secondTimeBuffer,
-                currentExercise.secondTimeBuffer,
-                timeRemaining.minutes,
-                timeRemaining.seconds,
-                timeRemaining.minutes + timeRemaining.seconds / 60,
-            );
+
             if (
                 currentExercise.firstTimeBuffer +
                     currentExercise.secondTimeBuffer >
@@ -506,13 +481,18 @@ export default function Page() {
                 ? (totalScoreToSubmit =
                       0.6 * scoreByTargets + 0.4 * scoreByTime)
                 : null;
-            console.log("totalScoreToSubmit", totalScoreToSubmit);
             setTotalScore(totalScoreToSubmit);
             if (
                 totalScoreToSubmit === -1 ||
                 scoreByTime === -1 ||
                 scoreByTargets === -1
             ) {
+                console.log(
+                    "error",
+                    totalScoreToSubmit === -1,
+                    scoreByTime === -1,
+                    scoreByTargets === -1,
+                );
                 addAlert("error", AlertSizes.small);
                 return;
             }
@@ -529,25 +509,6 @@ export default function Page() {
             const response = await submitExercise(resultToSubmit);
             if (response) {
                 setIsExerciseFinished(true);
-                // const lengthOfLesson = exercisesData.length;
-                // const indexOfCurrentExercise =
-                //     exercisesData.indexOf(currentExercise);
-                // console.log(
-                //     "lengthOfLesson",
-                //     lengthOfLesson,
-                //     indexOfCurrentExercise,
-                // );
-
-                // if (lengthOfLesson === indexOfCurrentExercise + 1) {
-                //     //finish lesson
-                //     console.log("finished");
-                //     addAlert("lesson finished", AlertSizes.small);
-                // }
-                // if (lengthOfLesson > indexOfCurrentExercise + 1) {
-                //     setCurrentExercise(
-                //         exercisesData[indexOfCurrentExercise + 1],
-                //     );
-                // }
             }
         }
     };
@@ -557,11 +518,7 @@ export default function Page() {
             const lengthOfLesson = exercisesData.length;
             const indexOfCurrentExercise =
                 exercisesData.indexOf(currentExercise);
-            console.log(
-                "lengthOfLesson",
-                lengthOfLesson,
-                indexOfCurrentExercise,
-            );
+
             if (lengthOfLesson === indexOfCurrentExercise + 1) {
                 //last exercise
                 console.log("last exercise");
@@ -572,6 +529,10 @@ export default function Page() {
                 }
             } else {
                 setCurrentExercise(exercisesData[indexOfCurrentExercise + 1]);
+                setIsExerciseStarted(false);
+                setIsExerciseFinished(false);
+                setTotalScore(-1);
+                setTargetsToSubmit([]);
             }
         }
     };
@@ -591,18 +552,21 @@ export default function Page() {
                                 totalNumOfExercises={exercisesIds.length}
                                 numOfExercisesMade={numOfExercisesMade}
                             />
-                            <div className="flex flex-row w-full outline-none">
+                            <div
+                                ref={exerciseRef} //main page
+                                className="flex flex-row w-full outline-none"
+                            >
                                 <div className="relative w-full h-full outline-none">
                                     <div className="absolute h-full w-full font-semibold text-duoGray-darkest">
-                                        <div className="grid grid-rows-[min-content] justify-center items-start text-center w-[80%] mx-auto 3xl:h-fit">
+                                        <div className="grid grid-rows-[min-content] justify-center items-start w-[80%] mx-auto 3xl:h-fit">
                                             <div className="w-full text-left sm:text-sm xl:text-xl 3xl:text-2xl">
                                                 {currentExercise.description}
                                             </div>
-                                            <span className="flex items-end sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
+                                            <span className="sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
                                                 Relevant list:
                                             </span>
                                             <div
-                                                className={`self-center items-end w-full mx-auto flex flex-row mt-4 cursor-default`}
+                                                className={`w-full mx-auto flex flex-row mt-4 cursor-default`}
                                             >
                                                 {relevant.map(
                                                     (
@@ -615,7 +579,7 @@ export default function Page() {
                                                             }
                                                             className="flex flex-row items-end self-end mr-5"
                                                         >
-                                                            <div className="relative flex items-center self-end">
+                                                            <div className="relative ">
                                                                 <div
                                                                     className={`group border-2 border-b-4 rounded-xl sm:min-w-[7rem] lg:min-w-[10rem] py-4 pl-[45px] pr-[30px] 
                                                                 border-border-duoGray-regular font-bold flex flex-row justify-center items-center
@@ -677,7 +641,7 @@ export default function Page() {
                                                     ),
                                                 )}
                                             </div>
-                                            <span className="flex items-end sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
+                                            <span className="sm:mt-6 xl:mt-10 font-extrabold sm:text-lg xl:text-2xl tracking-wider">
                                                 Select target:
                                             </span>
                                             {targetsList ? (
@@ -728,7 +692,10 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col justify-start items-center right-0">
+                        <div
+                            ref={infoBarRaf} //info bar
+                            className="flex flex-col justify-start items-center right-0"
+                        >
                             <div className="w-[80%] mt-5 border-2 rounded-2xl sm:py-2 sm:px-1 xl:py-6 xl:px-4 text-duoGray-darker flex text-center flex-col mb-3 3xl:mb-5">
                                 <span className="font-extrabold lg:block sm:hidden md:text-xl xl:text-2xl 3xl:mb-12 xl:mb-6  3xl:text-4xl">
                                     Unit 1 - Level 1
@@ -827,81 +794,109 @@ export default function Page() {
                         </div>
 
                         <div
-                            className={
-                                isExerciseFinished
-                                    ? totalScore === 100
-                                        ? "relative flex items-center justify-center col-span-2 bg-duoGreen-lighter"
-                                        : totalScore === 0
-                                        ? "relative flex items-center justify-center col-span-2 bg-duoRed-lighter"
-                                        : "relative flex items-center justify-center col-span-2 bg-duoOrange-lighter"
-                                    : "relative flex items-center justify-center border-t-2 col-span-2"
-                            }
+                            // ref={buttonsBarRef} //buttons bar
+                            className={`
+                                ${
+                                    isExerciseFinished
+                                        ? totalScore === 100
+                                            ? "relative flex items-center justify-center col-span-2 bg-duoGreen-lighter w-full"
+                                            : totalScore === 0
+                                            ? "relative flex items-center justify-center col-span-2 bg-duoRed-lighter"
+                                            : "relative flex items-center justify-center col-span-2 bg-duoYellow-light"
+                                        : "relative flex items-center justify-center border-t-2 col-span-2"
+                                }`}
                         >
                             <div
                                 className={
                                     isExerciseStarted
                                         ? isExerciseFinished
-                                            ? "absolute flex justify-between w-[55%] 3xl:w-[40%]"
+                                            ? "absolute w-[60%] 3xl:w-[50%]"
                                             : "absolute flex justify-between w-[45%] 3xl:w-[30%]"
                                         : "absolute active:-translate-y-1"
                                 }
                             >
                                 {isExerciseFinished ? (
-                                    <>
-                                        <div className="ablsolute h-full">
+                                    <div className="absolute h-full flex w-full items-center justify-between">
+                                        <div className="flex flex-none flex-row h-full items-center ">
                                             {totalScore === 100 ? (
                                                 <FaCheck className="pop-animation rounded-full text-duoGreen-darkText bg-white text-6xl p-3 mr-4" />
                                             ) : (
-                                                <FaXmark className="pop-animation rounded-full bg-white fill-duoRed-buttonBorder text-7xl p-2 mr-4" />
+                                                <FaXmark
+                                                    className={`pop-animation rounded-full bg-white text-6xl p-3 mr-4 ${
+                                                        totalScore === 0
+                                                            ? "text-duoRed-default"
+                                                            : "text-duoYellow-darkest"
+                                                    }`}
+                                                />
                                             )}
                                             <div
-                                                className={`abolute flex flex-col justify-between ${
+                                                className={`flex flex-col ${
                                                     totalScore === 100
-                                                        ? "text-duoGreen-darkText"
-                                                        : totalScore === 0
-                                                        ? "text-duoRed-default"
-                                                        : "text-duoOrange-FFA07A"
+                                                        ? "xl:gap-2"
+                                                        : ""
                                                 }`}
                                             >
-                                                {totalScore === 100 ? (
-                                                    <span className="text-2xl font-extrabold">
-                                                        Currect!
-                                                    </span>
-                                                ) : (
-                                                    <div className="flex flex-row">
-                                                        <span className="text-2xl font-extrabold">
-                                                            Correct answers:
-                                                        </span>
-                                                        <div className="text-md">
-                                                            <ul>
-                                                                {currentAnswers.map(
-                                                                    (
-                                                                        answer,
-                                                                        answerKey,
-                                                                    ) => (
-                                                                        <li
-                                                                            key={
-                                                                                answerKey
-                                                                            }
-                                                                        >
-                                                                            {answerKey !==
-                                                                            0
-                                                                                ? `, ${answer.name}`
-                                                                                : answer.name}
-                                                                        </li>
-                                                                    ),
-                                                                )}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                <span
+                                                    className={`text-2xl font-extrabold ${
+                                                        totalScore === 100
+                                                            ? "text-duoGreen-darkText"
+                                                            : totalScore === 0
+                                                            ? "text-duoRed-default"
+                                                            : "text-duoYellow-darkest"
+                                                    }`}
+                                                >
+                                                    {totalScore === 100
+                                                        ? "Currect!"
+                                                        : "Correct answers:"}
+                                                </span>
 
-                                                <button className="flex flex-row justify-start items-center uppercase text-duoGreen-text hover:text-duoGreen-midText font-extrabold">
+                                                {
+                                                    <div
+                                                        className={`text-md font-semibold ${
+                                                            totalScore === 0
+                                                                ? "text-duoRed-default"
+                                                                : "text-duoYellow-dark"
+                                                        }`}
+                                                    >
+                                                        <ul>
+                                                            {totalScore !== 100
+                                                                ? currentAnswers.map(
+                                                                      (
+                                                                          answer,
+                                                                          answerKey,
+                                                                      ) => (
+                                                                          <li
+                                                                              key={
+                                                                                  answerKey
+                                                                              }
+                                                                          >
+                                                                              {answerKey !==
+                                                                              0
+                                                                                  ? `, ${answer.name}`
+                                                                                  : answer.name}
+                                                                          </li>
+                                                                      ),
+                                                                  )
+                                                                : null}
+                                                        </ul>
+                                                    </div>
+                                                }
+
+                                                <button
+                                                    className={`flex flex-row justify-start items-center uppercase font-extrabold ${
+                                                        totalScore === 100
+                                                            ? "text-duoGreen-text hover:text-duoGreen-midText"
+                                                            : totalScore === 0
+                                                            ? "text-duoRed-default"
+                                                            : "text-duoYellow-dark hover:text-duoYellow-darker"
+                                                    }`}
+                                                >
                                                     <FiFlag className="-scale-x-100 mr-2" />
                                                     <span> report</span>
                                                 </button>
                                             </div>
-                                        </div>{" "}
+                                        </div>
+
                                         <Button
                                             label={"CONTINUE"}
                                             color={
@@ -909,14 +904,14 @@ export default function Page() {
                                                     ? Color.GREEN
                                                     : totalScore === 0
                                                     ? Color.RED
-                                                    : Color.ORANGE
+                                                    : Color.YELLOW
                                             }
                                             style={
                                                 "w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest"
                                             }
                                             onClick={continueLesson}
                                         />
-                                    </>
+                                    </div>
                                 ) : isExerciseStarted ? (
                                     <>
                                         <Button
@@ -935,12 +930,7 @@ export default function Page() {
                                             style={
                                                 "w-[15rem] 3xl:w-[20rem] text-2xl flex-none tracking-widest"
                                             }
-                                            onClick={() => {
-                                                submitCurrentExercise(
-                                                    currentExercise._id,
-                                                    userId,
-                                                );
-                                            }}
+                                            onClick={submitCurrentExercise}
                                         />
                                     </>
                                 ) : (
@@ -964,7 +954,10 @@ export default function Page() {
                     </div>
                 </div>
             ) : (
-                <div>lesson not found.</div>
+                <div>
+                    lesson not found.
+                    {userId ? <h1>1</h1> : <h1>2</h1>}
+                </div>
             )}
         </div>
     );

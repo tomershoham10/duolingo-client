@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useStore from "./store/useStore";
 import { useUserStore, TypesOfUser } from "./store/stores/useUserStore";
-import { getTargetsList } from "./API/classes-service/targets/functions";
+// import { getTargetsList } from "./API/classes-service/targets/functions";
 
 const Home: React.FC = () => {
     const userRole = useStore(useUserStore, (state) => state.userRole);

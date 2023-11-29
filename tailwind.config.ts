@@ -90,12 +90,16 @@ const config: Config = {
                     darker: '#9C6AE5'
                 },
 
-                'duoOrange': {
-                    buttonBorder: '#FF4500',
-                    buttonHover: '#FF9640',
-                    button: '#FF8C00',
+                'duoYellow': {
+                    buttonBorder: '#E7A601',
+                    buttonHover: '#FFD147',
+                    button: '#FFC800',
 
-                    lighter: '#FFA07A'
+                    light: '#FFF5D3',
+                    lighter: '#FFF9E6',
+                    dark: '#E28908',
+                    darker: '#E18500',
+                    darkest: '#CD7900'
                 }
             },
         },

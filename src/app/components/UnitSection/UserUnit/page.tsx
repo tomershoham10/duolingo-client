@@ -61,6 +61,7 @@ const UserUnitSection: React.FC = () => {
     const [lockedLessons, setLockedLessons] = useState<string[]>([]);
     const [lockedLevelsIds, setLockedLevelsIds] = useState<string[]>([]);
     const [finisedLevelsIds, setFinisedLevelsIds] = useState<string[]>([]);
+    const [numOfLessonsMade, setNumOfLessonsMade] = useState<number>(0);
     const [isNextLessonPopupVisible, setIsNextLessonPopupVisible] =
         useState<boolean>(false);
 
@@ -80,15 +81,16 @@ const UserUnitSection: React.FC = () => {
     useEffect(() => {
         const fetchLevels = async () => {
             const promises = units.map(async (unit) => {
-                // await getLevelsData(unit._id, setLevels);
                 const levelsData = await getLevelsData(unit._id);
                 return { unitId: unit._id, levels: levelsData };
             });
             const response = await Promise.all(promises);
             setLevels(response);
         };
-        if (units.length > 0) {
-            fetchLevels();
+        if (units) {
+            if (units.length > 0) {
+                fetchLevels();
+            }
         }
     }, [units]);
 
@@ -305,6 +307,22 @@ const UserUnitSection: React.FC = () => {
     }, [currentUnitId, units]);
 
     useEffect(() => {
+        if (currentLevelId && nextLessonId) {
+            const currentLevel = lessons.filter(
+                (lessonObject) => lessonObject.levelId === currentLevelId,
+            )[0];
+            const lessonsIds = currentLevel.lessons.map((lesson) => lesson._id);
+            console.log(
+                "index",
+                lessonsIds,
+                nextLessonId,
+                lessonsIds.indexOf(nextLessonId),
+            );
+            setNumOfLessonsMade(lessonsIds.indexOf(nextLessonId));
+        }
+    }, [currentLevelId, nextLessonId]);
+
+    useEffect(() => {
         console.log("lockedLevelsIds", lockedLevelsIds);
     }, [lockedLevelsIds]);
 
@@ -347,16 +365,19 @@ const UserUnitSection: React.FC = () => {
 
     return (
         <div className="h-full py-6 px-3 w-full flex flex-col justify-center items-center">
-            <div className="flex flex-wrap relative h-full w-[40rem] m-auto">
+            <div className="flex flex-wrap  relative h-full w-[40rem] 2xl:w-[50rem] mx-auto">
                 {units
                     ? units.length > 0
                         ? units.map((unit, unitIndex) => (
-                              <div key={unitIndex} className="basis-full">
+                              <div
+                                  key={unitIndex}
+                                  className="basis-full items-center justify-center"
+                              >
                                   <section
                                       key={unitIndex}
-                                      className="absolute h-full"
+                                      className="absolute h-full  inset-x-0 top-0"
                                   >
-                                      <div className="grid grid-rows-2 grid-col-3 grid-flow-col bg-duoGreen-default w-[38rem] 2xl:w-[60rem] h-[7rem] rounded-xl text-white">
+                                      <div className="grid grid-rows-2 grid-col-3 grid-flow-col bg-duoGreen-default w-[38rem] h-[7rem] rounded-xl text-white mx-auto">
                                           <label className="col-span-2 flex justify-start items-center pt-4 pl-4 font-extrabold text-2xl">
                                               Unit {unitIndex + 1}
                                           </label>
@@ -403,147 +424,108 @@ const UserUnitSection: React.FC = () => {
                                                                               (
                                                                                   level,
                                                                                   levelIndex,
-                                                                              ) => {
-                                                                                  const currentLessonsIds =
-                                                                                      level.lessons;
-                                                                                  let numOfLessonsMade: number = 0;
-
-                                                                                  if (
-                                                                                      currentLessonsIds &&
-                                                                                      currentLessonsIds.length >
-                                                                                          0 &&
-                                                                                      !lockedLevelsIds.includes(
-                                                                                          level._id,
-                                                                                      ) &&
-                                                                                      !finisedLevelsIds.includes(
-                                                                                          level._id,
-                                                                                      )
-                                                                                  ) {
-                                                                                      for (
-                                                                                          let i: number = 0;
-                                                                                          i <
-                                                                                          currentLessonsIds.length;
-                                                                                          i++
-                                                                                      ) {
-                                                                                          if (
-                                                                                              nextLessonId &&
-                                                                                              level.lessons
-                                                                                          ) {
-                                                                                              numOfLessonsMade =
-                                                                                                  level.lessons.indexOf(
-                                                                                                      nextLessonId,
-                                                                                                  );
-                                                                                          }
+                                                                              ) => (
+                                                                                  <section
+                                                                                      key={
+                                                                                          levelIndex
                                                                                       }
-                                                                                  }
-                                                                                  return (
-                                                                                      <section
-                                                                                          key={
-                                                                                              levelIndex
-                                                                                          }
-                                                                                      >
-                                                                                          {level &&
-                                                                                          level.lessons &&
-                                                                                          level
-                                                                                              .lessons
-                                                                                              ?.length >
-                                                                                              0 ? (
-                                                                                              lockedLevelsIds.includes(
-                                                                                                  level._id,
-                                                                                              ) ? (
-                                                                                                  <div
-                                                                                                      key={
-                                                                                                          levelIndex
-                                                                                                      }
-                                                                                                      className={`flex relative ${possitionByModularAddition(
-                                                                                                          levelIndex,
-                                                                                                      )} mt-2 w-fit h-fit`}
-                                                                                                  >
-                                                                                                      <>
-                                                                                                          <LessonButton
-                                                                                                              status={
-                                                                                                                  Status.LOCKED
-                                                                                                              }
-                                                                                                          />
-                                                                                                      </>
-                                                                                                  </div>
-                                                                                              ) : finisedLevelsIds.includes(
-                                                                                                    level._id,
-                                                                                                ) ? (
-                                                                                                  <div
-                                                                                                      key={
-                                                                                                          levelIndex
-                                                                                                      }
-                                                                                                      className={`flex relative ${possitionByModularAddition(
-                                                                                                          levelIndex,
-                                                                                                      )} mt-2 w-fit h-fit`}
-                                                                                                  >
+                                                                                  >
+                                                                                      {level &&
+                                                                                      level.lessons &&
+                                                                                      level
+                                                                                          .lessons
+                                                                                          ?.length >
+                                                                                          0 ? (
+                                                                                          lockedLevelsIds.includes(
+                                                                                              level._id,
+                                                                                          ) ? (
+                                                                                              <div
+                                                                                                  className={`flex relative ${possitionByModularAddition(
+                                                                                                      levelIndex,
+                                                                                                  )} mt-2 w-fit h-fit`}
+                                                                                              >
+                                                                                                  <>
                                                                                                       <LessonButton
                                                                                                           status={
-                                                                                                              Status.DONE
+                                                                                                              Status.LOCKED
                                                                                                           }
                                                                                                       />
-                                                                                                  </div>
-                                                                                              ) : currentLessonsIds &&
-                                                                                                nextLessonId !==
-                                                                                                    undefined ? (
-                                                                                                  <div
-                                                                                                      key={
-                                                                                                          levelIndex
+                                                                                                  </>
+                                                                                              </div>
+                                                                                          ) : finisedLevelsIds.includes(
+                                                                                                level._id,
+                                                                                            ) ? (
+                                                                                              <div
+                                                                                                  className={`flex relative ${possitionByModularAddition(
+                                                                                                      levelIndex,
+                                                                                                  )} mt-2 w-fit h-fit`}
+                                                                                              >
+                                                                                                  <LessonButton
+                                                                                                      status={
+                                                                                                          Status.DONE
                                                                                                       }
-                                                                                                      className={`flex relative ${possitionByModularAddition(
-                                                                                                          levelIndex,
-                                                                                                      )} mt-10 w-fit h-fit`}
-                                                                                                  >
-                                                                                                      <>
-                                                                                                          <Tooltip />
+                                                                                                  />
+                                                                                              </div>
+                                                                                          ) : nextLessonId !==
+                                                                                            undefined ? (
+                                                                                              <div
+                                                                                                  className={`flex relative ${possitionByModularAddition(
+                                                                                                      levelIndex,
+                                                                                                  )} ${
+                                                                                                      levelIndex ===
+                                                                                                      0
+                                                                                                          ? "mt-10"
+                                                                                                          : ""
+                                                                                                  } w-fit h-fit`}
+                                                                                              >
+                                                                                                  <>
+                                                                                                      <Tooltip />
 
-                                                                                                          <LessonButton
-                                                                                                              status={
-                                                                                                                  Status.PROGRESS
-                                                                                                              }
-                                                                                                              numberOfLessonsMade={
-                                                                                                                  numOfLessonsMade
-                                                                                                              }
-                                                                                                              numberOfTotalLessons={
-                                                                                                                  level
-                                                                                                                      .lessons
-                                                                                                                      .length
-                                                                                                              }
-                                                                                                              onClick={() =>
-                                                                                                                  setIsNextLessonPopupVisible(
-                                                                                                                      !isNextLessonPopupVisible,
-                                                                                                                  )
-                                                                                                              }
-                                                                                                              buttonRef={
-                                                                                                                  levelButtonRef
-                                                                                                              }
-                                                                                                          />
+                                                                                                      <LessonButton
+                                                                                                          status={
+                                                                                                              Status.PROGRESS
+                                                                                                          }
+                                                                                                          numberOfLessonsMade={
+                                                                                                              numOfLessonsMade
+                                                                                                          }
+                                                                                                          numberOfTotalLessons={
+                                                                                                              level
+                                                                                                                  .lessons
+                                                                                                                  .length
+                                                                                                          }
+                                                                                                          onClick={() =>
+                                                                                                              setIsNextLessonPopupVisible(
+                                                                                                                  !isNextLessonPopupVisible,
+                                                                                                              )
+                                                                                                          }
+                                                                                                          buttonRef={
+                                                                                                              levelButtonRef
+                                                                                                          }
+                                                                                                      />
 
-                                                                                                          <StartLessonPopup
-                                                                                                              numberOfLessonsMade={
-                                                                                                                  numOfLessonsMade +
-                                                                                                                  1
-                                                                                                              }
-                                                                                                              numberOfTotalLessons={
-                                                                                                                  level
-                                                                                                                      .lessons
-                                                                                                                      .length
-                                                                                                              }
-                                                                                                              nextLessonId={
-                                                                                                                  nextLessonId
-                                                                                                              }
-                                                                                                              startLessonRef={
-                                                                                                                  startLessonRef
-                                                                                                              }
-                                                                                                          />
-                                                                                                      </>
-                                                                                                  </div>
-                                                                                              ) : null
-                                                                                          ) : null}
-                                                                                      </section>
-                                                                                  );
-                                                                              },
+                                                                                                      <StartLessonPopup
+                                                                                                          numberOfLessonsMade={
+                                                                                                              numOfLessonsMade +
+                                                                                                              1
+                                                                                                          }
+                                                                                                          numberOfTotalLessons={
+                                                                                                              level
+                                                                                                                  .lessons
+                                                                                                                  .length
+                                                                                                          }
+                                                                                                          nextLessonId={
+                                                                                                              nextLessonId
+                                                                                                          }
+                                                                                                          startLessonRef={
+                                                                                                              startLessonRef
+                                                                                                          }
+                                                                                                      />
+                                                                                                  </>
+                                                                                              </div>
+                                                                                          ) : null
+                                                                                      ) : null}
+                                                                                  </section>
+                                                                              ),
                                                                           )
                                                                         : null}
                                                                 </div>

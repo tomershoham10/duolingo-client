@@ -138,9 +138,10 @@ export const updateNextLessonIdForUser = async (userId: string): Promise<any | n
         console.log("updateNextLessonIdForUser - response", response);
         if (response.ok) {
             const data = await response.json();
+            const userData = { userName: data.userName, userId: data._id, userRole: data.permission, nextLessonId: data.nextLessonId, isLoggedIn: true }
             localStorage.setItem(
                 "userData",
-                JSON.stringify(data),
+                JSON.stringify(userData),
             );
             return data;
         } else return null
