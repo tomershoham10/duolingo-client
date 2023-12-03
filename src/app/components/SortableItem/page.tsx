@@ -1,13 +1,13 @@
 'use client';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useEffect } from 'react';
 
 interface SortableItemProps {
   id: string;
   name: string;
   isGrabbed: boolean;
   isDisabled: boolean;
+  addedStyle?: string;
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({
@@ -15,23 +15,24 @@ const SortableItem: React.FC<SortableItemProps> = ({
   name,
   isGrabbed,
   isDisabled,
+  addedStyle,
 }) => {
-  useEffect(() => {
-    console.log('isGrabbed', isGrabbed);
-  }, [isGrabbed]);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: id, disabled: isDisabled });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
+
   return (
-    <div className='flex h-[5rem] w-[75%] flex-none items-center justify-center'>
+    <div
+      className={`flex h-[5rem] w-[90%] flex-none items-center justify-center`}
+    >
       <div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
         className={`border-border-duoGray-regular w-[80%] flex-none rounded-xl border-2 
-        border-b-4 py-4 text-lg font-bold
+        border-b-4 py-4 text-lg font-bold ${addedStyle}
         ${
           isDisabled
             ? ' cursor-default'

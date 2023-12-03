@@ -66,7 +66,7 @@ const AdminSideBar: React.FC = () => {
     },
     {
       name: 'new user',
-      label: PopupsTypes.CLOSED,
+      label: PopupsTypes.NEWUSER,
       icon: faSquarePlus,
     },
     { name: 'settings', label: PopupsTypes.CLOSED, icon: faCog },

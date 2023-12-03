@@ -3,148 +3,153 @@
 @tailwind utilities;
 
 .lesson-button {
-    box-shadow:
-        0px 2px 0 #46a302,
-        0px 4px 0 #46a302,
-        0px 5px 0 #46a302,
-        0px 6px 0 #46a302,
-        0px 7px 0 #46a302,
-        0px 8px 0 #46a302; /* Box shadow for the circle */
+  box-shadow:
+    0px 2px 0 #46a302,
+    0px 4px 0 #46a302,
+    0px 5px 0 #46a302,
+    0px 6px 0 #46a302,
+    0px 7px 0 #46a302,
+    0px 8px 0 #46a302; /* Box shadow for the circle */
 }
 .lesson-button:disabled {
-    box-shadow:
-        0px 2px 0 rgb(175, 175, 175),
-        0px 4px 0 rgb(175, 175, 175),
-        0px 5px 0 rgb(175, 175, 175),
-        0px 6px 0 rgb(175, 175, 175),
-        0px 7px 0 rgb(175, 175, 175),
-        0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
+  box-shadow:
+    0px 2px 0 rgb(175, 175, 175),
+    0px 4px 0 rgb(175, 175, 175),
+    0px 5px 0 rgb(175, 175, 175),
+    0px 6px 0 rgb(175, 175, 175),
+    0px 7px 0 rgb(175, 175, 175),
+    0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
+}
+
+.accordion-item {
+  overflow: hidden; /* Ensure the content doesn't overflow during the animation */
+  transition: all 0.3s ease-in-out;
 }
 
 .lesson-page {
-    animation: fadeIn 1s;
+  animation: fadeIn 1s;
 }
 
 #exrcise-grid {
-    display: grid;
-    grid-template-rows: 100px 1fr;
+  display: grid;
+  grid-template-rows: 100px 1fr;
 }
 
 #lesson-grid {
-    display: grid;
-    grid-template-columns: 80% 20%;
-    grid-template-rows: 1fr 140px;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  grid-template-rows: 1fr 140px;
 }
 .pop-animation {
-    animation: pop 0.5s ease-out;
+  animation: pop 0.5s ease-out;
 }
 
 .tooltip {
-    animation: bounce-tooltip 2s infinite;
+  animation: bounce-tooltip 2s infinite;
 }
 
 .bounce-and-pop {
-    animation:
-        bounce-tooltip 1.5s infinite 0.6s,
-        pop-tooltip 0.6s ease;
+  animation:
+    bounce-tooltip 1.5s infinite 0.6s,
+    pop-tooltip 0.6s ease;
 }
 
 .lesson-popup-open {
-    animation: pop-no-scale 0.4s;
+  animation: pop-no-scale 0.4s;
 }
 
 .lesson-popup-closed {
-    animation: slideaway 200ms ease-in-out;
-    display: none;
+  animation: slideaway 200ms ease-in-out;
+  display: none;
 }
 
 .draggable-item {
-    transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 
 .draggable-item:active {
-    background: black;
+  background: black;
 }
 
 .draggable-item.dragged {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 ::-webkit-scrollbar {
-    height: 10px;
-    width: 10px;
+  height: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    @apply mx-2 my-2 bg-opacity-100 opacity-0;
+  @apply mx-2 my-2 bg-opacity-100 opacity-0;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply rounded-md bg-duoGray-default;
+  @apply rounded-md bg-duoGray-default;
 }
 
 @keyframes bounce-tooltip {
-    0%,
-    100% {
-        transform: translateY(-30%);
-        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    }
-    50% {
-        transform: none;
-        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
+  0%,
+  100% {
+    transform: translateY(-30%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 
 @keyframes pop-tooltip {
-    0% {
-        transform: scale(0.5);
-    }
-    50% {
-        transform: scale(1.1);
-        transform: translateY(-15%);
-    }
-    100% {
-        transform: scale(1);
-        transform: translateY(-30%);
-    }
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    transform: translateY(-15%);
+  }
+  100% {
+    transform: scale(1);
+    transform: translateY(-30%);
+  }
 }
 
 @keyframes pop {
-    0% {
-        transform: scale(0.5);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes pop-no-scale {
-    0% {
-        transform: scale(0.1);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(0.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes slideaway {
-    from {
-        display: block;
-    }
-    to {
-        transform: scale(0.1);
-    }
+  from {
+    display: block;
+  }
+  to {
+    transform: scale(0.1);
+  }
 }
 
 @keyframes fadeIn {
-    0%,
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0%,
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

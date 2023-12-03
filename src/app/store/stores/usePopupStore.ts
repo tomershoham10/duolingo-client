@@ -6,8 +6,8 @@ export enum PopupsTypes {
     CLOSED = "closed",
     NEWUSER = "newUser",
     NEWUNIT = "newUnit",
-    STARTLESSON = "startLesson"
-
+    STARTLESSON = "startLesson",
+    ADMINEDIT = "adminEdit",
 }
 
 type PopupState = {

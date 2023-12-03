@@ -39,7 +39,7 @@ import {
   submitExercise,
 } from '../API/classes-service/results/functions';
 import { getTargetsList } from '../API/classes-service/targets/functions';
-import SortableItem from '../components/SortableItem/page';
+import SortableItem from '@/app/components/SortableItem/page';
 import { updateNextLessonIdForUser } from '../API/users-service/users/functions';
 
 export default function Page() {

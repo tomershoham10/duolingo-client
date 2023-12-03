@@ -59,6 +59,7 @@ const AdminUnit: React.FC = () => {
   const [exercises, setExercises] = useState<
     { lessonId: string; exercises: FSAType[] }[]
   >([]);
+  const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
   useEffect(() => {
     let courseType: TypesOfCourses = TypesOfCourses.UNDEFINED;
@@ -74,7 +75,7 @@ const AdminUnit: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -172,7 +173,11 @@ const AdminUnit: React.FC = () => {
     console.log('exercises', exercises);
   }, [exercises]);
 
-  const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
+  useEffect(
+    () => console.log('exerciseAccordion', exerciseAccordion),
+    [exerciseAccordion]
+  );
+
   const toggleAccordion = (exerciseId: string) => {
     exerciseAccordion.includes(exerciseId)
       ? setExerciseAccordion((pervExercises) =>
@@ -182,11 +187,6 @@ const AdminUnit: React.FC = () => {
         )
       : setExerciseAccordion((pervExercises) => [...pervExercises, exerciseId]);
   };
-
-  useEffect(
-    () => console.log('exerciseAccordion', exerciseAccordion),
-    [exerciseAccordion]
-  );
 
   return (
     <div className='flex w-full'>
@@ -336,14 +336,14 @@ const AdminUnit: React.FC = () => {
                                                                                             key={
                                                                                               exerciseIndex
                                                                                             }
-                                                                                            className={`flex w-full flex-col transition-all duration-500 ease-in
-                                                                                                                                                                                    ${
-                                                                                                                                                                                      exerciseAccordion.includes(
-                                                                                                                                                                                        exercise._id
-                                                                                                                                                                                      )
-                                                                                                                                                                                        ? ''
-                                                                                                                                                                                        : ''
-                                                                                                                                                                                    }`}
+                                                                                            className={`accordion-item flex w-full flex-col
+                                                                                             ${
+                                                                                               exerciseAccordion.includes(
+                                                                                                 exercise._id
+                                                                                               )
+                                                                                                 ? 'open'
+                                                                                                 : ''
+                                                                                             }`}
                                                                                             onClick={() => {
                                                                                               toggleAccordion(
                                                                                                 exercise._id

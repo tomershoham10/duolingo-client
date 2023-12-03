@@ -8,8 +8,11 @@ import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEditSyllabusStore } from '@/app/store/stores/useEditSyllabus';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 const InfoBar: React.FC = () => {
+  const pathname = usePathname();
+
   const userName = useStore(useUserStore, (state) => state.userName);
   const courseType = useStore(useCourseStore, (state) => state.courseType);
   const fieldToEdit = useStore(
@@ -17,17 +20,27 @@ const InfoBar: React.FC = () => {
     (state) => state.fieldToEdit
   );
   const fieldId = useStore(useEditSyllabusStore, (state) => state.fieldId);
-  const pathname = usePathname();
+  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
   // const [selected, setSelected] = useState<number>();
 
   return (
-    <div className='flex h-full w-72 flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest'>
+    <div className='flex h-full w-[18rem] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest 2xl:w-[25rem] 3xl:w-[35rem]'>
       {pathname.includes('syllabus') ? (
         <div>
           <div>{courseType}</div>
           {fieldToEdit ? (
             <div>
-              {fieldToEdit} {fieldId}
+              <span>
+                {fieldToEdit} {fieldId}
+              </span>
+              <button
+                onClick={() => {
+                  updateSelectedPopup(PopupsTypes.ADMINEDIT);
+                }}
+              >
+                edit
+              </button>
             </div>
           ) : null}
         </div>
