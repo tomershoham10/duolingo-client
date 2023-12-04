@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import AdminSideBar from '../components/Navigation/AdminSideBar/page';
 import NavBar from '@/app/components/Navigation/NavBar/page';
 import CreateNewUser from '../popups/CreateNewUser/page';
@@ -16,6 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const userRole = useStore(useUserStore, (state) => state.userRole);
   console.log(userRole);
   return (
@@ -28,7 +29,7 @@ export default function RootLayout({
           <AdminEditPopup />
           <CreateNewUnit />
           <div className='flex h-screen w-full flex-col'>
-            <NavBar />
+            {pathname.includes('courses') ? <NavBar /> : null}
             <div className='flex h-full w-full flex-row justify-between overflow-hidden'>
               {children}
               <InfoBar />

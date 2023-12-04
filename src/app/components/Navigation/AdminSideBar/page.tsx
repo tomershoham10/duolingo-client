@@ -59,17 +59,23 @@ const AdminSideBar: React.FC = () => {
     href?: string;
   }[] = [
     {
-      name: 'dashboard',
+      name: 'Dashboard',
       label: PopupsTypes.CLOSED,
       icon: faHome,
       href: '/Dashboard',
     },
     {
-      name: 'new user',
+      name: 'New User',
       label: PopupsTypes.NEWUSER,
       icon: faSquarePlus,
     },
-    { name: 'settings', label: PopupsTypes.CLOSED, icon: faCog },
+    {
+      name: 'New Exercise',
+      label: PopupsTypes.CLOSED,
+      icon: faSquarePlus,
+      href: `/classroom/new-exercise`,
+    },
+    { name: 'Settings', label: PopupsTypes.CLOSED, icon: faCog },
   ];
 
   return (
@@ -134,7 +140,7 @@ const AdminSideBar: React.FC = () => {
                       className='flex h-full cursor-pointer'
                       href={item.href}
                     >
-                      {item.label}
+                      {item.name}
                     </Link>
                   ) : (
                     <span>{item.name}</span>

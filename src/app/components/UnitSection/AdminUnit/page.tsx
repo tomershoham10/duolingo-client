@@ -394,7 +394,23 @@ const AdminUnit: React.FC = () => {
                                                                                                   </span>
                                                                                                 </div>
                                                                                                 <div className='flex flex-col'>
-                                                                                                  <span className='font-bold'>
+                                                                                                  {exercise.timeBuffers.map(
+                                                                                                    (
+                                                                                                      timeBuffer,
+                                                                                                      timeBufferIndex
+                                                                                                    ) => (
+                                                                                                      <div
+                                                                                                        key={
+                                                                                                          timeBufferIndex
+                                                                                                        }
+                                                                                                      >
+                                                                                                        {
+                                                                                                          timeBuffer.timeBuffer
+                                                                                                        }
+                                                                                                      </div>
+                                                                                                    )
+                                                                                                  )}
+                                                                                                  {/* <span className='font-bold'>
                                                                                                     firstTimeBuffer
                                                                                                   </span>
                                                                                                   <span>
@@ -413,7 +429,7 @@ const AdminUnit: React.FC = () => {
                                                                                                       exercise.secondTimeBuffer
                                                                                                     }{' '}
                                                                                                     minutes
-                                                                                                  </span>
+                                                                                                  </span> */}
                                                                                                 </div>
                                                                                               </div>
                                                                                             ) : (

@@ -253,25 +253,38 @@ export default function Page() {
 
   useEffect(() => {
     if (currentExercise) {
-      const totalMinutesForExercise =
-        currentExercise.firstTimeBuffer + currentExercise.secondTimeBuffer;
-
-      setTimeRemaining({ minutes: totalMinutesForExercise, seconds: 0 });
+      const timeBuffersMinutes = currentExercise.timeBuffers.map(
+        (timeBuffer) => timeBuffer.timeBuffer
+      );
+      const totalMinutesForExercise = timeBuffersMinutes.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
+      if (totalMinutesForExercise === Math.round(totalMinutesForExercise)) {
+        setTimeRemaining({ minutes: totalMinutesForExercise, seconds: 0 });
+      } else {
+        const minutes = Math.floor(totalMinutesForExercise);
+        const seconds = 60 * (totalMinutesForExercise - minutes);
+        setTimeRemaining({ minutes: minutes, seconds: seconds });
+      }
     }
   }, [currentExercise]);
 
   useEffect(() => {
     if (
       currentExercise &&
-      currentExercise.firstTimeBuffer &&
-      currentExercise.secondTimeBuffer &&
+      currentExercise.timeBuffers &&
       currentResult &&
       isExerciseStarted &&
       !isExerciseFinished
     ) {
-      const totalMinutesForExercise =
-        currentExercise.firstTimeBuffer + currentExercise.secondTimeBuffer;
-
+      const timeBuffersMinutes = currentExercise.timeBuffers.map(
+        (timeBuffer) => timeBuffer.timeBuffer
+      );
+      const totalMinutesForExercise = timeBuffersMinutes.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
       const startDate = currentResult.date;
       const timerInterval = setInterval(() => {
         setTimeRemaining(() => {
@@ -448,22 +461,32 @@ export default function Page() {
         scoreByTargets = 85;
         console.log('scoreByTargets', scoreByTargets);
       }
+      const timeBuffersMinutes = currentExercise.timeBuffers.map(
+        (timeBuffer) => timeBuffer.timeBuffer
+      );
 
-      if (
-        currentExercise.firstTimeBuffer + currentExercise.secondTimeBuffer >
-          timeRemaining.minutes &&
-        timeRemaining.minutes + timeRemaining.seconds / 60 >=
-          currentExercise.secondTimeBuffer
-      ) {
-        scoreByTime = 100;
-      } else if (
-        currentExercise.secondTimeBuffer > timeRemaining.minutes &&
-        timeRemaining.minutes + timeRemaining.seconds >= 0
-      ) {
-        scoreByTime = 75;
-      } else {
-        scoreByTime = 60;
-      }
+      const totalMinutesForExercise = timeBuffersMinutes.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
+
+      //   if (
+      //     totalMinutesForExercise > timeRemaining.minutes &&
+      //     timeRemaining.minutes + timeRemaining.seconds / 60 >=
+      //       currentExercise.secondTimeBuffer
+      //   ) {
+      //     scoreByTime = 100;
+      //   } else if (
+      //     currentExercise.secondTimeBuffer > timeRemaining.minutes &&
+      //     timeRemaining.minutes + timeRemaining.seconds >= 0
+      //   ) {
+      //     scoreByTime = 75;
+      //   } else {
+      //     scoreByTime = 60;
+      //   }
+
+      scoreByTime = 100;
+
       totalScoreToSubmit !== 0
         ? (totalScoreToSubmit = 0.6 * scoreByTargets + 0.4 * scoreByTime)
         : null;
@@ -623,8 +646,8 @@ export default function Page() {
                             showPlaceholder
                               ? null
                               : targetFromDropdown
-                              ? targetFromDropdown.name
-                              : null
+                                ? targetFromDropdown.name
+                                : null
                           }
                           onChange={handleTargetsDropdown}
                           isDisabled={!isExerciseStarted || isExerciseFinished}
@@ -664,8 +687,8 @@ export default function Page() {
                       timeRemaining.minutes === 0 && timeRemaining.seconds === 0
                         ? 'mx-2 fill-duoRed-light text-duoRed-default opacity-100 sm:text-3xl xl:text-4xl'
                         : isExerciseStarted && !isExerciseFinished
-                        ? 'mx-2 animate-spin fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
-                        : 'mx-2 fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
+                          ? 'mx-2 animate-spin fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
+                          : 'mx-2 fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
                     }
                   />
                   <span className='font-extrabold'>
@@ -734,8 +757,8 @@ export default function Page() {
                                     ? totalScore === 100
                                       ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter'
                                       : totalScore === 0
-                                      ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter'
-                                      : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light'
+                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter'
+                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light'
                                     : 'relative col-span-2 flex items-center justify-center border-t-2'
                                 }`}
             >
@@ -772,8 +795,8 @@ export default function Page() {
                             totalScore === 100
                               ? 'text-duoGreen-darkText'
                               : totalScore === 0
-                              ? 'text-duoRed-default'
-                              : 'text-duoYellow-darkest'
+                                ? 'text-duoRed-default'
+                                : 'text-duoYellow-darkest'
                           }`}
                         >
                           {totalScore === 100 ? 'Currect!' : 'Correct answers:'}
@@ -806,8 +829,8 @@ export default function Page() {
                             totalScore === 100
                               ? 'text-duoGreen-text hover:text-duoGreen-midText'
                               : totalScore === 0
-                              ? 'text-duoRed-default'
-                              : 'text-duoYellow-dark hover:text-duoYellow-darker'
+                                ? 'text-duoRed-default'
+                                : 'text-duoYellow-dark hover:text-duoYellow-darker'
                           }`}
                         >
                           <FiFlag className='mr-2 -scale-x-100' />
@@ -822,8 +845,8 @@ export default function Page() {
                         totalScore === 100
                           ? Color.GREEN
                           : totalScore === 0
-                          ? Color.RED
-                          : Color.YELLOW
+                            ? Color.RED
+                            : Color.YELLOW
                       }
                       style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
                       onClick={continueLesson}

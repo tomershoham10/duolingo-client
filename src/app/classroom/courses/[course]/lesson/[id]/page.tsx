@@ -1,16 +1,10 @@
 'use client';
 import {
-  FSAType,
+    TimeBuffersType, FSAType,
   getExercisesData,
 } from '@/app/API/classes-service/lessons/functions';
 import ProgressBar from '@/app/components/ProgressBar/page';
 import { useEffect, useState } from 'react';
-
-enum DifficultyLevel {
-  Easy = 'Easy',
-  Medium = 'Medium',
-  Hard = 'Hard',
-}
 
 export default function Page({ params }: { params: { id: string } }) {
   const lessonId = params.id.toString();
