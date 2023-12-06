@@ -18,7 +18,7 @@ export default function RootLayout({
   const router = useRouter();
   const pathname = usePathname();
   const userRole = useStore(useUserStore, (state) => state.userRole);
-  console.log(userRole);
+//   console.log("classroom layout - userRole",userRole);
   return (
     <div className='flex h-screen w-full flex-row'>
       {userRole === TypesOfUser.ADMIN ? (
