@@ -12,6 +12,14 @@ import { TbTargetArrow } from 'react-icons/tb';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import Upload, { UploadRef } from '@/app/components/Upload/page';
 import Slider from '@/app/components/Slider/page';
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import SortableItem from '@/app/components/SortableItem/page';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 interface TimeBuffersType {
   timeBuffer: number;
@@ -31,7 +39,7 @@ const NewExercise: React.FC = () => {
 
   const [difficultyLevel, setDifficultyLevel] = useState<number>(0);
 
-  const [recordLength, setRecordLength] = useState<number>();
+  const [recordLength, setRecordLength] = useState<number>(0);
 
   const [timeBuffers, setTimeBuffers] = useState<TimeBuffersType[]>();
 
@@ -44,6 +52,9 @@ const NewExercise: React.FC = () => {
   const [time, setTime] = useState<number>();
   const [grade, setGrade] = useState<number | ''>('');
 
+  const [grabbedRelevantId, setGrabbedRelevantId] =
+    useState<string>('released');
+  const [grabbedAnswerId, setGrabbedAnswerId] = useState<string>('released');
   const uploadRef = useRef<UploadRef>(null);
 
   useEffect(() => {
@@ -84,6 +95,78 @@ const NewExercise: React.FC = () => {
     }
   };
 
+  const handleRelevantDragMove = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setRelevant((items) => {
+        const activeIndex = items
+          .map((item) => item._id)
+          .indexOf(active.id as string);
+        const overIndex = items
+          .map((item) => item._id)
+          .indexOf(over.id as string);
+        return arrayMove(items, activeIndex, overIndex);
+      });
+    }
+  };
+
+  const handleRelevantDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setGrabbedRelevantId('released');
+
+    if (over && active.id !== over.id) {
+      setRelevant((items) => {
+        const activeIndex = items
+          .map((item) => item._id)
+          .indexOf(active.id as string);
+        const overIndex = items
+          .map((item) => item._id)
+          .indexOf(over.id as string);
+        return arrayMove(items, activeIndex, overIndex);
+      });
+    }
+  };
+
+  const removeRelevantItem = (itemId: string) => {
+    setRelevant(relevant.filter((item) => item._id != itemId));
+  };
+
+  const handleAnswerDragMove = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setAnswersList((items) => {
+        const activeIndex = items
+          .map((item) => item._id)
+          .indexOf(active.id as string);
+        const overIndex = items
+          .map((item) => item._id)
+          .indexOf(over.id as string);
+        return arrayMove(items, activeIndex, overIndex);
+      });
+    }
+  };
+
+  const handleAnswerDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setGrabbedAnswerId('released');
+
+    if (over && active.id !== over.id) {
+      setAnswersList((items) => {
+        const activeIndex = items
+          .map((item) => item._id)
+          .indexOf(active.id as string);
+        const overIndex = items
+          .map((item) => item._id)
+          .indexOf(over.id as string);
+        return arrayMove(items, activeIndex, overIndex);
+      });
+    }
+  };
+
+  const removeAnswerItem = (itemId: string) => {
+    setAnswersList(answersList.filter((item) => item._id != itemId));
+  };
+
   const addTargetToAnswersList = () => {
     if (targetFromDropdown) {
       const answersIds = answersList.map((target) => target._id);
@@ -104,18 +187,22 @@ const NewExercise: React.FC = () => {
   useEffect(() => {
     console.log('relevant', relevant);
   }, [relevant]);
-  useEffect(() => {
-    console.log('timeBufferRangeValues', timeBufferRangeValues);
-    for (let i = 0; i < timeBufferRangeValues.length; i++) {
-      if (timeBufferRangeValues[i] > timeBufferRangeValues[i + 1]) {
-        console.log('not ok', i);
-      }
-    }
-  }, [timeBufferRangeValues]);
+  //   useEffect(() => {
+  //     console.log('timeBufferRangeValues', timeBufferRangeValues);
+  //     for (let i = 0; i < timeBufferRangeValues.length; i++) {
+  //       if (timeBufferRangeValues[i] > timeBufferRangeValues[i + 1]) {
+  //         console.log('not ok', i);
+  //       }
+  //     }
+  //   }, [timeBufferRangeValues]);
 
   useEffect(() => {
     console.log('difficultyLevel', difficultyLevel);
   }, [difficultyLevel]);
+
+  useEffect(() => {
+    console.log('rangeIndex', rangeIndex);
+  }, [rangeIndex]);
 
   const handleFileChange = (file: File | null) => {
     console.log('Selected file:', file);
@@ -132,10 +219,25 @@ const NewExercise: React.FC = () => {
     e.preventDefault();
     setTimeBufferRangeValues((prevArray) => {
       return prevArray.map((value, i) =>
-        i === index ? Number(e.target.value) : value
+        i === index
+          ? Number(e.target.value) > prevArray[i + 1]
+            ? prevArray[i + 1] - 1 / 6
+            : Number(e.target.value) < prevArray[i - 1]
+              ? prevArray[i - 1] + 1 / 6
+              : Number(e.target.value)
+          : value
       );
     });
   };
+
+  useEffect(() => {
+    console.log(
+      'timeBufferRangeValues',
+      timeBufferRangeValues,
+      timeBufferRangeValues[timeBufferRangeValues.length - 1],
+      timeBufferRangeValues[timeBufferRangeValues.length - 1] === recordLength
+    );
+  }, [timeBufferRangeValues, recordLength]);
 
   return (
     <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
@@ -200,71 +302,120 @@ const NewExercise: React.FC = () => {
         </div>
         <div>
           <div>
-            {relevant.map((relevat, relevantIndex) => (
-              <div key={relevantIndex}>{relevat.name}</div>
-            ))}
+            <span className='my-3 text-2xl font-bold'>Relevant:</span>
+
+            <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragStart={(event: DragEndEvent) => {
+                  const { active } = event;
+                  setGrabbedRelevantId(active.id.toString());
+                }}
+                onDragMove={handleRelevantDragMove}
+                onDragEnd={handleRelevantDragEnd}
+              >
+                <SortableContext
+                  items={relevant.map((target) => target._id)}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  <div className='flex flex-wrap gap-1'>
+                    {relevant.map((target, relevantIndex) => (
+                      <div
+                        key={relevantIndex}
+                        className='mb-2 flex w-[8rem] flex-row'
+                      >
+                        <SortableItem
+                          id={target._id}
+                          key={relevantIndex}
+                          name={target.name}
+                          isGrabbed={
+                            grabbedRelevantId
+                              ? grabbedRelevantId === target._id
+                              : false
+                          }
+                          isDisabled={false}
+                        />
+                        {grabbedRelevantId !== target._id ? (
+                          <button
+                            onClick={() => {
+                              removeRelevantItem(target._id);
+                            }}
+                            className='flex w-full items-center justify-center text-duoGray-darkest'
+                          >
+                            <FaRegTrashAlt />
+                          </button>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
           </div>
         </div>
         <div>
           <div>
-            {answersList.map((answer, relevantIndex) => (
-              <div key={relevantIndex}>{answer.name}</div>
-            ))}
+            <span className='my-3 text-2xl font-bold'>Answers:</span>
+            <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragStart={(event: DragEndEvent) => {
+                  const { active } = event;
+                  setGrabbedAnswerId(active.id.toString());
+                }}
+                onDragMove={handleAnswerDragMove}
+                onDragEnd={handleAnswerDragEnd}
+              >
+                <SortableContext
+                  items={answersList.map((answer) => answer._id)}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  <div className='flex flex-wrap gap-1'>
+                    {answersList.map((answer, answerIndex) => (
+                      <div
+                        key={answerIndex}
+                        className='mb-2 flex w-[8rem] flex-row'
+                      >
+                        <SortableItem
+                          id={answer._id}
+                          key={answerIndex}
+                          name={answer.name}
+                          isGrabbed={
+                            grabbedAnswerId
+                              ? grabbedAnswerId === answer._id
+                              : false
+                          }
+                          isDisabled={false}
+                        />
+                        {grabbedAnswerId !== answer._id ? (
+                          <button
+                            onClick={() => {
+                              removeAnswerItem(answer._id);
+                            }}
+                            className='flex w-full items-center justify-center text-duoGray-darkest'
+                          >
+                            <FaRegTrashAlt />
+                          </button>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
           </div>
         </div>
-        <div className='flex w-full flex-col'>
-          <div>
-            {recordLength ? <></> : <span>disabled</span>}
-            <span className='my-3 text-2xl font-bold'>Time Buffers:</span>
-            <form>
-              <label htmlFor='time-number'>time</label>
-              <input
-                type='number'
-                min={0}
-                onChange={(e) => setTime(Number(e.target.value))}
-                id='time-number'
-                className='border-2 focus:outline-none'
-              />
-              <label htmlFor='grade-number'>grade</label>
-              <input
-                type='number'
-                min={0}
-                max={100}
-                id='grade-number'
-                value={grade}
-                onChange={(e) => {
-                  const inputValue = Number(e.target.value);
-                  if (
-                    !isNaN(inputValue) &&
-                    inputValue >= 0 &&
-                    inputValue <= 100
-                  ) {
-                    setGrade(inputValue);
-                  }
-                }}
-                className='border-2 focus:outline-none'
-              />
-              <button
-                type='button'
-                // onClick={addTimeBuffer}
-                className='border-2 bg-slate-100'
-              >
-                submit
-              </button>
-            </form>
-          </div>
 
-          <div className='flex w-full flex-col'>
-            <span className='my-3 text-2xl font-bold'>difficulty level:</span>
-            <Slider
-              isMultiple={false}
-              min={0}
-              max={10}
-              step={0.5}
-              value={difficultyLevel}
-              onChange={handleRangeChange}
-            />
-          </div>
+        <div className='flex w-full flex-col'>
+          <span className='my-3 text-2xl font-bold'>difficulty level:</span>
+          <Slider
+            isMultiple={false}
+            min={0}
+            max={10}
+            step={0.5}
+            value={difficultyLevel}
+            onChange={handleRangeChange}
+          />
         </div>
         <span className='my-3 text-2xl font-bold'>Files</span>
 
@@ -278,41 +429,47 @@ const NewExercise: React.FC = () => {
         <span>sonolist</span>
 
         <div>
-          <div className='relative'>
-            {rangeIndex}
-            {Array.from({ length: rangeIndex }).map((_, index) => (
-              <input
-                key={index}
-                type='range'
-                id={`range${index + 1}`}
-                name={`range${index + 1}`}
-                min='0'
-                max='100'
-                step='1'
-                value={timeBufferRangeValues[index]}
-                onChange={(e) => handleTimeBufferRange(e, index)}
-                className='multi-range absolute'
-              />
-            ))}
+          <div className='relative flex flex-col items-start justify-center'>
+            <span className='my-3 text-2xl font-bold'>Time Buffers:</span>
 
-            <Slider
-              isMultiple={true}
-              numberOfSliders={rangeIndex}
-              min={0}
-              max={100}
-              step={1}
-              value={timeBufferRangeValues}
-              onChange={handleTimeBufferRange}
-            />
+            <button
+              onClick={() => {
+                console.log('clicked');
+                console.log(
+                  '100 check',
+                  timeBufferRangeValues[timeBufferRangeValues.length - 1]
+                );
+                if (
+                  timeBufferRangeValues[timeBufferRangeValues.length - 1] ===
+                  recordLength
+                ) {
+                  console.log('alert');
+                  addAlert('no good', AlertSizes.small);
+                  return;
+                } else {
+                  setRangeIndex(rangeIndex + 1);
+                  setTimeBufferRangeValues((prevValues) => [
+                    ...prevValues,
+                    recordLength,
+                  ]);
+                }
+              }}
+              disabled={recordLength > 0 ? false : true}
+            >
+              Add Input
+            </button>
+            <div className='mt-6 pb-[5rem]'>
+              <Slider
+                isMultiple={true}
+                numberOfSliders={rangeIndex}
+                min={0}
+                max={recordLength}
+                step={1 / 6}
+                value={timeBufferRangeValues}
+                onChange={handleTimeBufferRange}
+              />
+            </div>
           </div>
-          <button
-            onClick={() => {
-              setRangeIndex(rangeIndex + 1);
-              setTimeBufferRangeValues((prevValues) => [...prevValues, 0]);
-            }}
-          >
-            Add Input
-          </button>
         </div>
       </div>
     </div>

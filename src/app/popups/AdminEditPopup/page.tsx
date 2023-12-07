@@ -24,7 +24,7 @@ import {
 import { UnitType } from '@/app/API/classes-service/courses/functions';
 import { getUnitById } from '@/app/API/classes-service/units/functions';
 import SortableItem from '@/app/components/SortableItem/page';
-import Textbox from '@/app/components/Textbox/page';
+import Textbox, { FontSizes } from '@/app/components/Textbox/page';
 
 library.add(faXmark);
 
@@ -133,7 +133,11 @@ const AdminEditPopup: React.FC = () => {
                 <div className='my-2 w-[69%]'>
                   <span className='text-2xl font-bold'>Description:</span>
                   {unit.description ? (
-                    <Textbox prevData={unit.description} />
+                    <Textbox
+                      prevData={unit.description}
+                      isEditMode={true}
+                      fontSizeProps={FontSizes.SMALL}
+                    />
                   ) : null}
                 </div>
                 <div className='my-2'>{unit.guidebook}</div>

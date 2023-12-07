@@ -24,14 +24,14 @@ const SortableItem: React.FC<SortableItemProps> = ({
 
   return (
     <div
-      className={`flex h-[5rem] w-[90%] flex-none items-center justify-center`}
+      className={`flex h-[5rem] w-[80%] flex-none items-center justify-start`}
     >
       <div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
-        className={`border-border-duoGray-regular w-[80%] flex-none rounded-xl border-2 
+        className={`border-border-duoGray-regular w-full flex-none rounded-xl border-2 
         border-b-4 py-4 text-lg font-bold ${addedStyle}
         ${
           isDisabled

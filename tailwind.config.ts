@@ -80,7 +80,8 @@ const config: Config = {
 
                     lighter: '#FFDFE0',
                     light: '#FFB2B2',
-                    default: '#EA2B2B'
+                    default: '#EA2B2B',
+                    darker: '#D42727'
                 },
 
                 'duoPurple': {

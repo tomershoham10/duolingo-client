@@ -1,4 +1,6 @@
+'use client';
 import _ from 'lodash';
+import { useState, useEffect } from 'react';
 
 interface SliderProps {
   isMultiple: boolean;
@@ -21,6 +23,24 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsStep = props.step;
   const propsValue = props.value;
   const propsOnChange = props.onChange;
+
+  const [redIndexes, setRedIndexes] = useState<number[]>([]);
+
+  useEffect(() => {
+    console.log('timeBufferRangeValues', propsValue);
+    if (_.isObject(propsValue)) {
+      for (let i = 0; i < propsValue.length; i++) {
+        if (propsValue[i] > propsValue[i + 1]) {
+          propsValue[i+1] = propsValue[i ] - propsStep;
+        } 
+      }
+    }
+  }, [propsValue]);
+
+  useEffect(() => {
+    console.log('redIndexes', redIndexes);
+  }, [redIndexes]);
+
   return (
     <>
       {isMultiple && numberOfSliders && _.isObject(propsValue) ? (
@@ -36,7 +56,9 @@ const Slider: React.FC<SliderProps> = (props) => {
               step={propsStep}
               value={(propsValue as number[])[index].toString()}
               onChange={(e) => propsOnChange(e, index)}
-              className='multi-range absolute'
+              className={`multi-range absolute mb-6 mt-3 w-full ${
+                redIndexes.includes(index) ? 'unplaced-index bg-black' : ''
+              }`}
             />
           ))}
         </>

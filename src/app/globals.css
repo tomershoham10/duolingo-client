@@ -91,12 +91,17 @@
 
 .range-slide::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   cursor: pointer;
   background: #20a6ec;
+  border-style: solid;
+  padding: 10px;
+  border-width: 6px;
+  border-color: white;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .multi-range {
@@ -104,9 +109,9 @@
   appearance: none;
   height: 10px;
   border-radius: 10px;
-  width: 100%;
-  margin-top: 0.75rem;
-  margin-bottom: 1.5rem;
+  outline: none;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
   background-color: #ebeaeb;
   pointer-events: none;
 }
@@ -114,20 +119,26 @@
 .multi-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   pointer-events: all;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   background-color: #20a6ec;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 50;
+  z-index: 40;
+  border-style: solid;
+  padding: 10px;
+  border-width: 6px;
+  border-color: white;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .multi-range::-webkit-slider-runnable-track {
-  z-index: 50;
-  }
-  
-.multi-range::-webkit-slider-thumb:active {
+  z-index: 40;
+}
 
+.unplaced-index::-webkit-slider-thumb {
+  background-color: #d42727;
 }
 
 input::-webkit-outer-spin-button,
