@@ -17,7 +17,6 @@ import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
-  CoursesType,
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 

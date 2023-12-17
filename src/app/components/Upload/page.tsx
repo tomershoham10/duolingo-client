@@ -4,11 +4,23 @@ import React, {
   forwardRef,
   useRef,
   ChangeEvent,
+  useState,
 } from 'react';
+import Button, { Color } from '../Button/page';
+import {
+  FaRegFileAudio,
+  FaRegTrashAlt,
+  FaRegFileImage,
+  FaExpandAlt,
+  FaListUl,
+} from 'react-icons/fa';
 
 interface UploadProps {
+  label: string;
+  isMultiple: boolean;
+  filesTypes: string;
   onFileChange: (file: File | null) => void;
-  fileLength: (size: number | null) => void;
+  fileLength?: (size: number | null) => void;
 }
 
 export interface UploadRef {
@@ -18,10 +30,13 @@ export interface UploadRef {
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [isFilesListOpen, setIsFilesListOpen] = useState<boolean>(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      console.log('file uploaded', file);
       const audioContext = new window.AudioContext();
       props.onFileChange(file);
       const reader = new FileReader();
@@ -30,17 +45,25 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         console.log('reader2', reader);
         if (event && event.target) {
           const arrayBuffer = event.target.result as ArrayBuffer;
-          if (arrayBuffer) {
-            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+          if (file.type.includes('audio') && arrayBuffer) {
+            try {
+              const audioBuffer =
+                await audioContext.decodeAudioData(arrayBuffer);
 
-            // Get the duration in seconds
-            const durationInSeconds = audioBuffer.duration;
-            console.log('Duration:', durationInSeconds, 'seconds');
-            props.fileLength(durationInSeconds / 60);
+              const durationInSeconds = audioBuffer.duration;
+              console.log('Duration:', durationInSeconds, 'seconds');
+              props.fileLength
+                ? props.fileLength(durationInSeconds / 60)
+                : null;
+            } catch (error) {
+              console.error('Error decoding audio data:', error);
+            }
           }
         }
       };
       reader.readAsArrayBuffer(file);
+
+      setUploadedFiles((prevFiles) => [...prevFiles, file.name]);
     }
   };
 
@@ -53,22 +76,93 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     clear: () => {
       if (inputRef && inputRef.current) {
         inputRef.current.value = '';
+        setUploadedFiles([]);
       }
     },
   }));
 
   return (
-    <label htmlFor='upload-input' className='cursor-pointer'>
-      <span>Choose a .wav file</span>
-
+    <div className='h-fit w-full'>
+      <div className='relative flex h-16 w-full flex-row items-center gap-4'>
+        <Button
+          label={props.label}
+          color={Color.GRAY}
+          onClick={() => inputRef.current?.click()}
+          isDisabled={!props.isMultiple && uploadedFiles.length > 0}
+        />
+        {uploadedFiles.length > 0 ? (
+          <button
+            className='right-0 flex h-8 w-8 items-center justify-center rounded-full bg-duoGray-lighter text-lg hover:bg-duoGray-hover'
+            onClick={() => setIsFilesListOpen(!isFilesListOpen)}
+          >
+            <FaExpandAlt />
+          </button>
+        ) : null}
+      </div>
+      {isFilesListOpen && uploadedFiles.length > 0 ? (
+        <div className='w-full rounded-md border-2'>
+          <ul
+            className='flex flex-col font-bold'
+            style={{ borderRadius: '24px' }}
+          >
+            {isFilesListOpen &&
+              uploadedFiles.map((file, fileIndex) => (
+                <li
+                  key={fileIndex}
+                  className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light`}
+                  style={
+                    fileIndex === uploadedFiles.length - 1
+                      ? fileIndex === 0
+                        ? {
+                            borderTopLeftRadius: '4px 4px',
+                            borderTopRightRadius: '4px 4px',
+                            borderBottomLeftRadius: '4px 4px',
+                            borderBottomRightRadius: '4px 4px',
+                          }
+                        : {
+                            borderBottomLeftRadius: '4px 4px',
+                            borderBottomRightRadius: '4px 4px',
+                          }
+                      : fileIndex === 0
+                        ? {
+                            borderTopLeftRadius: '4px 4px',
+                            borderTopRightRadius: '4px 4px',
+                          }
+                        : {}
+                  }
+                >
+                  <div className='flex w-full flex-row'>
+                    {file.endsWith('.wav') ? (
+                      <FaRegFileAudio className='mr-2 text-xl 3xl:text-2xl' />
+                    ) : (
+                      <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
+                    )}
+                    <span className='w-[80%]'>{file}</span>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setUploadedFiles((prev) =>
+                        prev.filter((_, itemIndex) => itemIndex !== fileIndex)
+                      )
+                    }
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : null}
       <input
         id='upload-input'
         type='file'
         ref={inputRef}
         onChange={handleFileChange}
+        multiple={props.isMultiple}
+        accept={props.filesTypes}
         className='hidden'
       />
-    </label>
+    </div>
   );
 });
 

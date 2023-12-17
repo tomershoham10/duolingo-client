@@ -1,17 +1,16 @@
-export interface TimeBuffersType {
-    timeBuffer: number;
-    grade: number;
+import { FSAType } from "../exercises/FSA/functions";
+
+export enum TypesOfLessons {
+    searider = "searider",
+    crew = "crew",
+    senior = "senior",
 }
-export interface FSAType {
+
+export interface LessonType {
     _id: string;
-    filesKeys: string[];
-    difficultyLevel: number;
-    relevant: string[];
-    answers: string[]; //may be 2 correct answers
-    timeBuffers: TimeBuffersType[];
-    description: string;
-    dateCreated: Date;
-    sonolistKeys: string[];
+    name: string;
+    exercises: string[];
+    type: TypesOfLessons;
 }
 
 export interface ResultType {
@@ -23,7 +22,34 @@ export interface ResultType {
     score: number;
 }
 
-export const getExercisesData = async (lessonId: string) => {
+export const getAllLessons = async (): Promise<LessonType[] | null> => {
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/lessons/",
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resLessons = data.lessons;
+            // console.log("leves api - getAllLessons", resLessons);
+            return resLessons;
+        } else {
+            console.error("Failed to fetch all Lessons.");
+            return [];
+        }
+    } catch (error) {
+        console.error("Error fetching Lessons:", error);
+        return [];
+    }
+};
+
+export const getExercisesData = async (lessonId: string): Promise<FSAType[] | null> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
@@ -41,7 +67,7 @@ export const getExercisesData = async (lessonId: string) => {
             return resExercises;
         } else {
             console.error("Failed to fetch exercises by id.");
-            return response;
+            return null;
         }
     } catch (error) {
         console.error("Error fetching lesson:", error);
@@ -49,8 +75,7 @@ export const getExercisesData = async (lessonId: string) => {
     }
 };
 
-
-export const getResultsData = async (lessonId: string, userId: string): Promise<any> => {
+export const getResultsData = async (lessonId: string, userId: string): Promise<{ numOfExercises: number, results: ResultType[] } | []> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`,

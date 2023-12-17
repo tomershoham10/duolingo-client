@@ -1,13 +1,5 @@
 import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
-import { Dispatch, SetStateAction } from "react";
-
-export interface UnitType {
-    _id: string;
-    levels?: string[];
-    guidebook?: string;
-    description?: string;
-}
-
+import { UnitType } from "../units/functions";
 
 export interface CoursesType {
     _id: string;
@@ -44,7 +36,7 @@ export const getCourses = async () => {
                     units: course.units as UnitType[],
                 }),
             );
-            // console.log(coursesList);
+            // console.log("coursesList check", coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");

@@ -63,11 +63,14 @@ const config: Config = {
                     //in dropdown for example
                     hover: '#E0E0E0',
 
+                    lightest: '#FFFFFF',
                     lighter: '#F7F7F7',
                     light: '#EBEAEB',
+                    defaultHover: '#ECECEC',
                     default: '#E5E5E5',
                     regular: '#DCDCDC',
                     dark: '#AFAFAF',
+                    midDark:'#939393',
                     darker: '#8B8B8B',
                     darkest: '#4B4B4B',
                     darkText: '#9D9D9D'

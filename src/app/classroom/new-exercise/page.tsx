@@ -20,6 +20,21 @@ import {
 } from '@dnd-kit/sortable';
 import SortableItem from '@/app/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import {
+  TypesOfCourses,
+  useCourseStore,
+} from '@/app/store/stores/useCourseStore';
+import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
+import Button, { Color } from '@/app/components/Button/page';
+import {
+  LevelType,
+  getAllLevels,
+} from '@/app/API/classes-service/levels/functions';
+import {
+  LessonType,
+  getAllLessons,
+} from '@/app/API/classes-service/lessons/functions';
+import { CoursesType } from '@/app/API/classes-service/courses/functions';
 
 interface TimeBuffersType {
   timeBuffer: number;
@@ -28,6 +43,8 @@ interface TimeBuffersType {
 
 const NewExercise: React.FC = () => {
   const targetsList = useStore(useTargetStore, (state) => state.targets);
+  const coursesList = useStore(useCourseStore, (state) => state.coursesList);
+
   const addAlert = useAlertStore.getState().addAlert;
 
   const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
@@ -43,11 +60,17 @@ const NewExercise: React.FC = () => {
 
   const [timeBuffers, setTimeBuffers] = useState<TimeBuffersType[]>();
 
+  const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
+
   const [rangeIndex, setRangeIndex] = useState<number>(0);
 
   const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>(
     []
   );
+
+  const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
+
+  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([]);
 
   const [time, setTime] = useState<number>();
   const [grade, setGrade] = useState<number | ''>('');
@@ -55,6 +78,25 @@ const NewExercise: React.FC = () => {
   const [grabbedRelevantId, setGrabbedRelevantId] =
     useState<string>('released');
   const [grabbedAnswerId, setGrabbedAnswerId] = useState<string>('released');
+
+  const [unitsList, setUnitsList] = useState<UnitType[]>();
+  const [levelsList, setLevelsList] = useState<LevelType[]>();
+  const [lessonsList, setLessonsList] = useState<LessonType[]>();
+
+  const [selectedCourse, setSelectedCourse] = useState<{
+    courseType: TypesOfCourses | undefined;
+    courseId: string | undefined;
+  } | null>(null);
+
+  //   const [selectedCourse, setSelectedCourse] = useState<{
+  //     courseType: TypesOfCourses | undefined;
+  //     courseId: string | undefined;
+  //   } | null>(null);
+
+  useEffect(() => {
+    console.log('selectedCourse', selectedCourse);
+  }, [selectedCourse]);
+
   const uploadRef = useRef<UploadRef>(null);
 
   useEffect(() => {
@@ -66,6 +108,63 @@ const NewExercise: React.FC = () => {
       fetchTargets();
     }
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (coursesList) {
+        try {
+          const resUnits = await getUnits();
+          resUnits ? setUnitsList(resUnits) : null;
+        } catch (error) {
+          console.error('Error fetching units:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [coursesList]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (unitsList) {
+        try {
+          const resLevels = await getAllLevels();
+          resLevels ? setLevelsList(resLevels) : null;
+        } catch (error) {
+          console.error('Error fetching levels:', error);
+        }
+      }
+    };
+    fetchData();
+  }, [unitsList]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (levelsList) {
+        try {
+          const resLessons = await getAllLessons();
+          resLessons ? setLessonsList(resLessons) : null;
+        } catch (error) {
+          console.error('Error fetching lessons:', error);
+        }
+      }
+    };
+    fetchData();
+  }, [levelsList]);
+
+  useEffect(() => {
+    console.log('coursesList', coursesList);
+  }, [coursesList]);
+
+  useEffect(() => {
+    console.log('unitsList', unitsList);
+  }, [unitsList]);
+  useEffect(() => {
+    console.log('levelsList', levelsList);
+  }, [levelsList]);
+  useEffect(() => {
+    console.log('lessonsList', lessonsList);
+  }, [lessonsList]);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
@@ -184,9 +283,9 @@ const NewExercise: React.FC = () => {
     setDifficultyLevel(parseFloat(event.target.value));
   };
 
-  useEffect(() => {
-    console.log('relevant', relevant);
-  }, [relevant]);
+  //   useEffect(() => {
+  //     console.log('relevant', relevant);
+  //   }, [relevant]);
   //   useEffect(() => {
   //     console.log('timeBufferRangeValues', timeBufferRangeValues);
   //     for (let i = 0; i < timeBufferRangeValues.length; i++) {
@@ -196,20 +295,29 @@ const NewExercise: React.FC = () => {
   //     }
   //   }, [timeBufferRangeValues]);
 
-  useEffect(() => {
-    console.log('difficultyLevel', difficultyLevel);
-  }, [difficultyLevel]);
+  //   useEffect(() => {
+  //     console.log('difficultyLevel', difficultyLevel);
+  //   }, [difficultyLevel]);
 
-  useEffect(() => {
-    console.log('rangeIndex', rangeIndex);
-  }, [rangeIndex]);
+  //   useEffect(() => {
+  //     console.log('rangeIndex', rangeIndex);
+  //   }, [rangeIndex]);
+
+  //   useEffect(() => {
+  //     console.log(
+  //       'check',
+  //       isAddBufferOpen,
+  //       recordLength,
+  //       isAddBufferOpen && recordLength > 0
+  //     );
+  //   }, [isAddBufferOpen, recordLength]);
 
   const handleFileChange = (file: File | null) => {
-    console.log('Selected file:', file);
+    // console.log('Selected file:', file);
   };
-  const handleFileLength = (minutes: number | null) => {
-    console.log('file length:', minutes);
-    minutes ? setRecordLength(minutes) : null;
+  const handleFileLength = (time: number | null) => {
+    console.log('file length:', time);
+    time ? setRecordLength(time) : null;
   };
 
   const handleTimeBufferRange = (
@@ -230,14 +338,16 @@ const NewExercise: React.FC = () => {
     });
   };
 
+  const splicer = (index: number, newVal: number, oldArray: number[]) => {
+    const newArray = [...oldArray];
+    newArray.splice(index, 0, newVal);
+    console.log('newArray', newVal, newArray);
+    return newArray;
+  };
+
   useEffect(() => {
-    console.log(
-      'timeBufferRangeValues',
-      timeBufferRangeValues,
-      timeBufferRangeValues[timeBufferRangeValues.length - 1],
-      timeBufferRangeValues[timeBufferRangeValues.length - 1] === recordLength
-    );
-  }, [timeBufferRangeValues, recordLength]);
+    console.log('coursesList', coursesList);
+  }, [coursesList]);
 
   return (
     <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
@@ -286,9 +396,9 @@ const NewExercise: React.FC = () => {
                 </button>
               </div>
 
-              <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
+              <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
+                  className='open-button flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
                   onClick={addTargetToAnswersList}
                 >
                   <TbTargetArrow />
@@ -417,47 +527,132 @@ const NewExercise: React.FC = () => {
             onChange={handleRangeChange}
           />
         </div>
-        <span className='my-3 text-2xl font-bold'>Files</span>
+        <div className='flex h-fit flex-col items-start justify-center'>
+          <span className='text-2xl font-bold'>Upload files:</span>
 
-        <div>
-          <Upload
-            ref={uploadRef}
-            onFileChange={handleFileChange}
-            fileLength={handleFileLength}
-          />
+          <div className='relative flex w-full flex-row items-start justify-between gap-3 3xl:w-[55%]'>
+            <div className='relative w-full 3xl:w-[45%]'>
+              <Upload
+                label={'Choose a .wav file'}
+                filesTypes={'.wav'}
+                isMultiple={false}
+                ref={uploadRef}
+                onFileChange={handleFileChange}
+                fileLength={handleFileLength}
+              />
+            </div>
+            <div className='relative w-full 3xl:w-[45%]'>
+              <Upload
+                label={'Sonolist'}
+                filesTypes={'image/*'}
+                isMultiple={true}
+                ref={uploadRef}
+                onFileChange={handleFileChange}
+              />
+            </div>
+          </div>
         </div>
-        <span>sonolist</span>
-
-        <div>
-          <div className='relative flex flex-col items-start justify-center'>
+        <div className='relative flex flex-col items-start justify-center'>
+          <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
             <span className='my-3 text-2xl font-bold'>Time Buffers:</span>
 
-            <button
-              onClick={() => {
-                console.log('clicked');
-                console.log(
-                  '100 check',
-                  timeBufferRangeValues[timeBufferRangeValues.length - 1]
-                );
-                if (
-                  timeBufferRangeValues[timeBufferRangeValues.length - 1] ===
-                  recordLength
-                ) {
-                  console.log('alert');
-                  addAlert('no good', AlertSizes.small);
-                  return;
-                } else {
-                  setRangeIndex(rangeIndex + 1);
-                  setTimeBufferRangeValues((prevValues) => [
-                    ...prevValues,
-                    recordLength,
-                  ]);
-                }
-              }}
-              disabled={recordLength > 0 ? false : true}
+            <div
+              className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
+                isAddBufferOpen && recordLength > 0
+                  ? ' bg-duoGray-light'
+                  : ' bg-duoGray-lighter'
+              }`}
             >
-              Add Input
-            </button>
+              <button
+                className={`flex h-9 w-9 items-center justify-center   ${
+                  recordLength === 0 ? 'cursor-default' : 'cursor-pointer'
+                }`}
+                onClick={() => {
+                  console.log('clicked', isAddBufferOpen, gradeInput);
+                  if (isAddBufferOpen) {
+                    if (gradeInput) {
+                      if (
+                        timeBufferRangeValues[
+                          timeBufferRangeValues.length - 1
+                        ] === recordLength
+                      ) {
+                        console.log('alert');
+                        addAlert('no good', AlertSizes.small);
+                        return;
+                      } else {
+                        if (
+                          gradeInput >
+                          timeBuffersScores[timeBuffersScores.length - 1]
+                        ) {
+                          for (
+                            let i: number = 0;
+                            i < timeBuffersScores.length - 1;
+                            i++
+                          ) {
+                            if (
+                              gradeInput < timeBuffersScores[i] &&
+                              gradeInput > timeBuffersScores[i + 1]
+                            ) {
+                              setRangeIndex(rangeIndex + 1);
+                              setTimeBufferRangeValues(
+                                splicer(
+                                  i + 1,
+                                  (timeBufferRangeValues[i] +
+                                    timeBufferRangeValues[i + 1]) /
+                                    2,
+                                  timeBufferRangeValues
+                                )
+                              );
+                              setTimeBuffersScores(
+                                splicer(i + 1, gradeInput, timeBuffersScores)
+                              );
+                              setGradeInput(undefined);
+                              return;
+                            }
+                          }
+                        }
+
+                        setRangeIndex(rangeIndex + 1);
+                        setTimeBufferRangeValues((prevValues) => [
+                          ...prevValues,
+                          recordLength,
+                        ]);
+                        setTimeBuffersScores((prevValues) => [
+                          ...prevValues,
+                          gradeInput,
+                        ]);
+                        setGradeInput(undefined);
+                      }
+                    } else {
+                      addAlert('no good', AlertSizes.small);
+                      return;
+                    }
+                  }
+                  setIsAddBufferOpen(!isAddBufferOpen);
+                }}
+                disabled={recordLength === 0}
+              >
+                <TiPlus />
+              </button>
+
+              <div
+                className={` ${
+                  isAddBufferOpen && recordLength > 0
+                    ? 'w-fit rounded-2xl px-2 text-base'
+                    : 'hidden'
+                }`}
+              >
+                <input
+                  type='number'
+                  value={gradeInput}
+                  onChange={(e) => setGradeInput(Number(e.target.value))}
+                  className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
+                />
+              </div>
+            </div>
+          </div>
+
+          {timeBufferRangeValues.length > 0 ? (
             <div className='mt-6 pb-[5rem]'>
               <Slider
                 isMultiple={true}
@@ -466,9 +661,75 @@ const NewExercise: React.FC = () => {
                 max={recordLength}
                 step={1 / 6}
                 value={timeBufferRangeValues}
+                tooltipsValues={timeBuffersScores}
                 onChange={handleTimeBufferRange}
               />
             </div>
+          ) : null}
+        </div>
+        <div>
+          <span className='my-3 text-2xl font-bold'>Attach to a lessson:</span>
+          <ul className='mb-12 mt-6 flex w-full flex-row items-center justify-start gap-5'>
+            <li className='w-[8rem]'>
+              <Dropdown
+                placeholder={'COURSES'}
+                items={
+                  coursesList
+                    ? coursesList.map((item) => item.courseType as string)
+                    : []
+                }
+                value={selectedCourse?.courseType}
+                onChange={(selectedCourseName) => {
+                  if (coursesList) {
+                    setSelectedCourse(
+                      coursesList.filter(
+                        (item) => item.courseType === selectedCourseName
+                      )[0]
+                    );
+                  }
+                }}
+                size={DropdownSizes.SMALL}
+              />
+            </li>
+
+            <li className='w-[8rem]'>
+              <Dropdown
+                placeholder={'UNITS'}
+                items={unitsList ? unitsList.map((unit) => unit._id) : []}
+                value={null}
+                onChange={() => {
+                  console.log('UNITS');
+                }}
+                size={DropdownSizes.SMALL}
+              />
+            </li>
+            <li className='w-[8rem]'>
+              <Dropdown
+                placeholder={'LEVELS'}
+                items={[]}
+                value={null}
+                onChange={() => {
+                  console.log('LEVELS');
+                }}
+                size={DropdownSizes.SMALL}
+              />
+            </li>
+            <li className='w-[8rem]'>
+              <Dropdown
+                placeholder={'LESSONS'}
+                items={[]}
+                value={null}
+                onChange={() => {
+                  console.log('LESSONS');
+                }}
+                size={DropdownSizes.SMALL}
+              />
+            </li>
+          </ul>
+        </div>
+        <div className='relative flex items-center justify-center py-8'>
+          <div className='absolute'>
+            <Button label={'SUBMIT'} color={Color.BLUE} style={'w-[12rem]'} />
           </div>
         </div>
       </div>

@@ -1,10 +1,12 @@
 'use client';
 import _ from 'lodash';
 import { useState, useEffect } from 'react';
+import Tooltip, { TooltipColors } from '../Tooltip/page';
 
 interface SliderProps {
   isMultiple: boolean;
   numberOfSliders?: number;
+  tooltipsValues?: number[] | string[];
   min: number;
   max: number;
   step: number;
@@ -18,48 +20,102 @@ interface SliderProps {
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;
   const numberOfSliders = props.numberOfSliders;
+  const tooltipsValues = props.tooltipsValues;
   const propsMin = props.min;
   const propsMax = props.max;
   const propsStep = props.step;
   const propsValue = props.value;
   const propsOnChange = props.onChange;
 
-  const [redIndexes, setRedIndexes] = useState<number[]>([]);
+  //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
 
   useEffect(() => {
     console.log('timeBufferRangeValues', propsValue);
     if (_.isObject(propsValue)) {
       for (let i = 0; i < propsValue.length; i++) {
         if (propsValue[i] > propsValue[i + 1]) {
-          propsValue[i+1] = propsValue[i ] - propsStep;
-        } 
+          propsValue[i + 1] = propsValue[i] - propsStep;
+        }
       }
     }
   }, [propsValue]);
 
-  useEffect(() => {
-    console.log('redIndexes', redIndexes);
-  }, [redIndexes]);
+  //   useEffect(() => {
+  // console.log('redIndexes', redIndexes);
+  //   }, [redIndexes]);
 
   return (
     <>
       {isMultiple && numberOfSliders && _.isObject(propsValue) ? (
         <>
           {Array.from({ length: numberOfSliders }).map((_, index) => (
-            <input
-              key={index}
-              type='range'
-              id={`range${index + 1}`}
-              name={`range${index + 1}`}
-              min={propsMin}
-              max={propsMax}
-              step={propsStep}
-              value={(propsValue as number[])[index].toString()}
-              onChange={(e) => propsOnChange(e, index)}
-              className={`multi-range absolute mb-6 mt-3 w-full ${
-                redIndexes.includes(index) ? 'unplaced-index bg-black' : ''
-              }`}
-            />
+            <section key={index}>
+              <input
+                type='range'
+                id={`range${index + 1}`}
+                name={`range${index + 1}`}
+                min={propsMin}
+                max={propsMax}
+                step={propsStep}
+                value={(propsValue as number[])[index].toString()}
+                onChange={(e) => propsOnChange(e, index)}
+                className={`multi-range absolute mb-6 mt-3 w-full`}
+              />
+              {tooltipsValues ? (
+                <div
+                  className={`absolute flex items-center justify-center text-center `}
+                  style={{
+                    left: `${
+                      index === 0
+                        ? Math.round(100 * (propsValue[index] / 2)) / propsMax
+                        : Math.round(
+                            100 *
+                              (((propsValue[index] - propsValue[index - 1]) /
+                                2 +
+                                propsValue[index - 1]) /
+                                propsMax)
+                          )
+                    }%`,
+                    top: '6.5rem',
+                  }}
+                >
+                  <Tooltip
+                    placeholder={tooltipsValues[index]}
+                    isFloating={true}
+                    color={TooltipColors.WHITE}
+                  />
+                </div>
+              ) : null}
+              <div
+                className={`absolute flex items-center justify-center text-center`}
+                style={{
+                  left: `calc(${Number(
+                    (100 * propsValue[index]) / propsMax
+                  )}% + (${
+                    0 - ((100 * propsValue[index]) / propsMax) * 0.35
+                  }px))`,
+                  top: '10rem',
+                }}
+              >
+                {/* {(100 * propsValue[index]) / propsMax} */}
+                {/* {'  '} */}
+                {/* {8 - ((100 * propsValue[index]) / propsMax) * 0.15} */}
+                {`${
+                  Math.floor((propsValue as number[])[index]) === 0
+                    ? '00'
+                    : Math.floor((propsValue as number[])[index])
+                }:${
+                  (propsValue as number[])[index] ===
+                  Math.floor((propsValue as number[])[index])
+                    ? '00'
+                    : Math.round(
+                        60 *
+                          ((propsValue as number[])[index] -
+                            Math.floor((propsValue as number[])[index]))
+                      )
+                }`}
+              </div>
+            </section>
           ))}
         </>
       ) : (

@@ -1,4 +1,50 @@
-export const getRelevantByFSAId = async (currentExerciseId: string) => {
+import { TargetType } from "@/app/store/stores/useTargetStore";
+
+export interface TimeBuffersType {
+    timeBuffer: number;
+    grade: number;
+}
+
+export interface FSAType {
+    _id: string;
+    filesKeys: string[];
+    difficultyLevel: number;
+    relevant: string[];
+    answers: string[]; //may be 2 correct answers
+    timeBuffers: TimeBuffersType[];
+    description: string;
+    dateCreated: Date;
+    sonolistKeys: string[];
+}
+
+export const getAllFSAs = async (): Promise<FSAType[] | null> => {
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/FSA/",
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resFSAs = data.exercises;
+            console.log("leves api - getAllFSAs", resFSAs);
+            return resFSAs;
+        } else {
+            console.error("Failed to fetch getAllFSAs.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching getAllFSAs:", error);
+        return null;
+    }
+};
+
+export const getRelevantByFSAId = async (currentExerciseId: string): Promise<TargetType[] | number | null> => {
     try {
         // console.log(`http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`);
         const response = await fetch(
@@ -22,14 +68,13 @@ export const getRelevantByFSAId = async (currentExerciseId: string) => {
             return resRelevant;
         } else {
             console.error("Failed to fetch targets by id.");
-            return response;
+            return null;
         }
     } catch (error) {
         console.error("Error fetching targets:", error);
         return [];
     }
 };
-
 
 export const getAnswersByExerciseId = async (currentExerciseId: string) => {
     try {

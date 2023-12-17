@@ -1,19 +1,36 @@
-import { Dispatch, SetStateAction } from "react";
-
-export enum TypesOfLessons {
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
-}
-
-export interface LessonType {
+export interface LevelType {
     _id: string;
-    name: string;
-    exercises: string[];
-    type: TypesOfLessons;
+    lessons?: string[];
 }
 
-export const getLessonsData = async (levelId: string) => {
+export const getAllLevels = async (): Promise<LevelType[] | null> => {
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/levels/",
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resLevels = data.levels;
+            // console.log("leves api - getAllLevels", resLevels);
+            return resLevels;
+        } else {
+            console.error("Failed to fetch all levels.");
+            return [];
+        }
+    } catch (error) {
+        console.error("Error fetching levels:", error);
+        return [];
+    }
+};
+
+export const getLessonsData = async (levelId: string): Promise<LevelType[] | null> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/levels/getLessonsById/${levelId}`,

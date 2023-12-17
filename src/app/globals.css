@@ -75,6 +75,10 @@
   transform: scale(1.1);
 }
 
+.open-button {
+  animation: open-button  4s ease;
+}
+
 .range-slide {
   -webkit-appearance: none;
   height: 10px;
@@ -223,4 +227,8 @@ input::-webkit-inner-spin-button {
   100% {
     opacity: 1;
   }
+}
+
+@keyframes open-button{
+
 }

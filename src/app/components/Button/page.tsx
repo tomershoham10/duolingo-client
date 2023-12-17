@@ -21,6 +21,7 @@ interface ButtonProps {
   onClick?: () => void;
   href?: string;
   style?: string;
+  isDisabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,6 +31,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   href,
   style,
+  isDisabled,
 }) => {
   const router = useRouter();
 
@@ -53,10 +55,10 @@ const Button: React.FC<ButtonProps> = ({
       break;
 
     case 'Gray':
-      buttonColor = 'bg-duoGray-button-default';
-      buttonBorderColor = 'bg-duoGray-buttonBorder';
-      buttonHoverColor = 'hover:bg-duoGray-buttonHover';
-      textColor = 'text-white';
+      buttonColor = 'bg-white border-t-2 border-l-2 border-r-2 active:border-2 border-duoGray-default hover:border-duoGray-light';
+      buttonBorderColor = 'bg-duoGray-default hover:bg-duoGray-light';
+      buttonHoverColor = 'hover:bg-duoGray-lighter';
+      textColor = 'text-duoGray-darker hover:text-duoGray-midDark';
       break;
     case 'White':
       buttonColor = 'bg-white';
@@ -95,6 +97,7 @@ const Button: React.FC<ButtonProps> = ({
       >
         <button
           className={`group flex flex-col items-center justify-start ${buttonColor} w-full rounded-2xl pb-2 pl-3 pr-3 pt-2 ${buttonHoverColor}`}
+          disabled={isDisabled}
           onClick={() => {
             if (onClick) {
               onClick();
