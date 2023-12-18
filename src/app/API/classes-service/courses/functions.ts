@@ -22,18 +22,18 @@ export const getCourses = async () => {
             const coursesObject = data.courses as {
                 _id: string;
                 type: TypesOfCourses;
-                units: UnitType[];
+                units: string[];
             }[];
 
             const coursesList: {
                 courseId: string;
                 courseType: TypesOfCourses;
-                units: UnitType[]
+                unitsList: string[]
             }[] = Object.values(coursesObject).map(
-                (course: { _id: string; type: TypesOfCourses; units: UnitType[] }) => ({
+                (course: { _id: string; type: TypesOfCourses; units: string[] }) => ({
                     courseId: course._id as string,
                     courseType: course.type as TypesOfCourses,
-                    units: course.units as UnitType[],
+                    unitsList: course.units as string[],
                 }),
             );
             // console.log("coursesList check", coursesList);

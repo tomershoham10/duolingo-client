@@ -12,7 +12,7 @@ export enum DropdownSizes {
 interface DropdownProps {
   placeholder: string;
   items: string[];
-  value: string | null;
+  value: string | number | null;
   onChange: (value: string) => void;
   className?: string;
   isFailed?: boolean;

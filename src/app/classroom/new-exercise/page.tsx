@@ -52,6 +52,7 @@ const NewExercise: React.FC = () => {
 
   const addAlert = useAlertStore.getState().addAlert;
 
+  const [description, setDescription] = useState<string | undefined>(undefined);
   const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
   const [targetFromDropdown, setTargetFromDropdown] =
@@ -91,7 +92,10 @@ const NewExercise: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<{
     courseType: TypesOfCourses | undefined;
     courseId: string | undefined;
+    unitsList: string[] | undefined;
   } | null>(null);
+
+  const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
 
   //   const [selectedCourse, setSelectedCourse] = useState<{
   //     courseType: TypesOfCourses | undefined;
@@ -102,9 +106,14 @@ const NewExercise: React.FC = () => {
     console.log('selectedCourse', selectedCourse);
   }, [selectedCourse]);
 
+  useEffect(() => {
+    console.log('selectedUnit', selectedUnit);
+  }, [selectedUnit]);
+
   const uploadRef = useRef<UploadRef>(null);
 
-  const timeBufferGradeRef = useRef<HTMLInputElement | null>(null);
+  const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
+  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -177,6 +186,27 @@ const NewExercise: React.FC = () => {
     console.log('gradeInput', gradeInput);
   }, [gradeInput]);
 
+  const handleClickOutsideTimeBufferScore = (event: MouseEvent) => {
+    if (
+      timeBufferGradeDivRef.current &&
+      !timeBufferGradeDivRef.current.contains(event.target as Node)
+    ) {
+      setIsAddBufferOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAddBufferOpen) {
+      document.addEventListener('mousedown', handleClickOutsideTimeBufferScore);
+      return () => {
+        document.removeEventListener(
+          'mousedown',
+          handleClickOutsideTimeBufferScore
+        );
+      };
+    }
+  }, [isAddBufferOpen]);
+
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
     setShowPlaceholder(false);
@@ -197,6 +227,19 @@ const NewExercise: React.FC = () => {
       const relevantIds = relevant.map((target) => target._id);
       if (!relevantIds.includes(targetFromDropdown._id)) {
         setRelevant((prevList) => [...prevList, targetFromDropdown]);
+      } else {
+        addAlert('target already included.', AlertSizes.small);
+      }
+    } else {
+      addAlert('please select a target.', AlertSizes.small);
+    }
+  };
+
+  const addTargetToAnswersList = () => {
+    if (targetFromDropdown) {
+      const answersIds = answersList.map((target) => target._id);
+      if (!answersIds.includes(targetFromDropdown._id)) {
+        setAnswersList((prevList) => [...prevList, targetFromDropdown]);
       } else {
         addAlert('target already included.', AlertSizes.small);
       }
@@ -277,51 +320,9 @@ const NewExercise: React.FC = () => {
     setAnswersList(answersList.filter((item) => item._id != itemId));
   };
 
-  const addTargetToAnswersList = () => {
-    if (targetFromDropdown) {
-      const answersIds = answersList.map((target) => target._id);
-      if (!answersIds.includes(targetFromDropdown._id)) {
-        setAnswersList((prevList) => [...prevList, targetFromDropdown]);
-      } else {
-        addAlert('target already included.', AlertSizes.small);
-      }
-    } else {
-      addAlert('please select a target.', AlertSizes.small);
-    }
-  };
-
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDifficultyLevel(parseFloat(event.target.value));
   };
-
-  //   useEffect(() => {
-  //     console.log('relevant', relevant);
-  //   }, [relevant]);
-  //   useEffect(() => {
-  //     console.log('timeBufferRangeValues', timeBufferRangeValues);
-  //     for (let i = 0; i < timeBufferRangeValues.length; i++) {
-  //       if (timeBufferRangeValues[i] > timeBufferRangeValues[i + 1]) {
-  //         console.log('not ok', i);
-  //       }
-  //     }
-  //   }, [timeBufferRangeValues]);
-
-  //   useEffect(() => {
-  //     console.log('difficultyLevel', difficultyLevel);
-  //   }, [difficultyLevel]);
-
-  //   useEffect(() => {
-  //     console.log('rangeIndex', rangeIndex);
-  //   }, [rangeIndex]);
-
-  //   useEffect(() => {
-  //     console.log(
-  //       'check',
-  //       isAddBufferOpen,
-  //       recordLength,
-  //       isAddBufferOpen && recordLength > 0
-  //     );
-  //   }, [isAddBufferOpen, recordLength]);
 
   const handleFileChange = (file: File | null) => {
     // console.log('Selected file:', file);
@@ -369,6 +370,14 @@ const NewExercise: React.FC = () => {
     );
   };
 
+  const submitExercise = () => {
+    console.log('submit');
+    console.log('description', description);
+    console.log('relevant', relevant);
+    console.log('answers list', answersList);
+    console.log('difficultyLevel', difficultyLevel);
+  };
+
   return (
     <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
       <div className='mx-auto w-[80%] 3xl:w-[65%]'>
@@ -382,6 +391,8 @@ const NewExercise: React.FC = () => {
               isEditMode={false}
               fontSizeProps={FontSizes.MEDIUM}
               placeHolder={'Add desription...'}
+              value={description}
+              onChange={setDescription}
             />
           </div>
         </div>
@@ -410,7 +421,7 @@ const NewExercise: React.FC = () => {
                   onClick={addTargetToRelevant}
                 >
                   <TiPlus />
-                  <span className='ml-1 hidden text-base font-semibold group-hover:block'>
+                  <span className='ml-1 hidden text-base font-extrabold group-hover:block'>
                     relevant
                   </span>
                 </button>
@@ -422,7 +433,7 @@ const NewExercise: React.FC = () => {
                   onClick={addTargetToAnswersList}
                 >
                   <TbTargetArrow />
-                  <span className='ml-1 hidden text-base font-semibold group-hover:block'>
+                  <span className='ml-1 hidden text-base font-extrabold group-hover:block'>
                     add answer
                   </span>
                 </button>
@@ -577,6 +588,7 @@ const NewExercise: React.FC = () => {
             <span className='my-3 text-2xl font-bold'>Time Buffers:</span>
 
             <div
+              ref={timeBufferGradeDivRef}
               className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
                 isAddBufferOpen && recordLength > 0
                   ? ' bg-duoGray-light'
@@ -627,8 +639,8 @@ const NewExercise: React.FC = () => {
                                 splicer(i + 1, gradeInput, timeBuffersScores)
                               );
                               setGradeInput(undefined);
-                              timeBufferGradeRef.current
-                                ? (timeBufferGradeRef.current.value = '')
+                              timeBufferGradeInputRef.current
+                                ? (timeBufferGradeInputRef.current.value = '')
                                 : null;
                               setIsAddBufferOpen(!isAddBufferOpen);
                               return;
@@ -646,8 +658,8 @@ const NewExercise: React.FC = () => {
                           gradeInput,
                         ]);
                         setGradeInput(undefined);
-                        timeBufferGradeRef.current
-                          ? (timeBufferGradeRef.current.value = '')
+                        timeBufferGradeInputRef.current
+                          ? (timeBufferGradeInputRef.current.value = '')
                           : null;
                         setIsAddBufferOpen(!isAddBufferOpen);
                         return;
@@ -674,7 +686,7 @@ const NewExercise: React.FC = () => {
                 <input
                   type='number'
                   value={gradeInput}
-                  ref={timeBufferGradeRef}
+                  ref={timeBufferGradeInputRef}
                   onChange={(e) => setGradeInput(Number(e.target.value))}
                   className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
                 />
@@ -709,7 +721,7 @@ const NewExercise: React.FC = () => {
                     ? coursesList.map((item) => item.courseType as string)
                     : []
                 }
-                value={selectedCourse?.courseType}
+                value={selectedCourse?.courseType as string}
                 onChange={(selectedCourseName) => {
                   if (coursesList) {
                     setSelectedCourse(
@@ -726,10 +738,32 @@ const NewExercise: React.FC = () => {
             <li className='w-[8rem]'>
               <Dropdown
                 placeholder={'UNITS'}
-                items={unitsList ? unitsList.map((unit) => unit._id) : []}
-                value={null}
-                onChange={() => {
-                  console.log('UNITS');
+                items={
+                  unitsList && selectedCourse
+                    ? selectedCourse.unitsList
+                      ? selectedCourse.unitsList.map((unit) =>
+                          selectedCourse.unitsList
+                            ? `unit ${
+                                selectedCourse.unitsList.indexOf(unit) + 1
+                              }`
+                            : ''
+                        )
+                      : []
+                    : []
+                }
+                value={selectedUnit ? selectedUnit._id : null}
+                onChange={(selectedUnitId) => {
+                  const unitIndex = Number(selectedUnitId.split(' ')[1]) - 1;
+                  console.log('unitIndex', unitIndex);
+                  if (unitsList) {
+                    setSelectedUnit(
+                      unitsList.filter((item) =>
+                        selectedCourse && selectedCourse.unitsList
+                          ? item._id === selectedCourse.unitsList[unitIndex]
+                          : null
+                      )[0]
+                    );
+                  }
                 }}
                 size={DropdownSizes.SMALL}
               />
@@ -737,7 +771,15 @@ const NewExercise: React.FC = () => {
             <li className='w-[8rem]'>
               <Dropdown
                 placeholder={'LEVELS'}
-                items={[]}
+                items={
+                  levelsList
+                    ? levelsList
+                        .map((unit) => unit._id)
+                        .filter(
+                          (unit) => selectedCourse?.levelsList?.includes(unit)
+                        )
+                    : []
+                }
                 value={null}
                 onChange={() => {
                   console.log('LEVELS');
@@ -760,7 +802,12 @@ const NewExercise: React.FC = () => {
         </div>
         <div className='relative flex items-center justify-center py-8'>
           <div className='absolute'>
-            <Button label={'SUBMIT'} color={Color.BLUE} style={'w-[12rem]'} />
+            <Button
+              label={'SUBMIT'}
+              color={Color.BLUE}
+              style={'w-[12rem]'}
+              onClick={submitExercise}
+            />
           </div>
         </div>
       </div>
