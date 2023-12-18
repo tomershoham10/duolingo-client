@@ -75,7 +75,7 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[] | nu
     }
 };
 
-export const getResultsData = async (lessonId: string, userId: string): Promise<{ numOfExercises: number, results: ResultType[] } | []> => {
+export const getResultsData = async (lessonId: string, userId: string) => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`,

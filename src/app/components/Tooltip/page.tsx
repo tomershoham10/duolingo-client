@@ -1,43 +1,64 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 export enum TooltipColors {
   GREEN = 'green',
+  RED = 'red',
   WHITE = 'white',
 }
 
 interface tooltipProps {
   placeholder?: string | number;
   isFloating: boolean;
+  edittable?: boolean;
   color: TooltipColors;
+  onDelete?: () => void;
 }
 
 const Tooltip: React.FC<tooltipProps> = (props) => {
   const placeholder = props.placeholder;
   const isFloating = props.isFloating;
   const propsColor = props.color;
+  const edittable = props.edittable;
+
+  const onDelete = props.onDelete;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
   const [isPopEffect, setIsPopEffect] = useState<boolean>(false);
 
-  let backgroundColor: string = '';
-  let borderColor: string = '';
-  let textColor: string = '';
-  switch (propsColor) {
-    case TooltipColors.GREEN:
-      backgroundColor = 'bg-duoGreen-default';
-      borderColor = 'border-white';
-      textColor = 'text-white';
-      break;
-    case TooltipColors.WHITE:
-      backgroundColor = 'bg-white';
-      borderColor = 'border-duoGray-light';
-      textColor = 'text-duoGray-darkText';
-      break;
-  }
+  const [backgroundColor, setBackgroundColor] = useState<string>();
+  const [borderColor, setBorderColor] = useState<string>();
+  const [textColor, setTextColor] = useState<string>();
 
+  //   let backgroundColor: string = '';
+  //   let borderColor: string = '';
+  //   let textColor: string = '';
+  useEffect(() => {
+    switch (propsColor) {
+      case TooltipColors.GREEN:
+        setBackgroundColor(
+          isInEditMode ? 'bg-duoRed-light' : 'bg-duoGreen-default'
+        );
+        setBorderColor(isInEditMode ? 'border-duoRed-darker' : 'border-white');
+        setTextColor(isInEditMode ? 'text-duoRed-default' : 'text-white');
+        break;
+
+      case TooltipColors.WHITE:
+        setBackgroundColor(isInEditMode ? 'bg-duoRed-light' : 'bg-white');
+        setBorderColor(
+          isInEditMode ? 'border-duoRed-darker' : 'border-duoGray-light'
+        );
+        setTextColor(
+          isInEditMode ? 'text-duoRed-default' : 'text-duoGray-darkText'
+        );
+        break;
+    }
+  }, [isInEditMode, propsColor]);
   useEffect(() => {
     console.log('tooltip', selectedPopup);
     if (selectedPopup === PopupsTypes.STARTLESSON) {
@@ -47,7 +68,6 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
 
   useEffect(() => {
     const tooltipElement = document.getElementById('tooltip-main-div');
-    // console.log('isPopEffect', isPopEffect, tooltipElement);
     if (
       tooltipElement &&
       isPopEffect &&
@@ -57,10 +77,46 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
       tooltipElement.classList.add('bounce-and-pop');
     }
   }, [isPopEffect, selectedPopup]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      tooltipRef.current &&
+      !tooltipRef.current.contains(event.target as Node)
+    ) {
+      setIsInEditMode(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleDeleteKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Delete' && onDelete) {
+      console.log('Delete key pressed!');
+      onDelete();
+      setIsInEditMode(false);
+    }
+  };
+
   return (
     <>
       {selectedPopup !== PopupsTypes.STARTLESSON ? (
-        <div id='tooltip-main-div' className='tooltip absolute left-1/2 z-20'>
+        <div
+          id='tooltip-main-div'
+          onClick={() => (edittable ? setIsInEditMode(!isInEditMode) : null)}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+            isInEditMode ? handleDeleteKeyPress(e) : null
+          }
+          tabIndex={0}
+          ref={tooltipRef}
+          className={`absolute left-1/2 ${
+            isFloating && !isInEditMode ? 'tooltip' : ''
+          }`}
+        >
           <div className='relative cursor-pointer'>
             <section className='inline-flex'>
               <div

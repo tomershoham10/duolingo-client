@@ -1,3 +1,5 @@
+import { LessonType } from "../lessons/functions";
+
 export interface LevelType {
     _id: string;
     lessons?: string[];
@@ -30,7 +32,7 @@ export const getAllLevels = async (): Promise<LevelType[] | null> => {
     }
 };
 
-export const getLessonsData = async (levelId: string): Promise<LevelType[] | null> => {
+export const getLessonsData = async (levelId: string): Promise<LessonType[] | null> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/levels/getLessonsById/${levelId}`,

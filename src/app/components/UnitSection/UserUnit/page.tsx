@@ -6,22 +6,20 @@ import { useUserStore } from '@/app/store/stores/useUserStore';
 import { useStore } from 'zustand';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useRef, useState } from 'react';
+import { getUnitsData } from '@/app/API/classes-service/courses/functions';
 import {
   UnitType,
-  getUnitsData,
-} from '@/app/API/classes-service/courses/functions';
-import {
-  LevelType,
   getLevelsData,
 } from '@/app/API/classes-service/units/functions';
 import {
-  LessonType,
+  LevelType,
   getLessonsData,
 } from '@/app/API/classes-service/levels/functions';
 import LessonButton, { Status } from '../../LessonButton/page';
 import { possitionByModularAddition } from '@/app/utils/functions/possitionByModularAddition';
-import Tooltip from '../../Tooltip/page';
+import Tooltip, { TooltipColors } from '../../Tooltip/page';
 import {
+  LessonType,
   ResultType,
   getResultsData,
 } from '@/app/API/classes-service/lessons/functions';
@@ -33,7 +31,6 @@ const UserUnitSection: React.FC = () => {
   const userId = useStore(useUserStore, (state) => state.userId);
   const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
   const courseId = useStore(useCourseStore, (state) => state.courseId);
-  const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
@@ -102,7 +99,9 @@ const UserUnitSection: React.FC = () => {
 
       const promises = allLevels.map(async (level) => {
         const lessonsData = await getLessonsData(level.levelId);
-        level.lessons = lessonsData;
+        if (lessonsData) {
+          level.lessons = lessonsData;
+        }
         return level;
       });
 
@@ -430,7 +429,12 @@ const UserUnitSection: React.FC = () => {
                                                   } h-fit w-fit`}
                                                 >
                                                   <>
-                                                    <Tooltip />
+                                                    <Tooltip
+                                                      isFloating={true}
+                                                      color={
+                                                        TooltipColors.GREEN
+                                                      }
+                                                    />
 
                                                     <LessonButton
                                                       status={Status.PROGRESS}

@@ -1,5 +1,11 @@
 'use client';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import {
+  FormEvent,
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import Dropdown, { DropdownSizes } from '@/app/components/Dropdown/page';
 import Textbox, { FontSizes } from '@/app/components/Textbox/page';
@@ -34,7 +40,6 @@ import {
   LessonType,
   getAllLessons,
 } from '@/app/API/classes-service/lessons/functions';
-import { CoursesType } from '@/app/API/classes-service/courses/functions';
 
 interface TimeBuffersType {
   timeBuffer: number;
@@ -98,6 +103,8 @@ const NewExercise: React.FC = () => {
   }, [selectedCourse]);
 
   const uploadRef = useRef<UploadRef>(null);
+
+  const timeBufferGradeRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -165,6 +172,10 @@ const NewExercise: React.FC = () => {
   useEffect(() => {
     console.log('lessonsList', lessonsList);
   }, [lessonsList]);
+
+  useEffect(() => {
+    console.log('gradeInput', gradeInput);
+  }, [gradeInput]);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
@@ -345,9 +356,18 @@ const NewExercise: React.FC = () => {
     return newArray;
   };
 
-  useEffect(() => {
-    console.log('coursesList', coursesList);
-  }, [coursesList]);
+  const deleteTimeBuffer = (index: number) => {
+    console.log('new exercise - deleteTimeBuffer - index', index);
+    setRangeIndex(rangeIndex - 1);
+    setTimeBufferRangeValues(
+      timeBufferRangeValues.filter(
+        (item) => item !== timeBufferRangeValues[index]
+      )
+    );
+    setTimeBuffersScores(
+      timeBuffersScores.filter((item) => item !== timeBuffersScores[index])
+    );
+  };
 
   return (
     <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
@@ -607,6 +627,10 @@ const NewExercise: React.FC = () => {
                                 splicer(i + 1, gradeInput, timeBuffersScores)
                               );
                               setGradeInput(undefined);
+                              timeBufferGradeRef.current
+                                ? (timeBufferGradeRef.current.value = '')
+                                : null;
+                              setIsAddBufferOpen(!isAddBufferOpen);
                               return;
                             }
                           }
@@ -622,6 +646,11 @@ const NewExercise: React.FC = () => {
                           gradeInput,
                         ]);
                         setGradeInput(undefined);
+                        timeBufferGradeRef.current
+                          ? (timeBufferGradeRef.current.value = '')
+                          : null;
+                        setIsAddBufferOpen(!isAddBufferOpen);
+                        return;
                       }
                     } else {
                       addAlert('no good', AlertSizes.small);
@@ -645,6 +674,7 @@ const NewExercise: React.FC = () => {
                 <input
                   type='number'
                   value={gradeInput}
+                  ref={timeBufferGradeRef}
                   onChange={(e) => setGradeInput(Number(e.target.value))}
                   className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
                 />
@@ -663,6 +693,7 @@ const NewExercise: React.FC = () => {
                 value={timeBufferRangeValues}
                 tooltipsValues={timeBuffersScores}
                 onChange={handleTimeBufferRange}
+                deleteNode={(index) => deleteTimeBuffer(index)}
               />
             </div>
           ) : null}

@@ -1,6 +1,6 @@
 'use client';
 import _ from 'lodash';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Tooltip, { TooltipColors } from '../Tooltip/page';
 
 interface SliderProps {
@@ -15,6 +15,7 @@ interface SliderProps {
     event: React.ChangeEvent<HTMLInputElement>,
     index?: number
   ) => void;
+  deleteNode?: (index: number) => void;
 }
 
 const Slider: React.FC<SliderProps> = (props) => {
@@ -26,7 +27,7 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsStep = props.step;
   const propsValue = props.value;
   const propsOnChange = props.onChange;
-
+  const propsDeleteNode = props.deleteNode;
   //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
 
   useEffect(() => {
@@ -43,6 +44,11 @@ const Slider: React.FC<SliderProps> = (props) => {
   //   useEffect(() => {
   // console.log('redIndexes', redIndexes);
   //   }, [redIndexes]);
+
+  const deleteNode = (index: number) => {
+    console.log('slider - deleteNode - index', index);
+    propsDeleteNode ? propsDeleteNode(index) : null;
+  };
 
   return (
     <>
@@ -83,6 +89,8 @@ const Slider: React.FC<SliderProps> = (props) => {
                     placeholder={tooltipsValues[index]}
                     isFloating={true}
                     color={TooltipColors.WHITE}
+                    edittable={true}
+                    onDelete={() => deleteNode(index)}
                   />
                 </div>
               ) : null}
