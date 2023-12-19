@@ -1,11 +1,5 @@
 'use client';
-import {
-  FormEvent,
-  InputHTMLAttributes,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import Dropdown, { DropdownSizes } from '@/app/components/Dropdown/page';
 import Textbox, { FontSizes } from '@/app/components/Textbox/page';
@@ -64,8 +58,6 @@ const NewExercise: React.FC = () => {
 
   const [recordLength, setRecordLength] = useState<number>(0);
 
-  const [timeBuffers, setTimeBuffers] = useState<TimeBuffersType[]>();
-
   const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
 
   const [rangeIndex, setRangeIndex] = useState<number>(0);
@@ -77,9 +69,6 @@ const NewExercise: React.FC = () => {
   const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
 
   const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([]);
-
-  const [time, setTime] = useState<number>();
-  const [grade, setGrade] = useState<number | ''>('');
 
   const [grabbedRelevantId, setGrabbedRelevantId] =
     useState<string>('released');
@@ -96,11 +85,8 @@ const NewExercise: React.FC = () => {
   } | null>(null);
 
   const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
-
-  //   const [selectedCourse, setSelectedCourse] = useState<{
-  //     courseType: TypesOfCourses | undefined;
-  //     courseId: string | undefined;
-  //   } | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<LevelType | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null);
 
   useEffect(() => {
     console.log('selectedCourse', selectedCourse);
@@ -109,6 +95,10 @@ const NewExercise: React.FC = () => {
   useEffect(() => {
     console.log('selectedUnit', selectedUnit);
   }, [selectedUnit]);
+
+  useEffect(() => {
+    console.log('selectedLevel', selectedLevel);
+  }, [selectedLevel]);
 
   const uploadRef = useRef<UploadRef>(null);
 
@@ -324,8 +314,8 @@ const NewExercise: React.FC = () => {
     setDifficultyLevel(parseFloat(event.target.value));
   };
 
-  const handleFileChange = (file: File | null) => {
-    // console.log('Selected file:', file);
+  const handleFileChange = (file: File | FileList | null) => {
+    console.log('Selected file:', file);
   };
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
@@ -376,6 +366,10 @@ const NewExercise: React.FC = () => {
     console.log('relevant', relevant);
     console.log('answers list', answersList);
     console.log('difficultyLevel', difficultyLevel);
+    console.log('selectedCourse', selectedCourse);
+    console.log('selectedUnit', selectedUnit);
+    console.log('selectedLevel', selectedLevel);
+    console.log('selectedlesson', selectedLesson);
   };
 
   return (
@@ -738,8 +732,9 @@ const NewExercise: React.FC = () => {
             <li className='w-[8rem]'>
               <Dropdown
                 placeholder={'UNITS'}
+                isDisabled={selectedCourse === null}
                 items={
-                  unitsList && selectedCourse
+                  selectedCourse
                     ? selectedCourse.unitsList
                       ? selectedCourse.unitsList.map((unit) =>
                           selectedCourse.unitsList
@@ -751,9 +746,8 @@ const NewExercise: React.FC = () => {
                       : []
                     : []
                 }
-                value={selectedUnit ? selectedUnit._id : null}
-                onChange={(selectedUnitId) => {
-                  const unitIndex = Number(selectedUnitId.split(' ')[1]) - 1;
+                onChange={(selectedUnit: string) => {
+                  const unitIndex = Number(selectedUnit.split(' ')[1]) - 1;
                   console.log('unitIndex', unitIndex);
                   if (unitsList) {
                     setSelectedUnit(
@@ -771,18 +765,30 @@ const NewExercise: React.FC = () => {
             <li className='w-[8rem]'>
               <Dropdown
                 placeholder={'LEVELS'}
+                isDisabled={selectedUnit === null}
                 items={
-                  levelsList
-                    ? levelsList
-                        .map((unit) => unit._id)
-                        .filter(
-                          (unit) => selectedCourse?.levelsList?.includes(unit)
+                  levelsList && selectedUnit
+                    ? selectedUnit.levels
+                      ? selectedUnit.levels.map((level) =>
+                          selectedUnit.levels
+                            ? `level ${selectedUnit.levels.indexOf(level) + 1}`
+                            : ''
                         )
+                      : []
                     : []
                 }
-                value={null}
-                onChange={() => {
-                  console.log('LEVELS');
+                onChange={(selectedLevel: string) => {
+                  const levelIndex = Number(selectedLevel.split(' ')[1]) - 1;
+                  console.log('levelIndex', levelIndex);
+                  if (levelsList) {
+                    setSelectedLevel(
+                      levelsList.filter((item) =>
+                        selectedUnit && selectedUnit.levels
+                          ? item._id === selectedUnit.levels[levelIndex]
+                          : null
+                      )[0]
+                    );
+                  }
                 }}
                 size={DropdownSizes.SMALL}
               />
@@ -790,10 +796,32 @@ const NewExercise: React.FC = () => {
             <li className='w-[8rem]'>
               <Dropdown
                 placeholder={'LESSONS'}
-                items={[]}
-                value={null}
-                onChange={() => {
-                  console.log('LESSONS');
+                isDisabled={selectedLevel === null}
+                items={
+                  lessonsList && selectedLevel
+                    ? selectedLevel.lessons
+                      ? selectedLevel.lessons.map((lesson) =>
+                          selectedLevel.lessons
+                            ? `lesson ${
+                                selectedLevel.lessons.indexOf(lesson) + 1
+                              }`
+                            : ''
+                        )
+                      : []
+                    : []
+                }
+                onChange={(selectedLesson: string) => {
+                  const lessonIndex = Number(selectedLesson.split(' ')[1]) - 1;
+                  console.log('lessonIndex', lessonIndex);
+                  if (lessonsList) {
+                    setSelectedLesson(
+                      lessonsList.filter((item) =>
+                        selectedLevel && selectedLevel.lessons
+                          ? item._id === selectedLevel.lessons[lessonIndex]
+                          : null
+                      )[0]
+                    );
+                  }
                 }}
                 size={DropdownSizes.SMALL}
               />

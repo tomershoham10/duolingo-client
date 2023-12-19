@@ -12,7 +12,7 @@ export enum DropdownSizes {
 interface DropdownProps {
   placeholder: string;
   items: string[];
-  value: string | number | null;
+  value?: string | number | undefined | null;
   onChange: (value: string) => void;
   className?: string;
   isFailed?: boolean;
@@ -32,7 +32,9 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [maxHight, setMaxHight] = useState<string>();
-  const [selectedValue, setSelectedValue] = useState<string | null>(value);
+  const [selectedValue, setSelectedValue] = useState<
+    string | number | undefined | null
+  >(value);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

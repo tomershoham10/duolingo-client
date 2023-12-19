@@ -12,14 +12,13 @@ import {
   FaRegTrashAlt,
   FaRegFileImage,
   FaExpandAlt,
-  FaListUl,
 } from 'react-icons/fa';
 
 interface UploadProps {
   label: string;
   isMultiple: boolean;
   filesTypes: string;
-  onFileChange: (file: File | null) => void;
+  onFileChange: (files: File | FileList | null) => void;
   fileLength?: (size: number | null) => void;
 }
 
@@ -34,36 +33,66 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const [isFilesListOpen, setIsFilesListOpen] = useState<boolean>(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log('file uploaded', file);
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      console.log('files uploaded', files);
       const audioContext = new window.AudioContext();
-      props.onFileChange(file);
-      const reader = new FileReader();
-      console.log('reader', reader);
-      reader.onload = async (event) => {
-        console.log('reader2', reader);
-        if (event && event.target) {
-          const arrayBuffer = event.target.result as ArrayBuffer;
-          if (file.type.includes('audio') && arrayBuffer) {
-            try {
-              const audioBuffer =
-                await audioContext.decodeAudioData(arrayBuffer);
+      if (files.length > 1) {
+        const newFiles = Array.from(files);
+        Promise.all(
+          newFiles.map(async (file) => {
+            const reader = new FileReader();
+            return new Promise<string>((resolve) => {
+              reader.onload = (e) => {
+                if (e.target) {
+                  resolve(e.target.result as string);
+                }
+              };
+              reader.readAsArrayBuffer(file);
+            });
+          })
+        )
+          .then((fileBuffers) => {
+            // Process fileBuffers as needed
+            console.log('File buffers:', fileBuffers);
+          })
+          .catch((error) => {
+            console.error('Error processing files:', error);
+          });
+        props.onFileChange(files);
+        setUploadedFiles((prevFiles) => [
+          ...prevFiles,
+          ...newFiles.map((file) => file.name),
+        ]);
+      }
 
-              const durationInSeconds = audioBuffer.duration;
-              console.log('Duration:', durationInSeconds, 'seconds');
-              props.fileLength
-                ? props.fileLength(durationInSeconds / 60)
-                : null;
-            } catch (error) {
-              console.error('Error decoding audio data:', error);
+      if (files.length === 1) {
+        const file = files[0];
+        const reader = new FileReader();
+        console.log('reader', reader);
+        reader.onload = async (event) => {
+          console.log('reader2', reader);
+          if (event && event.target) {
+            const arrayBuffer = event.target.result as ArrayBuffer;
+            if (file.type.includes('audio') && arrayBuffer) {
+              try {
+                const audioBuffer =
+                  await audioContext.decodeAudioData(arrayBuffer);
+
+                const durationInSeconds = audioBuffer.duration;
+                console.log('Duration:', durationInSeconds, 'seconds');
+                props.fileLength
+                  ? props.fileLength(durationInSeconds / 60)
+                  : null;
+              } catch (error) {
+                console.error('Error decoding audio data:', error);
+              }
             }
           }
-        }
-      };
-      reader.readAsArrayBuffer(file);
-
-      setUploadedFiles((prevFiles) => [...prevFiles, file.name]);
+        };
+        reader.readAsArrayBuffer(file);
+        setUploadedFiles((prevFiles) => [...prevFiles, file.name]);
+      }
     }
   };
 
