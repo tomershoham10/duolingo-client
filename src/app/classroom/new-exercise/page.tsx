@@ -40,6 +40,7 @@ enum FSAFieldsType {
   RELEVANT = 'relevant',
   ANSWERSLIST = 'answersList',
   DIFFICULTYLEVEL = 'difficultyLevel',
+  RECORD = 'record',
   TIMEBUFFERS = 'timeBuffers',
   SELECTEDLESSON = 'selectedLesson',
 }
@@ -97,6 +98,8 @@ const NewExercise: React.FC = () => {
   const [selectedLevel, setSelectedLevel] = useState<LevelType | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null);
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
+  const [recordFile, setRecordFile] = useState<File>();
+  const [sonolistFiles, setSonolistFiles] = useState<FileList>();
   useEffect(() => {
     console.log('selectedCourse', selectedCourse);
   }, [selectedCourse]);
@@ -323,8 +326,13 @@ const NewExercise: React.FC = () => {
     setDifficultyLevel(parseFloat(event.target.value));
   };
 
-  const handleFileChange = (file: File | FileList | null) => {
-    console.log('Selected file:', file);
+  const handleFileChange = (files: File | FileList | null) => {
+    if (files instanceof FileList) {
+      console.log('sonolist');
+      files ? setSonolistFiles(files as FileList) : null;
+    } else {
+      files ? setRecordFile(files as File) : null;
+    }
   };
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
@@ -376,6 +384,8 @@ const NewExercise: React.FC = () => {
     console.log('relevant', relevant);
     console.log('answers list', answersList);
     console.log('difficultyLevel', difficultyLevel);
+    console.log('recordFile', recordFile);
+    console.log('sonolistFiles', sonolistFiles);
     console.log('timeBufferRangeValues', timeBufferRangeValues);
     console.log('timeBuffersScores', timeBuffersScores);
     console.log('selectedCourse', selectedCourse);
@@ -388,6 +398,9 @@ const NewExercise: React.FC = () => {
     }
     if (difficultyLevel === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.DIFFICULTYLEVEL]);
+    }
+    if (recordFile === undefined) {
+      setUnfilledFields((prev) => [...prev, FSAFieldsType.RECORD]);
     }
     if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
@@ -450,7 +463,7 @@ const NewExercise: React.FC = () => {
                 <button
                   className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
                     unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
-                      ? 'bg-duoRed-lighter group-hover:bg-duoRed-hover'
+                      ? 'bg-duoRed-lighter text-duoRed-default group-hover:bg-duoRed-light'
                       : 'bg-duoGray-lighter group-hover:bg-duoGray-hover'
                   }`}
                   onClick={addTargetToAnswersList}
@@ -519,7 +532,15 @@ const NewExercise: React.FC = () => {
         </div>
         <div>
           <div>
-            <span className='my-3 text-2xl font-bold'>Answers:</span>
+            <span
+              className={`my-3 text-2xl font-bold ${
+                unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
+                  ? 'text-duoRed-default'
+                  : ''
+              }`}
+            >
+              Answers:
+            </span>
             <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
               <DndContext
                 collisionDetection={closestCenter}
@@ -571,7 +592,15 @@ const NewExercise: React.FC = () => {
         </div>
 
         <div className='flex w-full flex-col'>
-          <span className='my-3 text-2xl font-bold'>difficulty level:</span>
+          <span
+            className={`my-3 text-2xl font-bold ${
+              unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)
+                ? 'text-duoRed-default'
+                : ''
+            }`}
+          >
+            difficulty level:
+          </span>
           <Slider
             isMultiple={false}
             min={0}
@@ -579,6 +608,7 @@ const NewExercise: React.FC = () => {
             step={0.5}
             value={difficultyLevel}
             onChange={handleRangeChange}
+            errorMode={unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)}
           />
         </div>
         <div className='flex h-fit flex-col items-start justify-center'>
@@ -593,6 +623,7 @@ const NewExercise: React.FC = () => {
                 ref={uploadRef}
                 onFileChange={handleFileChange}
                 fileLength={handleFileLength}
+                errorMode={unfilledFields.includes(FSAFieldsType.RECORD)}
               />
             </div>
             <div className='relative w-full 3xl:w-[45%]'>
@@ -608,14 +639,24 @@ const NewExercise: React.FC = () => {
         </div>
         <div className='relative flex flex-col items-start justify-center'>
           <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
-            <span className='my-3 text-2xl font-bold'>Time Buffers:</span>
+            <span
+              className={`my-3 text-2xl font-bold ${
+                unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
+                  ? 'text-duoRed-default'
+                  : ''
+              }`}
+            >
+              Time Buffers:
+            </span>
 
             <div
               ref={timeBufferGradeDivRef}
               className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
                 isAddBufferOpen && recordLength > 0
-                  ? ' bg-duoGray-light'
-                  : ' bg-duoGray-lighter'
+                  ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
+                    ? ' bg-duoGray-light'
+                    : ' bg-duoGray-lighter'
+                  : ''
               }`}
             >
               <button

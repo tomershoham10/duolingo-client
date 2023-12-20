@@ -5,6 +5,7 @@ import Tooltip, { TooltipColors } from '../Tooltip/page';
 
 interface SliderProps {
   isMultiple: boolean;
+  errorMode?: boolean;
   numberOfSliders?: number;
   tooltipsValues?: number[] | string[];
   min: number;
@@ -20,6 +21,7 @@ interface SliderProps {
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;
+  const errorMode = props.errorMode;
   const numberOfSliders = props.numberOfSliders;
   const tooltipsValues = props.tooltipsValues;
   const propsMin = props.min;
@@ -136,7 +138,9 @@ const Slider: React.FC<SliderProps> = (props) => {
               step={propsStep}
               value={propsValue as number}
               onChange={propsOnChange}
-              className='range-slide mb-6 mt-3 w-full'
+              className={`range-slide mb-6 mt-3 w-full ${
+                errorMode ? 'range-slide-error-mode' : ''
+              }`}
               style={
                 isMultiple
                   ? {}

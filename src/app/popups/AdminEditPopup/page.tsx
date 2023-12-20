@@ -21,8 +21,10 @@ import {
   fieldToEditType,
   useEditSyllabusStore,
 } from '@/app/store/stores/useEditSyllabus';
-import { UnitType } from '@/app/API/classes-service/courses/functions';
-import { getUnitById } from '@/app/API/classes-service/units/functions';
+import {
+  UnitType,
+  getUnitById,
+} from '@/app/API/classes-service/units/functions';
 import SortableItem from '@/app/components/SortableItem/page';
 import Textbox, { FontSizes } from '@/app/components/Textbox/page';
 
@@ -137,6 +139,8 @@ const AdminEditPopup: React.FC = () => {
                       prevData={unit.description}
                       isEditMode={true}
                       fontSizeProps={FontSizes.SMALL}
+                      value={undefined}
+                      onChange={() => {}}
                     />
                   ) : null}
                 </div>

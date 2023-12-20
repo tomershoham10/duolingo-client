@@ -12,6 +12,7 @@ export enum Color {
   PURPLE = 'Purple',
   RED = 'Red',
   YELLOW = 'Yellow',
+  ERROR = 'Error',
 }
 
 interface ButtonProps {
@@ -55,7 +56,8 @@ const Button: React.FC<ButtonProps> = ({
       break;
 
     case 'Gray':
-      buttonColor = 'bg-white border-t-2 border-l-2 border-r-2 active:border-2 border-duoGray-default hover:border-duoGray-light';
+      buttonColor =
+        'bg-white border-t-2 border-l-2 border-r-2 active:border-2 border-duoGray-default hover:border-duoGray-light';
       buttonBorderColor = 'bg-duoGray-default hover:bg-duoGray-light';
       buttonHoverColor = 'hover:bg-duoGray-lighter';
       textColor = 'text-duoGray-darker hover:text-duoGray-midDark';
@@ -84,6 +86,11 @@ const Button: React.FC<ButtonProps> = ({
       buttonHoverColor = 'hover:bg-duoYellow-buttonHover';
       textColor = 'text-white';
       break;
+    case 'Error':
+      buttonColor = 'bg-white border-2 border-duoRed-button';
+      buttonBorderColor = 'bg-duoRed-button';
+      buttonHoverColor = 'hover:bg-duoRed-lighter';
+      textColor = 'text-duoRed-default';
   }
   if (!style) {
     style = 'w-full';

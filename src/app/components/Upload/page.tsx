@@ -13,10 +13,13 @@ import {
   FaRegFileImage,
   FaExpandAlt,
 } from 'react-icons/fa';
+import { BsClipboard2Data } from 'react-icons/bs';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 interface UploadProps {
   label: string;
   isMultiple: boolean;
+  errorMode?: boolean;
   filesTypes: string;
   onFileChange: (files: File | FileList | null) => void;
   fileLength?: (size: number | null) => void;
@@ -28,45 +31,17 @@ export interface UploadRef {
 }
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
+  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [isFilesListOpen, setIsFilesListOpen] = useState<boolean>(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files && files.length > 0) {
-      console.log('files uploaded', files);
-      const audioContext = new window.AudioContext();
-      if (files.length > 1) {
-        const newFiles = Array.from(files);
-        Promise.all(
-          newFiles.map(async (file) => {
-            const reader = new FileReader();
-            return new Promise<string>((resolve) => {
-              reader.onload = (e) => {
-                if (e.target) {
-                  resolve(e.target.result as string);
-                }
-              };
-              reader.readAsArrayBuffer(file);
-            });
-          })
-        )
-          .then((fileBuffers) => {
-            // Process fileBuffers as needed
-            console.log('File buffers:', fileBuffers);
-          })
-          .catch((error) => {
-            console.error('Error processing files:', error);
-          });
-        props.onFileChange(files);
-        setUploadedFiles((prevFiles) => [
-          ...prevFiles,
-          ...newFiles.map((file) => file.name),
-        ]);
-      }
-
-      if (files.length === 1) {
+    const audioContext = new window.AudioContext();
+    if (files) {
+      if (props.filesTypes === '.wav') {
         const file = files[0];
         const reader = new FileReader();
         console.log('reader', reader);
@@ -91,7 +66,36 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           }
         };
         reader.readAsArrayBuffer(file);
+        props.onFileChange(file);
         setUploadedFiles((prevFiles) => [...prevFiles, file.name]);
+      } else {
+        console.log('files uploaded', files);
+        const newFiles = Array.from(files);
+        Promise.all(
+          newFiles.map(async (file) => {
+            const reader = new FileReader();
+            return new Promise<string>((resolve) => {
+              reader.onload = (e) => {
+                if (e.target) {
+                  resolve(e.target.result as string);
+                }
+              };
+              reader.readAsArrayBuffer(file);
+            });
+          })
+        )
+          .then((fileBuffers) => {
+            console.log('File buffers:', fileBuffers);
+          })
+          .catch((error) => {
+            console.error('Error processing files:', error);
+          });
+        console.log('upload - files', files);
+        props.onFileChange(files);
+        setUploadedFiles((prevFiles) => [
+          ...prevFiles,
+          ...newFiles.map((file) => file.name),
+        ]);
       }
     }
   };
@@ -115,7 +119,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
       <div className='relative flex h-16 w-full flex-row items-center gap-4'>
         <Button
           label={props.label}
-          color={Color.GRAY}
+          color={props.errorMode ? Color.ERROR : Color.GRAY}
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFiles.length > 0}
         />
@@ -136,48 +140,65 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           >
             {isFilesListOpen &&
               uploadedFiles.map((file, fileIndex) => (
-                <li
-                  key={fileIndex}
-                  className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light`}
-                  style={
-                    fileIndex === uploadedFiles.length - 1
-                      ? fileIndex === 0
-                        ? {
-                            borderTopLeftRadius: '4px 4px',
-                            borderTopRightRadius: '4px 4px',
-                            borderBottomLeftRadius: '4px 4px',
-                            borderBottomRightRadius: '4px 4px',
-                          }
-                        : {
-                            borderBottomLeftRadius: '4px 4px',
-                            borderBottomRightRadius: '4px 4px',
-                          }
-                      : fileIndex === 0
-                        ? {
-                            borderTopLeftRadius: '4px 4px',
-                            borderTopRightRadius: '4px 4px',
-                          }
-                        : {}
-                  }
-                >
-                  <div className='flex w-full flex-row'>
-                    {file.endsWith('.wav') ? (
-                      <FaRegFileAudio className='mr-2 text-xl 3xl:text-2xl' />
-                    ) : (
-                      <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
-                    )}
-                    <span className='w-[80%]'>{file}</span>
-                  </div>
-                  <button
-                    onClick={() =>
-                      setUploadedFiles((prev) =>
-                        prev.filter((_, itemIndex) => itemIndex !== fileIndex)
-                      )
+                <>
+                  <li
+                    key={fileIndex}
+                    className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light`}
+                    style={
+                      fileIndex === uploadedFiles.length - 1
+                        ? fileIndex === 0
+                          ? {
+                              borderTopLeftRadius: '4px 4px',
+                              borderTopRightRadius: '4px 4px',
+                              borderBottomLeftRadius: '4px 4px',
+                              borderBottomRightRadius: '4px 4px',
+                            }
+                          : {
+                              borderBottomLeftRadius: '4px 4px',
+                              borderBottomRightRadius: '4px 4px',
+                            }
+                        : fileIndex === 0
+                          ? {
+                              borderTopLeftRadius: '4px 4px',
+                              borderTopRightRadius: '4px 4px',
+                            }
+                          : {}
                     }
                   >
-                    <FaRegTrashAlt />
-                  </button>
-                </li>
+                    <div className='flex w-full flex-row'>
+                      {file.endsWith('.wav') ? (
+                        <FaRegFileAudio className='mr-2 text-xl 3xl:text-2xl' />
+                      ) : (
+                        <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
+                      )}
+                      <span className='w-[80%]'>{file}</span>
+                    </div>
+                    <button
+                      onClick={() =>
+                        setUploadedFiles((prev) =>
+                          prev.filter((_, itemIndex) => itemIndex !== fileIndex)
+                        )
+                      }
+                    >
+                      <FaRegTrashAlt />
+                    </button>
+                  </li>
+                  {file.endsWith('.wav') ? (
+                    <li
+                      className={`flex flex-row items-center justify-between px-3 py-2`}
+                    >
+                      <button
+                        className='flex w-fit flex-row hover:text-duoBlue-default'
+                        onClick={() => {
+                          updateSelectedPopup(PopupsTypes.METADATA);
+                        }}
+                      >
+                        <BsClipboard2Data className='mr-2 text-xl 3xl:text-2xl' />
+                        <span>add metadata</span>
+                      </button>
+                    </li>
+                  ) : null}
+                </>
               ))}
           </ul>
         </div>

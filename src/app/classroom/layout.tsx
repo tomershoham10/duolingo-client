@@ -9,6 +9,7 @@ import Alert from '../components/Alert/page';
 import InfoBar from '../components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
+import MetadataPopup from '../popups/MetadataPopup/page';
 
 export default function RootLayout({
   children,
@@ -18,7 +19,7 @@ export default function RootLayout({
   const router = useRouter();
   const pathname = usePathname();
   const userRole = useStore(useUserStore, (state) => state.userRole);
-//   console.log("classroom layout - userRole",userRole);
+  //   console.log("classroom layout - userRole",userRole);
   return (
     <div className='flex h-screen w-full flex-row'>
       {userRole === TypesOfUser.ADMIN ? (
@@ -27,6 +28,7 @@ export default function RootLayout({
           <AdminSideBar />
           <CreateNewUser />
           <AdminEditPopup />
+          <MetadataPopup />
           <CreateNewUnit />
           <div className='flex h-screen w-full flex-col'>
             {pathname.includes('courses') ? <NavBar /> : null}

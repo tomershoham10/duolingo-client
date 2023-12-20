@@ -8,6 +8,7 @@ export enum PopupsTypes {
     NEWUNIT = "newUnit",
     STARTLESSON = "startLesson",
     ADMINEDIT = "adminEdit",
+    METADATA = 'metadata'
 }
 
 type PopupState = {
