@@ -85,7 +85,7 @@ const AdminSideBar: React.FC = () => {
                     min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold 
                 tracking-wide text-duoGray-darker lg:min-w-[13rem]'
         >
-          <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-[2rem] font-[850] text-duoBlue-default'>
+          <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-[2rem] font-[850] text-duoBlue-default text-center'>
             doulingo
           </label>
 

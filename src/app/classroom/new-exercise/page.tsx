@@ -35,6 +35,15 @@ import {
   getAllLessons,
 } from '@/app/API/classes-service/lessons/functions';
 
+enum FSAFieldsType {
+  DESCRIPTION = 'description',
+  RELEVANT = 'relevant',
+  ANSWERSLIST = 'answersList',
+  DIFFICULTYLEVEL = 'difficultyLevel',
+  TIMEBUFFERS = 'timeBuffers',
+  SELECTEDLESSON = 'selectedLesson',
+}
+
 interface TimeBuffersType {
   timeBuffer: number;
   grade: number;
@@ -87,7 +96,7 @@ const NewExercise: React.FC = () => {
   const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<LevelType | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null);
-
+  const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
   useEffect(() => {
     console.log('selectedCourse', selectedCourse);
   }, [selectedCourse]);
@@ -361,15 +370,31 @@ const NewExercise: React.FC = () => {
   };
 
   const submitExercise = () => {
+    setUnfilledFields([]);
     console.log('submit');
     console.log('description', description);
     console.log('relevant', relevant);
     console.log('answers list', answersList);
     console.log('difficultyLevel', difficultyLevel);
+    console.log('timeBufferRangeValues', timeBufferRangeValues);
+    console.log('timeBuffersScores', timeBuffersScores);
     console.log('selectedCourse', selectedCourse);
     console.log('selectedUnit', selectedUnit);
     console.log('selectedLevel', selectedLevel);
-    console.log('selectedlesson', selectedLesson);
+    console.log('selectedLesson', selectedLesson);
+
+    if (answersList.length === 0) {
+      setUnfilledFields((prev) => [...prev, FSAFieldsType.ANSWERSLIST]);
+    }
+    if (difficultyLevel === 0) {
+      setUnfilledFields((prev) => [...prev, FSAFieldsType.DIFFICULTYLEVEL]);
+    }
+    if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
+      setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
+    }
+    if (!selectedLesson) {
+      setUnfilledFields((prev) => [...prev, FSAFieldsType.SELECTEDLESSON]);
+    }
   };
 
   return (
@@ -423,7 +448,11 @@ const NewExercise: React.FC = () => {
 
               <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='open-button flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
+                  className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
+                    unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
+                      ? 'bg-duoRed-lighter group-hover:bg-duoRed-hover'
+                      : 'bg-duoGray-lighter group-hover:bg-duoGray-hover'
+                  }`}
                   onClick={addTargetToAnswersList}
                 >
                   <TbTargetArrow />
@@ -709,7 +738,7 @@ const NewExercise: React.FC = () => {
           <ul className='mb-12 mt-6 flex w-full flex-row items-center justify-start gap-5'>
             <li className='w-[8rem]'>
               <Dropdown
-                placeholder={'COURSES'}
+                placeholder={'COURSE'}
                 items={
                   coursesList
                     ? coursesList.map((item) => item.courseType as string)
@@ -731,7 +760,7 @@ const NewExercise: React.FC = () => {
 
             <li className='w-[8rem]'>
               <Dropdown
-                placeholder={'UNITS'}
+                placeholder={'UNIT'}
                 isDisabled={selectedCourse === null}
                 items={
                   selectedCourse
@@ -764,7 +793,7 @@ const NewExercise: React.FC = () => {
             </li>
             <li className='w-[8rem]'>
               <Dropdown
-                placeholder={'LEVELS'}
+                placeholder={'LEVEL'}
                 isDisabled={selectedUnit === null}
                 items={
                   levelsList && selectedUnit
@@ -795,7 +824,7 @@ const NewExercise: React.FC = () => {
             </li>
             <li className='w-[8rem]'>
               <Dropdown
-                placeholder={'LESSONS'}
+                placeholder={'LESSON'}
                 isDisabled={selectedLevel === null}
                 items={
                   lessonsList && selectedLevel

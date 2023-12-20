@@ -12,8 +12,9 @@ interface TextboxProps {
   isEditMode: boolean;
   fontSizeProps: FontSizes;
   placeHolder?: string;
-  value: string|undefined;
+  value: string | undefined;
   onChange: (text: string) => void;
+  errorMode?: boolean;
 }
 
 const Textbox: React.FC<TextboxProps> = (props) => {
@@ -23,6 +24,7 @@ const Textbox: React.FC<TextboxProps> = (props) => {
   const placeHolder = props.placeHolder;
   const propsVal = props.value;
   const onChange = props.onChange;
+  const errorMode = props.errorMode;
 
   const [fontSize, setFontSize] = useState<string>();
 
@@ -52,14 +54,20 @@ const Textbox: React.FC<TextboxProps> = (props) => {
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
             onChange(event.target.value);
           }}
-          className={`w-full rounded-md border-2 bg-duoGray-lighter px-3 py-2 focus:outline-none
+          className={`w-full rounded-md border-2 px-3 py-2 focus:outline-none
           ${
-            isEditMode
-              ? prevData !== propsVal
-                ? 'max-h-32 min-h-[2.5rem] border-duoRed-light text-duoRed-default'
-                : 'max-h-32 min-h-[2.5rem]'
-              : 'h-[6rem] 3xl:h-[10rem]'
-          }`}
+            errorMode
+              ? 'border-duoRed-default bg-duoRed-lighter text-duoRed-darker'
+              : 'bg-duoGray-lighter'
+          }
+          `}
+          //   ${
+          //     isEditMode
+          //       ? prevData !== propsVal
+          //         ? 'max-h-32 min-h-[2.5rem] border-duoRed-light text-duoRed-default'
+          //         : 'max-h-32 min-h-[2.5rem]'
+          //       : 'h-[6rem] 3xl:h-[10rem]'
+          //   }
           placeholder={placeHolder}
         />
       </div>
