@@ -6,7 +6,7 @@ import React, {
   ChangeEvent,
   useState,
 } from 'react';
-import Button, { Color } from '../Button/page';
+import Button, { ButtonTypes, Color } from '../Button/page';
 import {
   FaRegFileAudio,
   FaRegTrashAlt,
@@ -18,6 +18,7 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 interface UploadProps {
   label: string;
+  inputName?: string;
   isMultiple: boolean;
   errorMode?: boolean;
   filesTypes: string;
@@ -122,6 +123,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           color={props.errorMode ? Color.ERROR : Color.GRAY}
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFiles.length > 0}
+          buttonType={ButtonTypes.BUTTON}
         />
         {uploadedFiles.length > 0 ? (
           <button
@@ -206,6 +208,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
       <input
         id='upload-input'
         type='file'
+        name={props.inputName}
         ref={inputRef}
         onChange={handleFileChange}
         multiple={props.isMultiple}

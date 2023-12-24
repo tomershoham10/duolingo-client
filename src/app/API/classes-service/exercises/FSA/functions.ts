@@ -1,3 +1,4 @@
+import { uploadFile } from "@/app/API/files-service/functions";
 import { TargetType } from "@/app/store/stores/useTargetStore";
 
 export interface TimeBuffersType {
@@ -138,3 +139,48 @@ export const getResultByUserAndFSAId = async (currentExerciseId: string, userId:
     }
 };
 
+
+export const createFSA = async (
+    // description?: string,
+    // answersList: string[],
+    // relevant: string[],
+    // difficultyLevel: number,
+    recordFile: File,
+    // sonolist?: FileList,
+    // timeBuffers: TimeBuffersType[],
+    // lessonId?: string
+) => {
+    try {
+
+        console.log("Create FSA", recordFile)
+        const uploadRecordResponse = await uploadFile('records', recordFile);
+        console.log(uploadRecordResponse);
+        // const response = await fetch(
+        //     'http://localhost:8080/api/files/getResultByUserAndFSAId/',
+        //     {
+        //         method: "POST",
+        //         credentials: "include",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         // body: JSON.stringify()
+        //     },
+        // );
+        // if (response.ok) {
+        //     const data = await response.json();
+        //     if (!data) {
+        //         console.error("Empty response body.");
+        //         return [];
+        //     }
+        //     console.log("api - createFSA", data)
+        //     return data;
+        // } else {
+        //     console.error("Failed to create fsa.");
+        //     console.log("not ok", response);
+        //     return response.status;
+        // }
+    } catch (error) {
+        console.error("Error creating fsa:", error);
+        return [];
+    }
+};

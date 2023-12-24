@@ -56,10 +56,10 @@ export const useTargetStore = create<TargetState & Action>(
 
 if (typeof window !== 'undefined' && localStorage) {
     const targetData = localStorage.getItem("targetsList");
-    console.log("targetData - store", targetData);
+    // console.log("targetData - store", targetData);
     if (targetData) {
         const parsedData = JSON.parse(targetData) as TargetType[];
-        console.log("useTargetStore parsedData", parsedData);
+        // console.log("useTargetStore parsedData", parsedData);
         useTargetStore.getState().setTargets(Object.values(parsedData));
         // console.log("useTargetStore useTargetStore.getState().targets", useTargetStore.getState().targets, typeof parsedData);
     }

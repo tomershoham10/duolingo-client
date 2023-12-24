@@ -16,9 +16,7 @@ import useStore from '@/app/store/useStore';
 import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import {
-  getCourses,
-} from '@/app/API/classes-service/courses/functions';
+import { getCourses } from '@/app/API/classes-service/courses/functions';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
@@ -85,7 +83,7 @@ const AdminSideBar: React.FC = () => {
                     min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold 
                 tracking-wide text-duoGray-darker lg:min-w-[13rem]'
         >
-          <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-[2rem] font-[850] text-duoBlue-default text-center'>
+          <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-center text-[2rem] font-[850] text-duoBlue-default'>
             doulingo
           </label>
 

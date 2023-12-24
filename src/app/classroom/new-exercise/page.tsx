@@ -25,7 +25,7 @@ import {
   useCourseStore,
 } from '@/app/store/stores/useCourseStore';
 import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
-import Button, { Color } from '@/app/components/Button/page';
+import Button, { ButtonTypes, Color } from '@/app/components/Button/page';
 import {
   LevelType,
   getAllLevels,
@@ -34,6 +34,8 @@ import {
   LessonType,
   getAllLessons,
 } from '@/app/API/classes-service/lessons/functions';
+import MetadataPopup from '@/app/popups/MetadataPopup/page';
+import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
 
 enum FSAFieldsType {
   DESCRIPTION = 'description',
@@ -209,6 +211,50 @@ const NewExercise: React.FC = () => {
     }
   }, [isAddBufferOpen]);
 
+  useEffect(() => {
+    const removeFieldName = (fieldName: FSAFieldsType) => {
+      setUnfilledFields(unfilledFields.filter((field) => field !== fieldName));
+    };
+    if (unfilledFields.length > 0) {
+      if (
+        unfilledFields.includes(FSAFieldsType.ANSWERSLIST) &&
+        answersList.length > 0
+      ) {
+        removeFieldName(FSAFieldsType.ANSWERSLIST);
+      }
+      if (
+        unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL) &&
+        difficultyLevel > 0
+      ) {
+        removeFieldName(FSAFieldsType.DIFFICULTYLEVEL);
+      }
+      if (unfilledFields.includes(FSAFieldsType.RECORD) && recordFile) {
+        removeFieldName(FSAFieldsType.RECORD);
+      }
+      if (
+        unfilledFields.includes(FSAFieldsType.TIMEBUFFERS) &&
+        timeBufferRangeValues.length > 0 &&
+        timeBuffersScores.length > 0
+      ) {
+        removeFieldName(FSAFieldsType.TIMEBUFFERS);
+      }
+      if (
+        unfilledFields.includes(FSAFieldsType.SELECTEDLESSON) &&
+        selectedLesson
+      ) {
+        removeFieldName(FSAFieldsType.SELECTEDLESSON);
+      }
+    }
+  }, [
+    answersList.length,
+    difficultyLevel,
+    recordFile,
+    selectedLesson,
+    timeBufferRangeValues.length,
+    timeBuffersScores.length,
+    unfilledFields,
+  ]);
+
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
     setShowPlaceholder(false);
@@ -379,40 +425,63 @@ const NewExercise: React.FC = () => {
 
   const submitExercise = () => {
     setUnfilledFields([]);
-    console.log('submit');
-    console.log('description', description);
-    console.log('relevant', relevant);
+    let unfilledForAlert: number = 0;
+    // console.log('description', description);
+    // console.log('relevant', relevant);
     console.log('answers list', answersList);
     console.log('difficultyLevel', difficultyLevel);
     console.log('recordFile', recordFile);
-    console.log('sonolistFiles', sonolistFiles);
+    // console.log('sonolistFiles', sonolistFiles);
     console.log('timeBufferRangeValues', timeBufferRangeValues);
     console.log('timeBuffersScores', timeBuffersScores);
-    console.log('selectedCourse', selectedCourse);
-    console.log('selectedUnit', selectedUnit);
-    console.log('selectedLevel', selectedLevel);
+    // console.log('selectedCourse', selectedCourse);
+    // console.log('selectedUnit', selectedUnit);
+    // console.log('selectedLevel', selectedLevel);
     console.log('selectedLesson', selectedLesson);
 
     if (answersList.length === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.ANSWERSLIST]);
+      unfilledForAlert++;
     }
     if (difficultyLevel === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.DIFFICULTYLEVEL]);
+      unfilledForAlert++;
     }
     if (recordFile === undefined) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.RECORD]);
+      unfilledForAlert++;
+    } else {
+      createFSA(recordFile);
     }
     if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
+      unfilledForAlert++;
     }
-    if (!selectedLesson) {
-      setUnfilledFields((prev) => [...prev, FSAFieldsType.SELECTEDLESSON]);
+    // if (!selectedLesson) {
+    //   setUnfilledFields((prev) => [...prev, FSAFieldsType.SELECTEDLESSON]);
+    //   unfilledForAlert++;
+    // }
+    console.log('unfilledForAlert', unfilledForAlert);
+    if (unfilledForAlert > 0) {
+      addAlert(
+        'please complete the missing fields and sumbit again.',
+        AlertSizes.small
+      );
+    } else {
+      addAlert('sumbitted.', AlertSizes.small);
     }
   };
 
   return (
     <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
-      <div className='mx-auto w-[80%] 3xl:w-[65%]'>
+      <MetadataPopup
+        prevData={undefined}
+        onSave={(data) => console.log('metadata', data)}
+      />
+      <form
+        className='mx-auto w-[80%] 3xl:w-[65%]'
+        encType='multipart/form-data'
+      >
         <div className='mb-3 mt-5 text-4xl font-extrabold uppercase'>
           create new exercise
         </div>
@@ -428,7 +497,7 @@ const NewExercise: React.FC = () => {
             />
           </div>
         </div>
-        <div className='bg w-full'>
+        <div className='w-full'>
           <span className='my-3 text-2xl font-bold'>Targets list:</span>
           {targetsList ? (
             <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
@@ -654,9 +723,11 @@ const NewExercise: React.FC = () => {
               className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
                 isAddBufferOpen && recordLength > 0
                   ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
-                    ? ' bg-duoGray-light'
-                    : ' bg-duoGray-lighter'
-                  : ''
+                    ? 'bg-duoRed-light text-duoRed-default'
+                    : 'bg-duoGray-light'
+                  : unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
+                    ? 'bg-duoRed-lighter text-duoRed-default'
+                    : 'bg-duoGray-lighter'
               }`}
             >
               <button
@@ -905,10 +976,11 @@ const NewExercise: React.FC = () => {
               color={Color.BLUE}
               style={'w-[12rem]'}
               onClick={submitExercise}
+              buttonType={ButtonTypes.BUTTON}
             />
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

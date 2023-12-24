@@ -15,6 +15,11 @@ export enum Color {
   ERROR = 'Error',
 }
 
+export enum ButtonTypes {
+  SUBMIT = 'submit',
+  BUTTON = 'button',
+}
+
 interface ButtonProps {
   label: string;
   icon?: IconDefinition;
@@ -23,6 +28,7 @@ interface ButtonProps {
   href?: string;
   style?: string;
   isDisabled?: boolean;
+  buttonType?: ButtonTypes;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -33,6 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   href,
   style,
   isDisabled,
+  buttonType,
 }) => {
   const router = useRouter();
 
@@ -113,6 +120,7 @@ const Button: React.FC<ButtonProps> = ({
               router.push(href);
             }
           }}
+          type={buttonType}
         >
           {icon && (
             <FontAwesomeIcon className='ml-2 mr-4 h-6 w-6' icon={icon} />

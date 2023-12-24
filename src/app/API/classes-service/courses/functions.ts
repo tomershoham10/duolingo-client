@@ -1,5 +1,4 @@
 import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
-import { UnitType } from "../units/functions";
 
 export interface CoursesType {
     _id: string;
@@ -17,6 +16,7 @@ export const getCourses = async () => {
             },
         });
 
+        console.log('try');
         if (response.ok) {
             const data = await response.json();
             const coursesObject = data.courses as {
@@ -36,7 +36,7 @@ export const getCourses = async () => {
                     unitsList: course.units as string[],
                 }),
             );
-            // console.log("coursesList check", coursesList);
+            console.log("coursesList check", coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
