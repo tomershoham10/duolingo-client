@@ -431,7 +431,7 @@ const NewExercise: React.FC = () => {
     console.log('answers list', answersList);
     console.log('difficultyLevel', difficultyLevel);
     console.log('recordFile', recordFile);
-    // console.log('sonolistFiles', sonolistFiles);
+    console.log('sonolistFiles', sonolistFiles);
     console.log('timeBufferRangeValues', timeBufferRangeValues);
     console.log('timeBuffersScores', timeBuffersScores);
     // console.log('selectedCourse', selectedCourse);
@@ -451,7 +451,8 @@ const NewExercise: React.FC = () => {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.RECORD]);
       unfilledForAlert++;
     } else {
-      createFSA(recordFile);
+        console.log("1");
+        createFSA(recordFile, sonolistFiles);
     }
     if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
@@ -478,9 +479,9 @@ const NewExercise: React.FC = () => {
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
       />
-      <form
+      <div
         className='mx-auto w-[80%] 3xl:w-[65%]'
-        encType='multipart/form-data'
+        // encType='multipart/form-data'
       >
         <div className='mb-3 mt-5 text-4xl font-extrabold uppercase'>
           create new exercise
@@ -980,7 +981,7 @@ const NewExercise: React.FC = () => {
             />
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

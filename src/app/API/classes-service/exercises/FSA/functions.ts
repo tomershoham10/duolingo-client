@@ -146,15 +146,18 @@ export const createFSA = async (
     // relevant: string[],
     // difficultyLevel: number,
     recordFile: File,
-    // sonolist?: FileList,
+    sonolist?: FileList,
     // timeBuffers: TimeBuffersType[],
     // lessonId?: string
 ) => {
     try {
 
-        console.log("Create FSA", recordFile)
-        const uploadRecordResponse = await uploadFile('records', recordFile);
-        console.log(uploadRecordResponse);
+        console.log("Create FSA", sonolist)
+        // const uploadRecordResponse = await uploadFile('records', recordFile);
+        if (sonolist) {
+            const uploadSonolistResponse = await uploadFile('sonograms', sonolist);
+            console.log("uploadSonolistResponse", uploadSonolistResponse);
+        }
         // const response = await fetch(
         //     'http://localhost:8080/api/files/getResultByUserAndFSAId/',
         //     {
