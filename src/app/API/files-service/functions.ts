@@ -1,4 +1,9 @@
-export const uploadFile = async (bucketName: string, files: File | FileList): Promise<string> => {
+export interface UploadedObjectInfo {
+    etag: string;
+    versionId: string | null;
+}
+
+export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
     try {
 
         const formData = new FormData();
@@ -11,9 +16,15 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
                 'http://localhost:4002/api/files/uploadFile/', {
                 method: 'POST',
                 body: formData,
-            }).then((res) => console.log(res))
-            console.log("uploadRecordResponse", uploadRecordResponse);
-            return 'ok'
+            })
+            if (uploadRecordResponse.ok) {
+                const data = await uploadRecordResponse.json();
+                const uploadedData = data.uploadedData;
+                console.log("uploadRecordResponse", uploadedData);
+                return uploadedData;
+            } else {
+                throw new Error('record - server error');
+            }
         } else if (files instanceof FileList) {
             // Handle a FileList
             for (let i = 0; i < files.length; i++) {
@@ -22,22 +33,24 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
             }
             formData.append('bucketName', bucketName);
             console.log("formData", formData);
-            const uploadRecordResponse = await fetch(
+            const uploadSonolistResponse = await fetch(
                 'http://localhost:4002/api/files/uploadFilesArray/', {
                 method: 'POST',
                 body: formData,
-            }).then((res) => console.log(res))
-            console.log("uploadRecordResponse", uploadRecordResponse);
-            return 'ok'
+            })
+            if (uploadSonolistResponse.ok) {
+                const data = await uploadSonolistResponse.json();
+                const uploadedData = data.uploadedData;
+                console.log("uploadSonolistResponse", uploadedData);
+                return uploadedData;
+            } else {
+                throw new Error('sonolist - server error');
+            }
         } else {
             throw new Error('Invalid file type');
         }
 
-        // if (uploadRecordResponse.ok) {
-        //     return "ok";
-        // }
-        // else return 'not ok'
     } catch (error) {
-        throw new Error('no good')
+        throw new Error(`no good ${error}`);
     }
 }

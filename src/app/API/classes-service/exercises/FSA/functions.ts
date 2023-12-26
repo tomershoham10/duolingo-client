@@ -1,4 +1,4 @@
-import { uploadFile } from "@/app/API/files-service/functions";
+import { UploadedObjectInfo, uploadFile } from "@/app/API/files-service/functions";
 import { TargetType } from "@/app/store/stores/useTargetStore";
 
 export interface TimeBuffersType {
@@ -140,50 +140,62 @@ export const getResultByUserAndFSAId = async (currentExerciseId: string, userId:
 };
 
 
-export const createFSA = async (
-    // description?: string,
-    // answersList: string[],
-    // relevant: string[],
-    // difficultyLevel: number,
-    recordFile: File,
-    sonolist?: FileList,
-    // timeBuffers: TimeBuffersType[],
-    // lessonId?: string
-) => {
+interface ExerciseRequest {
+    records: File | FileList;
+    difficultyLevel: number;
+    relevant?: string[];
+    answersList: string[];
+    timeBuffers: TimeBuffersType[];
+    description?: string;
+    sonolist?: FileList;
+}
+
+export const createFSA = async (newFSA: ExerciseRequest): Promise<string> => {
     try {
 
-        console.log("Create FSA", sonolist)
-        // const uploadRecordResponse = await uploadFile('records', recordFile);
-        if (sonolist) {
-            const uploadSonolistResponse = await uploadFile('sonograms', sonolist);
+        const uploadRecordResponse = await uploadFile('records', newFSA.records) as UploadedObjectInfo[];
+        console.log("uploadRecordResponse", uploadRecordResponse);
+        const recordId = uploadRecordResponse.map(record => record.etag);
+        console.log("recordId", recordId)
+        let sonolistIds: string[] = []
+        if (newFSA.sonolist) {
+            const uploadSonolistResponse = await uploadFile('sonograms', newFSA.sonolist) as UploadedObjectInfo[][];
             console.log("uploadSonolistResponse", uploadSonolistResponse);
+            sonolistIds = Array(uploadSonolistResponse.map(array => array.map(item => item.etag)).join())
+            console.log("sonolistIds", sonolistIds)
         }
-        // const response = await fetch(
-        //     'http://localhost:8080/api/files/getResultByUserAndFSAId/',
-        //     {
-        //         method: "POST",
-        //         credentials: "include",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         // body: JSON.stringify()
-        //     },
-        // );
-        // if (response.ok) {
-        //     const data = await response.json();
-        //     if (!data) {
-        //         console.error("Empty response body.");
-        //         return [];
-        //     }
-        //     console.log("api - createFSA", data)
-        //     return data;
-        // } else {
-        //     console.error("Failed to create fsa.");
-        //     console.log("not ok", response);
-        //     return response.status;
-        // }
+
+        const response = await fetch(
+            'http://localhost:8080/api/FSA/',
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    recordsKeys: recordId,
+                    difficultyLevel: newFSA.difficultyLevel,
+                    relevant: newFSA.relevant,
+                    answersList: newFSA.answersList,
+                    timeBuffers: newFSA.timeBuffers,
+                    description: newFSA.description,
+                    sonolistKeys: sonolistIds,
+                })
+            },
+        );
+        if (response.ok) {
+            console.log("create fsa res", response);
+            const resJson = await response.json() as FSAType;
+            if (response.status === 201) {
+                console.log("new fsa", resJson);
+            }
+            return 'created successfully';
+        } else {
+            throw new Error('error creating FSA');
+        }
     } catch (error) {
         console.error("Error creating fsa:", error);
-        return [];
+        throw new Error(`error creating FSA ${error}`);
     }
 };

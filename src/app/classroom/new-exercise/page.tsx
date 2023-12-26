@@ -426,6 +426,7 @@ const NewExercise: React.FC = () => {
   const submitExercise = () => {
     setUnfilledFields([]);
     let unfilledForAlert: number = 0;
+    let combinedTimeBuffersArray: TimeBuffersType[] = [];
     // console.log('description', description);
     // console.log('relevant', relevant);
     console.log('answers list', answersList);
@@ -451,12 +452,17 @@ const NewExercise: React.FC = () => {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.RECORD]);
       unfilledForAlert++;
     } else {
-        console.log("1");
-        createFSA(recordFile, sonolistFiles);
     }
     if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
       setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
       unfilledForAlert++;
+    } else {
+      combinedTimeBuffersArray = timeBufferRangeValues.map(
+        (timeBuffer, index) => ({
+          timeBuffer,
+          grade: timeBuffersScores[index],
+        })
+      );
     }
     // if (!selectedLesson) {
     //   setUnfilledFields((prev) => [...prev, FSAFieldsType.SELECTEDLESSON]);
@@ -469,6 +475,15 @@ const NewExercise: React.FC = () => {
         AlertSizes.small
       );
     } else {
+      createFSA({
+        description: description,
+        answersList: answersList.map((target) => target._id),
+        relevant: relevant.map((target) => target._id),
+        difficultyLevel: difficultyLevel,
+        timeBuffers: combinedTimeBuffersArray,
+        records: recordFile as File | FileList,
+        sonolist: sonolistFiles,
+      });
       addAlert('sumbitted.', AlertSizes.small);
     }
   };
