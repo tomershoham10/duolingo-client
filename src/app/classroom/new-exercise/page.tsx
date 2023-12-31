@@ -518,14 +518,15 @@ const NewExercise: React.FC = () => {
           {targetsList ? (
             <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
               <Dropdown
+                isSearchable={true}
                 placeholder={'targets'}
                 items={targetsList.map((target) => target.name)}
                 value={
                   showPlaceholder
-                    ? null
+                    ? undefined
                     : targetFromDropdown
                       ? targetFromDropdown.name
-                      : null
+                      : undefined
                 }
                 onChange={handleTargetsDropdown}
                 size={DropdownSizes.DEFAULT}
@@ -866,6 +867,7 @@ const NewExercise: React.FC = () => {
           <ul className='mb-12 mt-6 flex w-full flex-row items-center justify-start gap-5'>
             <li className='w-[8rem]'>
               <Dropdown
+                isSearchable={false}
                 placeholder={'COURSE'}
                 items={
                   coursesList
@@ -888,6 +890,7 @@ const NewExercise: React.FC = () => {
 
             <li className='w-[8rem]'>
               <Dropdown
+                isSearchable={false}
                 placeholder={'UNIT'}
                 isDisabled={selectedCourse === null}
                 items={
@@ -921,6 +924,7 @@ const NewExercise: React.FC = () => {
             </li>
             <li className='w-[8rem]'>
               <Dropdown
+                isSearchable={false}
                 placeholder={'LEVEL'}
                 isDisabled={selectedUnit === null}
                 items={
@@ -952,6 +956,7 @@ const NewExercise: React.FC = () => {
             </li>
             <li className='w-[8rem]'>
               <Dropdown
+                isSearchable={false}
                 placeholder={'LESSON'}
                 isDisabled={selectedLevel === null}
                 items={

@@ -3,7 +3,7 @@ export interface UploadedObjectInfo {
     versionId: string | null;
 }
 
-export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][    ]> => {
     try {
 
         const formData = new FormData();

@@ -640,6 +640,7 @@ export default function Page() {
                       </span>
                       {targetsList ? (
                         <Dropdown
+                          isSearchable={true}
                           placeholder={'target'}
                           items={targetsList.map((target) => target.name)}
                           value={
@@ -656,6 +657,7 @@ export default function Page() {
                         />
                       ) : (
                         <Dropdown
+                          isSearchable={false}
                           placeholder={'target'}
                           items={['']}
                           value={''}

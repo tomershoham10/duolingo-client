@@ -198,6 +198,7 @@ const CreateNewUser: React.FC = () => {
             </p>
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
               <Dropdown
+                isSearchable={false}
                 items={['searider', 'senior', 'crew', 'teacher', 'admin']}
                 placeholder='role'
                 value={role}
