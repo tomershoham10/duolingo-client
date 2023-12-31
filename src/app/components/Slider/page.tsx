@@ -154,7 +154,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                   left: `calc(${(100 * propsValue) / propsMax}% + ${
                     16 - ((100 * propsValue) / propsMax) * 0.32
                   }px)`,
-                  top: '5rem',
+                  top: '4.7rem',
                 }}
               >
                 <Tooltip
