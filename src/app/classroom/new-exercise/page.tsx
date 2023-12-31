@@ -190,6 +190,10 @@ const NewExercise: React.FC = () => {
     console.log('gradeInput', gradeInput);
   }, [gradeInput]);
 
+  useEffect(() => {
+    console.log('targetFromDropdown', targetFromDropdown);
+  }, [targetFromDropdown]);
+
   const handleClickOutsideTimeBufferScore = (event: MouseEvent) => {
     if (
       timeBufferGradeDivRef.current &&
@@ -865,7 +869,7 @@ const NewExercise: React.FC = () => {
         <div>
           <span className='my-3 text-2xl font-bold'>Attach to a lessson:</span>
           <ul className='mb-12 mt-6 flex w-full flex-row items-center justify-start gap-5'>
-            <li className='w-[8rem]'>
+            <li className='w-[10rem]'>
               <Dropdown
                 isSearchable={false}
                 placeholder={'COURSE'}
@@ -888,7 +892,7 @@ const NewExercise: React.FC = () => {
               />
             </li>
 
-            <li className='w-[8rem]'>
+            <li className='w-[10rem]'>
               <Dropdown
                 isSearchable={false}
                 placeholder={'UNIT'}
@@ -922,7 +926,7 @@ const NewExercise: React.FC = () => {
                 size={DropdownSizes.SMALL}
               />
             </li>
-            <li className='w-[8rem]'>
+            <li className='w-[10rem]'>
               <Dropdown
                 isSearchable={false}
                 placeholder={'LEVEL'}
@@ -954,7 +958,7 @@ const NewExercise: React.FC = () => {
                 size={DropdownSizes.SMALL}
               />
             </li>
-            <li className='w-[8rem]'>
+            <li className='w-[10rem]'>
               <Dropdown
                 isSearchable={false}
                 placeholder={'LESSON'}
