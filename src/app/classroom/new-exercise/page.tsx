@@ -698,9 +698,9 @@ const NewExercise: React.FC = () => {
           </div>
         </div>
 
-        <div className='relative mb-4 flex w-full flex-col'>
+        <div className='relative mb-4 flex w-full flex-col gap-12'>
           <span
-            className={`mb-10 mt-3 text-2xl font-bold ${
+            className={`mt-3 text-2xl font-bold ${
               unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)
                 ? 'text-duoRed-default'
                 : ''
