@@ -41,7 +41,7 @@ const Slider: React.FC<SliderProps> = (props) => {
         }
       }
     }
-  }, [propsValue]);
+  }, [propsStep, propsValue]);
 
   //   useEffect(() => {
   // console.log('redIndexes', redIndexes);
