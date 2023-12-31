@@ -71,7 +71,6 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
 
   useEffect(() => {
     const originalItems = props.items;
-    console.log('check', selectedValue);
 
     if (selectedValue) {
       const filteredItems = originalItems.filter((item) =>

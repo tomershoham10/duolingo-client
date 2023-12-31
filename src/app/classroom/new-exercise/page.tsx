@@ -507,7 +507,7 @@ const NewExercise: React.FC = () => {
         </div>
         <div>
           <span className='my-3 text-2xl font-bold'>Description:</span>
-          <div className='my-3'>
+          <div className='mb-4 mt-3'>
             <Textbox
               isEditMode={false}
               fontSizeProps={FontSizes.MEDIUM}
@@ -520,7 +520,7 @@ const NewExercise: React.FC = () => {
         <div className='w-full'>
           <span className='my-3 text-2xl font-bold'>Targets list:</span>
           {targetsList ? (
-            <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
+            <div className='mb-4 mt-3 flex w-fit flex-row items-center justify-between gap-3'>
               <Dropdown
                 isSearchable={true}
                 placeholder={'targets'}
@@ -567,60 +567,68 @@ const NewExercise: React.FC = () => {
             </div>
           ) : null}
         </div>
-        <div>
+        <div className='mb-4'>
           <div>
             <span className='my-3 text-2xl font-bold'>Relevant:</span>
-
-            <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-              <DndContext
-                collisionDetection={closestCenter}
-                onDragStart={(event: DragEndEvent) => {
-                  const { active } = event;
-                  setGrabbedRelevantId(active.id.toString());
-                }}
-                onDragMove={handleRelevantDragMove}
-                onDragEnd={handleRelevantDragEnd}
-              >
-                <SortableContext
-                  items={relevant.map((target) => target._id)}
-                  strategy={horizontalListSortingStrategy}
+            {relevant.length > 0 ? (
+              <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+                <DndContext
+                  collisionDetection={closestCenter}
+                  onDragStart={(event: DragEndEvent) => {
+                    const { active } = event;
+                    setGrabbedRelevantId(active.id.toString());
+                  }}
+                  onDragMove={handleRelevantDragMove}
+                  onDragEnd={handleRelevantDragEnd}
                 >
-                  <div className='flex flex-wrap gap-1'>
-                    {relevant.map((target, relevantIndex) => (
-                      <div
-                        key={relevantIndex}
-                        className='mb-2 flex w-[8rem] flex-row'
-                      >
-                        <SortableItem
-                          id={target._id}
+                  <SortableContext
+                    items={relevant.map((target) => target._id)}
+                    strategy={horizontalListSortingStrategy}
+                  >
+                    <div className='flex flex-wrap gap-1'>
+                      {relevant.map((target, relevantIndex) => (
+                        <div
                           key={relevantIndex}
-                          name={target.name}
-                          isGrabbed={
-                            grabbedRelevantId
-                              ? grabbedRelevantId === target._id
-                              : false
-                          }
-                          isDisabled={false}
-                        />
-                        {grabbedRelevantId !== target._id ? (
-                          <button
-                            onClick={() => {
-                              removeRelevantItem(target._id);
-                            }}
-                            className='flex w-full items-center justify-center text-duoGray-darkest'
-                          >
-                            <FaRegTrashAlt />
-                          </button>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+                          className='mb-2 flex w-[8rem] flex-row'
+                        >
+                          <SortableItem
+                            id={target._id}
+                            key={relevantIndex}
+                            name={target.name}
+                            isGrabbed={
+                              grabbedRelevantId
+                                ? grabbedRelevantId === target._id
+                                : false
+                            }
+                            isDisabled={false}
+                          />
+                          {grabbedRelevantId !== target._id ? (
+                            <button
+                              onClick={() => {
+                                removeRelevantItem(target._id);
+                              }}
+                              className='flex w-full items-center justify-center text-duoGray-darkest'
+                            >
+                              <FaRegTrashAlt />
+                            </button>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+            ) : (
+              <>
+                <br />
+                <span className='font-semibold text-duoGray-dark opacity-70'>
+                  please select a target.
+                </span>
+              </>
+            )}
           </div>
         </div>
-        <div>
+        <div className='mb-4'>
           <div>
             <span
               className={`my-3 text-2xl font-bold ${
@@ -631,59 +639,68 @@ const NewExercise: React.FC = () => {
             >
               Answers:
             </span>
-            <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-              <DndContext
-                collisionDetection={closestCenter}
-                onDragStart={(event: DragEndEvent) => {
-                  const { active } = event;
-                  setGrabbedAnswerId(active.id.toString());
-                }}
-                onDragMove={handleAnswerDragMove}
-                onDragEnd={handleAnswerDragEnd}
-              >
-                <SortableContext
-                  items={answersList.map((answer) => answer._id)}
-                  strategy={horizontalListSortingStrategy}
+            {answersList.length > 0 ? (
+              <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+                <DndContext
+                  collisionDetection={closestCenter}
+                  onDragStart={(event: DragEndEvent) => {
+                    const { active } = event;
+                    setGrabbedAnswerId(active.id.toString());
+                  }}
+                  onDragMove={handleAnswerDragMove}
+                  onDragEnd={handleAnswerDragEnd}
                 >
-                  <div className='flex flex-wrap gap-1'>
-                    {answersList.map((answer, answerIndex) => (
-                      <div
-                        key={answerIndex}
-                        className='mb-2 flex w-[8rem] flex-row'
-                      >
-                        <SortableItem
-                          id={answer._id}
+                  <SortableContext
+                    items={answersList.map((answer) => answer._id)}
+                    strategy={horizontalListSortingStrategy}
+                  >
+                    <div className='flex flex-wrap gap-1'>
+                      {answersList.map((answer, answerIndex) => (
+                        <div
                           key={answerIndex}
-                          name={answer.name}
-                          isGrabbed={
-                            grabbedAnswerId
-                              ? grabbedAnswerId === answer._id
-                              : false
-                          }
-                          isDisabled={false}
-                        />
-                        {grabbedAnswerId !== answer._id ? (
-                          <button
-                            onClick={() => {
-                              removeAnswerItem(answer._id);
-                            }}
-                            className='flex w-full items-center justify-center text-duoGray-darkest'
-                          >
-                            <FaRegTrashAlt />
-                          </button>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+                          className='mb-2 flex w-[8rem] flex-row'
+                        >
+                          <SortableItem
+                            id={answer._id}
+                            key={answerIndex}
+                            name={answer.name}
+                            isGrabbed={
+                              grabbedAnswerId
+                                ? grabbedAnswerId === answer._id
+                                : false
+                            }
+                            isDisabled={false}
+                          />
+                          {grabbedAnswerId !== answer._id ? (
+                            <button
+                              onClick={() => {
+                                removeAnswerItem(answer._id);
+                              }}
+                              className='flex w-full items-center justify-center text-duoGray-darkest'
+                            >
+                              <FaRegTrashAlt />
+                            </button>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+            ) : (
+              <>
+                <br />
+                <span className='font-semibold text-duoGray-dark opacity-70'>
+                  please select a target.
+                </span>
+              </>
+            )}
           </div>
         </div>
 
-        <div className='flex w-full flex-col'>
+        <div className='relative mb-4 flex w-full flex-col'>
           <span
-            className={`my-3 text-2xl font-bold ${
+            className={`mb-10 mt-3 text-2xl font-bold ${
               unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)
                 ? 'text-duoRed-default'
                 : ''
