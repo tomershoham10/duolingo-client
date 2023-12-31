@@ -114,17 +114,19 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
           tabIndex={0}
           ref={tooltipRef}
           className={`absolute left-1/2 ${
-            isFloating && !isInEditMode ? 'tooltip' : ''
+            isFloating && !isInEditMode ? 'tooltip cursor-pointer' : 'cursor-default'
           }`}
         >
-          <div className='relative cursor-pointer'>
+          <div className='relative'>
             <section className='inline-flex'>
               <div
                 className={`absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[35%] transform rounded-xl
               border-2 ${borderColor} ${backgroundColor} px-3 py-2 text-center text-base font-extrabold uppercase tracking-wide
                ${textColor}`}
               >
-                <div>{placeholder ? placeholder : 'START'}</div>
+                <div className='min-w-[1.5rem]'>
+                  {placeholder ? placeholder : 'START'}
+                </div>
               </div>
               <div
                 className={`absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[120%] rotate-45 transform rounded-sm border-b-2 
