@@ -31,24 +31,17 @@ interface ButtonProps {
   buttonType?: ButtonTypes;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  label,
-  icon,
-  color,
-  onClick,
-  href,
-  style,
-  isDisabled,
-  buttonType,
-}) => {
+const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
   const router = useRouter();
+
+  let addedStyle: string = props.style ? props.style : 'w-full';
 
   let buttonColor: string = '';
   let buttonBorderColor: string = '';
   let buttonHoverColor: string = '';
   let textColor: string = '';
 
-  switch (color) {
+  switch (props.color) {
     case 'Blue':
       buttonColor = 'bg-duoBlue-button';
       buttonBorderColor = 'bg-duoBlue-buttonBorder';
@@ -99,33 +92,30 @@ const Button: React.FC<ButtonProps> = ({
       buttonHoverColor = 'hover:bg-duoRed-lighter';
       textColor = 'text-duoRed-default';
   }
-  if (!style) {
-    style = 'w-full';
-  }
 
   return (
     <div className='relative'>
       <div
-        className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${style} text-md mb-2
+        className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${addedStyle} text-md mb-2
     mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent font-extrabold active:translate-y-[4px] active:border-0`}
       >
         <button
           className={`group flex flex-col items-center justify-start ${buttonColor} w-full rounded-2xl pb-2 pl-3 pr-3 pt-2 ${buttonHoverColor}`}
-          disabled={isDisabled}
+          disabled={props.isDisabled}
           onClick={() => {
-            if (onClick) {
-              onClick();
+            if (props.onClick) {
+              props.onClick();
             }
-            if (href) {
-              router.push(href);
+            if (props.href) {
+              router.push(props.href);
             }
           }}
-          type={buttonType}
+          type={props.buttonType}
         >
-          {icon && (
-            <FontAwesomeIcon className='ml-2 mr-4 h-6 w-6' icon={icon} />
+          {props.icon && (
+            <FontAwesomeIcon className='ml-2 mr-4 h-6 w-6' icon={props.icon} />
           )}
-          {label}
+          {props.label}
         </button>
       </div>
     </div>
