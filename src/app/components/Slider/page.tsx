@@ -131,28 +131,40 @@ const Slider: React.FC<SliderProps> = (props) => {
       ) : (
         <>
           {_.isNumber(propsValue) ? (
-           <section>
-                <input
-                  type='range'
-                  min={propsMin}
-                  max={propsMax}
-                  step={propsStep}
-                  value={propsValue as number}
-                  onChange={propsOnChange}
-                  className={`range-slide mb-6 mt-3 w-full ${
-                    errorMode ? 'range-slide-error-mode' : ''
-                  }`}
-                  style={
-                    isMultiple
-                      ? {}
-                      : {
-                          background: `linear-gradient(to right, #20a6ec 0%, #20a6ec ${
-                            (100 * propsValue) / 10
-                          }%, #ebeaeb ${(100 * propsValue) / 10}%, #ebeaeb 100%)`,
-                        }
-                  }
+            <section>
+              <input
+                type='range'
+                min={propsMin}
+                max={propsMax}
+                step={propsStep}
+                value={propsValue as number}
+                onChange={propsOnChange}
+                className={`range-slide mb-6 mt-3 w-full ${
+                  errorMode ? 'range-slide-error-mode' : ''
+                }`}
+                style={{
+                  background: `linear-gradient(to right, #20a6ec 0%, #20a6ec ${
+                    (100 * propsValue) / 10
+                  }%, #ebeaeb ${(100 * propsValue) / 10}%, #ebeaeb 100%)`,
+                }}
+              />
+              <div
+                className={`absolute flex items-center justify-center text-center `}
+                style={{
+                  left: `calc(${(100 * propsValue) / propsMax}% + ${
+                    16 - ((100 * propsValue) / propsMax) * 0.32
+                  }px)`,
+                  top: '5rem',
+                }}
+              >
+                <Tooltip
+                  placeholder={propsValue}
+                  isFloating={true}
+                  color={TooltipColors.WHITE}
+                  edittable={true}
                 />
-           </section>
+              </div>
+            </section>
           ) : (
             <></>
           )}
