@@ -158,10 +158,10 @@ const Slider: React.FC<SliderProps> = (props) => {
                 }}
               >
                 <Tooltip
-                  placeholder={propsValue}
-                  isFloating={true}
+                  placeholder={propsValue === 0 ? '0' : propsValue}
+                  isFloating={false}
                   color={TooltipColors.WHITE}
-                  edittable={true}
+                  edittable={false}
                 />
               </div>
             </section>
