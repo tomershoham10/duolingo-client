@@ -15,26 +15,19 @@ interface InputProps {
   failed?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({
-  type,
-  placeholder,
-  value,
-  onChange,
-  className,
-  failed,
-}) => {
+const Input: React.FC<InputProps> = (props: InputProps) => {
   return (
-    <div className={`relative ${className} w-full`}>
+    <div className={`relative ${props.className} w-full`}>
       <input
-        type={type}
+        type={props.type}
         className={`w-full rounded-xl border-2 bg-duoGray-lighter p-3 text-duoGray-darkest focus:outline-none ${
-          failed ? 'border-duoRed-light' : 'border-duoGray-default'
+          props.failed ? 'border-duoRed-light' : 'border-duoGray-default'
         }`}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        placeholder={props.placeholder}
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
       />
-      {failed && (
+      {props.failed && (
         <FontAwesomeIcon
           icon={faExclamation}
           className='absolute right-3 top-1/2 w-4 -translate-y-1/2 transform rounded-full border-2 border-duoRed-default p-[0.1rem] text-duoRed-default'
