@@ -10,15 +10,11 @@ interface SortableItemProps {
   addedStyle?: string;
 }
 
-const SortableItem: React.FC<SortableItemProps> = ({
-  id,
-  name,
-  isGrabbed,
-  isDisabled,
-  addedStyle,
-}) => {
+const SortableItem: React.FC<SortableItemProps> = (
+  props: SortableItemProps
+) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: id, disabled: isDisabled });
+    useSortable({ id: props.id, disabled: props.isDisabled });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -32,18 +28,18 @@ const SortableItem: React.FC<SortableItemProps> = ({
         {...attributes}
         {...listeners}
         className={`border-border-duoGray-regular w-full flex-none rounded-xl border-2 
-        border-b-4 py-4 text-lg font-bold ${addedStyle}
+        border-b-4 py-4 text-lg font-bold ${props.addedStyle}
         ${
-          isDisabled
+          props.isDisabled
             ? ' cursor-default'
             : 'cursor-pointer active:translate-y-[1px] active:border-b-2'
-        } ${isGrabbed ? 'z-50 bg-white opacity-100' : ''}`}
+        } ${props.isGrabbed ? 'z-50 bg-white opacity-100' : ''}`}
       >
         <span
           className='relative flex items-center justify-center 
                 text-ellipsis text-center'
         >
-          {name}
+          {props.name}
         </span>
       </div>
     </div>
