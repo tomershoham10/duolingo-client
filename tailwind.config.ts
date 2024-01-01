@@ -6,6 +6,7 @@ const config: Config = {
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     ],
+    darkMode: ['class', '[data-mode="dark"]'],
     theme: {
         screens: {
             'sm': '640px',
@@ -70,7 +71,7 @@ const config: Config = {
                     default: '#E5E5E5',
                     regular: '#DCDCDC',
                     dark: '#AFAFAF',
-                    midDark:'#939393',
+                    midDark: '#939393',
                     darker: '#8B8B8B',
                     darkest: '#4B4B4B',
                     darkText: '#9D9D9D'

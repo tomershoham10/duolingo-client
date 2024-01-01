@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' className={nunito.className}>
+    <html lang='en' className={nunito.className} data-mode='light'>
       <body className='mx-auto flex' suppressHydrationWarning={true}>
         {children}
       </body>

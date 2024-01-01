@@ -493,7 +493,7 @@ const NewExercise: React.FC = () => {
   };
 
   return (
-    <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
+    <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest dark:bg-black'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
