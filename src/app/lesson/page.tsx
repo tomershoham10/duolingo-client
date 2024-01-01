@@ -16,7 +16,7 @@ import { FiFlag } from 'react-icons/fi';
 
 import Button, { Color } from '@/app/components/Button/page';
 import Alert from '@/app/components/Alert/page';
-import ProgressBar from '@/app/components/ProgressBar/page';
+import ProgressBar from '@/components/ProgressBar/page';
 import Dropdown, { DropdownSizes } from '@/app/components/Dropdown/page';
 
 import useStore from '../store/useStore';
@@ -39,7 +39,7 @@ import {
   submitExercise,
 } from '../API/classes-service/results/functions';
 import { getTargetsList } from '../API/classes-service/targets/functions';
-import SortableItem from '@/app/components/SortableItem/page';
+import SortableItem from '@/components/SortableItem/page';
 import { updateNextLessonIdForUser } from '../API/users-service/users/functions';
 
 export default function Page() {

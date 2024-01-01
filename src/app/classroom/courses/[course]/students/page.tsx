@@ -1,5 +1,5 @@
 'use client';
-import Table from '@/app/components/Table/page';
+import Table from '@/components/Table/page';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useState } from 'react';

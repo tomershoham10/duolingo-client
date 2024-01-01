@@ -1,7 +1,7 @@
 "use client";
 import Alert from "../components/Alert/page";
 import InfoBar from "../components/InfoBar/page";
-import StudentSideBar from "../components/Navigation/StudentSideBar/page";
+import StudentSideBar from "../../components/Navigation/StudentSideBar/page";
 
 export default function RootLayout({
     children,

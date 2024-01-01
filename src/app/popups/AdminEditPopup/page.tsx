@@ -25,8 +25,8 @@ import {
   UnitType,
   getUnitById,
 } from '@/app/API/classes-service/units/functions';
-import SortableItem from '@/app/components/SortableItem/page';
-import Textbox, { FontSizes } from '@/app/components/Textbox/page';
+import SortableItem from '@/components/SortableItem/page';
+import Textbox, { FontSizes } from '@/components/Textbox/page';
 
 library.add(faXmark);
 

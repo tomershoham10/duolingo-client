@@ -3,7 +3,7 @@ import {
     TimeBuffersType, FSAType,
   getExercisesData,
 } from '@/app/API/classes-service/lessons/functions';
-import ProgressBar from '@/app/components/ProgressBar/page';
+import ProgressBar from '@/components/ProgressBar/page';
 import { useEffect, useState } from 'react';
 
 export default function Page({ params }: { params: { id: string } }) {

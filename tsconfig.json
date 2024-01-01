@@ -33,7 +33,7 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts"
-, "src/app/components/LessonButton/CircleGenerator"    ],
+, "src/components/LessonButton/CircleGenerator"    ],
     "exclude": [
         "node_modules"
     ]

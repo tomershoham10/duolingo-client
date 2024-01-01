@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
-import Dropdown, { DropdownSizes } from '@/app/components/Dropdown/page';
-import Textbox, { FontSizes } from '@/app/components/Textbox/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Textbox, { FontSizes } from '@/components/Textbox/page';
 import useStore from '@/app/store/useStore';
 import { TargetType, useTargetStore } from '@/app/store/stores/useTargetStore';
 
@@ -10,22 +10,22 @@ import { TiPlus } from 'react-icons/ti';
 import { TbTargetArrow } from 'react-icons/tb';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import Upload, { UploadRef } from '@/app/components/Upload/page';
-import Slider from '@/app/components/Slider/page';
+import Upload, { UploadRef } from '@/components/Upload/page';
+import Slider from '@/components/Slider/page';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import SortableItem from '@/app/components/SortableItem/page';
+import SortableItem from '@/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import {
   TypesOfCourses,
   useCourseStore,
 } from '@/app/store/stores/useCourseStore';
 import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
-import Button, { ButtonTypes, Color } from '@/app/components/Button/page';
+import Button, { ButtonTypes, Color } from '@/components/Button/page';
 import {
   LevelType,
   getAllLevels,

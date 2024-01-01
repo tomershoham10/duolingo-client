@@ -6,7 +6,7 @@ import useStore from '@/app/store/useStore';
 import Button, { Color } from '@/app/components/Button/page';
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import AdminUnit from '@/app/components/UnitSection/AdminUnit/page';
+import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state.courseId);
