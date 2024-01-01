@@ -97,7 +97,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     <div className='relative'>
       <div
         className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${addedStyle} text-md mb-2
-    mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent font-extrabold active:translate-y-[4px] active:border-0`}
+    mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent font-extrabold active:translate-y-[2px] active:border-0`}
       >
         <button
           className={`group flex flex-col items-center justify-start ${buttonColor} w-full rounded-2xl pb-2 pl-3 pr-3 pt-2 ${buttonHoverColor}`}
