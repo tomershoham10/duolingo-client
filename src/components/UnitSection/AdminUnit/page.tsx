@@ -6,20 +6,19 @@ import {
 } from '@/app/store/stores/useCourseStore';
 import {
   CoursesType,
-  UnitType,
   getCourseByType,
   getUnitsData,
 } from '@/app/API/classes-service/courses/functions';
 import {
-  LevelType,
+  UnitType,
   getLevelsData,
 } from '@/app/API/classes-service/units/functions';
 import {
-  LessonType,
+  LevelType,
   getLessonsData,
 } from '@/app/API/classes-service/levels/functions';
 import {
-  FSAType,
+  LessonType,
   getExercisesData,
 } from '@/app/API/classes-service/lessons/functions';
 
@@ -38,6 +37,7 @@ import {
   useEditSyllabusStore,
 } from '@/app/store/stores/useEditSyllabus';
 import { usePathname } from 'next/navigation';
+import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
@@ -125,7 +125,7 @@ const AdminUnit: React.FC = () => {
       });
       const promises = allLevels.map(async (level) => {
         const lessonsData = await getLessonsData(level.levelId);
-        level.lessons = lessonsData;
+        lessonsData ? (level.lessons = lessonsData) : (level.lessons = []);
         return level;
       });
 
@@ -144,10 +144,13 @@ const AdminUnit: React.FC = () => {
         (acc, cur) => acc.concat(cur.lessons),
         [] as LessonType[]
       );
+
       const promises = allLessons.map(async (lesson) => {
         const exercisesData = await getExercisesData(lesson._id);
-        return { lessonId: lesson._id, exercises: exercisesData };
+        return { lessonId: lesson._id, exercises: exercisesData || [] };
+        // Use exercisesData || [] to handle null case and ensure exercises is always an array
       });
+
       const result = await Promise.all(promises);
       setExercises(result);
     };
