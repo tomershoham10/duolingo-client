@@ -10,6 +10,8 @@ import InfoBar from '../components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
 
+import { notFound } from 'next/navigation';
+
 export default function RootLayout({
   children,
 }: {
