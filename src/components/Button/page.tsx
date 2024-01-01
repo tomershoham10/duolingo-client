@@ -63,10 +63,13 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
       textColor = 'text-duoGray-darker hover:text-duoGray-midDark';
       break;
     case 'White':
-      buttonColor = 'bg-white';
-      buttonBorderColor = 'bg-duoGreen-lightest';
-      buttonHoverColor = 'hover:text-duoGreen-buttonHover';
-      textColor = 'text-duoGreen-default';
+      buttonColor =
+        'bg-white dark:border-t-2 dark:border-l-2 dark:border-r-2 dark:active:border-2 dark:bg-duoGrayDark-darkest dark:border-duoGrayDark-light dark:hover:bg-duoGrayDark-darkestHover';
+      buttonBorderColor = 'bg-duoGreen-lightest dark:bg-duoGrayDark-light';
+      buttonHoverColor =
+        'hover:text-duoGreen-buttonHover dark:hover:text-duoBlueDark-textHover dark:bg-text-duoBlueDark-darker';
+      textColor =
+        'text-duoGreen-default dark:text-duoBlueDark-text';
       break;
     case 'Purple':
       buttonColor = 'bg-duoPurple-default';

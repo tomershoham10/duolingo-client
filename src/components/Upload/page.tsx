@@ -15,6 +15,8 @@ import {
 } from 'react-icons/fa';
 import { BsClipboard2Data } from 'react-icons/bs';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
+import { useStore } from 'zustand';
 
 interface UploadProps {
   label: string;
@@ -33,6 +35,7 @@ export interface UploadRef {
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+  const theme = useStore(useThemeStore, (state) => state.theme);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
@@ -120,7 +123,13 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
       <div className='relative flex h-16 w-full flex-row items-center gap-4'>
         <Button
           label={props.label}
-          color={props.errorMode ? Color.ERROR : Color.GRAY}
+          color={
+            props.errorMode
+              ? Color.ERROR
+              : theme === Themes.LIGHT
+                ? Color.GRAY
+                : Color.WHITE
+          }
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFiles.length > 0}
           buttonType={ButtonTypes.BUTTON}

@@ -79,6 +79,10 @@
   animation: open-button 4s ease;
 }
 
+.textarea-dark-placeholder::placeholder {
+  color: #52656D;
+}
+
 .range-slide {
   -webkit-appearance: none;
   height: 10px;

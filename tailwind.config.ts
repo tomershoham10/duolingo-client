@@ -55,10 +55,13 @@ const config: Config = {
                 },
 
                 'duoBlueDark': {
-                    text:'#49C0F8',
+                    text: '#49C0F8',
+                    textHover: '#42ADDF',
                     default: '#3B5799',
                     dark: '#384E8E',
-                    darkest: '#1E273B'
+                    darker: '#111C20',
+                    darkest: '#1E273B',
+                    darkestHover: '#111C20'
                 },
 
                 'duoGray': {
@@ -86,9 +89,12 @@ const config: Config = {
 
                 'duoGrayDark': {
                     lightest: '#DCE6EC',
+                    lighter: '#52656D',
                     light: '#37464F',
+                    dark: '#202F36',
                     darker: '#202F36',
                     darkest: '#131F24'
+
                 },
 
                 'duoRed': {
