@@ -125,12 +125,12 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
       <div
         className={
           props.isDisabled
-            ? 'flex h-14 w-full cursor-default items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-light p-3 font-bold uppercase text-duoGray-dark'
+            ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-default items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter p-3 font-bold uppercase text-duoGray-darkest opacity-50'
             : isFailed
               ? 'flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoRed-light bg-duoRed-lighter p-3 font-bold uppercase text-duoRed-darker'
               : props.isSearchable && isOpen
-                ? 'flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter px-3 font-bold uppercase text-duoGray-darkest'
-                : 'flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter p-3 font-bold uppercase text-duoGray-darkest'
+                ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter px-3 font-bold uppercase text-duoGray-darkest'
+                : 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter p-3 font-bold uppercase text-duoGray-darkest'
         }
         onClick={() => setIsOpen(true)}
       >
@@ -144,12 +144,15 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
               className='h-full w-[100%] bg-transparent text-lg focus:outline-none'
             />
           ) : (
-            <span className='uppercase'>
+            <span className='dark:text-duoBlueDark-text uppercase'>
               {selectedValue || props.placeholder}
             </span>
           )}
         </div>
-        <FontAwesomeIcon icon={faChevronDown} />
+        <FontAwesomeIcon
+          icon={faChevronDown}
+          className='dark:text-duoBlueDark-text'
+        />
       </div>
       {isOpen && !props.isDisabled && (
         <ul

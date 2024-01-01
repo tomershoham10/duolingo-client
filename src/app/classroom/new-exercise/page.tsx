@@ -493,7 +493,7 @@ const NewExercise: React.FC = () => {
   };
 
   return (
-    <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+    <div className='dark:text-duoGrayDark-lightest flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
@@ -539,7 +539,7 @@ const NewExercise: React.FC = () => {
 
               <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
+                  className='dark:bg-duoGrayDark-light flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
                   onClick={addTargetToRelevant}
                 >
                   <TiPlus />
@@ -554,7 +554,7 @@ const NewExercise: React.FC = () => {
                   className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
                     unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
                       ? 'bg-duoRed-lighter text-duoRed-default group-hover:bg-duoRed-light'
-                      : 'bg-duoGray-lighter group-hover:bg-duoGray-hover'
+                      : 'dark:bg-duoGrayDark-light bg-duoGray-lighter group-hover:bg-duoGray-hover'
                   }`}
                   onClick={addTargetToAnswersList}
                 >
