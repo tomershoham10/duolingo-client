@@ -7,7 +7,7 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import Button, { Color } from '@/app/components/Button/page';
+import Button, { Color } from '@/components/Button/page';
 
 library.add(faXmark);
 

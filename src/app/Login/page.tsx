@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 
 import useStore from '../store/useStore';
 import { useUserStore } from '../store/stores/useUserStore';
-import Input, { Types } from '../components/Input/page';
-import Button, { Color } from '../components/Button/page';
+import Input, { Types } from '@/components/Input/page';
+import Button, { Color } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
 
 enum TypesOfUser {

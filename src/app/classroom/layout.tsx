@@ -5,12 +5,12 @@ import NavBar from '@/components/Navigation/NavBar/page';
 import CreateNewUser from '../popups/CreateNewUser/page';
 import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
 import AdminEditPopup from '../popups/AdminEditPopup/page';
-import Alert from '../components/Alert/page';
-import InfoBar from '../components/InfoBar/page';
+import Alert from '@/components/Alert/page';
+import InfoBar from '@/components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
 
-import { notFound } from 'next/navigation';
+// import { notFound } from 'next/navigation';
 
 export default function RootLayout({
   children,

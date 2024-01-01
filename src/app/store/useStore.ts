@@ -15,4 +15,4 @@ const useStore = <T, F>(
     return data
 }
 
-export default useStore
+export default useStore;

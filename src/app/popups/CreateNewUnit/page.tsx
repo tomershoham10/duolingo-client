@@ -7,9 +7,9 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Input, { Types } from '@/app/components/Input/page';
-import Button, { Color } from '@/app/components/Button/page';
-import Dropdown from '@/app/components/Dropdown/page';
+import Input, { Types } from '@/components/Input/page';
+import Button, { Color } from '@/components/Button/page';
+import Dropdown from '@/components/Dropdown/page';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 

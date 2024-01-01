@@ -78,16 +78,12 @@ const AdminSideBar: React.FC = () => {
   return (
     <>
       {userRole === TypesOfUser.ADMIN && isLoggedIn ? (
-        <div
-          className='flex h-screen 
-                    min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold 
-                tracking-wide text-duoGray-darker lg:min-w-[13rem]'
-        >
+        <div className='dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest flex h-screen min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker lg:min-w-[13rem]'>
           <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-center text-[2rem] font-[850] text-duoBlue-default'>
             doulingo
           </label>
 
-          <div className='flex items-center justify-center border-b-2'>
+          <div className='dark:border-duoGrayDark-light flex items-center justify-center border-b-2'>
             <ul className='w-full uppercase'>
               {coursesList ? (
                 coursesList.length > 0 ? (
@@ -96,8 +92,8 @@ const AdminSideBar: React.FC = () => {
                       key={index}
                       className={
                         pathname.includes(item.courseType.toLocaleLowerCase())
-                          ? 'w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light'
-                          : 'w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light'
+                          ? 'dark:text-duoBlueDark-texst w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light dark:bg-sky-800'
+                          : 'dark:text-duoGrayDark-lightest w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
                       }
                     >
                       <Link
@@ -121,7 +117,7 @@ const AdminSideBar: React.FC = () => {
                 className={`${
                   selected === index
                     ? 'cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-duoBlue-light'
-                    : 'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover'
+                    : 'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark'
                 }`}
               >
                 <button

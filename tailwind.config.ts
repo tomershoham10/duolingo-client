@@ -6,7 +6,7 @@ const config: Config = {
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     ],
-    darkMode: ['class', '[data-mode="dark"]'],
+    darkMode: 'class',
     theme: {
         screens: {
             'sm': '640px',
@@ -54,6 +54,13 @@ const config: Config = {
                     text: '#1899D6'
                 },
 
+                'duoBlueDark': {
+                    text:'#49C0F8',
+                    default: '#3B5799',
+                    dark: '#384E8E',
+                    darkest: '#1E273B'
+                },
+
                 'duoGray': {
                     //button === default
                     buttonBorder: '#44403c',
@@ -75,6 +82,13 @@ const config: Config = {
                     darker: '#8B8B8B',
                     darkest: '#4B4B4B',
                     darkText: '#9D9D9D'
+                },
+
+                'duoGrayDark': {
+                    lightest: '#DCE6EC',
+                    light: '#37464F',
+                    darker: '#202F36',
+                    darkest: '#131F24'
                 },
 
                 'duoRed': {
