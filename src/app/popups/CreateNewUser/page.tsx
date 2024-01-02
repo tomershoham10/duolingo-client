@@ -129,30 +129,24 @@ const CreateNewUser: React.FC = () => {
       }
     >
       {selectedPopup === PopupsTypes.NEWUSER ? (
-        <div className='m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5'>
+        <div className='dark:bg-duoGrayDark-darkest dark:border-duoGrayDark-light m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5 dark:border-2'>
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
             }}
-            className='h-fit w-fit flex-none rounded-md text-duoGray-dark'
+            className='dark:text-duoBlueDark-text h-fit w-fit flex-none rounded-md text-duoGray-dark'
           >
             <FontAwesomeIcon
               className='fa-lg fa-solid flex-none'
               icon={faXmark}
             />
           </button>
-          <div
-            className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 
-                    flex-col items-center justify-center'
-          >
-            <p
-              className=' col-span-4 flex flex-none items-center justify-center text-2xl 
-                        font-extrabold text-duoGray-darkest'
-            >
+          <div className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 flex-col items-center justify-center'>
+            <p className=' dark:text-duoGrayDark-lightest col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest'>
               CREATE NEW USER
             </p>
 
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
               User Name:
             </p>
 
@@ -166,7 +160,7 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
               T-ID:
             </p>
 
@@ -180,7 +174,7 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
               Password:
             </p>
 
@@ -193,13 +187,13 @@ const CreateNewUser: React.FC = () => {
                 failed={failedFeilds.includes('password') ? true : false}
               />
             </div>
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
               Role:
             </p>
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
               <Dropdown
                 isSearchable={false}
-                items={['searider', 'senior', 'crew', 'teacher', 'admin']}
+                items={['admin', 'teacher', 'crew', 'student']}
                 placeholder='role'
                 value={role}
                 onChange={handleRole}

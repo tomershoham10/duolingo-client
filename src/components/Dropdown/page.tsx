@@ -129,7 +129,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   };
 
   return (
-    <div ref={dropdownRef} className={`relative ${props.className} z-10`}>
+    <div ref={dropdownRef} className={`relative ${props.className} z-10 w-full`}>
       <div
         className={`flex h-14 w-full items-center justify-between rounded-xl border-2 font-bold uppercase
    ${
