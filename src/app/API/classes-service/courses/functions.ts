@@ -1,8 +1,6 @@
-import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
-
 export interface CoursesType {
     _id: string;
-    type: TypesOfCourses;
+    courseName: string;
     units: string[];
 }
 
@@ -21,18 +19,18 @@ export const getCourses = async () => {
             const data = await response.json();
             const coursesObject = data.courses as {
                 _id: string;
-                type: TypesOfCourses;
+                courseName: string;
                 units: string[];
             }[];
 
             const coursesList: {
                 courseId: string;
-                courseType: TypesOfCourses;
+                courseName: string;
                 unitsList: string[]
             }[] = Object.values(coursesObject).map(
-                (course: { _id: string; type: TypesOfCourses; units: string[] }) => ({
+                (course: { _id: string; courseName: string; units: string[] }) => ({
                     courseId: course._id as string,
-                    courseType: course.type as TypesOfCourses,
+                    courseName: course.courseName as string,
                     unitsList: course.units as string[],
                 }),
             );
@@ -48,39 +46,39 @@ export const getCourses = async () => {
     }
 };
 
-export const getCourseByType = async (courseType: TypesOfCourses): Promise<CoursesType | null> => {
-    try {
-        console.log("courses api - courseType", courseType);
-        const response = await fetch(`http://localhost:8080/api/courses/getByType/${courseType}`, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        console.log("courses api - response", response);
+// export const getCourseByType = async (courseType: TypesOfCourses): Promise<CoursesType | null> => {
+//     try {
+//         console.log("courses api - courseType", courseType);
+//         const response = await fetch(`http://localhost:8080/api/courses/getByType/${courseType}`, {
+//             method: "GET",
+//             credentials: "include",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//         });
+//         console.log("courses api - response", response);
 
-        if (response.ok) {
-            const data = await response.json();
-            const course = data.course as CoursesType;
-            // console.log("api getCourseByType", course);
-            console.log("courses api - course", data, course);
+//         if (response.ok) {
+//             const data = await response.json();
+//             const course = data.course as CoursesType;
+//             // console.log("api getCourseByType", course);
+//             console.log("courses api - course", data, course);
 
-            localStorage.setItem(
-                "courseData",
-                JSON.stringify(course),
-            );
-            // console.log("getCourseByType", course);
-            return course;
-        } else {
-            console.error("Failed to fetch courses.");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching courses:", error);
-        return null;
-    }
-};
+//             localStorage.setItem(
+//                 "courseData",
+//                 JSON.stringify(course),
+//             );
+//             // console.log("getCourseByType", course);
+//             return course;
+//         } else {
+//             console.error("Failed to fetch courses.");
+//             return null;
+//         }
+//     } catch (error) {
+//         console.error("Error fetching courses:", error);
+//         return null;
+//     }
+// };
 
 export const getUnitsData = async (courseId: string) => {
     try {

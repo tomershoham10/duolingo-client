@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import useStore from '@/app/store/useStore';
 import {
-  TypesOfCourses,
   useCourseStore,
 } from '@/app/store/stores/useCourseStore';
 import {
@@ -62,14 +61,13 @@ const AdminUnit: React.FC = () => {
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
   useEffect(() => {
-    let courseType: TypesOfCourses = TypesOfCourses.UNDEFINED;
     if (pathname.includes('searider')) {
       courseType = TypesOfCourses.SEARIDER;
     } else if (pathname.includes('senior')) {
       courseType = TypesOfCourses.SENIOR;
     }
     const fetchData = async () => {
-      const response = await getCourseByType(courseType);
+      const response = await getCourseByName(courseType);
       if (response) {
         setCourse(response);
       }

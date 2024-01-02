@@ -3,8 +3,7 @@ import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 
 
 import jwt from "jsonwebtoken";
-import { getCourseByType } from "../../classes-service/courses/functions";
-import { TypesOfCourses } from "@/app/store/stores/useCourseStore";
+// import { getCourseByType } from "../../classes-service/courses/functions";
 const updateUserRole = useUserStore.getState().updateUserRole;
 const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
 const updateNextLessonId = useUserStore.getState().updateNextLessonId;
@@ -13,21 +12,47 @@ const updateAccessToken = useUserStore.getState().updateAccessToken;
 
 const addAlert = useAlertStore.getState().addAlert;
 
-const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
-    // Map user roles to course types here
-    switch (userRole) {
-        case TypesOfUser.SEARIDER:
-            return TypesOfCourses.SEARIDER;
-        case TypesOfUser.SENIOR:
-            return TypesOfCourses.SENIOR;
-        case TypesOfUser.TEACHER:
-            return TypesOfCourses.UNDEFINED;
-        case TypesOfUser.CREW:
-            return TypesOfCourses.CREW;
-        default:
-            return TypesOfCourses.UNDEFINED;
+// const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
+//     // Map user roles to course types here
+//     switch (userRole) {
+//         case TypesOfUser.SEARIDER:
+//             return TypesOfCourses.SEARIDER;
+//         case TypesOfUser.SENIOR:
+//             return TypesOfCourses.SENIOR;
+//         case TypesOfUser.TEACHER:
+//             return TypesOfCourses.UNDEFINED;
+//         case TypesOfUser.CREW:
+//             return TypesOfCourses.CREW;
+//         default:
+//             return TypesOfCourses.UNDEFINED;
+//     }
+// };
+
+export const registerUser = async (userName: string, tId: string, password: string, permission: string, courseId: string | undefined): Promise<number | undefined> => {
+    try {
+        const response = await fetch(`http://localhost:4001/api/users/`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userName: userName,
+                tId: tId,
+                password: password,
+                permission: permission,
+                courseId: courseId
+            }),
+        });
+        if (response.ok) {
+            return response.status;
+        }
     }
-};
+    catch (error) {
+        console.error("registerUser Error:", error);
+        return 404;
+    }
+}
 
 export const handleAuth = async (userName: string, password: string) => {
     try {
@@ -82,9 +107,9 @@ export const handleAuth = async (userName: string, password: string) => {
 
                     if (role !== TypesOfUser.ADMIN) {
                         // console.log('getting course data to local storage');
-                        await getCourseByType(
-                            mapUserRoleToCourseType(role),
-                        );
+                        // await getCourseByType(
+                        //     mapUserRoleToCourseType(role),
+                        // );
                     }
 
                     const userData = {

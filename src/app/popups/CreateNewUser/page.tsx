@@ -12,11 +12,14 @@ import Button, { Color } from '@/components/Button/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { registerUser } from '@/app/API/users-service/users/functions';
+import { useCourseStore } from '@/app/store/stores/useCourseStore';
 
 library.add(faXmark);
 
 const CreateNewUser: React.FC = () => {
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
+  const coursesList = useStore(useCourseStore, (state) => state.coursesList);
   const addAlert = useAlertStore.getState().addAlert;
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
@@ -24,16 +27,8 @@ const CreateNewUser: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [tId, setTId] = useState<string>('');
   const [role, setRole] = useState<string>('');
+  const [courseId, setCourseId] = useState<string>();
   const [failedFeilds, setFailedFeilds] = useState<string[]>([]);
-  // const [alertId, setAlertId] = useState<number>();
-
-  // useEffect(() => {
-  //     if (alerts) {
-  //         if (alerts.length > 0) {
-  //             setAlertId(Math.random());
-  //         }
-  //     }
-  // }, [alerts]);
 
   const handleUserName = (value: string) => {
     setUserName(value);
@@ -51,7 +46,11 @@ const CreateNewUser: React.FC = () => {
     setRole(value);
   };
 
-  const addFailedFeilds = (value: string) => {
+  const handleCourseId = (value: string) => {
+    console.log('handleCourseId', value);
+  };
+
+  const addFailedFields = (value: string) => {
     setFailedFeilds((pervFeilds: string[]) => [...pervFeilds, value]);
   };
 
@@ -72,7 +71,7 @@ const CreateNewUser: React.FC = () => {
     ) {
       if (userName.length < 3) {
         addAlert('Please enter a valid user name.', AlertSizes.small);
-        addFailedFeilds('userName');
+        addFailedFields('userName');
       }
 
       if (
@@ -80,42 +79,35 @@ const CreateNewUser: React.FC = () => {
         (!tId.includes('t') && tId.length === 9)
       ) {
         addAlert('Please enter a valid T-Id.', AlertSizes.small);
-        addFailedFeilds('tId');
+        addFailedFields('tId');
       }
 
       if (password.length < 8) {
         addAlert('Password too short.', AlertSizes.small);
-        addFailedFeilds('password');
+        addFailedFields('password');
       }
 
       if (role === '') {
         addAlert('Please select a role.', AlertSizes.small);
-        addFailedFeilds('role');
+        addFailedFields('role');
       }
       return;
     }
-
-    const response = await fetch(`http://localhost:4001/api/users/`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userName: userName,
-        tId: tId,
-        password: password,
-        permission: role,
-      }),
-    });
+    const response = await registerUser(
+      userName,
+      tId,
+      password,
+      role,
+      courseId
+    );
     console.log(response);
-    if (response.status === 200) {
-      const resFromServer = await response.json();
-      console.log(resFromServer);
+    if (response === 201) {
       addAlert('User created successfully.', AlertSizes.small);
     }
-
-    if (response.status === 409) {
+    if (response === 500) {
+      addAlert('Error while creating user! please try again', AlertSizes.small);
+    }
+    if (response === 409) {
       addAlert('User already existed!', AlertSizes.small);
     }
   };
@@ -198,6 +190,24 @@ const CreateNewUser: React.FC = () => {
                 value={role}
                 onChange={handleRole}
                 isFailed={failedFeilds.includes('role') ? true : false}
+                size={DropdownSizes.DEFAULT}
+              />
+            </div>
+            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+              Course:
+            </p>
+            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+              <Dropdown
+                isSearchable={false}
+                items={
+                  coursesList
+                    ? coursesList.map((course) => course.courseName?course.courseName:'')
+                    : ['']
+                }
+                placeholder='Course'
+                // value={}
+                onChange={(e) => handleCourseId(e)}
+                isFailed={failedFeilds.includes('course') ? true : false}
                 size={DropdownSizes.DEFAULT}
               />
             </div>

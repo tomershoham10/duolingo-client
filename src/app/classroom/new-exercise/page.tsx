@@ -20,10 +20,7 @@ import {
 } from '@dnd-kit/sortable';
 import SortableItem from '@/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import {
-  TypesOfCourses,
-  useCourseStore,
-} from '@/app/store/stores/useCourseStore';
+import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
 import Button, { ButtonTypes, Color } from '@/components/Button/page';
 import {
@@ -91,7 +88,7 @@ const NewExercise: React.FC = () => {
   const [lessonsList, setLessonsList] = useState<LessonType[]>();
 
   const [selectedCourse, setSelectedCourse] = useState<{
-    courseType: TypesOfCourses | undefined;
+    courseName: string | undefined;
     courseId: string | undefined;
     unitsList: string[] | undefined;
   } | null>(null);
@@ -521,21 +518,22 @@ const NewExercise: React.FC = () => {
           <span className='my-3 text-2xl font-bold'>Targets list:</span>
           {targetsList ? (
             <div className='mb-4 mt-3 flex w-fit flex-row items-center justify-between gap-3'>
-              <Dropdown
-                isSearchable={true}
-                placeholder={'targets'}
-                items={targetsList.map((target) => target.name)}
-                value={
-                  showPlaceholder
-                    ? undefined
-                    : targetFromDropdown
-                      ? targetFromDropdown.name
-                      : undefined
-                }
-                onChange={handleTargetsDropdown}
-                size={DropdownSizes.DEFAULT}
-                className='w-[15rem] 3xl:w-[20rem]'
-              />
+              <div className='w-[15rem] 3xl:w-[20rem]'>
+                <Dropdown
+                  isSearchable={true}
+                  placeholder={'targets'}
+                  items={targetsList.map((target) => target.name)}
+                  value={
+                    showPlaceholder
+                      ? undefined
+                      : targetFromDropdown
+                        ? targetFromDropdown.name
+                        : undefined
+                  }
+                  onChange={handleTargetsDropdown}
+                  size={DropdownSizes.DEFAULT}
+                />
+              </div>
 
               <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
@@ -892,15 +890,15 @@ const NewExercise: React.FC = () => {
                 placeholder={'COURSE'}
                 items={
                   coursesList
-                    ? coursesList.map((item) => item.courseType as string)
+                    ? coursesList.map((item) => item.courseName as string)
                     : []
                 }
-                value={selectedCourse?.courseType as string}
+                value={selectedCourse?.courseName as string}
                 onChange={(selectedCourseName) => {
                   if (coursesList) {
                     setSelectedCourse(
                       coursesList.filter(
-                        (item) => item.courseType === selectedCourseName
+                        (item) => item.courseName === selectedCourseName
                       )[0]
                     );
                   }

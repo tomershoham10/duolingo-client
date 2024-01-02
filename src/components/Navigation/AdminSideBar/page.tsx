@@ -16,7 +16,10 @@ import useStore from '@/app/store/useStore';
 import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import { getCourses } from '@/app/API/classes-service/courses/functions';
+import {
+  CoursesType,
+  getCourses,
+} from '@/app/API/classes-service/courses/functions';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
@@ -103,19 +106,28 @@ const AdminSideBar: React.FC = () => {
             <ul className='w-full uppercase'>
               {coursesList ? (
                 coursesList.length > 0 ? (
-                  coursesList.map((item: any, index: any) => (
+                  // coursesList.map((item,index)=><></>)
+                  coursesList.map((item, index) => (
                     <li
                       key={index}
                       className={
-                        pathname.includes(item.courseType.toLocaleLowerCase())
-                          ? 'dark:text-duoBlueDark-texst w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light dark:bg-sky-800'
+                        item.courseName
+                          ? pathname.includes(
+                              item.courseName.toLocaleLowerCase()
+                            )
+                            ? 'dark:text-duoBlueDark-texst w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light dark:bg-sky-800'
+                            : 'dark:text-duoGrayDark-lightest w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
                           : 'dark:text-duoGrayDark-lightest w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
                       }
                     >
                       <Link
-                        href={`/classroom/courses/${item.courseType.toLocaleLowerCase()}/students`}
+                        href={`${
+                          item.courseName
+                            ? `/classroom/courses/${item.courseName.toLocaleLowerCase()}/students`
+                            : ''
+                        }`}
                       >
-                        {item.courseType}
+                        {item.courseName}
                       </Link>
                     </li>
                   ))
