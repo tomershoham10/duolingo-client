@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHome,
@@ -20,11 +20,22 @@ import { getCourses } from '@/app/API/classes-service/courses/functions';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
+interface SidebarItem {
+  name: string;
+  label?: PopupsTypes;
+  icon?: IconDefinition;
+  href?: string;
+  subItems?: SidebarItem[];
+}
+
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();
 
+  const sidebarItemRef = useRef<HTMLLIElement | null>(null);
+
   const userRole = useStore(useUserStore, (state) => state.userRole);
   const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
+  const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
@@ -33,6 +44,8 @@ const AdminSideBar: React.FC = () => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [selected, setSelected] = useState<number>();
+
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,28 +62,31 @@ const AdminSideBar: React.FC = () => {
     fetchData();
   }, [updateCoursesList, userRole]);
 
-  const sidebarItems: {
-    name: string;
-    label: PopupsTypes;
-    icon: any;
-    href?: string;
-  }[] = [
+  useEffect(() => {
+    selectedPopup === PopupsTypes.CLOSED ? null : setIsHovered(false);
+  }, [selectedPopup]);
+
+  const sidebarItems: SidebarItem[] = [
     {
       name: 'Dashboard',
       label: PopupsTypes.CLOSED,
       icon: faHome,
-      href: '/Dashboard',
+      href: '/classroom/',
     },
     {
-      name: 'New User',
-      label: PopupsTypes.NEWUSER,
+      name: 'create',
       icon: faSquarePlus,
-    },
-    {
-      name: 'New Exercise',
-      label: PopupsTypes.CLOSED,
-      icon: faSquarePlus,
-      href: `/classroom/new-exercise`,
+      subItems: [
+        {
+          name: 'New User',
+          label: PopupsTypes.NEWUSER,
+        },
+        {
+          name: 'New Exercise',
+          label: PopupsTypes.CLOSED,
+          href: '/classroom/new-exercise',
+        },
+      ],
     },
     { name: 'Settings', label: PopupsTypes.CLOSED, icon: faCog },
   ];
@@ -104,41 +120,80 @@ const AdminSideBar: React.FC = () => {
                     </li>
                   ))
                 ) : (
-                  <p>problem</p>
+                  <span className='dark:text-duoGrayDark-lightest flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70'>
+                    NO COURSES
+                  </span>
                 )
               ) : null}
             </ul>
           </div>
 
           <ul className='flex-grow'>
-            {sidebarItems.map((item, index) => (
+            {sidebarItems.map((sideBaritem, index) => (
               <li
                 key={index}
-                className={`${
+                onMouseEnter={() =>
+                  sideBaritem.subItems ? setIsHovered(true) : null
+                }
+                onMouseLeave={() => setIsHovered(false)}
+                ref={sidebarItemRef}
+                className={`duration-50 relative transition ${
                   selected === index
                     ? 'cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-duoBlue-light'
-                    : 'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark'
+                    : 'dark:hover:bg-duoBlueDark-dark cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover'
                 }`}
               >
                 <button
                   className='flex cursor-pointer flex-row items-center justify-center pr-2'
-                  onClick={() => updateSelectedPopup(item.label)}
+                  onClick={() =>
+                    sideBaritem.subItems
+                      ? null
+                      : sideBaritem.label
+                        ? updateSelectedPopup(sideBaritem.label)
+                        : null
+                  }
                 >
-                  <FontAwesomeIcon
-                    className='fa-xs fa-solid ml-2 mr-4 h-6 w-6'
-                    icon={item.icon}
-                  />
-                  {item.href ? (
+                  {sideBaritem.icon ? (
+                    <FontAwesomeIcon
+                      className='fa-xs fa-solid ml-2 mr-4 h-6 w-6'
+                      icon={sideBaritem.icon}
+                    />
+                  ) : null}
+                  {sideBaritem.href ? (
                     <Link
                       className='flex h-full cursor-pointer'
-                      href={item.href}
+                      href={sideBaritem.href}
                     >
-                      {item.name}
+                      {sideBaritem.name}
                     </Link>
                   ) : (
-                    <span>{item.name}</span>
+                    <span>{sideBaritem.name}</span>
                   )}
                 </button>
+                {isHovered && sideBaritem.subItems ? (
+                  <ul className='dark:bg-duoBlueDark-darkest dark:border-duoGrayDark-light absolute -top-[1rem] left-[12rem] z-30 w-fit rounded-xl border-2 py-3'>
+                    {sideBaritem.subItems.map((subItem, subItemIndex) => (
+                      <li
+                        className='dark:hover:bg-duoBlueDark-default duration-50 min-w-[10rem] py-2 pl-4 transition'
+                        key={subItemIndex}
+                      >
+                        <button
+                          onClick={() =>
+                            subItem.label
+                              ? updateSelectedPopup(subItem.label)
+                              : null
+                          }
+                        >
+                          {subItem.href ? (
+                            <Link href={subItem.href}>{subItem.name}</Link>
+                          ) : (
+                            <span>{subItem.name}</span>
+                          )}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             ))}
           </ul>
