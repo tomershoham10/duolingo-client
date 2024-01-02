@@ -24,9 +24,9 @@ interface DropdownProps {
 const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [maxHight, setMaxHight] = useState<string>();
-  const [selectedValue, setSelectedValue] = useState<
-    string | number | undefined
-  >(props.value);
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(
+    props.value?.toString() || ''
+  );
   const [dropdownItems, setDropdownItems] = useState<string[]>(props.items);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -36,7 +36,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   );
 
   useEffect(() => {
-    setSelectedValue(props.value);
+    setSelectedValue(props.value?.toString());
   }, [props.value]);
 
   useEffect(() => {
@@ -69,16 +69,24 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     setMaxHight(setHight);
   }, [props.size]);
 
+//   useEffect(() => {
+//     console.log('dropdownItems', dropdownItems);
+//   }, [dropdownItems]);
+
   useEffect(() => {
+    // console.log('selectedValue1', selectedValue);
     const originalItems = props.items;
 
     if (selectedValue) {
+    //   console.log('selectedValue2', selectedValue);
       const filteredItems = originalItems.filter((item) =>
         item
           .toLocaleLowerCase()
           .includes(selectedValue.toString().toLocaleLowerCase())
       );
       filteredItems.length === 0 ? setIsFailed(true) : setIsFailed(false);
+    } else {
+      setIsFailed(false);
     }
   }, [props.items, selectedValue]);
 
@@ -117,21 +125,22 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   };
   const closeDropdown = () => {
     setIsOpen(false);
-    setDropdownItems(props.items);
+    // setDropdownItems(props.items);
   };
 
   return (
     <div ref={dropdownRef} className={`relative ${props.className} z-10`}>
       <div
-        className={
-          props.isDisabled
-            ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-default items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter p-3 font-bold uppercase text-duoGray-darkest opacity-50'
-            : isFailed
-              ? 'flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoRed-light bg-duoRed-lighter p-3 font-bold uppercase text-duoRed-darker'
-              : props.isSearchable && isOpen
-                ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter px-3 font-bold uppercase text-duoGray-darkest'
-                : 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border-2 border-duoGray-default bg-duoGray-lighter p-3 font-bold uppercase text-duoGray-darkest'
-        }
+        className={`flex h-14 w-full items-center justify-between rounded-xl border-2 font-bold uppercase
+   ${
+     props.isDisabled
+       ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50'
+       : isFailed
+         ? 'cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker'
+         : props.isSearchable && isOpen
+           ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest'
+           : 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest'
+   }`}
         onClick={() => setIsOpen(true)}
       >
         <div className='mx-2 flex h-full items-center justify-start text-lg'>
@@ -141,34 +150,47 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
               value={selectedValue}
               onChange={handleSearch}
               ref={searchRef}
-              className='h-full w-[100%] bg-transparent text-lg focus:outline-none'
+              className={`h-full w-[100%] bg-transparent text-lg focus:outline-none ${
+                isFailed
+                  ? 'dark:text-duoRed-darker'
+                  : 'dark:text-duoBlueDark-text'
+              }`}
             />
           ) : (
-            <span className='dark:text-duoBlueDark-text uppercase'>
+            <span
+              className={` ${
+                isFailed
+                  ? 'normal-case dark:text-duoRed-darker'
+                  : 'dark:text-duoBlueDark-text uppercase'
+              }`}
+            >
               {selectedValue || props.placeholder}
             </span>
           )}
         </div>
         <FontAwesomeIcon
           icon={faChevronDown}
-          className='dark:text-duoBlueDark-text'
+          className={`${
+            isFailed ? 'dark:text-duoRed-darker' : 'dark:text-duoBlueDark-text'
+          }`}
         />
       </div>
       {isOpen && !props.isDisabled && (
         <ul
-          className={`absolute flex flex-col items-start justify-start ${maxHight} mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark`}
+          className={`absolute flex flex-col items-start justify-start ${maxHight} dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark`}
         >
           {dropdownItems.length > 0 ? (
             dropdownItems.map((item, index) => (
               <li
                 key={index}
-                className={
-                  index === 0
-                    ? 'w-full cursor-pointer rounded-t-md p-2 hover:bg-duoGray-hover'
-                    : index === dropdownItems.length - 1
-                      ? 'w-full cursor-pointer rounded-b-md p-2 hover:bg-duoGray-hover'
-                      : 'w-full cursor-pointer p-2 hover:bg-duoGray-hover'
-                }
+                className={`w-full cursor-pointer p-2 hover:bg-duoGray-hover dark:hover:text-duoGray-darkest
+                  ${
+                    index === 0
+                      ? 'rounded-t-md'
+                      : index === dropdownItems.length - 1
+                        ? 'rounded-b-md'
+                        : ''
+                  }  `}
                 onClick={() => handleItemClick(item)}
               >
                 {item}

@@ -49,12 +49,12 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         break;
 
       case TooltipColors.WHITE:
-        setBackgroundColor(isInEditMode ? 'bg-duoRed-light' : 'bg-white');
+        setBackgroundColor(isInEditMode ? 'bg-duoRed-light' : 'bg-white dark:bg-duoBlueDark-darkest');
         setBorderColor(
-          isInEditMode ? 'border-duoRed-darker' : 'border-duoGray-light'
+          isInEditMode ? 'border-duoRed-darker' : 'border-duoGray-light dark:border-duoGrayDark-light'
         );
         setTextColor(
-          isInEditMode ? 'text-duoRed-default' : 'text-duoGray-darkText'
+          isInEditMode ? 'text-duoRed-default' : 'text-duoGray-darkText dark:text-duoGrayDark-lightest'
         );
         break;
     }

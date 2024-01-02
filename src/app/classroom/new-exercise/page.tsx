@@ -539,7 +539,7 @@ const NewExercise: React.FC = () => {
 
               <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='dark:bg-duoGrayDark-light flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
+                  className='dark:group-hover:bg-duoGrayDark-lighter dark:bg-duoGrayDark-light flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
                   onClick={addTargetToRelevant}
                 >
                   <TiPlus />
@@ -554,7 +554,7 @@ const NewExercise: React.FC = () => {
                   className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
                     unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
                       ? 'bg-duoRed-lighter text-duoRed-default group-hover:bg-duoRed-light'
-                      : 'dark:bg-duoGrayDark-light bg-duoGray-lighter group-hover:bg-duoGray-hover'
+                      : 'dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter bg-duoGray-lighter group-hover:bg-duoGray-hover'
                   }`}
                   onClick={addTargetToAnswersList}
                 >
@@ -607,7 +607,7 @@ const NewExercise: React.FC = () => {
                               onClick={() => {
                                 removeRelevantItem(target._id);
                               }}
-                              className='flex w-full items-center justify-center text-duoGray-darkest'
+                              className='dark:text-duoBlueDark-text flex w-full items-center justify-center text-duoGray-darkest'
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -676,7 +676,7 @@ const NewExercise: React.FC = () => {
                               onClick={() => {
                                 removeAnswerItem(answer._id);
                               }}
-                              className='flex w-full items-center justify-center text-duoGray-darkest'
+                              className='dark:text-duoBlueDark-text flex w-full items-center justify-center text-duoGray-darkest'
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -762,10 +762,10 @@ const NewExercise: React.FC = () => {
                 isAddBufferOpen && recordLength > 0
                   ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
                     ? 'bg-duoRed-light text-duoRed-default'
-                    : 'bg-duoGray-light'
+                    : 'dark:bg-duoGrayDark-lighter bg-duoGray-light'
                   : unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
                     ? 'bg-duoRed-lighter text-duoRed-default'
-                    : 'bg-duoGray-lighter'
+                    : 'dark:bg-duoGrayDark-light bg-duoGray-lighter'
               }`}
             >
               <button
@@ -861,7 +861,7 @@ const NewExercise: React.FC = () => {
                   value={gradeInput}
                   ref={timeBufferGradeInputRef}
                   onChange={(e) => setGradeInput(Number(e.target.value))}
-                  className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
+                  className='dark:text-duoGrayDark-lightest mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
                 />
               </div>
             </div>

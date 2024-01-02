@@ -136,7 +136,9 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         />
         {uploadedFiles.length > 0 ? (
           <button
-            className='right-0 flex h-8 w-8 items-center justify-center rounded-full bg-duoGray-lighter text-lg hover:bg-duoGray-hover'
+            className='right-0 flex h-8 w-8 items-center justify-center rounded-full
+            dark:hover:bg-duoGrayDark-lighter dark:bg-duoGrayDark-light
+             bg-duoGray-lighter text-lg hover:bg-duoGray-hover'
             onClick={() => setIsFilesListOpen(!isFilesListOpen)}
           >
             <FaExpandAlt />
@@ -144,7 +146,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         ) : null}
       </div>
       {isFilesListOpen && uploadedFiles.length > 0 ? (
-        <div className='w-full rounded-md border-2'>
+        <div className='dark:border-duoGrayDark-light w-full rounded-md border-2'>
           <ul
             className='flex flex-col font-bold'
             style={{ borderRadius: '24px' }}
@@ -154,26 +156,25 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                 <>
                   <li
                     key={fileIndex}
-                    className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light`}
+                    className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark cursor-default`}
                     style={
-                      fileIndex === uploadedFiles.length - 1
-                        ? fileIndex === 0
+                      fileIndex === 0
+                        ? {
+                            borderTopLeftRadius: '4px 4px',
+                            borderTopRightRadius: '4px 4px',
+                          }
+                        : fileIndex === uploadedFiles.length - 1
                           ? {
-                              borderTopLeftRadius: '4px 4px',
-                              borderTopRightRadius: '4px 4px',
                               borderBottomLeftRadius: '4px 4px',
                               borderBottomRightRadius: '4px 4px',
                             }
-                          : {
-                              borderBottomLeftRadius: '4px 4px',
-                              borderBottomRightRadius: '4px 4px',
-                            }
-                        : fileIndex === 0
-                          ? {
-                              borderTopLeftRadius: '4px 4px',
-                              borderTopRightRadius: '4px 4px',
-                            }
-                          : {}
+                          : // :
+                            // fileIndex === 0
+                            //   ? {
+                            //       borderTopLeftRadius: '4px 4px',
+                            //       borderTopRightRadius: '4px 4px',
+                            //     }
+                            {}
                     }
                   >
                     <div className='flex w-full flex-row'>
@@ -182,7 +183,9 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                       ) : (
                         <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
                       )}
-                      <span className='w-[80%]'>{file}</span>
+                      <span className='w-[80%]'>
+                        {file} {fileIndex}
+                      </span>
                     </div>
                     <button
                       onClick={() =>
@@ -199,7 +202,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                       className={`flex flex-row items-center justify-between px-3 py-2`}
                     >
                       <button
-                        className='flex w-fit flex-row hover:text-duoBlue-default'
+                        className='dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover flex w-fit flex-row hover:text-duoBlue-default'
                         onClick={() => {
                           updateSelectedPopup(PopupsTypes.METADATA);
                         }}

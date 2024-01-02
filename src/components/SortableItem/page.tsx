@@ -27,7 +27,7 @@ const SortableItem: React.FC<SortableItemProps> = (
         style={style}
         {...attributes}
         {...listeners}
-        className={`border-border-duoGray-regular w-full flex-none rounded-xl border-2 
+        className={`border-border-duoGray-regular dark:border-duoGrayDark-light w-full flex-none rounded-xl border-2 
         border-b-4 py-4 text-lg font-bold ${props.addedStyle}
         ${
           props.isDisabled
@@ -35,10 +35,7 @@ const SortableItem: React.FC<SortableItemProps> = (
             : 'cursor-pointer active:translate-y-[1px] active:border-b-2'
         } ${props.isGrabbed ? 'z-50 bg-white opacity-100' : ''}`}
       >
-        <span
-          className='relative flex items-center justify-center 
-                text-ellipsis text-center'
-        >
+        <span className='relative flex items-center justify-center text-ellipsis text-center'>
           {props.name}
         </span>
       </div>
