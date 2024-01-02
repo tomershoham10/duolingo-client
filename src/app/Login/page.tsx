@@ -35,6 +35,7 @@ const Login: React.FC = () => {
         router.push('/learn');
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userRole]);
 
   const handleUser = (value: string) => {
