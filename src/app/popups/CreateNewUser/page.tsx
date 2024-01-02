@@ -121,7 +121,7 @@ const CreateNewUser: React.FC = () => {
       }
     >
       {selectedPopup === PopupsTypes.NEWUSER ? (
-        <div className='dark:bg-duoGrayDark-darkest dark:border-duoGrayDark-light m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5 dark:border-2'>
+        <div className='dark:bg-duoGrayDark-darkest dark:border-duoGrayDark-light m-5 flex h-[33rem] w-[40rem] rounded-md bg-white p-5 dark:border-2'>
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
@@ -133,7 +133,7 @@ const CreateNewUser: React.FC = () => {
               icon={faXmark}
             />
           </button>
-          <div className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 flex-col items-center justify-center'>
+          <div className='grid-rows-7 ml-[5.5rem] mr-24 grid flex-none grid-cols-4 flex-col items-center justify-center'>
             <p className=' dark:text-duoGrayDark-lightest col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest'>
               CREATE NEW USER
             </p>
@@ -193,15 +193,22 @@ const CreateNewUser: React.FC = () => {
                 size={DropdownSizes.DEFAULT}
               />
             </div>
-            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p
+              className={`dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest ${
+                role !== 'student' ? 'opacity-50' : ''
+              }`}
+            >
               Course:
             </p>
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
               <Dropdown
                 isSearchable={false}
+                isDisabled={role !== 'student'}
                 items={
                   coursesList
-                    ? coursesList.map((course) => course.courseName?course.courseName:'')
+                    ? coursesList.map((course) =>
+                        course.courseName ? course.courseName : ''
+                      )
                     : ['']
                 }
                 placeholder='Course'

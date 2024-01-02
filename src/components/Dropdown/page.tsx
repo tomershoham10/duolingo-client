@@ -40,6 +40,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   }, [props.value]);
 
   useEffect(() => {
+    // console.log('isOpen', isOpen);
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutsideDropdown);
       return () => {
@@ -69,16 +70,16 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     setMaxHight(setHight);
   }, [props.size]);
 
-//   useEffect(() => {
-//     console.log('dropdownItems', dropdownItems);
-//   }, [dropdownItems]);
+  //   useEffect(() => {
+  //     console.log('dropdownItems', dropdownItems);
+  //   }, [dropdownItems]);
 
   useEffect(() => {
     // console.log('selectedValue1', selectedValue);
     const originalItems = props.items;
 
     if (selectedValue) {
-    //   console.log('selectedValue2', selectedValue);
+      //   console.log('selectedValue2', selectedValue);
       const filteredItems = originalItems.filter((item) =>
         item
           .toLocaleLowerCase()
@@ -108,6 +109,12 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   };
 
   const handleClickOutsideDropdown = (event: MouseEvent) => {
+    !props.isSearchable
+      ? handleClickOutside(event, dropdownRef)
+        ? null
+        : closeDropdown()
+      : null;
+
     handleClickOutside(event, searchRef)
       ? null
       : handleClickOutside(event, dropdownRef)
@@ -129,7 +136,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   };
 
   return (
-    <div ref={dropdownRef} className={`relative ${props.className} z-10 w-full`}>
+    <div ref={dropdownRef} className={`relative ${props.className} w-full`}>
       <div
         className={`flex h-14 w-full items-center justify-between rounded-xl border-2 font-bold uppercase
    ${
@@ -177,7 +184,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
       </div>
       {isOpen && !props.isDisabled && (
         <ul
-          className={`absolute flex flex-col items-start justify-start ${maxHight} dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark`}
+          className={`absolute z-50 flex flex-col items-start justify-start ${maxHight} dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark`}
         >
           {dropdownItems.length > 0 ? (
             dropdownItems.map((item, index) => (
