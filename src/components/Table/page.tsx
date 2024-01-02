@@ -13,7 +13,7 @@ type TableRowProps<T> = {
 };
 
 const TableRow = <T,>({ item, keys }: TableRowProps<T>) => (
-  <tr className='hover:bg-duoGray-lighter'>
+  <tr className='hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest'>
     {keys.map((key, index) => (
       <td
         key={index}
@@ -29,11 +29,11 @@ const Table = <T,>({ headers, data }: TableProps<T>) => {
   const keys = headers as (keyof T)[];
 
   return (
-    <div className='mt-5 flex  w-fit flex-col rounded-md border-2 border-duoGray-default pb-1'>
+    <div className='dark:border-duoGrayDark-light mt-5  flex w-fit flex-col rounded-md border-2 border-duoGray-default pb-1'>
       <div className='mr-1 overflow-x-auto'>
         <div className='inline-block max-h-[70vh] max-w-[60vw] overflow-y-auto p-1.5 align-middle'>
-          <table className='divide-y-2 divide-duoGray-default rounded-lg'>
-            <thead className='text-duoGray-darker'>
+          <table className='dark:divide-duoGrayDark-light divide-y-2 divide-duoGray-default rounded-lg'>
+            <thead className='dark:text-duoGrayDark-lightest text-duoGray-darker'>
               <tr>
                 {headers.map((header, index) => (
                   <th
@@ -55,7 +55,7 @@ const Table = <T,>({ headers, data }: TableProps<T>) => {
                 ))}
               </tr>
             </thead>
-            <tbody className='divide-y-2 divide-duoGray-lighter text-duoGray-darker'>
+            <tbody className='dark:text-duoGrayDark-lightest divide-y-2 divide-duoGray-lighter text-duoGray-darker'>
               {data.map((item, index) => (
                 <TableRow<T> key={index} item={item} keys={keys} />
               ))}

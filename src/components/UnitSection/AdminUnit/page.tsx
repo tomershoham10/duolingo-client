@@ -194,12 +194,11 @@ const AdminUnit: React.FC = () => {
   return (
     <div className='flex w-full'>
       <div className='mx-24 h-full w-full text-black'>
-        {units &&
-          units.length > 0 &&
+        {units && units.length > 0 ? (
           units.map((unit, unitIndex) => (
             <div key={unitIndex} className='flex-none py-[2rem]'>
               <div className='flex-col'>
-                <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white sm:h-fit'>
+                <div className='grid-col-3 dark:bg-duoGrayDark-dark grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white sm:h-fit'>
                   <button
                     className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
                     onClick={() => {
@@ -253,8 +252,8 @@ const AdminUnit: React.FC = () => {
                                         key={levelIndex}
                                         className={
                                           levelIndex === levels.length
-                                            ? 'flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3'
-                                            : 'flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3'
+                                            ? 'dark:border-duoGrayDark-dark flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3'
+                                            : 'dark:border-duoGrayDark-dark flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3'
                                         }
                                       >
                                         <div className='w-full'>
@@ -302,7 +301,7 @@ const AdminUnit: React.FC = () => {
                                                                     </div>
                                                                   </div>
                                                                   <div className='mx-6 w-full'>
-                                                                    <span className='w-full font-extrabold text-duoGray-dark'>
+                                                                    <span className='dark:text-duoGrayDark-lightest w-full font-extrabold text-duoGray-dark'>
                                                                       LESSON
                                                                       {' - '}
                                                                       {
@@ -322,7 +321,7 @@ const AdminUnit: React.FC = () => {
                                                                                 key={
                                                                                   exerciseObjectIndex
                                                                                 }
-                                                                                className='w-full divide-y-2'
+                                                                                className='dark:divide-duoGrayDark-light w-full divide-y-2'
                                                                               >
                                                                                 {exerciseObject.lessonId ===
                                                                                 lesson._id
@@ -483,7 +482,10 @@ const AdminUnit: React.FC = () => {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div>loading</div>
+        )}
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useUserStore } from '@/app/store/stores/useUserStore';
 import useStore from '@/app/store/useStore';
-import Button, { Color } from '@/app/components/Button/page';
+import Button, { Color } from '@/components/Button/page';
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';

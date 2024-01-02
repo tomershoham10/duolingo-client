@@ -45,7 +45,7 @@ const Students = () => {
     <>
       {courseType ? (
         <div className='ml-10 mt-6'>
-          <p className='text-2xl font-extrabold text-duoGray-darkest'>
+          <p className='dark:text-duoGrayDark-lightest text-2xl font-extrabold text-duoGray-darkest'>
             {Object.values(users).length} students
           </p>
 

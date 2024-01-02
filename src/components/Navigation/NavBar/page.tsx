@@ -3,12 +3,6 @@ import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// import {
-//     CourseContext,
-//     TypesOfCourses,
-//     useCourseType,
-//     useSetCourseType,
-// } from "@/app/utils/context/CourseConext";
 
 import useStore from '@/app/store/useStore';
 import {
@@ -24,11 +18,6 @@ const NavBar: React.FC = () => {
 
   const updateCourseType = useCourseStore.getState().updateCourseType;
   const updateCourseId = useCourseStore.getState().updateCourseId;
-
-  // const courseType = useCourseType();
-  // const setCourseType = useSetCourseType();
-
-  // const { CoursesList, setCourseId } = useContext(CourseContext);
 
   const pathname = usePathname();
 
@@ -56,6 +45,7 @@ const NavBar: React.FC = () => {
         ? setSelected(navItems[i].label)
         : '';
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, coursesList]);
 
   const navItems: {
@@ -83,13 +73,13 @@ const NavBar: React.FC = () => {
   return (
     <>
       {courseType ? (
-        <div className='block w-full border-b-2 pt-4'>
-          <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest'>
+        <div className='dark:border-duoGrayDark-light block w-full border-b-2 pt-4'>
+          <p className='dark:text-duoGrayDark-lightest pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest'>
             {courseType} course
           </p>
           <ul
-            className='bt-2 relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center text-sm 
-            font-extrabold tracking-tight text-duoGray-dark'
+            className='bt-2 dark:text-duoGrayDark-lighter relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center 
+            text-sm font-extrabold tracking-tight text-duoGray-dark'
           >
             {navItems.map(
               (item: { label: string; href: string }, index: number) => (
@@ -100,8 +90,8 @@ const NavBar: React.FC = () => {
                   <span
                     className={
                       selected === item.label
-                        ? 'border-b-2 border-duoBlue-light pb-2 text-duoBlue-light'
-                        : 'border-b-2 border-transparent pb-2 hover:border-duoBlue-light hover:text-duoBlue-light'
+                        ? 'dark:text-duoBlueDark-text dark:border-duoBlueDark-text border-b-2 border-duoBlue-light pb-2 text-duoBlue-light'
+                        : 'dark:hover:text-duoBlueDark-text dark:hover:border-duoBlueDark-text border-b-2 border-transparent pb-2 hover:border-duoBlue-light hover:text-duoBlue-light'
                     }
                   >
                     <Link href={item.href}>{item.label}</Link>

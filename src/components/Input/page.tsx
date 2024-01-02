@@ -20,7 +20,7 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
     <div className={`relative ${props.className} w-full`}>
       <input
         type={props.type}
-        className={`w-full rounded-xl border-2 bg-duoGray-lighter p-3 text-duoGray-darkest focus:outline-none ${
+        className={`dark:bg-duoGrayDark-dark dark:border-duoGrayDark-light w-full text-xl font-bold rounded-xl border-2 bg-duoGray-lighter p-3 text-duoGray-darkest dark:text-duoGrayDark-lightest dark:focus:border-duoBlueDark-text focus:outline-none ${
           props.failed ? 'border-duoRed-light' : 'border-duoGray-default'
         }`}
         placeholder={props.placeholder}
