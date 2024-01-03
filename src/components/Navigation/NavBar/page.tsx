@@ -65,7 +65,7 @@ const NavBar: React.FC = () => {
   return (
     <>
       <div className='block w-full border-b-2 pt-4 dark:border-duoGrayDark-light'>
-        <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+        <p className='pb-4 pl-5 pt-2 3xl:pb-10 3xl:pt-5 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest 3xl:text-5xl'>
           {!!courseName ? courseName : null} course
         </p>
         <ul
@@ -76,7 +76,7 @@ const NavBar: React.FC = () => {
             (item: { label: coursePages; href: string }, index: number) => (
               <li
                 key={index}
-                className='relative mb-[-1px] block cursor-pointer pl-2 pr-2'
+                className='relative mb-[-1px] block cursor-pointer pl-2 pr-2 3xl:text-lg'
               >
                 <span
                   className={
