@@ -39,7 +39,8 @@ const CreateNewUnit: React.FC = () => {
       }
     >
       {selectedPopup === PopupsTypes.NEWUNIT ? (
-        <div className='m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5'>
+        <div className='m-5 flex h-[30rem] w-[40rem]
+         rounded-md bg-white p-5'>
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);

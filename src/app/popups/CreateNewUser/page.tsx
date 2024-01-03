@@ -121,24 +121,30 @@ const CreateNewUser: React.FC = () => {
       }
     >
       {selectedPopup === PopupsTypes.NEWUSER ? (
-        <div className='dark:bg-duoGrayDark-darkest dark:border-duoGrayDark-light m-5 flex h-[33rem] w-[40rem] rounded-md bg-white p-5 dark:border-2'>
+        <div
+          className='flex h-[33rem] w-fit
+         rounded-md bg-white p-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
+        >
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
             }}
-            className='dark:text-duoBlueDark-text h-fit w-fit flex-none rounded-md text-duoGray-dark'
+            className='h-fit w-fit flex-none rounded-md text-duoGray-dark dark:text-duoBlueDark-text'
           >
             <FontAwesomeIcon
               className='fa-lg fa-solid flex-none'
               icon={faXmark}
             />
           </button>
-          <div className='grid-rows-7 ml-[5.5rem] mr-24 grid flex-none grid-cols-4 flex-col items-center justify-center'>
-            <p className=' dark:text-duoGrayDark-lightest col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest'>
+          <div
+            className='grid-rows-7 ml-[5.5rem] mr-24 grid
+          w-[30rem] flex-none grid-cols-4 flex-col items-center justify-center'
+          >
+            <p className='col-span-4 mx-auto text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               CREATE NEW USER
             </p>
 
-            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               User Name:
             </p>
 
@@ -152,11 +158,11 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               T-ID:
             </p>
 
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
               <Input
                 type={Types.text}
                 placeholder={'T-ID (optional)'}
@@ -166,7 +172,7 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               Password:
             </p>
 
@@ -179,7 +185,7 @@ const CreateNewUser: React.FC = () => {
                 failed={failedFeilds.includes('password') ? true : false}
               />
             </div>
-            <p className='dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               Role:
             </p>
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
@@ -194,7 +200,7 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
             <p
-              className={`dark:text-duoGrayDark-lightest col-span-1 flex-none text-lg font-bold text-duoGray-darkest ${
+              className={`col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest ${
                 role !== 'student' ? 'opacity-50' : ''
               }`}
             >
@@ -207,7 +213,7 @@ const CreateNewUser: React.FC = () => {
                 items={
                   coursesList
                     ? coursesList.map((course) =>
-                        course.courseName ? course.courseName : ''
+                        course.name ? course.name : ''
                       )
                     : ['']
                 }
@@ -219,12 +225,14 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
-              <Button
-                label={'CREATE'}
-                color={Color.BLUE}
-                onClick={() => createUser(userName, tId, password, role)}
-              />
+            <div className='relative col-span-2 col-start-2 mt-2 flex-none py-5 h-full w-full flex justify-center items-center'>
+              <div className='absolute inset-x-0'>
+                <Button
+                  label={'CREATE'}
+                  color={Color.BLUE}
+                  onClick={() => createUser(userName, tId, password, role)}
+                />
+              </div>
             </div>
           </div>
         </div>

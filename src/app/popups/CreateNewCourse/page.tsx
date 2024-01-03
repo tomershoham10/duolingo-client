@@ -89,7 +89,10 @@ const CreateNewCourse: React.FC = () => {
       }
     >
       {selectedPopup === PopupsTypes.NEWCOURSE ? (
-        <div className='flex h-[18rem] w-fit rounded-md bg-white px-5 py-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'>
+        <div
+          className='flex h-[18rem] w-fit 
+        rounded-md bg-white px-5 py-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
+        >
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
@@ -101,7 +104,8 @@ const CreateNewCourse: React.FC = () => {
               icon={faXmark}
             />
           </button>
-          <div className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center'>
+          <div className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none 
+          grid-cols-4 grid-rows-3 flex-col items-center justify-center'>
             <p className=' col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               CREATE NEW COURSE
             </p>
