@@ -896,9 +896,16 @@ const NewExercise: React.FC = () => {
                 onChange={(selectedCourseName) => {
                   if (coursesList) {
                     setSelectedCourse(
-                      coursesList.filter(
+                      (coursesList.filter(
                         (item) => item.name === selectedCourseName
                       )[0]
+                        ? coursesList
+                            .filter((item) => item.name === selectedCourseName)
+                            .filter(
+                              (item) =>
+                                !!item._id && !!item.name && !!item.units
+                            )[0]
+                        : null) as CoursesType | null
                     );
                   }
                 }}

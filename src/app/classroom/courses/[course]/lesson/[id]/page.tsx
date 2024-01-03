@@ -1,6 +1,6 @@
 'use client';
+import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
 import {
-    TimeBuffersType, FSAType,
   getExercisesData,
 } from '@/app/API/classes-service/lessons/functions';
 import ProgressBar from '@/components/ProgressBar/page';

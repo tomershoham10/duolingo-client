@@ -4,6 +4,25 @@ import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";
+
+export interface UserType {
+    _id: string;
+    tId?: string;
+    userName: string;
+    permission: PermissionsTypes;
+    password: string;
+    courseId?: string;
+    nextLessonId?: string;
+}
+
+export enum PermissionsTypes {
+    ADMIN = "admin",
+    TEACHER = "teacher",
+    CREW = "crew",
+    STUDENT = "student"
+}
+
+
 const updateUserRole = useUserStore.getState().updateUserRole;
 const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
 const updateNextLessonId = useUserStore.getState().updateNextLessonId;
@@ -51,6 +70,27 @@ export const registerUser = async (userName: string, tId: string, password: stri
     catch (error) {
         console.error("registerUser Error:", error);
         return 404;
+    }
+}
+
+export const getUsersByCourseId = async (courseId: string): Promise<UserType[] | null> => {
+    try {
+        const response = await fetch(`http://localhost:4001/api/users/getUsersByCourseId/${courseId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            const usersList = data.users as UserType[];
+            return usersList;
+        } else return null;
+    }
+    catch (error) {
+        console.error("registerUser Error:", error);
+        return null;
     }
 }
 
