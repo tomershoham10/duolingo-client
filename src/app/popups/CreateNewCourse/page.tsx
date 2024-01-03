@@ -68,9 +68,12 @@ const CreateNewCourse: React.FC = () => {
   const updateCourseStore = async () => {
     try {
       const response = await getCourses();
-      response
-        ? updateCoursesList(response)
-        : addAlert('error while updating course store.', AlertSizes.small);
+      if (response) {
+        updateCoursesList(response);
+        updateSelectedPopup(PopupsTypes.CLOSED);
+      } else {
+        addAlert('error while updating course store.', AlertSizes.small);
+      }
     } catch (error) {
       addAlert(`error while updating course store: ${error}`, AlertSizes.small);
       throw new Error(`error while updating course store: ${error}`);

@@ -52,7 +52,11 @@ const AdminSideBar: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (userRole === TypesOfUser.ADMIN && !!!coursesList) {
+      if (
+        userRole === TypesOfUser.ADMIN &&
+        coursesList &&
+        !!!coursesList[0]._id
+      ) {
         try {
           const coursesList = await getCourses();
           coursesList ? updateCoursesList(coursesList) : null;
@@ -61,7 +65,6 @@ const AdminSideBar: React.FC = () => {
         }
       }
     };
-
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coursesList, userRole]);
@@ -110,7 +113,7 @@ const AdminSideBar: React.FC = () => {
           <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>
             <ul className='w-full uppercase'>
               {coursesList ? (
-                coursesList.length > 0 ? (
+                coursesList.length > 0 && !!coursesList[0]._id ? (
                   // coursesList.map((item,index)=><></>)
                   coursesList.map((item, index) => (
                     <li
@@ -139,7 +142,11 @@ const AdminSideBar: React.FC = () => {
                     NO COURSES
                   </span>
                 )
-              ) : null}
+              ) : (
+                <span className='flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
+                  NO COURSES
+                </span>
+              )}
             </ul>
           </div>
 
