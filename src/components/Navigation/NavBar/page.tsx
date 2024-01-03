@@ -5,48 +5,64 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import useStore from '@/app/store/useStore';
-import {
-  TypesOfCourses,
-  useCourseStore,
-} from '@/app/store/stores/useCourseStore';
+import { useCourseStore } from '@/app/store/stores/useCourseStore';
+import { getCourseByName } from '@/app/API/classes-service/courses/functions';
 
 const NavBar: React.FC = () => {
   const [selected, setSelected] = useState<string>();
 
-  const courseType = useStore(useCourseStore, (state) => state.courseType);
+  const courseId = useStore(useCourseStore, (state) => state._id);
+  const courseName = useStore(useCourseStore, (state) => state.name);
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
-  const updateCourseType = useCourseStore.getState().updateCourseType;
   const updateCourseId = useCourseStore.getState().updateCourseId;
+  const updateCourseName = useCourseStore.getState().updateCourseName;
 
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (pathname.includes('searider')) {
-      updateCourseType(TypesOfCourses.SEARIDER);
-    } else if (pathname.includes('senior')) {
-      updateCourseType(TypesOfCourses.SENIOR);
-    }
+  const [isCourseExisted, setIsCourseExisted] = useState<boolean>(false);
 
-    if (coursesList && courseType) {
-      for (let i: number = 0; i < Object.values(coursesList).length; i++) {
-        if (
-          courseType.toLocaleLowerCase() ===
-          coursesList[i].courseType?.toLocaleLowerCase()
-        ) {
-          // console.log("nav bar course type", coursesList[i].courseId);
-          updateCourseId(coursesList[i].courseId);
-        }
+  useEffect(() => {
+    const checkIfCourseExists = async (name: string) => {
+      const res = await getCourseByName(name);
+      setIsCourseExisted(!!res);
+    };
+
+    if (pathname.includes('courses')) {
+      const pathArray = pathname.split('/').filter(Boolean);
+      console.log('pathArray', pathArray);
+      const susName = pathArray[pathArray.indexOf('courses') + 1];
+      checkIfCourseExists(susName);
+      if (isCourseExisted) {
+        updateCourseName(susName);
+        setSelected(courseName);
+      } else {
+        updateCourseName(undefined);
       }
     }
 
-    for (let i: number = 0; i < navItems.length; i++) {
-      pathname.includes(navItems[i].label.toLocaleLowerCase())
-        ? setSelected(navItems[i].label)
-        : '';
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, coursesList]);
+    // if (coursesList && courseName) {
+    //   for (let i: number = 0; i < Object.values(coursesList).length; i++) {
+    //     if (
+    //       courseName.toLocaleLowerCase() ===
+    //       coursesList[i].name?.toLocaleLowerCase()
+    //     ) {
+    //       // console.log("nav bar course type", coursesList[i].courseId);
+    //       updateCourseId(coursesList[i]._id);
+    //     }
+    //   }
+    // }
+
+    // for (let i: number = 0; i < navItems.length; i++) {
+    //   pathname.includes(navItems[i].label.toLocaleLowerCase())
+    //     ? setSelected(navItems[i].label)
+    //     : '';
+    // }
+  }, [pathname]);
+
+  useEffect(() => {
+    console.log('courseName', courseName);
+  }, [courseName]);
 
   const navItems: {
     label: string;
@@ -54,32 +70,32 @@ const NavBar: React.FC = () => {
   }[] = [
     {
       label: 'STUDENTS',
-      href: `/classroom/courses/${courseType}/students`,
+      href: `/classroom/courses/${courseName}/students`,
     },
     {
       label: 'ASSIGNMENTS',
-      href: `/classroom/courses/${courseType}/assignments`,
+      href: `/classroom/courses/${courseName}/assignments`,
     },
     {
       label: 'SYLLABUS',
-      href: `/classroom/courses/${courseType}/syllabus`,
+      href: `/classroom/courses/${courseName}/syllabus`,
     },
     {
       label: 'SETTINGS',
-      href: `/classroom/courses/${courseType}/settings`,
+      href: `/classroom/courses/${courseName}/settings`,
     },
   ];
 
   return (
     <>
-      {courseType ? (
-        <div className='dark:border-duoGrayDark-light block w-full border-b-2 pt-4'>
-          <p className='dark:text-duoGrayDark-lightest pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest'>
-            {courseType} course
+      {courseName ? (
+        <div className='block w-full border-b-2 pt-4 dark:border-duoGrayDark-light'>
+          <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+            {courseName} course
           </p>
           <ul
-            className='bt-2 dark:text-duoGrayDark-lighter relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center 
-            text-sm font-extrabold tracking-tight text-duoGray-dark'
+            className='bt-2 relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center text-sm 
+            font-extrabold tracking-tight text-duoGray-dark dark:text-duoGrayDark-lighter'
           >
             {navItems.map(
               (item: { label: string; href: string }, index: number) => (
@@ -90,8 +106,8 @@ const NavBar: React.FC = () => {
                   <span
                     className={
                       selected === item.label
-                        ? 'dark:text-duoBlueDark-text dark:border-duoBlueDark-text border-b-2 border-duoBlue-light pb-2 text-duoBlue-light'
-                        : 'dark:hover:text-duoBlueDark-text dark:hover:border-duoBlueDark-text border-b-2 border-transparent pb-2 hover:border-duoBlue-light hover:text-duoBlue-light'
+                        ? 'border-b-2 border-duoBlue-light pb-2 text-duoBlue-light dark:border-duoBlueDark-text dark:text-duoBlueDark-text'
+                        : 'border-b-2 border-transparent pb-2 hover:border-duoBlue-light hover:text-duoBlue-light dark:hover:border-duoBlueDark-text dark:hover:text-duoBlueDark-text'
                     }
                   >
                     <Link href={item.href}>{item.label}</Link>
