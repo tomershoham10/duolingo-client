@@ -3,7 +3,7 @@ import { LegacyRef, useEffect, useState } from 'react';
 
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import Button, { Color } from '@/app/components/Button/page';
+import Button, { Color } from '@/components/Button/page';
 import { useRouter } from 'next/navigation';
 
 interface StartLessonPopup {

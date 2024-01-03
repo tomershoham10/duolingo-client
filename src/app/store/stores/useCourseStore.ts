@@ -3,29 +3,29 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 type CourseState = {
-    courseId: string | undefined;
-    courseName: string | undefined;
-    unitsList: string[] | undefined
-    coursesList: { courseName: string | undefined; courseId: string | undefined, unitsList: string[] | undefined }[];
+    _id: string | undefined;
+    name: string | undefined;
+    units: string[] | undefined
+    coursesList: { _id: string | undefined, name: string | undefined, units: string[] | undefined }[];
 
 }
 type Action = {
-    updateCourseId: (courseId: CourseState['courseId']) => void;
-    updateCourseName: (courseName: CourseState['courseName']) => void;
-    updateUnitsList: (unitsList: CourseState['unitsList']) => void;
+    updateCourseId: (_id: CourseState['_id']) => void;
+    updateCourseName: (name: CourseState['name']) => void;
+    updateUnitsList: (units: CourseState['units']) => void;
     updateCoursesList: (coursesList: CourseState['coursesList']) => void;
 }
 
 
 export const useCourseStore = create<CourseState & Action>(
     (set) => ({
-        courseId: undefined,
-        courseName: undefined,
-        unitsList: undefined,
-        coursesList: [{ courseName: undefined, courseId: undefined, unitsList: undefined }],
-        updateCourseName: (courseName) => set(() => ({ courseName: courseName })),
-        updateCourseId: (courseId) => set(() => ({ courseId: courseId })),
-        updateUnitsList: (unitsList) => set(() => ({ unitsList: unitsList })),
+        _id: undefined,
+        name: undefined,
+        units: undefined,
+        coursesList: [{ _id: undefined, name: undefined, units: undefined }],
+        updateCourseId: (_id) => set(() => ({ _id: _id })),
+        updateCourseName: (name) => set(() => ({ name: name })),
+        updateUnitsList: (units) => set(() => ({ units: units })),
         updateCoursesList: (coursesList) => set(() => ({ coursesList: coursesList })),
     })
 )

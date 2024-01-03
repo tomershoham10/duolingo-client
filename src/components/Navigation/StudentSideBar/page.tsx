@@ -14,52 +14,38 @@ import Button, { Color } from '../../Button/page';
 import Link from 'next/link';
 import useStore from '@/app/store/useStore';
 import { useUserStore } from '@/app/store/stores/useUserStore';
+// import {
+//   CoursesType,
+//   getCourses,
+// } from '@/app/API/classes-service/courses/functions';
+// import { useCourseStore } from '@/app/store/stores/useCourseStore';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
-
-const getCourses = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/api/courses/', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const coursesObject = data.courses;
-      const coursesList = Object.values(coursesObject).map((course: any) => ({
-        courseName: course.type,
-      }));
-      console.log('coursesList:', coursesList);
-      return coursesList;
-    } else {
-      console.error('Failed to fetch courses.');
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching courses:', error);
-    return [];
-  }
-};
 
 const StudentSideBar: React.FC = () => {
   const userRole = useStore(useUserStore, (state) => state.userRole);
   const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
 
-  const [selected, setSelected] = useState<number>();
-  const [cousersList, setCousersList] = useState<object[]>([]); // Correct the typo here
+//   const courseListStore = useStore(
+//     useCourseStore,
+//     (state) => state.coursesList
+//   );
+//   const updateCoursesList = useCourseStore.getState().updateCoursesList;
 
-  useEffect(() => {
-    if (userRole === 'admin') {
-      getCourses().then((coursesList) => {
-        console.log('coursesList1', coursesList, coursesList.length);
-        setCousersList(coursesList);
-      });
-    }
-  }, [userRole]);
+  const [selected, setSelected] = useState<number>();
+//   const [coursesList, setCoursesList] = useState<CoursesType[] | null>(null);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const response = await getCourses();
+//       setCoursesList(response);
+//       response ? updateCoursesList(response) : null;
+//     };
+//     if (userRole === 'admin' && !!courseListStore) {
+//       fetchData();
+//     }
+//   // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [courseListStore, userRole]);
 
   const sidebarItems: {
     [key: string]: { label: string; icon: any; href?: string }[];

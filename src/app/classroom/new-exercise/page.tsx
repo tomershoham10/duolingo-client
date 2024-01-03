@@ -33,6 +33,7 @@ import {
 } from '@/app/API/classes-service/lessons/functions';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
+import { CoursesType } from '@/app/API/classes-service/courses/functions';
 
 enum FSAFieldsType {
   DESCRIPTION = 'description',
@@ -87,11 +88,9 @@ const NewExercise: React.FC = () => {
   const [levelsList, setLevelsList] = useState<LevelType[]>();
   const [lessonsList, setLessonsList] = useState<LessonType[]>();
 
-  const [selectedCourse, setSelectedCourse] = useState<{
-    courseName: string | undefined;
-    courseId: string | undefined;
-    unitsList: string[] | undefined;
-  } | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CoursesType | null>(
+    null
+  );
 
   const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<LevelType | null>(null);
@@ -490,7 +489,7 @@ const NewExercise: React.FC = () => {
   };
 
   return (
-    <div className='dark:text-duoGrayDark-lightest flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest'>
+    <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
@@ -537,7 +536,7 @@ const NewExercise: React.FC = () => {
 
               <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='dark:group-hover:bg-duoGrayDark-lighter dark:bg-duoGrayDark-light flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3'
+                  className='flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
                   onClick={addTargetToRelevant}
                 >
                   <TiPlus />
@@ -552,7 +551,7 @@ const NewExercise: React.FC = () => {
                   className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
                     unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
                       ? 'bg-duoRed-lighter text-duoRed-default group-hover:bg-duoRed-light'
-                      : 'dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter bg-duoGray-lighter group-hover:bg-duoGray-hover'
+                      : 'bg-duoGray-lighter group-hover:bg-duoGray-hover dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
                   }`}
                   onClick={addTargetToAnswersList}
                 >
@@ -605,7 +604,7 @@ const NewExercise: React.FC = () => {
                               onClick={() => {
                                 removeRelevantItem(target._id);
                               }}
-                              className='dark:text-duoBlueDark-text flex w-full items-center justify-center text-duoGray-darkest'
+                              className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -674,7 +673,7 @@ const NewExercise: React.FC = () => {
                               onClick={() => {
                                 removeAnswerItem(answer._id);
                               }}
-                              className='dark:text-duoBlueDark-text flex w-full items-center justify-center text-duoGray-darkest'
+                              className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -760,10 +759,10 @@ const NewExercise: React.FC = () => {
                 isAddBufferOpen && recordLength > 0
                   ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
                     ? 'bg-duoRed-light text-duoRed-default'
-                    : 'dark:bg-duoGrayDark-lighter bg-duoGray-light'
+                    : 'bg-duoGray-light dark:bg-duoGrayDark-lighter'
                   : unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
                     ? 'bg-duoRed-lighter text-duoRed-default'
-                    : 'dark:bg-duoGrayDark-light bg-duoGray-lighter'
+                    : 'bg-duoGray-lighter dark:bg-duoGrayDark-light'
               }`}
             >
               <button
@@ -859,7 +858,7 @@ const NewExercise: React.FC = () => {
                   value={gradeInput}
                   ref={timeBufferGradeInputRef}
                   onChange={(e) => setGradeInput(Number(e.target.value))}
-                  className='dark:text-duoGrayDark-lightest mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none'
+                  className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none dark:text-duoGrayDark-lightest'
                 />
               </div>
             </div>
@@ -890,15 +889,15 @@ const NewExercise: React.FC = () => {
                 placeholder={'COURSE'}
                 items={
                   coursesList
-                    ? coursesList.map((item) => item.courseName as string)
+                    ? coursesList.map((item) => item.name as string)
                     : []
                 }
-                value={selectedCourse?.courseName as string}
+                value={selectedCourse?.name as string}
                 onChange={(selectedCourseName) => {
                   if (coursesList) {
                     setSelectedCourse(
                       coursesList.filter(
-                        (item) => item.courseName === selectedCourseName
+                        (item) => item.name === selectedCourseName
                       )[0]
                     );
                   }
@@ -914,12 +913,10 @@ const NewExercise: React.FC = () => {
                 isDisabled={selectedCourse === null}
                 items={
                   selectedCourse
-                    ? selectedCourse.unitsList
-                      ? selectedCourse.unitsList.map((unit) =>
-                          selectedCourse.unitsList
-                            ? `unit ${
-                                selectedCourse.unitsList.indexOf(unit) + 1
-                              }`
+                    ? selectedCourse.units
+                      ? selectedCourse.units.map((unit) =>
+                          selectedCourse.units
+                            ? `unit ${selectedCourse.units.indexOf(unit) + 1}`
                             : ''
                         )
                       : []
@@ -931,8 +928,8 @@ const NewExercise: React.FC = () => {
                   if (unitsList) {
                     setSelectedUnit(
                       unitsList.filter((item) =>
-                        selectedCourse && selectedCourse.unitsList
-                          ? item._id === selectedCourse.unitsList[unitIndex]
+                        selectedCourse && selectedCourse.units
+                          ? item._id === selectedCourse.units[unitIndex]
                           : null
                       )[0]
                     );

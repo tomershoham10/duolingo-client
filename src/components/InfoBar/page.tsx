@@ -14,7 +14,7 @@ const InfoBar: React.FC = () => {
   const pathname = usePathname();
 
   const userName = useStore(useUserStore, (state) => state.userName);
-  const courseType = useStore(useCourseStore, (state) => state.courseType);
+  const courseName = useStore(useCourseStore, (state) => state.name);
   const fieldToEdit = useStore(
     useEditSyllabusStore,
     (state) => state.fieldToEdit
@@ -25,10 +25,10 @@ const InfoBar: React.FC = () => {
   // const [selected, setSelected] = useState<number>();
 
   return (
-    <div className='dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest flex h-full w-[18rem] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest 2xl:w-[25rem] 3xl:w-[35rem]'>
+    <div className='flex h-full w-[18rem] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 2xl:w-[25rem] 3xl:w-[35rem]'>
       {pathname.includes('syllabus') ? (
         <div>
-          <div>{courseType}</div>
+          <div>{courseName}</div>
           {fieldToEdit ? (
             <div>
               <span>

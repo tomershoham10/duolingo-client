@@ -5,6 +5,7 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 export enum PopupsTypes {
     CLOSED = "closed",
     NEWUSER = "newUser",
+    NEWCOURSE = "newCourse",
     NEWUNIT = "newUnit",
     STARTLESSON = "startLesson",
     ADMINEDIT = "adminEdit",

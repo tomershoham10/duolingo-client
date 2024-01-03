@@ -1,10 +1,31 @@
+import { UnitType } from "../units/functions";
+
 export interface CoursesType {
     _id: string;
-    courseName: string;
+    name: string;
     units: string[];
 }
 
-export const getCourses = async () => {
+export const createCourse = async (name: string): Promise<number | null> => {
+    try {
+        const response = await fetch("http://localhost:8080/api/courses/", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: name })
+        });
+
+        return response.status;
+
+    } catch (error) {
+        console.error("Error creating a course:", error);
+        return null;
+    }
+}
+
+export const getCourses = async (): Promise<CoursesType[] | null> => {
     try {
         const response = await fetch("http://localhost:8080/api/courses/", {
             method: "GET",
@@ -17,32 +38,16 @@ export const getCourses = async () => {
         console.log('try');
         if (response.ok) {
             const data = await response.json();
-            const coursesObject = data.courses as {
-                _id: string;
-                courseName: string;
-                units: string[];
-            }[];
-
-            const coursesList: {
-                courseId: string;
-                courseName: string;
-                unitsList: string[]
-            }[] = Object.values(coursesObject).map(
-                (course: { _id: string; courseName: string; units: string[] }) => ({
-                    courseId: course._id as string,
-                    courseName: course.courseName as string,
-                    unitsList: course.units as string[],
-                }),
-            );
+            const coursesList = data.courses as CoursesType[];
             console.log("coursesList check", coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
-            return [];
+            return null;
         }
     } catch (error) {
         console.error("Error fetching courses:", error);
-        return [];
+        return null;
     }
 };
 
@@ -80,7 +85,7 @@ export const getCourses = async () => {
 //     }
 // };
 
-export const getUnitsData = async (courseId: string) => {
+export const getUnitsData = async (courseId: string): Promise<UnitType | null> => {
     try {
         // console.log("getUnitsData", courseId);
         const response = await fetch(

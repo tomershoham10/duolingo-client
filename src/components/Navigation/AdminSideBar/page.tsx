@@ -25,7 +25,7 @@ library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
 
 interface SidebarItem {
   name: string;
-  label?: PopupsTypes;
+  popup?: PopupsTypes;
   icon?: IconDefinition;
   href?: string;
   subItems?: SidebarItem[];
@@ -52,10 +52,10 @@ const AdminSideBar: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (userRole === TypesOfUser.ADMIN && updateCoursesList) {
+      if (userRole === TypesOfUser.ADMIN && !!!coursesList) {
         try {
           const coursesList = await getCourses();
-          updateCoursesList(coursesList);
+          coursesList ? updateCoursesList(coursesList) : null;
         } catch (error) {
           console.error('Error fetching courses:', error);
         }
@@ -63,7 +63,8 @@ const AdminSideBar: React.FC = () => {
     };
 
     fetchData();
-  }, [updateCoursesList, userRole]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coursesList, userRole]);
 
   useEffect(() => {
     selectedPopup === PopupsTypes.CLOSED ? null : setIsHovered(false);
@@ -72,7 +73,7 @@ const AdminSideBar: React.FC = () => {
   const sidebarItems: SidebarItem[] = [
     {
       name: 'Dashboard',
-      label: PopupsTypes.CLOSED,
+      popup: PopupsTypes.CLOSED,
       icon: faHome,
       href: '/classroom/',
     },
@@ -82,27 +83,31 @@ const AdminSideBar: React.FC = () => {
       subItems: [
         {
           name: 'New User',
-          label: PopupsTypes.NEWUSER,
+          popup: PopupsTypes.NEWUSER,
+        },
+        {
+          name: 'New Course',
+          popup: PopupsTypes.NEWCOURSE,
         },
         {
           name: 'New Exercise',
-          label: PopupsTypes.CLOSED,
+          popup: PopupsTypes.CLOSED,
           href: '/classroom/new-exercise',
         },
       ],
     },
-    { name: 'Settings', label: PopupsTypes.CLOSED, icon: faCog },
+    { name: 'Settings', popup: PopupsTypes.CLOSED, icon: faCog },
   ];
 
   return (
     <>
       {userRole === TypesOfUser.ADMIN && isLoggedIn ? (
-        <div className='dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest flex h-screen min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker lg:min-w-[13rem]'>
+        <div className='flex h-screen min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest lg:min-w-[13rem]'>
           <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-center text-[2rem] font-[850] text-duoBlue-default'>
             doulingo
           </label>
 
-          <div className='dark:border-duoGrayDark-light flex items-center justify-center border-b-2'>
+          <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>
             <ul className='w-full uppercase'>
               {coursesList ? (
                 coursesList.length > 0 ? (
@@ -111,28 +116,26 @@ const AdminSideBar: React.FC = () => {
                     <li
                       key={index}
                       className={
-                        item.courseName
-                          ? pathname.includes(
-                              item.courseName.toLocaleLowerCase()
-                            )
+                        item.name
+                          ? pathname.includes(item.name.toLocaleLowerCase())
                             ? 'dark:text-duoBlueDark-texst w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light dark:bg-sky-800'
-                            : 'dark:text-duoGrayDark-lightest w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
-                          : 'dark:text-duoGrayDark-lightest w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                            : 'w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                          : 'w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
                       }
                     >
                       <Link
                         href={`${
-                          item.courseName
-                            ? `/classroom/courses/${item.courseName.toLocaleLowerCase()}/students`
+                          item.name
+                            ? `/classroom/courses/${item.name.toLocaleLowerCase()}/students`
                             : ''
                         }`}
                       >
-                        {item.courseName}
+                        {item.name}
                       </Link>
                     </li>
                   ))
                 ) : (
-                  <span className='dark:text-duoGrayDark-lightest flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70'>
+                  <span className='flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
                     NO COURSES
                   </span>
                 )
@@ -152,7 +155,7 @@ const AdminSideBar: React.FC = () => {
                 className={`duration-50 relative transition ${
                   selected === index
                     ? 'cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-duoBlue-light'
-                    : 'dark:hover:bg-duoBlueDark-dark cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover'
+                    : 'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark'
                 }`}
               >
                 <button
@@ -160,8 +163,8 @@ const AdminSideBar: React.FC = () => {
                   onClick={() =>
                     sideBaritem.subItems
                       ? null
-                      : sideBaritem.label
-                        ? updateSelectedPopup(sideBaritem.label)
+                      : sideBaritem.popup
+                        ? updateSelectedPopup(sideBaritem.popup)
                         : null
                   }
                 >
@@ -183,16 +186,16 @@ const AdminSideBar: React.FC = () => {
                   )}
                 </button>
                 {isHovered && sideBaritem.subItems ? (
-                  <ul className='dark:bg-duoBlueDark-darkest dark:border-duoGrayDark-light absolute -top-[1rem] left-[12rem] z-30 w-fit rounded-xl border-2 py-3'>
+                  <ul className='absolute -top-[1rem] left-[12rem] z-30 w-fit rounded-xl border-2 py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
                     {sideBaritem.subItems.map((subItem, subItemIndex) => (
                       <li
-                        className='dark:hover:bg-duoBlueDark-default duration-50 min-w-[10rem] py-2 pl-4 transition'
+                        className='duration-50 min-w-[10rem] py-2 pl-4 transition dark:hover:bg-duoBlueDark-default'
                         key={subItemIndex}
                       >
                         <button
                           onClick={() =>
-                            subItem.label
-                              ? updateSelectedPopup(subItem.label)
+                            subItem.popup
+                              ? updateSelectedPopup(subItem.popup)
                               : null
                           }
                         >

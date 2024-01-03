@@ -107,7 +107,7 @@ const CreateNewUser: React.FC = () => {
     if (response === 500) {
       addAlert('Error while creating user! please try again', AlertSizes.small);
     }
-    if (response === 409) {
+    if (response === 403) {
       addAlert('User already existed!', AlertSizes.small);
     }
   };

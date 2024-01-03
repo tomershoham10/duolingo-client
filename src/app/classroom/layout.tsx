@@ -9,6 +9,7 @@ import Alert from '@/components/Alert/page';
 import InfoBar from '@/components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
+import CreateNewCourse from '../popups/CreateNewCourse/page';
 
 // import { notFound } from 'next/navigation';
 
@@ -28,6 +29,7 @@ export default function RootLayout({
           <Alert />
           <AdminSideBar />
           <CreateNewUser />
+          <CreateNewCourse />
           <AdminEditPopup />
           <CreateNewUnit />
           <div className='flex h-screen w-full flex-col'>
