@@ -18,6 +18,7 @@ import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   CoursesType,
+  getCourseByName,
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 
@@ -43,13 +44,54 @@ const AdminSideBar: React.FC = () => {
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
   const updateCoursesList = useCourseStore.getState().updateCoursesList;
+  const updateCourseName = useCourseStore.getState().updateCourseName;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [selected, setSelected] = useState<number>();
+  const [isCourseExisted, setIsCourseExisted] = useState<boolean>(false);
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  useEffect(() => {
+    const checkIfCourseExists = async (name: string) => {
+      const res = await getCourseByName(name);
+      console.log('checkIfCourseExists', !!res);
+      setIsCourseExisted(!!res);
+    };
 
+    if (pathname.includes('courses')) {
+      const pathArray = pathname.split('/').filter(Boolean);
+      console.log('pathArray', pathArray);
+      const susName = pathArray[pathArray.indexOf('courses') + 1];
+      checkIfCourseExists(susName);
+      console.log('susName1', susName);
+
+      if (isCourseExisted) {
+        console.log('susName2', susName);
+        updateCourseName(susName);
+      } else {
+        updateCourseName(undefined);
+      }
+    }
+
+    // if (coursesList && courseName) {
+    //   for (let i: number = 0; i < Object.values(coursesList).length; i++) {
+    //     if (
+    //       courseName.toLocaleLowerCase() ===
+    //       coursesList[i].name?.toLocaleLowerCase()
+    //     ) {
+    //       // console.log("nav bar course type", coursesList[i].courseId);
+    //       updateCourseId(coursesList[i]._id);
+    //     }
+    //   }
+    // }
+
+    // for (let i: number = 0; i < navItems.length; i++) {
+    //   pathname.includes(navItems[i].label.toLocaleLowerCase())
+    //     ? setSelected(navItems[i].label)
+    //     : '';
+    // }
+  }, [pathname, isCourseExisted]);
   useEffect(() => {
     const fetchData = async () => {
       if (
