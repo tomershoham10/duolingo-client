@@ -41,10 +41,12 @@ const AdminSideBar: React.FC = () => {
   const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
+  const courseName = useStore(useCourseStore, (state) => state.name);
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
   const updateCoursesList = useCourseStore.getState().updateCoursesList;
   const updateCourseName = useCourseStore.getState().updateCourseName;
+  const updateCourseId = useCourseStore.getState().updateCourseId;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
@@ -55,19 +57,16 @@ const AdminSideBar: React.FC = () => {
   useEffect(() => {
     const checkIfCourseExists = async (name: string) => {
       const res = await getCourseByName(name);
-      console.log('checkIfCourseExists', !!res);
+      //   console.log('checkIfCourseExists', !!res);
       setIsCourseExisted(!!res);
     };
 
     if (pathname.includes('courses')) {
       const pathArray = pathname.split('/').filter(Boolean);
-      console.log('pathArray', pathArray);
       const susName = pathArray[pathArray.indexOf('courses') + 1];
       checkIfCourseExists(susName);
-      console.log('susName1', susName);
 
       if (isCourseExisted) {
-        console.log('susName2', susName);
         updateCourseName(susName);
       } else {
         updateCourseName(undefined);
@@ -92,6 +91,27 @@ const AdminSideBar: React.FC = () => {
     //     : '';
     // }
   }, [pathname, isCourseExisted]);
+
+  useEffect(() => {
+    if (!!coursesList && !!courseName) {
+      const course = coursesList.filter(
+        (course) =>
+          course.name?.toLocaleLowerCase() === courseName.toLocaleLowerCase()
+      )[0];
+      console.log(
+        'courselist',
+        coursesList,
+        'course._id',
+        course,
+        course && course._id ? course._id : null,
+        courseName
+      );
+      if (course && course._id) {
+        updateCourseId(course._id);
+      }
+    }
+  }, [courseName, coursesList]);
+
   useEffect(() => {
     const fetchData = async () => {
       if (

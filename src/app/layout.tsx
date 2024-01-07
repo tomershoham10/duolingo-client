@@ -1,6 +1,8 @@
+import Alert from '@/components/Alert/page';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
+import ContextMenu from '@/components/ContextMenu/page';
 
 const nunito = Nunito({ subsets: ['latin'] });
 
@@ -20,9 +22,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className='dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest mx-auto flex'
+        className='mx-auto flex dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest'
         suppressHydrationWarning={true}
       >
+        <Alert />
+        <ContextMenu />
         {children}
       </body>
     </html>

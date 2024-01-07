@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import { useEffect } from 'react';
 import Tooltip, { TooltipColors } from '../Tooltip/page';
+import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
 interface SliderProps {
   isMultiple: boolean;
@@ -17,6 +18,7 @@ interface SliderProps {
     index?: number
   ) => void;
   deleteNode?: (index: number) => void;
+  onContextMenu?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const Slider: React.FC<SliderProps> = (props) => {
@@ -31,6 +33,9 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsOnChange = props.onChange;
   const propsDeleteNode = props.deleteNode;
   //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
+
+  const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
+  const setCoordinates = useContextMenuStore.getState().setCoordinates;
 
   useEffect(() => {
     console.log('timeBufferRangeValues', propsValue);
@@ -52,78 +57,104 @@ const Slider: React.FC<SliderProps> = (props) => {
     propsDeleteNode ? propsDeleteNode(index) : null;
   };
 
+  const handleContextMenuWrapper = (
+    event: React.MouseEvent<HTMLDivElement>
+  ) => {
+    console.log('event', event);
+    if (props.onContextMenu) {
+      props.onContextMenu(event);
+    }
+  };
+
+//   useEffect(() => {
+//     const element = document.querySelector('.range-check');
+//     console.log('useeffect', element);
+//     if (element) {
+//       element.addEventListener('contextmenu', () => console.log('clicked1'));
+//     }
+//   }, []);
+
   return (
     <>
       {isMultiple && numberOfSliders && _.isObject(propsValue) ? (
         <>
           {Array.from({ length: numberOfSliders }).map((_, index) => (
             <section key={index}>
-              <input
-                type='range'
-                id={`range${index + 1}`}
-                name={`range${index + 1}`}
-                min={propsMin}
-                max={propsMax}
-                step={propsStep}
-                value={(propsValue as number[])[index].toString()}
-                onChange={(e) => propsOnChange(e, index)}
-                className={`multi-range absolute mb-6 mt-3 w-full`}
-              />
-              {tooltipsValues ? (
+              <div className='range-check absolute flex h-[2rem] w-full'>
+                <span
+                  className='absolute top-3 h-[10px] w-full bg-transparent text-xs text-transparent'
+                  onContextMenu={handleContextMenuWrapper}
+                >
+                  a
+                </span>
+                <input
+                  type='range'
+                  id={`range${index + 1}`}
+                  name={`range${index + 1}`}
+                  min={propsMin}
+                  max={propsMax}
+                  step={propsStep}
+                  value={(propsValue as number[])[index].toString()}
+                  onChange={(e) => propsOnChange(e, index)}
+                  className='multi-range absolute mb-6 mt-3 w-full'
+                />
+                {tooltipsValues ? (
+                  <div
+                    className={`absolute flex items-center justify-center text-center `}
+                    style={{
+                      left: `${
+                        index === 0
+                          ? Math.round(100 * (propsValue[index] / 2)) / propsMax
+                          : Math.round(
+                              100 *
+                                (((propsValue[index] - propsValue[index - 1]) /
+                                  2 +
+                                  propsValue[index - 1]) /
+                                  propsMax)
+                            )
+                      }%`,
+                    }}
+                  >
+                    <Tooltip
+                      placeholder={tooltipsValues[index]}
+                      isFloating={true}
+                      color={TooltipColors.WHITE}
+                      edittable={true}
+                      onDelete={() => deleteNode(index)}
+                    />
+                  </div>
+                ) : null}
                 <div
-                  className={`absolute flex items-center justify-center text-center `}
+                  className={`absolute flex items-center justify-center text-center`}
                   style={{
-                    left: `${
-                      index === 0
-                        ? Math.round(100 * (propsValue[index] / 2)) / propsMax
-                        : Math.round(
-                            100 *
-                              (((propsValue[index] - propsValue[index - 1]) /
-                                2 +
-                                propsValue[index - 1]) /
-                                propsMax)
-                          )
-                    }%`,
-                    top: '6.5rem',
+                    left: `calc(${Number(
+                      (100 * propsValue[index]) / propsMax
+                    )}% + (${
+                      0 - ((100 * propsValue[index]) / propsMax) * 0.35
+                    }px))`,
+                    top: '2.5rem',
                   }}
                 >
-                  <Tooltip
-                    placeholder={tooltipsValues[index]}
-                    isFloating={true}
-                    color={TooltipColors.WHITE}
-                    edittable={true}
-                    onDelete={() => deleteNode(index)}
-                  />
+                  {/* {(100 * propsValue[index]) / propsMax} */}
+                  {/* {'  '} */}
+                  {/* {8 - ((100 * propsValue[index]) / propsMax) * 0.15} */}
+                  {`${
+                    Math.floor((propsValue as number[])[index]) === 0
+                      ? '00'
+                      : Math.floor((propsValue as number[])[index]) < 10
+                        ? `0${Math.floor((propsValue as number[])[index])}`
+                        : Math.floor((propsValue as number[])[index])
+                  }:${
+                    (propsValue as number[])[index] ===
+                    Math.floor((propsValue as number[])[index])
+                      ? '00'
+                      : Math.round(
+                          60 *
+                            ((propsValue as number[])[index] -
+                              Math.floor((propsValue as number[])[index]))
+                        )
+                  }`}
                 </div>
-              ) : null}
-              <div
-                className={`absolute flex items-center justify-center text-center`}
-                style={{
-                  left: `calc(${Number(
-                    (100 * propsValue[index]) / propsMax
-                  )}% + (${
-                    0 - ((100 * propsValue[index]) / propsMax) * 0.35
-                  }px))`,
-                  top: '10rem',
-                }}
-              >
-                {/* {(100 * propsValue[index]) / propsMax} */}
-                {/* {'  '} */}
-                {/* {8 - ((100 * propsValue[index]) / propsMax) * 0.15} */}
-                {`${
-                  Math.floor((propsValue as number[])[index]) === 0
-                    ? '00'
-                    : Math.floor((propsValue as number[])[index])
-                }:${
-                  (propsValue as number[])[index] ===
-                  Math.floor((propsValue as number[])[index])
-                    ? '00'
-                    : Math.round(
-                        60 *
-                          ((propsValue as number[])[index] -
-                            Math.floor((propsValue as number[])[index]))
-                      )
-                }`}
               </div>
             </section>
           ))}

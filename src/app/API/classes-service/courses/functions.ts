@@ -53,7 +53,7 @@ export const getCourses = async (): Promise<CoursesType[] | null> => {
 
 export const getCourseByName = async (courseName: string): Promise<CoursesType | null> => {
     try {
-        console.log("courses api - courseName", courseName);
+        // console.log("courses api - courseName", courseName);
         const response = await fetch(`http://localhost:8080/api/courses/getByName/${courseName}`, {
             method: "GET",
             credentials: "include",
@@ -61,13 +61,13 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
                 "Content-Type": "application/json",
             },
         });
-        console.log("courses api - response", response);
+        // console.log("courses api - response", response);
 
         if (response.ok) {
             const data = await response.json();
             const course = data.course as CoursesType;
             // console.log("api getCourseByType", course);
-            console.log("courses api - course", data, course);
+            // console.log("courses api - course", data, course);
 
             localStorage.setItem(
                 "courseData",

@@ -26,7 +26,7 @@ export default function RootLayout({
     <div className='flex h-screen w-full flex-row'>
       {userRole === TypesOfUser.ADMIN ? (
         <>
-          <Alert />
+          {/* <Alert /> */}
           <AdminSideBar />
           <CreateNewUser />
           <CreateNewCourse />

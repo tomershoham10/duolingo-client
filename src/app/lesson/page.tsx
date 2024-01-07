@@ -547,7 +547,7 @@ export default function Page() {
 
   return (
     <div className='relative w-full'>
-      <Alert />
+      {/* <Alert /> */}
       {nextLessonId && currentExercise && relevant && userId ? (
         <div className='absolute inset-x-0 inset-y-0'>
           <div

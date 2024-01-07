@@ -104,7 +104,7 @@ const CreateNewUser: React.FC = () => {
     if (response === 201) {
       addAlert('User created successfully.', AlertSizes.small);
     }
-    if (response === 500) {
+    if (response === 500 || response === 404 || response === 400) {
       addAlert('Error while creating user! please try again', AlertSizes.small);
     }
     if (response === 403) {
@@ -225,7 +225,7 @@ const CreateNewUser: React.FC = () => {
               />
             </div>
 
-            <div className='relative col-span-2 col-start-2 mt-2 flex-none py-5 h-full w-full flex justify-center items-center'>
+            <div className='relative col-span-2 col-start-2 mt-2 flex h-full w-full flex-none items-center justify-center py-5'>
               <div className='absolute inset-x-0'>
                 <Button
                   label={'CREATE'}

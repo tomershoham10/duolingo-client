@@ -11,6 +11,7 @@
     0px 7px 0 #46a302,
     0px 8px 0 #46a302; /* Box shadow for the circle */
 }
+
 .lesson-button:disabled {
   box-shadow:
     0px 2px 0 rgb(175, 175, 175),
@@ -131,6 +132,7 @@
   -webkit-appearance: none;
   appearance: none;
   height: 10px;
+  width: 100%;
   border-radius: 10px;
   outline: none;
   -webkit-transition: 0.2s;
@@ -158,10 +160,6 @@
 
 .multi-range::-webkit-slider-runnable-track {
   z-index: 40;
-}
-
-.unplaced-index::-webkit-slider-thumb {
-  background-color: #d42727;
 }
 
 input::-webkit-outer-spin-button,

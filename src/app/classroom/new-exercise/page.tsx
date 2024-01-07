@@ -34,6 +34,7 @@ import {
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
 import { CoursesType } from '@/app/API/classes-service/courses/functions';
+import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
 enum FSAFieldsType {
   DESCRIPTION = 'description',
@@ -55,6 +56,8 @@ const NewExercise: React.FC = () => {
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
 
   const addAlert = useAlertStore.getState().addAlert;
+  const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
+  const setCoordinates = useContextMenuStore.getState().setCoordinates;
 
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
@@ -408,6 +411,15 @@ const NewExercise: React.FC = () => {
     newArray.splice(index, 0, newVal);
     console.log('newArray', newVal, newArray);
     return newArray;
+  };
+
+  const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+    // Prevent the default right-click menu
+    event.preventDefault();
+    toggleMenuOpen();
+    setCoordinates({ pageX: event.pageX, pageY: event.pageY });
+    // Add your custom logic here
+    console.log('Right-clicked!', event.pageX, event.pageY);
   };
 
   const deleteTimeBuffer = (index: number) => {
@@ -865,12 +877,13 @@ const NewExercise: React.FC = () => {
           </div>
 
           {timeBufferRangeValues.length > 0 ? (
-            <div className='mt-6 pb-[5rem]'>
+            <div className='mt-6 w-full pb-[5rem]'>
               <Slider
                 isMultiple={true}
                 numberOfSliders={rangeIndex}
                 min={0}
                 max={recordLength}
+                onContextMenu={handleContextMenu}
                 step={1 / 6}
                 value={timeBufferRangeValues}
                 tooltipsValues={timeBuffersScores}

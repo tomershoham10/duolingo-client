@@ -63,9 +63,9 @@ export const registerUser = async (userName: string, tId: string, password: stri
                 courseId: courseId
             }),
         });
-        if (response.ok) {
-            return response.status;
-        }
+
+        console.log("response - response user", response);
+        return response.status;
     }
     catch (error) {
         console.error("registerUser Error:", error);
@@ -84,6 +84,7 @@ export const getUsersByCourseId = async (courseId: string): Promise<UserType[] |
         });
         if (response.ok) {
             const data = await response.json();
+            console.log("get users by courseId", data);
             const usersList = data.users as UserType[];
             return usersList;
         } else return null;

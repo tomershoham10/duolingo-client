@@ -14,7 +14,7 @@ const Students = () => {
   const [users, setUsers] = useState<UserType[] | null>(null);
 
   useEffect(() => {
-    // console.log("CourseType in students page.tsx", courseType);
+    console.log('courseId sdfs', courseId);
 
     const fetchData = async () => {
       if (courseId) {
@@ -24,9 +24,12 @@ const Students = () => {
     };
     fetchData();
   }, [courseId]);
-  // console.log(`students in ${courseType} course: `, users);
 
   const headers = ['userName', 'permission', 'password'];
+
+  useEffect(() => {
+    console.log('users', users);
+  }, [users]);
 
   return (
     <>
