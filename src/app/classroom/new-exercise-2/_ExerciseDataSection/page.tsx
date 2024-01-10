@@ -1,39 +1,26 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import { getTargetsList } from '@/app/API/classes-service/targets/functions';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
-import Textbox, { FontSizes } from '@/components/Textbox/page';
-import useStore from '@/app/store/useStore';
-import { TargetType, useTargetStore } from '@/app/store/stores/useTargetStore';
+import { useState, useEffect, useRef } from 'react';
 
-import { TiPlus } from 'react-icons/ti';
-import { TbTargetArrow } from 'react-icons/tb';
-
-import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import Upload, { UploadRef } from '@/components/Upload/page';
-import Slider from '@/components/Slider/page';
+import { useStore } from 'zustand';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
+
+import { TargetType, useTargetStore } from '@/app/store/stores/useTargetStore';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+
+import Button, { Color } from '@/components/Button/page';
+import Textbox, { FontSizes } from '@/components/Textbox/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+
+import { TiPlus } from 'react-icons/ti';
+import { TbTargetArrow } from 'react-icons/tb';
 import SortableItem from '@/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
-import Button, { ButtonTypes, Color } from '@/components/Button/page';
-import {
-  LevelType,
-  getAllLevels,
-} from '@/app/API/classes-service/levels/functions';
-import {
-  LessonType,
-  getAllLessons,
-} from '@/app/API/classes-service/lessons/functions';
-import MetadataPopup from '@/app/popups/MetadataPopup/page';
-import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
-import { CoursesType } from '@/app/API/classes-service/courses/functions';
+import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
 enum FSAFieldsType {
@@ -46,230 +33,35 @@ enum FSAFieldsType {
   SELECTEDLESSON = 'selectedLesson',
 }
 
-interface TimeBuffersType {
-  timeBuffer: number;
-  grade: number;
-}
-
-const NewExercise: React.FC = () => {
+const ExerciseDataSection: React.FC = () => {
   const targetsList = useStore(useTargetStore, (state) => state.targets);
-  const coursesList = useStore(useCourseStore, (state) => state.coursesList);
-
+  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
   const addAlert = useAlertStore.getState().addAlert;
   const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
   const setCoordinates = useContextMenuStore.getState().setCoordinates;
   const setContent = useContextMenuStore.getState().setContent;
 
   const [description, setDescription] = useState<string | undefined>(undefined);
-  const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
   const [targetFromDropdown, setTargetFromDropdown] =
     useState<TargetType | null>(null);
+  const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
   const [relevant, setRelevant] = useState<TargetType[]>([]);
   const [answersList, setAnswersList] = useState<TargetType[]>([]);
-
-  const [difficultyLevel, setDifficultyLevel] = useState<number>(0);
-
-  const [recordLength, setRecordLength] = useState<number>(0);
-
-  const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
-
-  const [rangeIndex, setRangeIndex] = useState<number>(0);
-
-  const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>(
-    []
-  );
-
-  const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
-
-  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([]);
-
   const [grabbedRelevantId, setGrabbedRelevantId] =
     useState<string>('released');
   const [grabbedAnswerId, setGrabbedAnswerId] = useState<string>('released');
-
-  const [unitsList, setUnitsList] = useState<UnitType[]>();
-  const [levelsList, setLevelsList] = useState<LevelType[]>();
-  const [lessonsList, setLessonsList] = useState<LessonType[]>();
-
-  const [selectedCourse, setSelectedCourse] = useState<CoursesType | null>(
-    null
+  const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
+  const [recordLength, setRecordLength] = useState<number>(0);
+  const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
+  const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>(
+    []
   );
-
-  const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<LevelType | null>(null);
-  const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null);
-  const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
-  const [recordFile, setRecordFile] = useState<File>();
-  const [sonolistFiles, setSonolistFiles] = useState<FileList>();
-
-  interface PageContent {
-    number: number;
-    component: React.FC<any>;
-  }
-
-  const pageContent: PageContent[] = [
-    { number: 1, component: Slider },
-    { number: 2, component: Slider },
-    { number: 3, component: Slider },
-  ];
-
-  useEffect(() => {
-    console.log('selectedCourse', selectedCourse);
-  }, [selectedCourse]);
-
-  useEffect(() => {
-    console.log('selectedUnit', selectedUnit);
-  }, [selectedUnit]);
-
-  useEffect(() => {
-    console.log('selectedLevel', selectedLevel);
-  }, [selectedLevel]);
-
-  const uploadRef = useRef<UploadRef>(null);
-
+  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([]);
+  const [rangeIndex, setRangeIndex] = useState<number>(0);
   const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
-  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchTargets = async () => {
-      await getTargetsList();
-    };
-    const targetData = localStorage.getItem('targetsList');
-    if (!targetData) {
-      fetchTargets();
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (coursesList) {
-        try {
-          const resUnits = await getUnits();
-          resUnits ? setUnitsList(resUnits) : null;
-        } catch (error) {
-          console.error('Error fetching units:', error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [coursesList]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (unitsList) {
-        try {
-          const resLevels = await getAllLevels();
-          resLevels ? setLevelsList(resLevels) : null;
-        } catch (error) {
-          console.error('Error fetching levels:', error);
-        }
-      }
-    };
-    fetchData();
-  }, [unitsList]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (levelsList) {
-        try {
-          const resLessons = await getAllLessons();
-          resLessons ? setLessonsList(resLessons) : null;
-        } catch (error) {
-          console.error('Error fetching lessons:', error);
-        }
-      }
-    };
-    fetchData();
-  }, [levelsList]);
-
-  useEffect(() => {
-    console.log('coursesList', coursesList);
-  }, [coursesList]);
-
-  useEffect(() => {
-    console.log('unitsList', unitsList);
-  }, [unitsList]);
-  useEffect(() => {
-    console.log('levelsList', levelsList);
-  }, [levelsList]);
-  useEffect(() => {
-    console.log('lessonsList', lessonsList);
-  }, [lessonsList]);
-
-  useEffect(() => {
-    console.log('gradeInput', gradeInput);
-  }, [gradeInput]);
-
-  useEffect(() => {
-    console.log('targetFromDropdown', targetFromDropdown);
-  }, [targetFromDropdown]);
-
-  const handleClickOutsideTimeBufferScore = (event: MouseEvent) => {
-    if (
-      timeBufferGradeDivRef.current &&
-      !timeBufferGradeDivRef.current.contains(event.target as Node)
-    ) {
-      setIsAddBufferOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isAddBufferOpen) {
-      document.addEventListener('mousedown', handleClickOutsideTimeBufferScore);
-      return () => {
-        document.removeEventListener(
-          'mousedown',
-          handleClickOutsideTimeBufferScore
-        );
-      };
-    }
-  }, [isAddBufferOpen]);
-
-  useEffect(() => {
-    const removeFieldName = (fieldName: FSAFieldsType) => {
-      setUnfilledFields(unfilledFields.filter((field) => field !== fieldName));
-    };
-    if (unfilledFields.length > 0) {
-      if (
-        unfilledFields.includes(FSAFieldsType.ANSWERSLIST) &&
-        answersList.length > 0
-      ) {
-        removeFieldName(FSAFieldsType.ANSWERSLIST);
-      }
-      if (
-        unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL) &&
-        difficultyLevel > 0
-      ) {
-        removeFieldName(FSAFieldsType.DIFFICULTYLEVEL);
-      }
-      if (unfilledFields.includes(FSAFieldsType.RECORD) && recordFile) {
-        removeFieldName(FSAFieldsType.RECORD);
-      }
-      if (
-        unfilledFields.includes(FSAFieldsType.TIMEBUFFERS) &&
-        timeBufferRangeValues.length > 0 &&
-        timeBuffersScores.length > 0
-      ) {
-        removeFieldName(FSAFieldsType.TIMEBUFFERS);
-      }
-      if (
-        unfilledFields.includes(FSAFieldsType.SELECTEDLESSON) &&
-        selectedLesson
-      ) {
-        removeFieldName(FSAFieldsType.SELECTEDLESSON);
-      }
-    }
-  }, [
-    answersList.length,
-    difficultyLevel,
-    recordFile,
-    selectedLesson,
-    timeBufferRangeValues.length,
-    timeBuffersScores.length,
-    unfilledFields,
-  ]);
+  const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
@@ -384,22 +176,27 @@ const NewExercise: React.FC = () => {
     setAnswersList(answersList.filter((item) => item._id != itemId));
   };
 
-  const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDifficultyLevel(parseFloat(event.target.value));
+  const splicer = (index: number, newVal: number, oldArray: number[]) => {
+    const newArray = [...oldArray];
+    newArray.splice(index, 0, newVal);
+    console.log('newArray', newVal, newArray);
+    return newArray;
   };
 
-  const handleFileChange = (files: File | FileList | null) => {
-    if (files instanceof FileList) {
-      console.log('sonolist');
-      files ? setSonolistFiles(files as FileList) : null;
-    } else {
-      files ? setRecordFile(files as File) : null;
-    }
-  };
-  
-  const handleFileLength = (time: number | null) => {
-    console.log('file length:', time);
-    time ? setRecordLength(time) : null;
+  const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    toggleMenuOpen();
+    setCoordinates({ pageX: event.pageX, pageY: event.pageY });
+    setContent([
+      {
+        placeHolder: 'add',
+        onClick: () => {
+          console.log('clicked');
+        },
+      },
+    ]);
+    // Add your custom logic here
+    console.log('Right-clicked!', event.pageX, event.pageY);
   };
 
   const handleTimeBufferRange = (
@@ -420,30 +217,6 @@ const NewExercise: React.FC = () => {
     });
   };
 
-  const splicer = (index: number, newVal: number, oldArray: number[]) => {
-    const newArray = [...oldArray];
-    newArray.splice(index, 0, newVal);
-    console.log('newArray', newVal, newArray);
-    return newArray;
-  };
-
-  const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent the default right-click menu
-    event.preventDefault();
-    toggleMenuOpen();
-    setCoordinates({ pageX: event.pageX, pageY: event.pageY });
-    setContent([
-      {
-        placeHolder: 'add',
-        onClick: () => {
-          console.log('clicked');
-        },
-      },
-    ]);
-    // Add your custom logic here
-    console.log('Right-clicked!', event.pageX, event.pageY);
-  };
-
   const deleteTimeBuffer = (index: number) => {
     console.log('new exercise - deleteTimeBuffer - index', index);
     setRangeIndex(rangeIndex - 1);
@@ -457,83 +230,9 @@ const NewExercise: React.FC = () => {
     );
   };
 
-  const submitExercise = () => {
-    setUnfilledFields([]);
-    let unfilledForAlert: number = 0;
-    let combinedTimeBuffersArray: TimeBuffersType[] = [];
-    // console.log('description', description);
-    // console.log('relevant', relevant);
-    console.log('answers list', answersList);
-    console.log('difficultyLevel', difficultyLevel);
-    console.log('recordFile', recordFile);
-    console.log('sonolistFiles', sonolistFiles);
-    console.log('timeBufferRangeValues', timeBufferRangeValues);
-    console.log('timeBuffersScores', timeBuffersScores);
-    // console.log('selectedCourse', selectedCourse);
-    // console.log('selectedUnit', selectedUnit);
-    // console.log('selectedLevel', selectedLevel);
-    console.log('selectedLesson', selectedLesson);
-
-    if (answersList.length === 0) {
-      setUnfilledFields((prev) => [...prev, FSAFieldsType.ANSWERSLIST]);
-      unfilledForAlert++;
-    }
-    if (difficultyLevel === 0) {
-      setUnfilledFields((prev) => [...prev, FSAFieldsType.DIFFICULTYLEVEL]);
-      unfilledForAlert++;
-    }
-    if (recordFile === undefined) {
-      setUnfilledFields((prev) => [...prev, FSAFieldsType.RECORD]);
-      unfilledForAlert++;
-    } else {
-    }
-    if (timeBufferRangeValues.length === 0 || timeBuffersScores.length === 0) {
-      setUnfilledFields((prev) => [...prev, FSAFieldsType.TIMEBUFFERS]);
-      unfilledForAlert++;
-    } else {
-      combinedTimeBuffersArray = timeBufferRangeValues.map(
-        (timeBuffer, index) => ({
-          timeBuffer,
-          grade: timeBuffersScores[index],
-        })
-      );
-    }
-    // if (!selectedLesson) {
-    //   setUnfilledFields((prev) => [...prev, FSAFieldsType.SELECTEDLESSON]);
-    //   unfilledForAlert++;
-    // }
-    console.log('unfilledForAlert', unfilledForAlert);
-    // if (unfilledForAlert > 0) {
-    //   addAlert(
-    //     'please complete the missing fields and sumbit again.',
-    //     AlertSizes.small
-    //   );
-    // } else {
-      createFSA({
-        description: description,
-        answersList: answersList.map((target) => target._id),
-        relevant: relevant.map((target) => target._id),
-        difficultyLevel: difficultyLevel,
-        timeBuffers: combinedTimeBuffersArray,
-        records: recordFile as File | FileList,
-        sonolist: sonolistFiles,
-      });
-      addAlert('sumbitted.', AlertSizes.small);
-    // }
-  };
-
   return (
-    <div className='flex w-full flex-col overflow-auto p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      <MetadataPopup
-        prevData={undefined}
-        onSave={(data) => console.log('metadata', data)}
-      />
-      <div
-        className='mx-auto w-[80%] 3xl:w-[65%]'
-      >
-        <div className='mb-3 mt-5 text-4xl font-extrabold uppercase'>
-          create new exercise
-        </div>
+    <div className='flex h-full w-full flex-col p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+      <div className='mx-auto w-full'>
         <div>
           <span className='my-3 text-2xl font-bold'>Description:</span>
           <div className='mb-4 mt-3'>
@@ -597,6 +296,7 @@ const NewExercise: React.FC = () => {
             </div>
           ) : null}
         </div>
+
         <div className='mb-4'>
           <div>
             <span className='my-3 text-2xl font-bold'>Relevant:</span>
@@ -658,6 +358,7 @@ const NewExercise: React.FC = () => {
             )}
           </div>
         </div>
+
         <div className='mb-4'>
           <div>
             <span
@@ -728,52 +429,6 @@ const NewExercise: React.FC = () => {
           </div>
         </div>
 
-        <div className='relative mb-4 flex w-full flex-col gap-12'>
-          <span
-            className={`mt-3 text-2xl font-bold ${
-              unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)
-                ? 'text-duoRed-default'
-                : ''
-            }`}
-          >
-            difficulty level:
-          </span>
-          <Slider
-            isMultiple={false}
-            min={0}
-            max={10}
-            step={0.5}
-            value={difficultyLevel}
-            onChange={handleRangeChange}
-            errorMode={unfilledFields.includes(FSAFieldsType.DIFFICULTYLEVEL)}
-          />
-        </div>
-        <div className='flex h-fit flex-col items-start justify-center'>
-          <span className='text-2xl font-bold'>Upload files:</span>
-
-          <div className='relative flex w-full flex-row items-start justify-between gap-3 3xl:w-[55%]'>
-            <div className='relative w-full 3xl:w-[45%]'>
-              <Upload
-                label={'Choose a .wav file'}
-                filesTypes={'.wav'}
-                isMultiple={false}
-                ref={uploadRef}
-                onFileChange={handleFileChange}
-                fileLength={handleFileLength}
-                errorMode={unfilledFields.includes(FSAFieldsType.RECORD)}
-              />
-            </div>
-            <div className='relative w-full 3xl:w-[45%]'>
-              <Upload
-                label={'Sonolist'}
-                filesTypes={'image/*'}
-                isMultiple={true}
-                ref={uploadRef}
-                onFileChange={handleFileChange}
-              />
-            </div>
-          </div>
-        </div>
         <div className='relative flex flex-col items-start justify-center'>
           <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
             <span
@@ -914,153 +569,8 @@ const NewExercise: React.FC = () => {
             </div>
           ) : null}
         </div>
-        <div>
-          <span className='my-3 text-2xl font-bold'>Attach to a lessson:</span>
-          <ul className='mb-12 mt-6 flex w-full flex-row items-center justify-start gap-5'>
-            <li className='w-[10rem]'>
-              <Dropdown
-                isSearchable={false}
-                placeholder={'COURSE'}
-                items={
-                  coursesList
-                    ? coursesList.map((item) => item.name as string)
-                    : []
-                }
-                value={selectedCourse?.name as string}
-                onChange={(selectedCourseName) => {
-                  if (coursesList) {
-                    setSelectedCourse(
-                      (coursesList.filter(
-                        (item) => item.name === selectedCourseName
-                      )[0]
-                        ? coursesList
-                            .filter((item) => item.name === selectedCourseName)
-                            .filter(
-                              (item) =>
-                                !!item._id && !!item.name && !!item.units
-                            )[0]
-                        : null) as CoursesType | null
-                    );
-                  }
-                }}
-                size={DropdownSizes.SMALL}
-              />
-            </li>
-
-            <li className='w-[10rem]'>
-              <Dropdown
-                isSearchable={false}
-                placeholder={'UNIT'}
-                isDisabled={selectedCourse === null}
-                items={
-                  selectedCourse
-                    ? selectedCourse.units
-                      ? selectedCourse.units.map((unit) =>
-                          selectedCourse.units
-                            ? `unit ${selectedCourse.units.indexOf(unit) + 1}`
-                            : ''
-                        )
-                      : []
-                    : []
-                }
-                onChange={(selectedUnit: string) => {
-                  const unitIndex = Number(selectedUnit.split(' ')[1]) - 1;
-                  console.log('unitIndex', unitIndex);
-                  if (unitsList) {
-                    setSelectedUnit(
-                      unitsList.filter((item) =>
-                        selectedCourse && selectedCourse.units
-                          ? item._id === selectedCourse.units[unitIndex]
-                          : null
-                      )[0]
-                    );
-                  }
-                }}
-                size={DropdownSizes.SMALL}
-              />
-            </li>
-            <li className='w-[10rem]'>
-              <Dropdown
-                isSearchable={false}
-                placeholder={'LEVEL'}
-                isDisabled={selectedUnit === null}
-                items={
-                  levelsList && selectedUnit
-                    ? selectedUnit.levels
-                      ? selectedUnit.levels.map((level) =>
-                          selectedUnit.levels
-                            ? `level ${selectedUnit.levels.indexOf(level) + 1}`
-                            : ''
-                        )
-                      : []
-                    : []
-                }
-                onChange={(selectedLevel: string) => {
-                  const levelIndex = Number(selectedLevel.split(' ')[1]) - 1;
-                  console.log('levelIndex', levelIndex);
-                  if (levelsList) {
-                    setSelectedLevel(
-                      levelsList.filter((item) =>
-                        selectedUnit && selectedUnit.levels
-                          ? item._id === selectedUnit.levels[levelIndex]
-                          : null
-                      )[0]
-                    );
-                  }
-                }}
-                size={DropdownSizes.SMALL}
-              />
-            </li>
-            <li className='w-[10rem]'>
-              <Dropdown
-                isSearchable={false}
-                placeholder={'LESSON'}
-                isDisabled={selectedLevel === null}
-                items={
-                  lessonsList && selectedLevel
-                    ? selectedLevel.lessons
-                      ? selectedLevel.lessons.map((lesson) =>
-                          selectedLevel.lessons
-                            ? `lesson ${
-                                selectedLevel.lessons.indexOf(lesson) + 1
-                              }`
-                            : ''
-                        )
-                      : []
-                    : []
-                }
-                onChange={(selectedLesson: string) => {
-                  const lessonIndex = Number(selectedLesson.split(' ')[1]) - 1;
-                  console.log('lessonIndex', lessonIndex);
-                  if (lessonsList) {
-                    setSelectedLesson(
-                      lessonsList.filter((item) =>
-                        selectedLevel && selectedLevel.lessons
-                          ? item._id === selectedLevel.lessons[lessonIndex]
-                          : null
-                      )[0]
-                    );
-                  }
-                }}
-                size={DropdownSizes.SMALL}
-              />
-            </li>
-          </ul>
-        </div>
-        <div className='relative flex items-center justify-center py-8'>
-          <div className='absolute'>
-            <Button
-              label={'SUBMIT'}
-              color={Color.BLUE}
-              style={'w-[12rem]'}
-              onClick={submitExercise}
-              buttonType={ButtonTypes.BUTTON}
-            />
-          </div>
-        </div>
       </div>
     </div>
   );
 };
-
-export default NewExercise;
+export default ExerciseDataSection;

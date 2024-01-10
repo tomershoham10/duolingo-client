@@ -70,13 +70,26 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           </>
         ))}
         <div className='relative flex items-center justify-center py-8'>
-          <div className='absolute right-0 w-24'>
-            <Button
-              label={'NEXT'}
-              color={Color.BLUE}
-              onClick={() => setSelectedPageNumber(selectedPageNumber + 1)}
-            />
+          <div className='absolute right-4 w-24'>
+            {selectedPageNumber === paginationItems.length - 1 ? (
+              <Button label={'SUBMIT'} color={Color.BLUE} />
+            ) : (
+              <Button
+                label={'NEXT'}
+                color={Color.BLUE}
+                onClick={() => setSelectedPageNumber(selectedPageNumber + 1)}
+              />
+            )}
           </div>
+          {selectedPageNumber > 0 ? (
+            <div className='absolute right-[8rem] w-24'>
+              <Button
+                label={'BACK'}
+                color={Color.BLUE}
+                onClick={() => setSelectedPageNumber(selectedPageNumber - 1)}
+              />
+            </div>
+          ) : null}
         </div>
       </section>
     </>

@@ -44,7 +44,7 @@ export default function RootLayout({
           {userRole === TypesOfUser.LOGGEDOUT ? (
             router.push('/login')
           ) : (
-            <h1>PERMISSION DENIED!</h1>
+            <h1>loading...</h1>
           )}
         </>
       )}

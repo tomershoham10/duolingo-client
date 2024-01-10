@@ -74,7 +74,7 @@ const AcintDataSection: React.FC = () => {
         onSave={(data) => console.log('metadata', data)}
       />
       <span className='my-3 text-2xl font-bold'>
-        Select a record or upload:
+        Select \ upload record:
       </span>
       <Table
         headers={recordsHeaders}
