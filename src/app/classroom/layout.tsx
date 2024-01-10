@@ -5,7 +5,6 @@ import NavBar from '@/components/Navigation/NavBar/page';
 import CreateNewUser from '../popups/CreateNewUser/page';
 import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
 import AdminEditPopup from '../popups/AdminEditPopup/page';
-import Alert from '@/components/Alert/page';
 import InfoBar from '@/components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
@@ -23,18 +22,18 @@ export default function RootLayout({
   const userRole = useStore(useUserStore, (state) => state.userRole);
   //   console.log("classroom layout - userRole",userRole);
   return (
-    <div className='flex h-screen w-full flex-row'>
+    <div className='flex h-screen w-screen flex-row'>
       {userRole === TypesOfUser.ADMIN ? (
         <>
           {/* <Alert /> */}
-          <AdminSideBar />
           <CreateNewUser />
           <CreateNewCourse />
           <AdminEditPopup />
           <CreateNewUnit />
           <div className='flex h-screen w-full flex-col'>
             {pathname.includes('courses') ? <NavBar /> : null}
-            <div className='flex h-full w-full flex-row justify-between overflow-hidden'>
+            <div className='flex h-full flex-row justify-between overflow-hidden'>
+              <AdminSideBar />
               {children}
               <InfoBar />
             </div>

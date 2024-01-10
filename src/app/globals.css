@@ -81,7 +81,7 @@
 }
 
 .textarea-dark-placeholder::placeholder {
-  color: #52656D;
+  color: #52656d;
 }
 
 .range-slide {
@@ -178,6 +178,10 @@ input::-webkit-inner-spin-button {
 
 ::-webkit-scrollbar-thumb {
   @apply rounded-md bg-duoGray-default;
+}
+
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  color: blue;
 }
 
 @keyframes bounce-tooltip {

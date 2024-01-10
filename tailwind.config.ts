@@ -59,6 +59,7 @@ const config: Config = {
                     textHover: '#42ADDF',
                     default: '#3B5799',
                     dark: '#384E8E',
+                    darkOpacity: '#293B64',
                     darker: '#111C20',
                     darkest: '#1E273B',
                     darkestHover: '#111C20'
@@ -89,6 +90,7 @@ const config: Config = {
 
                 'duoGrayDark': {
                     lightest: '#DCE6EC',
+                    lightestOpacity: '#8C969C',
                     lighter: '#52656D',
                     light: '#37464F',
                     dark: '#202F36',

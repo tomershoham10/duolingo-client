@@ -30,7 +30,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
       }
     >
       {selectedPopup === PopupsTypes.METADATA ? (
-        <div className='relative m-5 flex h-[30rem] w-[40rem] justify-center rounded-md bg-white p-5 xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
+        <div className='relative m-5 flex h-[30rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
@@ -43,11 +43,21 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
             />
           </button>
           <div className='w-full items-start justify-start'>
-            <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold 3xl:h-12 3xl:text-2xl'>
+            <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
               Add Metadata
             </div>
+            <div className='mt-12 grid w-full grid-cols-4 grid-rows-6'>
+            <span>is in italkia</span>
+            <span>yes/no</span>
+            <span>is in italkia</span>
+            <span>yes/no</span>
+            <span>transmition</span>
+
+
+
           </div>
-          <div className='mt-12 w-full'></div>
+          </div>
+          
           <div className='absolute bottom-0 w-[33%]'>
             <Button
               label={'Save'}

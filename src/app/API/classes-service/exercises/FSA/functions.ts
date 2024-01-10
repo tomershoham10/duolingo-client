@@ -157,43 +157,43 @@ export const createFSA = async (newFSA: ExerciseRequest): Promise<string> => {
         console.log("uploadRecordResponse", uploadRecordResponse);
         const recordId = uploadRecordResponse.map(record => record.etag);
         console.log("recordId", recordId)
-        let sonolistIds: string[] = []
-        if (newFSA.sonolist) {
-            const uploadSonolistResponse = await uploadFile('sonograms', newFSA.sonolist) as UploadedObjectInfo[][];
-            console.log("uploadSonolistResponse", uploadSonolistResponse);
-            sonolistIds = Array(uploadSonolistResponse.map(array => array.map(item => item.etag)).join())
-            console.log("sonolistIds", sonolistIds)
-        }
+        // let sonolistIds: string[] = []
+        // if (newFSA.sonolist) {
+        //     const uploadSonolistResponse = await uploadFile('sonograms', newFSA.sonolist) as UploadedObjectInfo[][];
+        //     console.log("uploadSonolistResponse", uploadSonolistResponse);
+        //     sonolistIds = Array(uploadSonolistResponse.map(array => array.map(item => item.etag)).join())
+        //     console.log("sonolistIds", sonolistIds)
+        // }
 
-        const response = await fetch(
-            'http://localhost:8080/api/FSA/',
-            {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    recordsKeys: recordId,
-                    difficultyLevel: newFSA.difficultyLevel,
-                    relevant: newFSA.relevant,
-                    answersList: newFSA.answersList,
-                    timeBuffers: newFSA.timeBuffers,
-                    description: newFSA.description,
-                    sonolistKeys: sonolistIds,
-                })
-            },
-        );
-        if (response.ok) {
-            console.log("create fsa res", response);
-            const resJson = await response.json() as FSAType;
-            if (response.status === 201) {
-                console.log("new fsa", resJson);
-            }
-            return 'created successfully';
-        } else {
-            throw new Error('error creating FSA');
-        }
+        // const response = await fetch(
+        //     'http://localhost:8080/api/FSA/',
+        //     {
+        //         method: "POST",
+        //         credentials: "include",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({
+        //             recordsKeys: recordId,
+        //             difficultyLevel: newFSA.difficultyLevel,
+        //             relevant: newFSA.relevant,
+        //             answersList: newFSA.answersList,
+        //             timeBuffers: newFSA.timeBuffers,
+        //             description: newFSA.description,
+        //             sonolistKeys: sonolistIds,
+        //         })
+        //     },
+        // );
+        // if (response.ok) {
+        //     console.log("create fsa res", response);
+        //     const resJson = await response.json() as FSAType;
+        //     if (response.status === 201) {
+        //         console.log("new fsa", resJson);
+        //     }
+        return 'created successfully';
+        // } else {
+        //     throw new Error('error creating FSA');
+        // }
     } catch (error) {
         console.error("Error creating fsa:", error);
         throw new Error(`error creating FSA ${error}`);

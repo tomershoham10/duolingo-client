@@ -11,6 +11,7 @@ const ContextMenu: React.FC = () => {
     (state) => state.coordinates
   );
   const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
+  const content = useContextMenuStore.getState().content;
   const contextMenuRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
@@ -63,14 +64,29 @@ const ContextMenu: React.FC = () => {
     <>
       {isOpen && (
         <ul
-          className='absolute z-50 bg-white text-black'
+          className='absolute z-50 w-fit rounded-xl border-2 bg-white py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest '
           style={{
             top: `${coordinates.pageY}px`,
             left: `${coordinates.pageX}px`,
           }}
           ref={contextMenuRef}
         >
-          <li>context menu</li>
+          {content.length > 0 ? (
+            content.map((listItem, index) => (
+              <li
+                className='duration-50 min-w-[10rem] py-2 pl-4 text-lg font-extrabold text-duoGray-darkest transition dark:text-duoGrayDark-lightest dark:hover:bg-duoBlueDark-default'
+                key={index}
+              >
+                <button className='w-full text-left' onClick={listItem.onClick}>
+                  {listItem.placeHolder}
+                </button>
+              </li>
+            ))
+          ) : (
+            <li className='duration-50 min-w-[10rem] py-2 pl-4 transition dark:hover:bg-duoBlueDark-default'>
+              context menu
+            </li>
+          )}
         </ul>
       )}
     </>

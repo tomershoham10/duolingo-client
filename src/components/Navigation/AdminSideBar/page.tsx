@@ -17,7 +17,6 @@ import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
-  CoursesType,
   getCourseByName,
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
@@ -167,26 +166,30 @@ const AdminSideBar: React.FC = () => {
   return (
     <>
       {userRole === TypesOfUser.ADMIN && isLoggedIn ? (
-        <div className='flex h-screen min-w-[12.5rem] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest lg:min-w-[13rem]'>
-          <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-center text-[2rem] font-[850] text-duoBlue-default'>
+        <div className='flex h-screen w-[25%] flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest 3xl:w-[10%]'>
+          <label
+            className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6
+           text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'
+          >
             doulingo
           </label>
 
           <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>
-            <ul className='w-full uppercase'>
+            <ul className='w-full cursor-default text-center text-[0.75rem] uppercase md:text-[0.9rem] lg:text-lg '>
               {coursesList ? (
                 coursesList.length > 0 && !!coursesList[0]._id ? (
                   // coursesList.map((item,index)=><></>)
                   coursesList.map((item, index) => (
                     <li
                       key={index}
-                      className={
-                        item.name
-                          ? pathname.includes(item.name.toLocaleLowerCase())
-                            ? 'dark:text-duoBlueDark-texst w-full cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoBlue-light dark:bg-sky-800'
-                            : 'w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
-                          : 'w-full cursor-pointer pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
-                      }
+                      className={`p-3
+                       ${
+                         item.name
+                           ? pathname.includes(item.name.toLocaleLowerCase())
+                             ? 'dark:text-duoBlueDark-texst bg-duoBlue-lightest  text-duoBlue-light dark:bg-sky-800'
+                             : ' text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                           : ' text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                       }`}
                     >
                       <Link
                         href={`${
@@ -200,12 +203,12 @@ const AdminSideBar: React.FC = () => {
                     </li>
                   ))
                 ) : (
-                  <span className='flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
+                  <span className='flex items-center justify-center p-3 text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
                     NO COURSES
                   </span>
                 )
               ) : (
-                <span className='flex w-full cursor-default items-center justify-center pb-3 pl-3 pr-3 pt-3 text-center text-lg text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
+                <span className='flex items-center justify-center p-3 text-duoGray-darkest opacity-70 dark:text-duoGrayDark-lightest'>
                   NO COURSES
                 </span>
               )}
@@ -221,14 +224,14 @@ const AdminSideBar: React.FC = () => {
                 }
                 onMouseLeave={() => setIsHovered(false)}
                 ref={sidebarItemRef}
-                className={`duration-50 relative transition ${
+                className={`duration-50 relative flex items-center justify-center transition md:justify-start ${
                   selected === index
                     ? 'cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-duoBlue-light'
                     : 'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark'
                 }`}
               >
                 <button
-                  className='flex cursor-pointer flex-row items-center justify-center pr-2'
+                  className='mx-4 flex cursor-pointer flex-row items-center justify-center'
                   onClick={() =>
                     sideBaritem.subItems
                       ? null
@@ -237,25 +240,39 @@ const AdminSideBar: React.FC = () => {
                         : null
                   }
                 >
-                  {sideBaritem.icon ? (
-                    <FontAwesomeIcon
-                      className='fa-xs fa-solid ml-2 mr-4 h-6 w-6'
-                      icon={sideBaritem.icon}
-                    />
-                  ) : null}
                   {sideBaritem.href ? (
                     <Link
                       className='flex h-full cursor-pointer'
                       href={sideBaritem.href}
                     >
-                      {sideBaritem.name}
+                      {sideBaritem.icon ? (
+                        <FontAwesomeIcon
+                          className='fa-xs fa-solid h-6 w-6'
+                          icon={sideBaritem.icon}
+                        />
+                      ) : null}
+                      <p className='ml-4 hidden md:block'>{sideBaritem.name}</p>
                     </Link>
                   ) : (
-                    <span>{sideBaritem.name}</span>
+                    <span>
+                      {sideBaritem.icon ? (
+                        <span className='flex w-full flex-row'>
+                          <FontAwesomeIcon
+                            className='fa-xs fa-solid h-6 w-6'
+                            icon={sideBaritem.icon}
+                          />
+                          <p className='ml-4 hidden md:block'>
+                            {sideBaritem.name}
+                          </p>
+                        </span>
+                      ) : (
+                        <p>{sideBaritem.name}</p>
+                      )}
+                    </span>
                   )}
                 </button>
                 {isHovered && sideBaritem.subItems ? (
-                  <ul className='absolute -top-[1rem] left-[12rem] z-30 w-fit rounded-xl border-2 py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
+                  <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
                     {sideBaritem.subItems.map((subItem, subItemIndex) => (
                       <li
                         className='duration-50 min-w-[10rem] py-2 pl-4 transition dark:hover:bg-duoBlueDark-default'

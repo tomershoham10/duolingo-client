@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import { useEffect } from 'react';
 import Tooltip, { TooltipColors } from '../Tooltip/page';
-import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
 interface SliderProps {
   isMultiple: boolean;
@@ -34,9 +33,6 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsDeleteNode = props.deleteNode;
   //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
 
-  const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
-  const setCoordinates = useContextMenuStore.getState().setCoordinates;
-
   useEffect(() => {
     console.log('timeBufferRangeValues', propsValue);
     if (_.isObject(propsValue)) {
@@ -66,13 +62,13 @@ const Slider: React.FC<SliderProps> = (props) => {
     }
   };
 
-//   useEffect(() => {
-//     const element = document.querySelector('.range-check');
-//     console.log('useeffect', element);
-//     if (element) {
-//       element.addEventListener('contextmenu', () => console.log('clicked1'));
-//     }
-//   }, []);
+  //   useEffect(() => {
+  //     const element = document.querySelector('.range-check');
+  //     console.log('useeffect', element);
+  //     if (element) {
+  //       element.addEventListener('contextmenu', () => console.log('clicked1'));
+  //     }
+  //   }, []);
 
   return (
     <>

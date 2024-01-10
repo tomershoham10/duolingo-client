@@ -58,6 +58,7 @@ const NewExercise: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
   const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
   const setCoordinates = useContextMenuStore.getState().setCoordinates;
+  const setContent = useContextMenuStore.getState().setContent;
 
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
@@ -101,6 +102,18 @@ const NewExercise: React.FC = () => {
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
   const [recordFile, setRecordFile] = useState<File>();
   const [sonolistFiles, setSonolistFiles] = useState<FileList>();
+
+  interface PageContent {
+    number: number;
+    component: React.FC<any>;
+  }
+
+  const pageContent: PageContent[] = [
+    { number: 1, component: Slider },
+    { number: 2, component: Slider },
+    { number: 3, component: Slider },
+  ];
+
   useEffect(() => {
     console.log('selectedCourse', selectedCourse);
   }, [selectedCourse]);
@@ -383,6 +396,7 @@ const NewExercise: React.FC = () => {
       files ? setRecordFile(files as File) : null;
     }
   };
+  
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
     time ? setRecordLength(time) : null;
@@ -418,6 +432,14 @@ const NewExercise: React.FC = () => {
     event.preventDefault();
     toggleMenuOpen();
     setCoordinates({ pageX: event.pageX, pageY: event.pageY });
+    setContent([
+      {
+        placeHolder: 'add',
+        onClick: () => {
+          console.log('clicked');
+        },
+      },
+    ]);
     // Add your custom logic here
     console.log('Right-clicked!', event.pageX, event.pageY);
   };
@@ -481,12 +503,12 @@ const NewExercise: React.FC = () => {
     //   unfilledForAlert++;
     // }
     console.log('unfilledForAlert', unfilledForAlert);
-    if (unfilledForAlert > 0) {
-      addAlert(
-        'please complete the missing fields and sumbit again.',
-        AlertSizes.small
-      );
-    } else {
+    // if (unfilledForAlert > 0) {
+    //   addAlert(
+    //     'please complete the missing fields and sumbit again.',
+    //     AlertSizes.small
+    //   );
+    // } else {
       createFSA({
         description: description,
         answersList: answersList.map((target) => target._id),
@@ -497,7 +519,7 @@ const NewExercise: React.FC = () => {
         sonolist: sonolistFiles,
       });
       addAlert('sumbitted.', AlertSizes.small);
-    }
+    // }
   };
 
   return (

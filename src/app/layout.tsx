@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      className={`${nunito.className} dark`}
+      className={`${nunito.className} dark dark:dark-scrollbar`}
       suppressHydrationWarning
     >
       <body

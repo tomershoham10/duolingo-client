@@ -3,18 +3,65 @@ export interface UploadedObjectInfo {
     versionId: string | null;
 }
 
-export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][    ]> => {
+enum Transmissions {
+    PASSIVE = 'passive',
+    ACTIVE = 'active',
+    BOTH = 'both'
+}
+
+enum SonarSystem {
+    DEMON = 'demon',
+    LOFAR = 'lofar'
+}
+
+export interface metadataType {
+    difficultyLevel: number;
+    targetsIds_list: string[];
+    operation: string;
+    source: string;
+    is_in_italy: boolean;
+    transmition: Transmissions;
+    channels_number: number;
+    sonar_syster: SonarSystem;
+    is_backround_vessels: boolean;
+    aux: boolean;
+}
+
+export interface RecordType {
+    name: string;
+    id: string;
+    metadata: metadataType;
+}
+
+export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
     try {
 
         const formData = new FormData();
         if (files instanceof File) {
             // Handle a single File
+            const metadata: metadataType = {
+                difficultyLevel: 8.5,
+                targetsIds_list: ['123a', '1f153'],
+                operation: 'op',
+                source: '4trgdf',
+                is_in_italy: true,
+                transmition: Transmissions.ACTIVE,
+                channels_number: 2,
+                sonar_syster: SonarSystem.LOFAR,
+                is_backround_vessels: false,
+                aux: true,
+            }
             formData.append('file', files);
             formData.append('bucketName', bucketName);
+            formData.append('metadata', JSON.stringify(metadata));
             console.log("formData", formData);
             const uploadRecordResponse = await fetch(
                 'http://localhost:4002/api/files/uploadFile/', {
                 method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: formData,
             })
             if (uploadRecordResponse.ok) {
@@ -52,5 +99,28 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
 
     } catch (error) {
         throw new Error(`no good ${error}`);
+    }
+}
+
+export const getAllRecords = async (): Promise<RecordType[] | null> => {
+    try {
+        const response = await fetch(
+            'http://localhost:4002/api/files/get-files-by-bucket/records', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const files = data.files as RecordType[];
+            // console.log('getAllRecords', files);
+            return files;
+        }
+        return null;
+    }
+    catch (error) {
+        throw new Error(`error getting all records - ${error}`);
     }
 }

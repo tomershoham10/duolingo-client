@@ -99,11 +99,10 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
   return (
     <div className='relative'>
       <div
-        className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${addedStyle} text-md mb-2
-    mt-2 cursor-pointer rounded-2xl border-b-[4px] border-transparent font-extrabold active:translate-y-[2px] active:border-0`}
+        className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${addedStyle} text-md cursor-pointer rounded-2xl border-b-[4px] border-transparent font-extrabold active:translate-y-[2px] active:border-0`}
       >
         <button
-          className={`group flex flex-col items-center justify-start ${buttonColor} w-full rounded-2xl pb-2 pl-3 pr-3 pt-2 ${buttonHoverColor}`}
+          className={`flex flex-row gap-2 items-center justify-center text-center ${buttonColor} w-full rounded-2xl py-2 px-3 ${buttonHoverColor}`}
           disabled={props.isDisabled}
           onClick={() => {
             if (props.onClick) {
@@ -116,9 +115,9 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
           type={props.buttonType}
         >
           {props.icon && (
-            <FontAwesomeIcon className='ml-2 mr-4 h-6 w-6' icon={props.icon} />
+            <FontAwesomeIcon className='text-lg' icon={props.icon} />
           )}
-          {props.label}
+          <p className='flex justify-center items-center'>{props.label}</p>
         </button>
       </div>
     </div>

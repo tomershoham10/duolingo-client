@@ -25,7 +25,7 @@ const InfoBar: React.FC = () => {
   // const [selected, setSelected] = useState<number>();
 
   return (
-    <div className='flex h-full w-[18rem] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 2xl:w-[25rem] 3xl:w-[35rem]'>
+    <div className='flex h-full w-[30%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 3xl:w-[15%]'>
       {pathname.includes('syllabus') ? (
         <div>
           <div>{courseName}</div>
