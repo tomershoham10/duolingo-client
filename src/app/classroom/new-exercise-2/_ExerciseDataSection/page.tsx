@@ -23,6 +23,10 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
+interface ExerciseSectionProps {
+  record: any;
+}
+
 enum FSAFieldsType {
   DESCRIPTION = 'description',
   RELEVANT = 'relevant',
@@ -33,7 +37,8 @@ enum FSAFieldsType {
   SELECTEDLESSON = 'selectedLesson',
 }
 
-const ExerciseDataSection: React.FC = () => {
+const ExerciseDataSection: React.FC<ExerciseSectionProps> = (props) => {
+  console.log(props.record);
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
   const addAlert = useAlertStore.getState().addAlert;

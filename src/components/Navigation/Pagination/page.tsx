@@ -5,6 +5,7 @@ import { useState } from 'react';
 export interface PaginationItems {
   label: string;
   component: React.ReactNode;
+  onNext: (a: any) => void;
 }
 
 interface PaginationProps {
@@ -77,7 +78,10 @@ const Pagination: React.FC<PaginationProps> = (props) => {
               <Button
                 label={'NEXT'}
                 color={Color.BLUE}
-                onClick={() => setSelectedPageNumber(selectedPageNumber + 1)}
+                onClick={() => {
+                  setSelectedPageNumber(selectedPageNumber + 1);
+                  paginationItems[selectedPageNumber].onNext('abc');
+                }}
               />
             )}
           </div>
@@ -85,7 +89,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
             <div className='absolute right-[8rem] w-24'>
               <Button
                 label={'BACK'}
-                color={Color.BLUE}
+                color={Color.WHITE}
                 onClick={() => setSelectedPageNumber(selectedPageNumber - 1)}
               />
             </div>
