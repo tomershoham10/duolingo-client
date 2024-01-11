@@ -44,6 +44,11 @@ const InfoBar: React.FC = () => {
             </div>
           ) : null}
         </div>
+      ) : pathname.includes('new-exercise') ? (
+        
+        <ul className='flex-grow'>
+          <li className='text-xl uppercase'>hello {userName}!</li>
+        </ul>
       ) : (
         <ul className='flex-grow'>
           <li className='text-xl uppercase'>hello {userName}!</li>

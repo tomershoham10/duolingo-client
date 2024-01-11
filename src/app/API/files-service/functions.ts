@@ -15,14 +15,16 @@ enum SonarSystem {
 }
 
 export interface metadataType {
-    difficultyLevel: number;
-    targetsIds_list: string[];
+    sonograms_ids: string[];
+    record_length: number;
+    difficulty_level: number;
+    targets_ids_list: string[];
     operation: string;
     source: string;
     is_in_italy: boolean;
     transmition: Transmissions;
     channels_number: number;
-    sonar_syster: SonarSystem;
+    sonar_system: SonarSystem;
     is_backround_vessels: boolean;
     aux: boolean;
 }
@@ -40,16 +42,18 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
         if (files instanceof File) {
             // Handle a single File
             const metadata: metadataType = {
-                difficultyLevel: 8.5,
-                targetsIds_list: ['123a', '1f153'],
+                difficulty_level: 8.5,
+                targets_ids_list: ['123a', '1f153'],
                 operation: 'op',
                 source: '4trgdf',
                 is_in_italy: true,
                 transmition: Transmissions.ACTIVE,
                 channels_number: 2,
-                sonar_syster: SonarSystem.LOFAR,
+                sonar_system: SonarSystem.LOFAR,
                 is_backround_vessels: false,
                 aux: true,
+                sonograms_ids: ['asfddaf'],
+                record_length: 10
             }
             formData.append('file', files);
             formData.append('bucketName', bucketName);

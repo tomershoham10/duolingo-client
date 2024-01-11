@@ -7,7 +7,7 @@ interface TimeBuffersType {
 }
 
 type CreateExerciseState = {
-    recordIds: string[] | undefined;
+    recordId: string | undefined;
     sonolistIds: string[] | undefined;
     description: string | undefined;
     timeBuffers: TimeBuffersType | undefined;
@@ -17,7 +17,7 @@ type CreateExerciseState = {
 }
 
 type Action = {
-    updateRecordIds: (recordIds: CreateExerciseState['recordIds']) => void;
+    updateRecordId: (recordId: CreateExerciseState['recordId']) => void;
     updateSonolistIds: (sonolistIds: CreateExerciseState['sonolistIds']) => void;
     updateDescription: (description: CreateExerciseState['description']) => void;
     updateTimeBuffers: (timeBuffers: CreateExerciseState['timeBuffers']) => void;
@@ -28,14 +28,14 @@ type Action = {
 
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
     (set) => ({
-        recordIds: undefined,
+        recordId: undefined,
         sonolistIds: undefined,
         description: undefined,
         timeBuffers: undefined,
         relevant: undefined,
         answersList: undefined,
         acceptableAnswers: undefined,
-        updateRecordIds: (recordIds) => set(() => ({ recordIds: recordIds })),
+        updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
         updateSonolistIds: (sonolistIds) => set(() => ({ sonolistIds: sonolistIds })),
         updateDescription: (description) => set(() => ({ description: description })),
         updateTimeBuffers: (timeBuffers) => set(() => ({ timeBuffers: timeBuffers })),

@@ -18,11 +18,11 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      className={`${nunito.className} dark dark:dark-scrollbar`}
+      className={`${nunito.className}`}
       suppressHydrationWarning
     >
       <body
-        className='mx-auto flex dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest'
+        className='mx-auto flex dark:bg-duoGrayDark-darkest  dark:text-duoGrayDark-lightest'
         suppressHydrationWarning={true}
       >
         <Alert />

@@ -177,11 +177,7 @@ input::-webkit-inner-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply rounded-md bg-duoGray-default;
-}
-
-.dark-scrollbar::-webkit-scrollbar-thumb {
-  color: blue;
+  @apply rounded-md bg-duoGray-dark transition duration-200 ease-out hover:bg-duoGray-darker;
 }
 
 @keyframes bounce-tooltip {

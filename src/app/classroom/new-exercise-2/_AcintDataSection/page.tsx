@@ -40,17 +40,9 @@ const AcintDataSection: React.FC = () => {
 
   const recordsHeaders: string[] = [
     'name',
-    'id',
-    'difficultylevel',
+    'difficulty_level',
     'targetsIds_list',
-    'operation',
-    'source',
     'is_in_italy',
-    'transmition',
-    'channels_number',
-    'sonar_system',
-    'is_backround_vessels',
-    'aux',
   ];
 
   const handleFileChange = (files: File | FileList | null) => {
@@ -68,14 +60,12 @@ const AcintDataSection: React.FC = () => {
   };
 
   return (
-    <section className='h-full w-full'>
+    <section className='h-full w-full text-duoGray-darkest'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
       />
-      <span className='my-3 text-2xl font-bold'>
-        Select \ upload record:
-      </span>
+      <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
       <Table
         headers={recordsHeaders}
         data={recordsData.map(({ name, id, metadata }) => ({

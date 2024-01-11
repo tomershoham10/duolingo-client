@@ -43,6 +43,7 @@ const config: Config = {
 
                 'duoBlue': {
                     button: '#27B6F5',
+                    buttonOpacity: '#7DD3F9',
                     buttonBorder: '#1A87BC',
                     buttonHover: '#1FC2FF',
                     lightest: '#DDF4FF',

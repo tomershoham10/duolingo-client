@@ -19,11 +19,12 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   const paginationItems = props.paginationItems;
   return (
     <>
-      <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center'>
+      <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest'>
         <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
           {header}
         </div>
-        <nav className='relative flex h-2 flex-row gap-[10rem] self-center bg-duoBlueDark-darkest 3xl:gap-[25rem]'>
+        <nav className='relative flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
+         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'>
           {paginationItems.map((paginationItem, navIndex) => (
             <div
               key={navIndex}
@@ -35,8 +36,8 @@ const Pagination: React.FC<PaginationProps> = (props) => {
                 <span
                   className={`z-10 flex h-8 w-8 items-center justify-center rounded-full font-extrabold ${
                     navIndex === selectedPageNumber
-                      ? 'dark:bg-duoBlueDark-dark dark:text-duoGrayDark-lightest'
-                      : 'dark:bg-duoBlueDark-darkOpacity dark:text-duoGrayDark-lightestOpacity'
+                      ? 'bg-duoBlue-button text-duoGray-lightest dark:bg-duoBlueDark-dark dark:text-duoGrayDark-lightest'
+                      : 'bg-duoBlue-buttonOpacity text-duoGray-light dark:bg-duoBlueDark-darkOpacity dark:text-duoGrayDark-lightestOpacity'
                   }`}
                 >
                   {navIndex + 1}
@@ -44,8 +45,8 @@ const Pagination: React.FC<PaginationProps> = (props) => {
                 <span
                   className={`font-bold ${
                     navIndex === selectedPageNumber
-                      ? 'dark:text-duoGrayDark-lightest'
-                      : 'dark:text-duoGrayDark-lightestOpacity'
+                      ? 'text-duoGray-darkest dark:text-duoGrayDark-lightest'
+                      : 'text-duoGray-darkText dark:text-duoGrayDark-lightestOpacity'
                   }`}
                 >
                   {paginationItem.label}
