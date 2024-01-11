@@ -5,10 +5,10 @@ import { RecordType } from '@/app/API/files-service/functions';
 
 //*********************************************************************//
 // to import a store value :
-// // const fieldToEdit = useStore(useEditSyllabusStore, (state) => state.fieldToEdit);
+// // const fieldToEdit = useStore(useInfoBarStore, (state) => state.fieldToEdit);
 
 // to import a store function :
-// // const updateFieldToEdit = useEditSyllabusStore.getState().updateFieldToEdit;
+// // const updateFieldToEdit = useInfoBarStore.getState().updateFieldToEdit;
 //*********************************************************************//
 
 

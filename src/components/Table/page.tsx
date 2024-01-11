@@ -7,48 +7,63 @@ type TableProps<T> = {
   headers: string[];
   data: T[];
   isSelectable: boolean;
+  onSelect?: (row: any) => void;
 };
 
 type TableRowProps<T> = {
+  isSelected?: boolean;
+  rowIndex: number;
   item: T;
-  keys: (keyof T)[];
+  keysValues: (keyof T)[];
   isSelectable: boolean;
+  onSelect?: (row: any) => void;
+  selectRow?: (rowIndex: number) => void;
 };
 
-const TableRow = <T,>({ item, keys, isSelectable }: TableRowProps<T>) => {
-  const [selected, setSelected] = useState<boolean>(false);
+const TableRow = <T,>({
+  isSelected,
+  rowIndex,
+  item,
+  keysValues,
+  isSelectable,
+  onSelect,
+  selectRow,
+}: TableRowProps<T>) => {
   return (
     <tr
       className={` font-bold
       ${
         isSelectable
-          ? selected
+          ? isSelected
             ? 'cursor-pointer bg-duoGray-lighter dark:bg-duoBlueDark-darkest'
             : 'cursor-pointer hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest'
           : 'cursor-default hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest'
       }`}
+      onClick={() => {
+        onSelect ? onSelect(item) : null;
+        selectRow ? selectRow(rowIndex) : null;
+      }}
     >
-      {keys.map((key, index) => (
-        <td
-          key={index}
-          className={'h-16 py-2 pr-16'}
-          onClick={() => {
-            isSelectable ? setSelected(true) : null;
-          }}
-        >
-          {String(item[key])}
+      {keysValues.map((keysValue, index) => (
+        <td key={index} className={'h-16 py-2 pr-16'}>
+          {String(item[keysValue])}
         </td>
       ))}
     </tr>
   );
 };
 
-const Table = <T,>({ headers, data, isSelectable }: TableProps<T>) => {
+const Table = <T,>({
+  headers,
+  data,
+  isSelectable,
+  onSelect,
+}: TableProps<T>) => {
   console.log('table - data', data);
   const keys = headers as (keyof T)[];
-
+  const [selectedRow, setSelectedRow] = useState<number>();
   return (
-    <div className='mt-5 flex flex-col max-w-fit rounded-md border-2 border-duoGray-default pb-1 dark:border-duoGrayDark-light'>
+    <div className='mt-5 flex max-w-fit flex-col rounded-md border-2 border-duoGray-default pb-1 dark:border-duoGrayDark-light'>
       <div className='overflow-x-auto'>
         <div className='inline-block max-h-[70vh] overflow-y-auto p-1.5 align-middle'>
           <table className='divide-y-2 divide-duoGray-default rounded-lg dark:divide-duoGrayDark-light'>
@@ -74,13 +89,17 @@ const Table = <T,>({ headers, data, isSelectable }: TableProps<T>) => {
                 ))}
               </tr>
             </thead>
-            <tbody className='divide-y-2 divide-duoGray-lighter text-duoGray-darker dark:text-duoGrayDark-lightest'>
+            <tbody className='divide-y-2 divide-duoGray-lighter text-duoGray-darker dark:divide-duoGrayDark-dark dark:text-duoGrayDark-lightest'>
               {data.map((item, index) => (
                 <TableRow<T>
                   key={index}
+                  rowIndex={index}
+                  isSelected={selectedRow === index}
                   item={item}
-                  keys={keys}
+                  keysValues={keys}
                   isSelectable={isSelectable}
+                  onSelect={onSelect}
+                  selectRow={setSelectedRow}
                 />
               ))}
             </tbody>

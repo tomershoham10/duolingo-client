@@ -19,7 +19,7 @@ import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   fieldToEditType,
-  useEditSyllabusStore,
+  useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
 import {
   UnitType,
@@ -32,11 +32,9 @@ library.add(faXmark);
 
 const AdminEditPopup: React.FC = () => {
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
-  const fieldToEdit = useStore(
-    useEditSyllabusStore,
-    (state) => state.fieldToEdit
-  );
-  const fieldId = useStore(useEditSyllabusStore, (state) => state.fieldId);
+  const fieldToEdit = useInfoBarStore.getState().syllabusFieldToEdit;
+
+  const fieldId = useStore(useInfoBarStore, (state) => state.syllabusFieldId);
   const addAlert = useAlertStore.getState().addAlert;
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 

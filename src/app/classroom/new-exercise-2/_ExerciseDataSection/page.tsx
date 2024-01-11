@@ -22,6 +22,7 @@ import SortableItem from '@/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 interface ExerciseSectionProps {
   record: any;
@@ -38,7 +39,8 @@ enum FSAFieldsType {
 }
 
 const ExerciseDataSection: React.FC<ExerciseSectionProps> = (props) => {
-  console.log(props.record);
+  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+  updateSelectedRecord(undefined);
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
   const addAlert = useAlertStore.getState().addAlert;

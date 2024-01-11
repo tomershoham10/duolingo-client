@@ -65,13 +65,13 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         }}
       >
         {paginationItems.map((paginationItem, pagesIndex) => (
-          <>
+          <section key={pagesIndex}>
             {selectedPageNumber === pagesIndex ? (
-              <section key={pagesIndex} className='mx-auto w-[90%]'>
+              <section className='mx-auto w-[90%]'>
                 {paginationItem.component}
               </section>
             ) : null}
-          </>
+          </section>
         ))}
         <div className='relative flex items-center justify-center py-8'>
           <div className='absolute right-4 w-24'>

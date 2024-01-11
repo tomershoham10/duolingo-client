@@ -14,9 +14,9 @@ enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-export interface metadataType {
-    sonograms_ids: string[];
+export interface RecordMetadataType {
     record_length: number;
+    sonograms_ids: string[];
     difficulty_level: number;
     targets_ids_list: string[];
     operation: string;
@@ -29,10 +29,25 @@ export interface metadataType {
     aux: boolean;
 }
 
+export interface SonogramMetadataType {
+    targets_ids_list: string[];
+    source: string;
+    is_in_italy: boolean;
+    transmition: Transmissions;
+    is_backround_vessels: boolean;
+}
+
+
 export interface RecordType {
     name: string;
     id: string;
-    metadata: metadataType;
+    metadata: RecordMetadataType;
+}
+
+export interface SonogramType {
+    name: string;
+    id: string;
+    metadata: SonogramMetadataType;
 }
 
 export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
@@ -41,15 +56,15 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
         const formData = new FormData();
         if (files instanceof File) {
             // Handle a single File
-            const metadata: metadataType = {
+            const metadata = {
                 difficulty_level: 8.5,
                 targets_ids_list: ['123a', '1f153'],
                 operation: 'op',
                 source: '4trgdf',
                 is_in_italy: true,
-                transmition: Transmissions.ACTIVE,
+                transmition: 'active',
                 channels_number: 2,
-                sonar_system: SonarSystem.LOFAR,
+                sonar_system: 'lofar',
                 is_backround_vessels: false,
                 aux: true,
                 sonograms_ids: ['asfddaf'],
@@ -62,10 +77,6 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
             const uploadRecordResponse = await fetch(
                 'http://localhost:4002/api/files/uploadFile/', {
                 method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: formData,
             })
             if (uploadRecordResponse.ok) {
@@ -121,6 +132,29 @@ export const getAllRecords = async (): Promise<RecordType[] | null> => {
             const files = data.files as RecordType[];
             // console.log('getAllRecords', files);
             return files;
+        }
+        return null;
+    }
+    catch (error) {
+        throw new Error(`error getting all records - ${error}`);
+    }
+}
+
+export const getSonolistByRecordId = async (recordId: string): Promise<SonogramType[] | null> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/getSonolistByRecordId/${recordId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const sonolist = data.sonolist as SonogramType[];
+            // console.log('getAllRecords', files);
+            return sonolist;
         }
         return null;
     }

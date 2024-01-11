@@ -1,16 +1,22 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
+
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+
 import { RecordType, getAllRecords } from '@/app/API/files-service/functions';
 import Table from '@/components/Table/page';
 import Upload, { UploadRef } from '@/components/Upload/page';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
 import Button, { Color } from '@/components/Button/page';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
+  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+
   const [recordsData, setRecordsData] = useState<RecordType[]>([]);
   const [recordFile, setRecordFile] = useState<File>();
   const [recordLength, setRecordLength] = useState<number>(0);
@@ -41,7 +47,7 @@ const AcintDataSection: React.FC = () => {
   const recordsHeaders: string[] = [
     'name',
     'difficulty_level',
-    'targetsIds_list',
+    'targets_ids_list',
     'is_in_italy',
   ];
 
@@ -59,6 +65,12 @@ const AcintDataSection: React.FC = () => {
     time ? setRecordLength(time) : null;
   };
 
+  const handleSelectTableRow = (item: any) => {
+    const record = recordsData.filter((record) => record.id === item.id)[0];
+    console.log('handleSelectTableRow', record);
+    updateSelectedRecord(record);
+  };
+
   return (
     <section className='h-full w-full text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
@@ -74,6 +86,7 @@ const AcintDataSection: React.FC = () => {
           ...metadata,
         }))}
         isSelectable={true}
+        onSelect={handleSelectTableRow}
       />
 
       <div className='relative my-3 flex w-full flex-row items-start justify-between gap-5 3xl:w-[55%]'>
