@@ -60,7 +60,7 @@ const AcintDataSection: React.FC = () => {
   };
 
   return (
-    <section className='h-full w-full text-duoGray-darkest'>
+    <section className='h-full w-full text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}

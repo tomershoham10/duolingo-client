@@ -1,4 +1,5 @@
 "use client"
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
 
 interface CoordinatesType {
@@ -30,3 +31,7 @@ export const useContextMenuStore = create<PopupState & Action>((set) => ({
     setCoordinates: (coordinates: CoordinatesType) => set(() => ({ coordinates: coordinates })),
     setContent: (content: any) => set(() => ({ content: content }))
 }));
+
+if (process.env.NODE_ENV === 'development') {
+    mountStoreDevtool('useContextMenuStore', useContextMenuStore);
+}

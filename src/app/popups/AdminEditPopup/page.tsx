@@ -20,7 +20,7 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   fieldToEditType,
   useEditSyllabusStore,
-} from '@/app/store/stores/useEditSyllabus';
+} from '@/app/store/stores/useInfoBarStore';
 import {
   UnitType,
   getUnitById,

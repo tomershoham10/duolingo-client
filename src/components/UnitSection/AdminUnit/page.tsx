@@ -34,7 +34,7 @@ import Button, { Color } from '../../Button/page';
 import {
   fieldToEditType,
   useEditSyllabusStore,
-} from '@/app/store/stores/useEditSyllabus';
+} from '@/app/store/stores/useInfoBarStore';
 import { usePathname } from 'next/navigation';
 import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
 

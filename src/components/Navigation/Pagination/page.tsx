@@ -19,12 +19,14 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   const paginationItems = props.paginationItems;
   return (
     <>
-      <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest'>
+      <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
         <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
           {header}
         </div>
-        <nav className='relative flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
-         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'>
+        <nav
+          className='relative flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
+         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'
+        >
           {paginationItems.map((paginationItem, navIndex) => (
             <div
               key={navIndex}

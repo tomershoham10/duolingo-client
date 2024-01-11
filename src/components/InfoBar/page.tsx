@@ -7,7 +7,7 @@ import useStore from '@/app/store/useStore';
 import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { useEditSyllabusStore } from '@/app/store/stores/useEditSyllabus';
+import { useEditSyllabusStore } from '@/app/store/stores/useInfoBarStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 const InfoBar: React.FC = () => {
@@ -45,7 +45,7 @@ const InfoBar: React.FC = () => {
           ) : null}
         </div>
       ) : pathname.includes('new-exercise') ? (
-        
+
         <ul className='flex-grow'>
           <li className='text-xl uppercase'>hello {userName}!</li>
         </ul>
