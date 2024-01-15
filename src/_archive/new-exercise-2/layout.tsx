@@ -1,6 +1,6 @@
 'use client';
-import PaginationHeader from '@/components/Navigation/Pagination/PaginationHeader/page';
-import PaginationFooter from '@/components/Navigation/Pagination/PaginationFooter/page';
+import PaginationHeader from '@/_archive/Pagination/PaginationHeader/page';
+import PaginationFooter from '@/_archive/Pagination/PaginationFooter/page';
 // import { PaginationItems } from '@/components/Navigation/Pagination/page';
 
 export interface PaginationItems {

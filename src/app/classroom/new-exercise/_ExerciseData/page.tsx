@@ -39,8 +39,6 @@ enum FSAFieldsType {
 }
 
 const ExerciseDataSection: React.FC = () => {
-  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
-  updateSelectedRecord(undefined);
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
   const addAlert = useAlertStore.getState().addAlert;

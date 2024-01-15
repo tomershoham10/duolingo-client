@@ -27,6 +27,10 @@ const InfoBar: React.FC = () => {
     (state) => state.selectedRecord
   );
 
+  useEffect(() => {
+    console.log('selectedRecord', selectedRecord);
+  }, [selectedRecord]);
+
   return (
     <div className='flex h-full w-[35%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 3xl:w-[15%]'>
       {pathname.includes('syllabus') ? (

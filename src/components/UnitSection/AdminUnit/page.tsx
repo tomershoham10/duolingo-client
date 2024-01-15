@@ -33,7 +33,7 @@ import Link from 'next/link';
 import Button, { Color } from '../../Button/page';
 import {
   fieldToEditType,
-  useEditSyllabusStore,
+  useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
 import { usePathname } from 'next/navigation';
 import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
@@ -45,8 +45,8 @@ const AdminUnit: React.FC = () => {
 
   const [course, setCourse] = useState<CoursesType | undefined>();
 
-  const updateFieldToEdit = useEditSyllabusStore.getState().updateFieldToEdit;
-  const updateFieldId = useEditSyllabusStore.getState().updateFieldId;
+  const updateFieldToEdit = useInfoBarStore.getState().updateFieldToEdit;
+  const updateFieldId = useInfoBarStore.getState().updateFieldId;
 
   const [units, setUnits] = useState<UnitType[]>([]);
   const [levels, setLevels] = useState<

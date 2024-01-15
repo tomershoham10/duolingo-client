@@ -18,9 +18,9 @@ library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
-  const updateRecordId = useCreateExerciseStore.getState().updateRecordId;
+  const updateRecordName = useCreateExerciseStore.getState().updateRecordName;
 
-  const recordId = useStore(useCreateExerciseStore, (state) => state.recordId);
+  const recordName = useStore(useCreateExerciseStore, (state) => state.recordName);
   const selectedRecord = useStore(
     useInfoBarStore,
     (state) => state.selectedRecord
@@ -81,18 +81,27 @@ const AcintDataSection: React.FC = () => {
   };
 
   useEffect(() => {
-    if (recordId) {
+    if (recordName) {
       updateSelectedRecord(
-        recordsData[recordsData.map((record) => record.id).indexOf(recordId)]
+        recordsData[recordsData.map((record) => record.id).indexOf(recordName)]
       );
     }
-  }, [recordId, recordsData]);
+  }, [recordName, recordsData]);
 
   useEffect(() => {
     if (selectedRecord) {
-      updateRecordId(selectedRecord.id);
+      updateRecordName(selectedRecord.id);
     }
   }, [selectedRecord]);
+
+  useEffect(() => {
+    !!recordName
+      ? console.log(
+          'check1',
+          recordsData.map((record) => record.id).indexOf(recordName)
+        )
+      : null;
+  }, [recordName]);
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
@@ -110,8 +119,8 @@ const AcintDataSection: React.FC = () => {
         }))}
         isSelectable={true}
         selectedRowIndex={
-          recordId
-            ? recordsData.map((record) => record.id).indexOf(recordId)
+          recordName
+            ? recordsData.map((record) => record.id).indexOf(recordName)
             : undefined
         }
         onSelect={handleSelectTableRow}

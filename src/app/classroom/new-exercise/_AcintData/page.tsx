@@ -18,9 +18,17 @@ library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
-  const updateRecordId = useCreateExerciseStore.getState().updateRecordId;
 
-  const recordId = useStore(useCreateExerciseStore, (state) => state.recordId);
+  const updateExerciseToSubmit = {
+    updateRecordName: useCreateExerciseStore.getState().updateRecordName,
+    updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
+    updateAnswersList: useCreateExerciseStore.getState().updateAnswersList,
+  };
+
+  const recordName = useStore(
+    useCreateExerciseStore,
+    (state) => state.recordName
+  );
   const selectedRecord = useStore(
     useInfoBarStore,
     (state) => state.selectedRecord
@@ -75,33 +83,30 @@ const AcintDataSection: React.FC = () => {
   };
 
   const handleSelectTableRow = (item: any) => {
-    const record = recordsData.filter((record) => record.id === item.id)[0];
+    const record = recordsData.filter((record) => record.name === item.name)[0];
     console.log('handleSelectTableRow', record);
     updateSelectedRecord(record);
   };
 
   useEffect(() => {
-    if (recordId) {
+    if (recordName) {
       updateSelectedRecord(
-        recordsData[recordsData.map((record) => record.id).indexOf(recordId)]
+        recordsData[
+          recordsData.map((record) => record.name).indexOf(recordName)
+        ]
       );
     }
-  }, [recordId, recordsData]);
+  }, [recordName, recordsData]);
 
   useEffect(() => {
     if (selectedRecord) {
-      updateRecordId(selectedRecord.id);
+      updateExerciseToSubmit.updateRecordName(selectedRecord.name);
+      updateExerciseToSubmit.updateSonolistFiles(
+        selectedRecord.metadata.sonograms_ids
+      );
+      updateExerciseToSubmit.updateAnswersList(selectedRecord.metadata.targets_ids_list);
     }
   }, [selectedRecord]);
-
-  useEffect(() => {
-    !!recordId
-      ? console.log(
-          'check1',
-          recordsData.map((record) => record.id).indexOf(recordId)
-        )
-      : null;
-  }, [recordId]);
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
@@ -119,8 +124,8 @@ const AcintDataSection: React.FC = () => {
         }))}
         isSelectable={true}
         selectedRowIndex={
-          recordId
-            ? recordsData.map((record) => record.id).indexOf(recordId)
+          recordName
+            ? recordsData.map((record) => record.name).indexOf(recordName)
             : undefined
         }
         onSelect={handleSelectTableRow}

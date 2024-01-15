@@ -1,12 +1,12 @@
 'use client';
-import { PaginationItems } from '@/components/Navigation/Pagination/page';
+import { PaginationItems } from '@/_archive/Pagination/page';
 import AcintDataSection from './acint-data/page';
 import ExerciseDataSection from './exercise-data/page';
 import { useStore } from 'zustand';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 
 const NewExercise: React.FC = () => {
-  const recordId = useStore(useCreateExerciseStore, (state) => state.recordId);
+  const recordName = useStore(useCreateExerciseStore, (state) => state.recordName);
 
 
   return (

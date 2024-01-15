@@ -54,9 +54,7 @@ const Table = <T,>({
 }: TableProps<T>) => {
   const keys = headers as (keyof T)[];
   //   const [selectedRow, setSelectedRow] = useState<number>();
-  useEffect(() => {
-    console.log('table check!', 0 !== undefined);
-  }, [selectedRowIndex]);
+  useEffect(() => {}, [selectedRowIndex]);
   return (
     <div className='mt-5 flex max-w-fit flex-col rounded-md border-2 border-duoGray-default pb-1 dark:border-duoGrayDark-light'>
       <div className='overflow-x-auto'>

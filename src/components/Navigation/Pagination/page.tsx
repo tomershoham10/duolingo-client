@@ -1,110 +1,106 @@
 'use client';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button, { Color } from '@/components/Button/page';
-import { useState, useEffect } from 'react';
-
-export interface PaginationItems {
-  label: string;
-  link: string;
-  isDisabled: boolean;
-  onNext: (a: any) => void;
-}
+import { useState } from 'react';
 
 interface PaginationProps {
   header: string;
-  paginationItems: PaginationItems[];
+  components: Record<string, React.FC>;
+  onNext: Record<string, () => boolean>;
 }
 
-const Pagination: React.FC<PaginationProps> = (props) => {
-  const [selectedPageNumber, setSelectedPageNumber] = useState<number>(0);
-  //   const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>();
-  const header = props.header;
-  const paginationItems = props.paginationItems;
+const Pagination2: React.FC<PaginationProps> = (props) => {
+  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const componentsNames = Object.keys(props.components);
+  const Component = Object.values(props.components)[currentPage];
 
-  const selectedPage = paginationItems[selectedPageNumber];
-  const selectedComponent = selectedPage ? selectedPage.link : undefined;
+  const handleNextPage = () => {
+    const nextFunc = props.onNext[componentsNames[currentPage]];
+    const canNavigate = nextFunc();
+    if (canNavigate) {
+      setCurrentPage((prev) => prev + 1);
+      updateSelectedRecord(undefined);
+    }
+  };
 
-  //   useEffect(() => {
-  //     paginationItems.map((paginationItem, pagesIndex) =>
-  //       selectedPageNumber === pagesIndex
-  //         ? setSelectedComponent(paginationItem.component)
-  //         : null
-  //     );
-  //   }, [paginationItems, selectedPageNumber]);
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
+  };
+
   return (
-    <>
-      <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
-        <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
-          {header}
-        </div>
-        <nav
-          className='relative flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
-         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'
-        >
-          {paginationItems.map((paginationItem, navIndex) => (
-            <div
-              key={navIndex}
-              className=' flex flex-col items-center justify-center'
-            >
-              <div
-                className="absolute -top-[11px] flex flex-col items-center justify-center"
-              >
-                <span
-                  className={`z-10 flex h-8 w-8 items-center justify-center rounded-full font-extrabold ${
-                    navIndex === selectedPageNumber
-                      ? 'bg-duoBlue-button text-duoGray-lightest dark:bg-duoBlueDark-dark dark:text-duoGrayDark-lightest'
-                      : 'bg-duoBlue-buttonOpacity text-duoGray-light dark:bg-duoBlueDark-darkOpacity dark:text-duoGrayDark-lightestOpacity'
-                  }`}
-                >
-                  {navIndex + 1}
-                </span>
-                <span
-                  className={`font-bold ${
-                    navIndex === selectedPageNumber
-                      ? 'text-duoGray-darkest dark:text-duoGrayDark-lightest'
-                      : 'text-duoGray-darkText dark:text-duoGrayDark-lightestOpacity'
-                  }`}
-                >
-                  {paginationItem.label}
-                </span>
-              </div>
-            </div>
-          ))}
-        </nav>
-      </div>
-      <section
-        className='mt-44 flex w-full flex-col justify-between'
-        style={{
-          minHeight: 'calc(100vh - 11rem)',
-        }}
-      >
-        {selectedComponent}
-        <div className='relative flex items-center justify-center py-8'>
-          <div className='absolute right-4 w-24'>
-            {selectedPageNumber === paginationItems.length - 1 ? (
-              <Button label={'SUBMIT'} color={Color.BLUE} />
-            ) : (
-              <Button
-                label={'NEXT'}
-                color={Color.BLUE}
-                isDisabled={paginationItems[selectedPageNumber].isDisabled}
-                onClick={() => {
-                  setSelectedPageNumber(selectedPageNumber + 1);
-                }}
-              />
-            )}
+    <section
+      className='grid h-full w-full grid-flow-col overflow-y-auto'
+      style={{ gridTemplateRows: '180px 1fr 100px' }}
+    >
+      <div className='relative w-full flex-col overflow-auto '>
+        <div className='absolute inset-x-0 top-0 mx-8 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
+          <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
+            {props.header}
           </div>
-          {selectedPageNumber > 0 ? (
-            <div className='absolute right-[8rem] w-24'>
-              <Button
-                label={'BACK'}
-                color={Color.WHITE}
-                onClick={() => setSelectedPageNumber(selectedPageNumber - 1)}
-              />
-            </div>
-          ) : null}
+          <nav
+            className='flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
+         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'
+          >
+            {componentsNames.map((componentLabel, navIndex) => (
+              <div
+                key={navIndex}
+                className=' flex flex-col items-center justify-center'
+              >
+                <div className='absolute -bottom-[2.3rem] flex flex-col items-center justify-center'>
+                  <span
+                    className={`z-10 flex h-8 w-8 items-center justify-center rounded-full font-extrabold ${
+                      navIndex === currentPage
+                        ? 'bg-duoBlue-button text-duoGray-lightest dark:bg-duoBlueDark-dark dark:text-duoGrayDark-lightest'
+                        : 'bg-duoBlue-buttonOpacity text-duoGray-light dark:bg-duoBlueDark-darkOpacity dark:text-duoGrayDark-lightestOpacity'
+                    }`}
+                  >
+                    {navIndex + 1}
+                  </span>
+                  <span
+                    className={`font-bold ${
+                      navIndex === currentPage
+                        ? 'text-duoGray-darkest dark:text-duoGrayDark-lightest'
+                        : 'text-duoGray-darkText dark:text-duoGrayDark-lightestOpacity'
+                    }`}
+                  >
+                    {componentLabel}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </nav>
         </div>
-      </section>
-    </>
+      </div>
+      <Component />
+
+      <div className='relative w-full'>
+        {currentPage === Object.keys(props.components).length - 1 ? (
+          <div className='absolute inset-y-1/3 right-[1rem] w-24'>
+            <Button label={'SUBMIT'} color={Color.BLUE} />
+          </div>
+        ) : (
+          <div className='absolute inset-y-1/3 right-[1rem] w-24'>
+            <Button
+              label={'NEXT'}
+              color={Color.BLUE}
+              // isDisabled={paginationItems[selectedPageNumber].isDisabled}
+              onClick={handleNextPage}
+            />
+          </div>
+        )}
+        {currentPage > 0 ? (
+          <div className='absolute inset-y-1/3 right-[8rem] w-24'>
+            <Button
+              label={'BACK'}
+              color={Color.WHITE}
+              onClick={handlePrevPage}
+            />
+          </div>
+        ) : null}
+      </div>
+    </section>
   );
 };
-export default Pagination;
+
+export default Pagination2;
