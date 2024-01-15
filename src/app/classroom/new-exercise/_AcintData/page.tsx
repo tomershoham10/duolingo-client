@@ -96,7 +96,8 @@ const AcintDataSection: React.FC = () => {
         ]
       );
     }
-  }, [recordName, recordsData, updateSelectedRecord]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recordName, recordsData]);
 
   useEffect(() => {
     if (selectedRecord) {
@@ -106,7 +107,8 @@ const AcintDataSection: React.FC = () => {
       );
       updateExerciseToSubmit.updateAnswersList(selectedRecord.metadata.targets_ids_list);
     }
-  }, [selectedRecord, updateExerciseToSubmit]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRecord]);
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
