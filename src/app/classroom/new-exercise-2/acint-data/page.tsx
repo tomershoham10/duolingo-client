@@ -11,11 +11,20 @@ import Table from '@/components/Table/page';
 import Upload, { UploadRef } from '@/components/Upload/page';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
 import Button, { Color } from '@/components/Button/page';
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
+import { useStore } from 'zustand';
 
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+  const updateRecordId = useCreateExerciseStore.getState().updateRecordId;
+
+  const recordId = useStore(useCreateExerciseStore, (state) => state.recordId);
+  const selectedRecord = useStore(
+    useInfoBarStore,
+    (state) => state.selectedRecord
+  );
 
   const [recordsData, setRecordsData] = useState<RecordType[]>([]);
   const [recordFile, setRecordFile] = useState<File>();
@@ -71,8 +80,31 @@ const AcintDataSection: React.FC = () => {
     updateSelectedRecord(record);
   };
 
+  useEffect(() => {
+    if (recordId) {
+      updateSelectedRecord(
+        recordsData[recordsData.map((record) => record.id).indexOf(recordId)]
+      );
+    }
+  }, [recordId, recordsData]);
+
+  useEffect(() => {
+    if (selectedRecord) {
+      updateRecordId(selectedRecord.id);
+    }
+  }, [selectedRecord]);
+
+  useEffect(() => {
+    !!recordId
+      ? console.log(
+          'check1',
+          recordsData.map((record) => record.id).indexOf(recordId)
+        )
+      : null;
+  }, [recordId]);
+
   return (
-    <section className='h-full w-full text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+    <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
@@ -86,6 +118,11 @@ const AcintDataSection: React.FC = () => {
           ...metadata,
         }))}
         isSelectable={true}
+        selectedRowIndex={
+          recordId
+            ? recordsData.map((record) => record.id).indexOf(recordId)
+            : undefined
+        }
         onSelect={handleSelectTableRow}
       />
 

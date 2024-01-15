@@ -9,6 +9,8 @@ import { usePathname } from 'next/navigation';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { FaRegImages } from 'react-icons/fa';
+import Link from 'next/link';
 
 const InfoBar: React.FC = () => {
   const pathname = usePathname();
@@ -24,11 +26,6 @@ const InfoBar: React.FC = () => {
     useInfoBarStore,
     (state) => state.selectedRecord
   );
-
-  useEffect(() => {
-    console.log('pathname', pathname);
-    console.log('selectedRecord111', selectedRecord);
-  }, [selectedRecord, pathname]);
 
   return (
     <div className='flex h-full w-[35%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 3xl:w-[15%]'>
@@ -66,16 +63,42 @@ const InfoBar: React.FC = () => {
                   (meta, metaIndex) => (
                     <li key={metaIndex} className='my-1'>
                       {Object.keys(selectedRecord.metadata)[metaIndex] !==
-                      'content-type'
+                        'content-type' &&
+                      Object.keys(selectedRecord.metadata)[metaIndex] !==
+                        'sonograms_ids'
                         ? `${Object.keys(selectedRecord.metadata)[metaIndex]}: `
                         : null}
                       {Object.keys(selectedRecord.metadata)[metaIndex] !==
-                      'content-type'
+                        'content-type' &&
+                      Object.keys(selectedRecord.metadata)[metaIndex] !==
+                        'sonograms_ids'
                         ? meta
                         : null}
                     </li>
                   )
                 )}
+                <li>
+                  {selectedRecord.metadata.sonograms_ids &&
+                  selectedRecord.metadata.sonograms_ids.length > 0 ? (
+                    <Link
+                      className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 hover:text-duoBlue-default
+                       dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
+                      href={`${`/sonolist/${selectedRecord.name}`}`}
+                      target='_blank'
+                    >
+                      <FaRegImages />
+                      sonolist
+                    </Link>
+                  ) : (
+                    <span
+                      className='flex w-fit cursor-default flex-row items-center justify-start gap-2
+                       opacity-60 dark:text-duoBlueDark-text'
+                    >
+                      <FaRegImages />
+                      sonolist
+                    </span>
+                  )}
+                </li>
               </ul>
             </div>
           ) : null}

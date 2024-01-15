@@ -1,13 +1,14 @@
 'use client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type TableProps<T> = {
   headers: string[];
   data: T[];
   isSelectable: boolean;
   onSelect?: (row: any) => void;
+  selectedRowIndex?: number;
 };
 
 type TableRowProps<T> = {
@@ -17,36 +18,27 @@ type TableRowProps<T> = {
   keysValues: (keyof T)[];
   isSelectable: boolean;
   onSelect?: (row: any) => void;
-  selectRow?: (rowIndex: number) => void;
+  //   selectRowFunc?: (rowIndex: number) => void;
 };
 
-const TableRow = <T,>({
-  isSelected,
-  rowIndex,
-  item,
-  keysValues,
-  isSelectable,
-  onSelect,
-  selectRow,
-}: TableRowProps<T>) => {
+const TableRow = <T,>(props: TableRowProps<T>) => {
   return (
     <tr
       className={` font-bold
       ${
-        isSelectable
-          ? isSelected
+        props.isSelectable
+          ? props.isSelected
             ? 'cursor-pointer bg-duoGray-lighter dark:bg-duoBlueDark-darkest'
             : 'cursor-pointer hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest'
           : 'cursor-default hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest'
       }`}
       onClick={() => {
-        onSelect ? onSelect(item) : null;
-        selectRow ? selectRow(rowIndex) : null;
+        props.onSelect ? props.onSelect(props.item) : null;
       }}
     >
-      {keysValues.map((keysValue, index) => (
+      {props.keysValues.map((keysValue, index) => (
         <td key={index} className={'h-16 py-2 pr-16'}>
-          {String(item[keysValue])}
+          {String(props.item[keysValue])}
         </td>
       ))}
     </tr>
@@ -58,10 +50,13 @@ const Table = <T,>({
   data,
   isSelectable,
   onSelect,
+  selectedRowIndex,
 }: TableProps<T>) => {
-  console.log('table - data', data);
   const keys = headers as (keyof T)[];
-  const [selectedRow, setSelectedRow] = useState<number>();
+  //   const [selectedRow, setSelectedRow] = useState<number>();
+  useEffect(() => {
+    console.log('table check!', 0 !== undefined);
+  }, [selectedRowIndex]);
   return (
     <div className='mt-5 flex max-w-fit flex-col rounded-md border-2 border-duoGray-default pb-1 dark:border-duoGrayDark-light'>
       <div className='overflow-x-auto'>
@@ -94,12 +89,16 @@ const Table = <T,>({
                 <TableRow<T>
                   key={index}
                   rowIndex={index}
-                  isSelected={selectedRow === index}
+                  isSelected={
+                    selectedRowIndex !== undefined
+                      ? selectedRowIndex === index
+                      : false
+                  }
                   item={item}
                   keysValues={keys}
                   isSelectable={isSelectable}
                   onSelect={onSelect}
-                  selectRow={setSelectedRow}
+                  //   selectRowFunc={setSelectedRow}
                 />
               ))}
             </tbody>

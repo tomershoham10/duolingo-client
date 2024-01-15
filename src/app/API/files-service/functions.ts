@@ -140,6 +140,30 @@ export const getAllRecords = async (): Promise<RecordType[] | null> => {
     }
 }
 
+export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
+    try {
+        const response = await fetch(
+            'http://localhost:4002/api/files/get-files-by-bucket/sonograms', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const files = data.files as RecordType[];
+            // console.log('getAllRecords', files);
+            return files;
+        }
+        return null;
+    }
+    catch (error) {
+        throw new Error(`error getting all records - ${error}`);
+    }
+
+}
+
 export const getSonolistByRecordId = async (recordId: string): Promise<SonogramType[] | null> => {
     try {
         const response = await fetch(

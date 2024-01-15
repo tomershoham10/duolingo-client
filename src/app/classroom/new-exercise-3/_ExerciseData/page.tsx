@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import { useStore } from 'zustand';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -38,7 +38,7 @@ enum FSAFieldsType {
   SELECTEDLESSON = 'selectedLesson',
 }
 
-const ExerciseDataSection: React.FC<ExerciseSectionProps> = (props) => {
+const ExerciseDataSection: React.FC = () => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
   updateSelectedRecord(undefined);
   const targetsList = useStore(useTargetStore, (state) => state.targets);
@@ -238,7 +238,7 @@ const ExerciseDataSection: React.FC<ExerciseSectionProps> = (props) => {
   };
 
   return (
-    <div className='flex h-full w-full flex-col p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+    <div className='mx-auto flex h-full w-[90%] flex-col p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <div className='mx-auto w-full'>
         <div>
           <span className='my-3 text-2xl font-bold'>Description:</span>

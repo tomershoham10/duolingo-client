@@ -1,10 +1,11 @@
 'use client';
 import Button, { Color } from '@/components/Button/page';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface PaginationItems {
   label: string;
-  component: React.ReactNode;
+  link: string;
+  isDisabled: boolean;
   onNext: (a: any) => void;
 }
 
@@ -15,8 +16,20 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = (props) => {
   const [selectedPageNumber, setSelectedPageNumber] = useState<number>(0);
+  //   const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>();
   const header = props.header;
   const paginationItems = props.paginationItems;
+
+  const selectedPage = paginationItems[selectedPageNumber];
+  const selectedComponent = selectedPage ? selectedPage.link : undefined;
+
+  //   useEffect(() => {
+  //     paginationItems.map((paginationItem, pagesIndex) =>
+  //       selectedPageNumber === pagesIndex
+  //         ? setSelectedComponent(paginationItem.component)
+  //         : null
+  //     );
+  //   }, [paginationItems, selectedPageNumber]);
   return (
     <>
       <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
@@ -33,7 +46,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
               className=' flex flex-col items-center justify-center'
             >
               <div
-                className={`absolute -top-[11px] flex flex-col items-center justify-center`}
+                className="absolute -top-[11px] flex flex-col items-center justify-center"
               >
                 <span
                   className={`z-10 flex h-8 w-8 items-center justify-center rounded-full font-extrabold ${
@@ -64,15 +77,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           minHeight: 'calc(100vh - 11rem)',
         }}
       >
-        {paginationItems.map((paginationItem, pagesIndex) => (
-          <section key={pagesIndex}>
-            {selectedPageNumber === pagesIndex ? (
-              <section className='mx-auto w-[90%]'>
-                {paginationItem.component}
-              </section>
-            ) : null}
-          </section>
-        ))}
+        {selectedComponent}
         <div className='relative flex items-center justify-center py-8'>
           <div className='absolute right-4 w-24'>
             {selectedPageNumber === paginationItems.length - 1 ? (
@@ -81,9 +86,9 @@ const Pagination: React.FC<PaginationProps> = (props) => {
               <Button
                 label={'NEXT'}
                 color={Color.BLUE}
+                isDisabled={paginationItems[selectedPageNumber].isDisabled}
                 onClick={() => {
                   setSelectedPageNumber(selectedPageNumber + 1);
-                  paginationItems[selectedPageNumber].onNext('abc');
                 }}
               />
             )}

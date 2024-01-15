@@ -1,34 +1,21 @@
 'use client';
-import Pagination, {
-  PaginationItems,
-} from '@/components/Navigation/Pagination/page';
-import AcintDataSection from './_AcintDataSection/page';
-import ExerciseDataSection from './_ExerciseDataSection/page';
+import { PaginationItems } from '@/components/Navigation/Pagination/page';
+import AcintDataSection from './acint-data/page';
+import ExerciseDataSection from './exercise-data/page';
+import { useStore } from 'zustand';
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 
 const NewExercise: React.FC = () => {
-  const pageContent: PaginationItems[] = [
-    {
-      label: 'records',
-      component: <AcintDataSection />,
-      onNext: () => console.log('Next for records'),
-    },
-    {
-      label: 'exercise data',
-      component: <ExerciseDataSection record={'record'}  />,
-      onNext: (a) => console.log(a),
-    },
-    {
-      label: 'preview',
-      component: <AcintDataSection />,
-      onNext: () => console.log('Next for preview'),
-    },
-  ];
+  const recordId = useStore(useCreateExerciseStore, (state) => state.recordId);
+
+
   return (
     <div className='relative mx-4  h-full w-full  flex-col overflow-auto'>
-      <Pagination
+      {/* <Pagination
         header={'create new exercise'}
         paginationItems={pageContent}
-      />
+      /> */}
+      try
     </div>
   );
 };

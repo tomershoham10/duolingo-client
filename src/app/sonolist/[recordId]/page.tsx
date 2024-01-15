@@ -1,6 +1,6 @@
 import {
   getSonolistByRecordId,
-  getAllRecords,
+  getAllSonograms,
 } from '@/app/API/files-service/functions';
 import Sonograms from './_sonolist';
 
@@ -13,8 +13,8 @@ interface SonolistProps {
 }
 
 const Sonolist = async ({ params }: { params: { recordId: string } }) => {
-  const sonolist = await getAllRecords();
-  console.log('sonolist', sonolist);
+  const sonolist = await getAllSonograms();
+//   console.log('sonolist', sonolist);
   return <Sonograms data={sonolist} />;
 };
 export default Sonolist;
