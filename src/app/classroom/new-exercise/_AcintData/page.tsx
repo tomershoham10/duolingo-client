@@ -96,7 +96,7 @@ const AcintDataSection: React.FC = () => {
         ]
       );
     }
-  }, [recordName, recordsData]);
+  }, [recordName, recordsData, updateSelectedRecord]);
 
   useEffect(() => {
     if (selectedRecord) {
@@ -106,7 +106,7 @@ const AcintDataSection: React.FC = () => {
       );
       updateExerciseToSubmit.updateAnswersList(selectedRecord.metadata.targets_ids_list);
     }
-  }, [selectedRecord]);
+  }, [selectedRecord, updateExerciseToSubmit]);
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
