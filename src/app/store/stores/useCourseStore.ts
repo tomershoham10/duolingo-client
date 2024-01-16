@@ -44,5 +44,3 @@ if (typeof window !== 'undefined' && localStorage) {
 if (process.env.NODE_ENV === 'development') {
     mountStoreDevtool('CourseStore', useCourseStore);
 }
-
-

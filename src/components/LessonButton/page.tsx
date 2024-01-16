@@ -6,20 +6,6 @@ import { faLock, faStar, faCheck } from '@fortawesome/free-solid-svg-icons';
 import CircleGenerator from './CircleGenerator/page';
 library.add(faLock, faStar, faCheck);
 
-export enum Status {
-  DONE = 'done',
-  PROGRESS = 'progress',
-  LOCKED = 'locked',
-}
-
-interface LessonButtonProps {
-  status: Status;
-  numberOfTotalLessons?: number;
-  numberOfLessonsMade?: number;
-  onClick?: () => void;
-  buttonRef?: React.RefObject<HTMLButtonElement>;
-}
-
 const LessonButton: React.FC<LessonButtonProps> = (
   props: LessonButtonProps
 ) => {

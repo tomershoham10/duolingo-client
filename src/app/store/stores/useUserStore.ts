@@ -10,16 +10,6 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 // // const updateUserRole = useUserStore.getState().updateUserRole;
 //*********************************************************************//
 
-
-export enum TypesOfUser {
-    LOGGEDOUT = "loggedOut",
-    ADMIN = "admin",
-    SEARIDER = "searider",
-    SENIOR = "senior",
-    TEACHER = "teacher",
-    CREW = "crew",
-}
-
 type UserState = {
     userName: string | undefined;
     userId: string | undefined;

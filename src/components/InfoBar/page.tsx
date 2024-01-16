@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import useStore from '@/app/store/useStore';
-import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
+import { useUserStore } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FaRegImages } from 'react-icons/fa';
 import Link from 'next/link';
 

@@ -9,7 +9,6 @@ import {
   faRightToBracket,
   faFolderPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import Button, { Color } from '../../Button/page';
 
 import Link from 'next/link';
 import useStore from '@/app/store/useStore';
@@ -26,26 +25,26 @@ const StudentSideBar: React.FC = () => {
   const userRole = useStore(useUserStore, (state) => state.userRole);
   const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
 
-//   const courseListStore = useStore(
-//     useCourseStore,
-//     (state) => state.coursesList
-//   );
-//   const updateCoursesList = useCourseStore.getState().updateCoursesList;
+  //   const courseListStore = useStore(
+  //     useCourseStore,
+  //     (state) => state.coursesList
+  //   );
+  //   const updateCoursesList = useCourseStore.getState().updateCoursesList;
 
   const [selected, setSelected] = useState<number>();
-//   const [coursesList, setCoursesList] = useState<CoursesType[] | null>(null);
+  //   const [coursesList, setCoursesList] = useState<CoursesType[] | null>(null);
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const response = await getCourses();
-//       setCoursesList(response);
-//       response ? updateCoursesList(response) : null;
-//     };
-//     if (userRole === 'admin' && !!courseListStore) {
-//       fetchData();
-//     }
-//   // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [courseListStore, userRole]);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const response = await getCourses();
+  //       setCoursesList(response);
+  //       response ? updateCoursesList(response) : null;
+  //     };
+  //     if (userRole === 'admin' && !!courseListStore) {
+  //       fetchData();
+  //     }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [courseListStore, userRole]);
 
   const sidebarItems: {
     [key: string]: { label: string; icon: any; href?: string }[];

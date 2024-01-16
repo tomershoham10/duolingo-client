@@ -1,27 +1,8 @@
-import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
-import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
-
+import { useUserStore } from "@/app/store/stores/useUserStore";
+import { useAlertStore } from "@/app/store/stores/useAlertStore";
 
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";
-
-export interface UserType {
-    _id: string;
-    tId?: string;
-    userName: string;
-    permission: PermissionsTypes;
-    password: string;
-    courseId?: string;
-    nextLessonId?: string;
-}
-
-export enum PermissionsTypes {
-    ADMIN = "admin",
-    TEACHER = "teacher",
-    CREW = "crew",
-    STUDENT = "student"
-}
-
 
 const updateUserRole = useUserStore.getState().updateUserRole;
 const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;

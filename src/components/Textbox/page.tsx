@@ -1,23 +1,6 @@
-// components/Textbox.tsx
-import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
+import {  useThemeStore } from '@/app/store/stores/useThemeStore';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useStore } from 'zustand';
-
-export enum FontSizes {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  LARGE = 'large',
-}
-
-interface TextboxProps {
-  prevData?: string;
-  isEditMode: boolean;
-  fontSizeProps: FontSizes;
-  placeHolder?: string;
-  value: string | undefined;
-  onChange: (text: string) => void;
-  errorMode?: boolean;
-}
 
 const Textbox: React.FC<TextboxProps> = (props) => {
   const prevData = props.prevData;

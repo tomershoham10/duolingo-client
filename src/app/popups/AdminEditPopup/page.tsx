@@ -16,17 +16,11 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 
 import useStore from '@/app/store/useStore';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import {
-  fieldToEditType,
-  useInfoBarStore,
-} from '@/app/store/stores/useInfoBarStore';
-import {
-  UnitType,
-  getUnitById,
-} from '@/app/API/classes-service/units/functions';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import { getUnitById } from '@/app/API/classes-service/units/functions';
 import SortableItem from '@/components/SortableItem/page';
-import Textbox, { FontSizes } from '@/components/Textbox/page';
+import Textbox from '@/components/Textbox/page';
 
 library.add(faXmark);
 

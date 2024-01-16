@@ -2,14 +2,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface SortableItemProps {
-  id: string;
-  name: string;
-  isGrabbed: boolean;
-  isDisabled: boolean;
-  addedStyle?: string;
-}
-
 const SortableItem: React.FC<SortableItemProps> = (
   props: SortableItemProps
 ) => {

@@ -1,23 +1,6 @@
 import { UploadedObjectInfo, uploadFile } from "@/app/API/files-service/functions";
 import { TargetType } from "@/app/store/stores/useTargetStore";
 
-export interface TimeBuffersType {
-    timeBuffer: number;
-    grade: number;
-}
-
-export interface FSAType {
-    _id: string;
-    filesKeys: string[];
-    difficultyLevel: number;
-    relevant: string[];
-    answers: string[]; //may be 2 correct answers
-    timeBuffers: TimeBuffersType[];
-    description: string;
-    dateCreated: Date;
-    sonolistKeys: string[];
-}
-
 export const getAllFSAs = async (): Promise<FSAType[] | null> => {
     try {
         const response = await fetch(
@@ -138,17 +121,6 @@ export const getResultByUserAndFSAId = async (currentExerciseId: string, userId:
         return [];
     }
 };
-
-
-interface ExerciseRequest {
-    records: File | FileList;
-    difficultyLevel: number;
-    relevant?: string[];
-    answersList: string[];
-    timeBuffers: TimeBuffersType[];
-    description?: string;
-    sonolist?: FileList;
-}
 
 export const createFSA = async (newFSA: ExerciseRequest): Promise<string> => {
     try {

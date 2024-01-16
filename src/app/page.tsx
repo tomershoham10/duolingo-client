@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useStore from './store/useStore';
-import { useUserStore, TypesOfUser } from './store/stores/useUserStore';
+import { useUserStore } from './store/stores/useUserStore';
 import { useThemeStore } from './store/stores/useThemeStore';
 // import { getTargetsList } from "./API/classes-service/targets/functions";
 

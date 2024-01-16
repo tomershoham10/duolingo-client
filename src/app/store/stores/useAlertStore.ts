@@ -2,12 +2,6 @@
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
-export enum AlertSizes {
-    small = "small",
-    medium = "medium",
-    large = "large",
-}
-
 type AlertState = {
     alerts: Array<{
         id: number;

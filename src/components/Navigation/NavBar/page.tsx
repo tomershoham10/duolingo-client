@@ -7,18 +7,6 @@ import { usePathname } from 'next/navigation';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 
-type navItems = {
-  label: coursePages;
-  href: string;
-};
-
-enum coursePages {
-  STUDENTS = 'students',
-  ASSIGNMENTS = 'assignments',
-  SYLLABUS = 'syllabus',
-  SETTINGS = 'settings',
-}
-
 const NavBar: React.FC = () => {
   const [selected, setSelected] = useState<coursePages>();
 

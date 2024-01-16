@@ -1,10 +1,3 @@
-import { LessonType } from "../lessons/functions";
-
-export interface LevelType {
-    _id: string;
-    lessons?: string[];
-}
-
 export const getAllLevels = async (): Promise<LevelType[] | null> => {
     try {
         const response = await fetch(

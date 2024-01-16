@@ -1,15 +1,9 @@
 'use client';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import Button, { Color } from '@/components/Button/page';
+import Button from '@/components/Button/page';
 import { useState } from 'react';
 
-interface PaginationProps {
-  header: string;
-  components: Record<string, React.FC>;
-  onNext: Record<string, () => boolean>;
-}
-
-const Pagination2: React.FC<PaginationProps> = (props) => {
+const Pagination: React.FC<PaginationProps> = (props) => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const componentsNames = Object.keys(props.components);
@@ -77,13 +71,13 @@ const Pagination2: React.FC<PaginationProps> = (props) => {
       <div className='relative w-full'>
         {currentPage === Object.keys(props.components).length - 1 ? (
           <div className='absolute inset-y-1/3 right-[1rem] w-24'>
-            <Button label={'SUBMIT'} color={Color.BLUE} />
+            <Button label={'SUBMIT'} color={ButtonColors.BLUE} />
           </div>
         ) : (
           <div className='absolute inset-y-1/3 right-[1rem] w-24'>
             <Button
               label={'NEXT'}
-              color={Color.BLUE}
+              color={ButtonColors.BLUE}
               // isDisabled={paginationItems[selectedPageNumber].isDisabled}
               onClick={handleNextPage}
             />
@@ -93,7 +87,7 @@ const Pagination2: React.FC<PaginationProps> = (props) => {
           <div className='absolute inset-y-1/3 right-[8rem] w-24'>
             <Button
               label={'BACK'}
-              color={Color.WHITE}
+              color={ButtonColors.WHITE}
               onClick={handlePrevPage}
             />
           </div>
@@ -103,4 +97,4 @@ const Pagination2: React.FC<PaginationProps> = (props) => {
   );
 };
 
-export default Pagination2;
+export default Pagination;

@@ -1,7 +1,6 @@
 "use client"
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { RecordType } from '@/app/API/files-service/functions';
 
 //*********************************************************************//
 // to import a store value :
@@ -11,13 +10,6 @@ import { RecordType } from '@/app/API/files-service/functions';
 // // const updateFieldToEdit = useInfoBarStore.getState().updateFieldToEdit;
 //*********************************************************************//
 
-
-export enum fieldToEditType {
-    UNIT = "unit",
-    LEVEL = "level",
-    LESSON = "lesson",
-    EXERCISE = "exercise",
-}
 
 type useInfoBarState = {
     syllabusFieldToEdit: fieldToEditType | undefined;

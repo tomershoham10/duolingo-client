@@ -1,20 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
-export enum Types {
-  text = 'text',
-  password = 'password',
-}
-
-interface InputProps {
-  type: Types;
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-  failed?: boolean;
-}
-
 const Input: React.FC<InputProps> = (props: InputProps) => {
   return (
     <div className={`relative ${props.className} w-full`}>

@@ -1,27 +1,3 @@
-import { FSAType } from "../exercises/FSA/functions";
-
-export enum TypesOfLessons {
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
-}
-
-export interface LessonType {
-    _id: string;
-    name: string;
-    exercises: string[];
-    type: TypesOfLessons;
-}
-
-export interface ResultType {
-    _id: string;
-    userId: string;
-    date: Date;
-    exerciseId: string;
-    answers: string[];
-    score: number;
-}
-
 export const getAllLessons = async (): Promise<LessonType[] | null> => {
     try {
         const response = await fetch(

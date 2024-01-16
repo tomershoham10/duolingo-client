@@ -9,12 +9,11 @@ import {
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import { TargetType, useTargetStore } from '@/app/store/stores/useTargetStore';
-import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { useTargetStore } from '@/app/store/stores/useTargetStore';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Button, { Color } from '@/components/Button/page';
-import Textbox, { FontSizes } from '@/components/Textbox/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Textbox from '@/components/Textbox/page';
+import Dropdown from '@/components/Dropdown/page';
 
 import { TiPlus } from 'react-icons/ti';
 import { TbTargetArrow } from 'react-icons/tb';
@@ -23,28 +22,22 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-
-interface ExerciseSectionProps {
-  record: any;
-}
-
-enum FSAFieldsType {
-  DESCRIPTION = 'description',
-  RELEVANT = 'relevant',
-  ANSWERSLIST = 'answersList',
-  DIFFICULTYLEVEL = 'difficultyLevel',
-  RECORD = 'record',
-  TIMEBUFFERS = 'timeBuffers',
-  SELECTEDLESSON = 'selectedLesson',
-}
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 
 const ExerciseDataSection: React.FC = () => {
+  const updateExerciseToSubmit = {
+    updateDescription: useCreateExerciseStore.getState().updateDescription,
+  };
+
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
   const addAlert = useAlertStore.getState().addAlert;
-  const toggleMenuOpen = useContextMenuStore.getState().toggleMenuOpen;
-  const setCoordinates = useContextMenuStore.getState().setCoordinates;
-  const setContent = useContextMenuStore.getState().setContent;
+
+  const contextMenuStore = {
+    toggleMenuOpen: useContextMenuStore.getState().toggleMenuOpen,
+    setCoordinates: useContextMenuStore.getState().setCoordinates,
+    setContent: useContextMenuStore.getState().setContent,
+  };
 
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
@@ -190,9 +183,9 @@ const ExerciseDataSection: React.FC = () => {
 
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    toggleMenuOpen();
-    setCoordinates({ pageX: event.pageX, pageY: event.pageY });
-    setContent([
+    contextMenuStore.toggleMenuOpen();
+    contextMenuStore.setCoordinates({ pageX: event.pageX, pageY: event.pageY });
+    contextMenuStore.setContent([
       {
         placeHolder: 'add',
         onClick: () => {
@@ -246,7 +239,10 @@ const ExerciseDataSection: React.FC = () => {
               fontSizeProps={FontSizes.MEDIUM}
               placeHolder={'Add desription...'}
               value={description}
-              onChange={setDescription}
+              onChange={(text: string) => {
+                setDescription(text);
+                updateExerciseToSubmit.updateDescription(text);
+              }}
             />
           </div>
         </div>
@@ -285,11 +281,7 @@ const ExerciseDataSection: React.FC = () => {
 
               <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className={`open-button flex h-9 w-9 items-center justify-center rounded-full text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:px-2 group-hover:py-3 ${
-                    unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
-                      ? 'bg-duoRed-lighter text-duoRed-default group-hover:bg-duoRed-light'
-                      : 'bg-duoGray-lighter group-hover:bg-duoGray-hover dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
-                  }`}
+                  className='open-button flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
                   onClick={addTargetToAnswersList}
                 >
                   <TbTargetArrow />
@@ -366,13 +358,7 @@ const ExerciseDataSection: React.FC = () => {
 
         <div className='mb-4'>
           <div>
-            <span
-              className={`my-3 text-2xl font-bold ${
-                unfilledFields.includes(FSAFieldsType.ANSWERSLIST)
-                  ? 'text-duoRed-default'
-                  : ''
-              }`}
-            >
+            <span className={`my-3 text-2xl font-bold ${'' ? '' : ''}`}>
               Answers:
             </span>
             {answersList.length > 0 ? (

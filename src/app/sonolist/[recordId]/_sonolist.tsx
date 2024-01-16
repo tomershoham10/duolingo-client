@@ -1,4 +1,3 @@
-import { SonogramType } from '@/app/API/files-service/functions';
 import Image from 'next/image';
 
 interface SonolistProps {

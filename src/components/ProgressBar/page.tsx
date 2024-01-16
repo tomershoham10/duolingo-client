@@ -1,11 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-interface ProgressBarProps {
-  totalNumOfExercises: number;
-  numOfExercisesMade: number;
-}
-
 const ProgressBar: React.FC<ProgressBarProps> = ({
   totalNumOfExercises,
   numOfExercisesMade,

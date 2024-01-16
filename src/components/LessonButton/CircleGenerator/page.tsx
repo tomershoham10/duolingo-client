@@ -2,11 +2,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-interface CircleGeneratorProps {
-    numberOfTotalLessons: number;
-    numberOfLessonsMade: number;
-}
-
 const CircleGenerator: React.FC<CircleGeneratorProps> = ({
     numberOfTotalLessons,
     numberOfLessonsMade,

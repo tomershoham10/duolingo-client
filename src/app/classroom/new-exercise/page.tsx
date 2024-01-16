@@ -8,6 +8,10 @@ import ExerciseDataSection from './_ExerciseData/page';
 const NewExercise: React.FC = () => {
   const exerciseToSubmit = {
     recordName: useStore(useCreateExerciseStore, (state) => state.recordName),
+    recordLength: useStore(
+      useCreateExerciseStore,
+      (state) => state.recordLength
+    ),
     sonolistFiles: useStore(
       useCreateExerciseStore,
       (state) => state.sonolistFiles
@@ -27,10 +31,12 @@ const NewExercise: React.FC = () => {
       console.log(
         'exerciseToSubmit - acint section',
         exerciseToSubmit.recordName,
+        exerciseToSubmit.recordLength,
         exerciseToSubmit.sonolistFiles,
         exerciseToSubmit.answersList
       );
       return !!exerciseToSubmit.recordName &&
+        !!exerciseToSubmit.recordLength &&
         !!exerciseToSubmit.sonolistFiles &&
         !!exerciseToSubmit.answersList
         ? true

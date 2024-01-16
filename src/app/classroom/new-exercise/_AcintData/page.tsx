@@ -6,11 +6,11 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-import { RecordType, getAllRecords } from '@/app/API/files-service/functions';
+import { getAllRecords } from '@/app/API/files-service/functions';
 import Table from '@/components/Table/page';
-import Upload, { UploadRef } from '@/components/Upload/page';
+import Upload from '@/components/Upload/page';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
-import Button, { Color } from '@/components/Button/page';
+import Button from '@/components/Button/page';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { useStore } from 'zustand';
 
@@ -21,6 +21,7 @@ const AcintDataSection: React.FC = () => {
 
   const updateExerciseToSubmit = {
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
+    updateRecordLength: useCreateExerciseStore.getState().updateRecordLength,
     updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
     updateAnswersList: useCreateExerciseStore.getState().updateAnswersList,
   };
@@ -96,18 +97,23 @@ const AcintDataSection: React.FC = () => {
         ]
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordName, recordsData]);
 
   useEffect(() => {
     if (selectedRecord) {
       updateExerciseToSubmit.updateRecordName(selectedRecord.name);
+      updateExerciseToSubmit.updateRecordLength(
+        selectedRecord.metadata.record_length
+      );
       updateExerciseToSubmit.updateSonolistFiles(
         selectedRecord.metadata.sonograms_ids
       );
-      updateExerciseToSubmit.updateAnswersList(selectedRecord.metadata.targets_ids_list);
+      updateExerciseToSubmit.updateAnswersList(
+        selectedRecord.metadata.targets_ids_list
+      );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRecord]);
 
   return (
@@ -159,7 +165,7 @@ const AcintDataSection: React.FC = () => {
         <div className='absolute left-0 w-[10rem]'>
           <Button
             label={'UPLOAD'}
-            color={Color.BLUE}
+            color={ButtonColors.BLUE}
             icon={faArrowUpFromBracket}
           />
         </div>

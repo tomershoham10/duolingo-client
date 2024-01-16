@@ -14,21 +14,17 @@ import { FaCheck } from 'react-icons/fa6';
 import { FaXmark } from 'react-icons/fa6';
 import { FiFlag } from 'react-icons/fi';
 
-import Button, { Color } from '@/app/components/Button/page';
-import Alert from '@/app/components/Alert/page';
+import Button, { Color } from '@/components/Button/page';
+import Alert from '@/components/Alert/page';
 import ProgressBar from '@/components/ProgressBar/page';
-import Dropdown, { DropdownSizes } from '@/app/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 
 import useStore from '../store/useStore';
 import { useUserStore } from '../store/stores/useUserStore';
-import { TargetType, useTargetStore } from '../store/stores/useTargetStore';
+import { useTargetStore } from '../store/stores/useTargetStore';
 import { AlertSizes, useAlertStore } from '../store/stores/useAlertStore';
 
-import {
-  FSAType,
-  ResultType,
-  getExercisesData,
-} from '@/app/API/classes-service/lessons/functions';
+import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 import {
   getAnswersByExerciseId,
   getRelevantByFSAId,

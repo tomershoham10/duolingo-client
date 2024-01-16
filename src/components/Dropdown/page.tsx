@@ -3,24 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
-export enum DropdownSizes {
-  SMALL = 'small',
-  DEFAULT = 'default',
-  LARGE = 'large',
-}
-
-interface DropdownProps {
-  isSearchable: boolean;
-  placeholder: string;
-  items: string[];
-  value?: string | number | undefined;
-  onChange: (value: string) => void;
-  className?: string;
-  isFailed?: boolean;
-  isDisabled?: boolean;
-  size: DropdownSizes;
-}
-
 const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [maxHight, setMaxHight] = useState<string>();

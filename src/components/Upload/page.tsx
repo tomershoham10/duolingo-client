@@ -6,7 +6,7 @@ import React, {
   ChangeEvent,
   useState,
 } from 'react';
-import Button, { ButtonTypes, Color } from '../Button/page';
+import Button from '@/components/Button/page';
 import {
   FaRegFileAudio,
   FaRegTrashAlt,
@@ -14,24 +14,9 @@ import {
   FaExpandAlt,
 } from 'react-icons/fa';
 import { BsClipboard2Data } from 'react-icons/bs';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
+import { useThemeStore } from '@/app/store/stores/useThemeStore';
 import { useStore } from 'zustand';
-
-interface UploadProps {
-  label: string;
-  inputName?: string;
-  isMultiple: boolean;
-  errorMode?: boolean;
-  filesTypes: string;
-  onFileChange: (files: File | FileList | null) => void;
-  fileLength?: (size: number | null) => void;
-}
-
-export interface UploadRef {
-  focus: () => void;
-  clear: () => void;
-}
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
@@ -125,10 +110,10 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           label={props.label}
           color={
             props.errorMode
-              ? Color.ERROR
+              ? ButtonColors.ERROR
               : theme === Themes.LIGHT
-                ? Color.GRAY
-                : Color.WHITE
+                ? ButtonColors.GRAY
+                : ButtonColors.WHITE
           }
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFiles.length > 0}
@@ -137,8 +122,8 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         {uploadedFiles.length > 0 ? (
           <button
             className='right-0 flex h-8 w-8 items-center justify-center rounded-full
-            dark:hover:bg-duoGrayDark-lighter dark:bg-duoGrayDark-light
-             bg-duoGray-lighter text-lg hover:bg-duoGray-hover'
+            bg-duoGray-lighter text-lg
+             hover:bg-duoGray-hover dark:bg-duoGrayDark-light dark:hover:bg-duoGrayDark-lighter'
             onClick={() => setIsFilesListOpen(!isFilesListOpen)}
           >
             <FaExpandAlt />
@@ -146,7 +131,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         ) : null}
       </div>
       {isFilesListOpen && uploadedFiles.length > 0 ? (
-        <div className='dark:border-duoGrayDark-light w-full rounded-md border-2'>
+        <div className='w-full rounded-md border-2 dark:border-duoGrayDark-light'>
           <ul
             className='flex flex-col font-bold'
             style={{ borderRadius: '24px' }}
@@ -156,7 +141,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                 <>
                   <li
                     key={fileIndex}
-                    className={`flex flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark cursor-default`}
+                    className={`flex cursor-default flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark`}
                     style={
                       fileIndex === 0
                         ? {
@@ -202,7 +187,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                       className={`flex flex-row items-center justify-between px-3 py-2`}
                     >
                       <button
-                        className='dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover flex w-fit flex-row hover:text-duoBlue-default'
+                        className='flex w-fit flex-row hover:text-duoBlue-default dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
                         onClick={() => {
                           updateSelectedPopup(PopupsTypes.METADATA);
                         }}

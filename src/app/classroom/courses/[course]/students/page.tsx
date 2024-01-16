@@ -3,10 +3,7 @@ import Table from '@/components/Table/page';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useState } from 'react';
-import {
-  UserType,
-  getUsersByCourseId,
-} from '@/app/API/users-service/users/functions';
+import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
 
 const Students = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
@@ -39,7 +36,7 @@ const Students = () => {
             {Object.values(users).length} students
           </p>
 
-          <Table headers={headers} data={users} />
+          <Table headers={headers} data={users} isSelectable={false} />
         </div>
       ) : (
         <div className='ml-10 mt-6'>
@@ -47,7 +44,7 @@ const Students = () => {
             0 students
           </p>
 
-          <Table headers={headers} data={[]} />
+          <Table headers={headers} data={[]} isSelectable={false} />
         </div>
       )}
     </>

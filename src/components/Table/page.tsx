@@ -3,24 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 
-type TableProps<T> = {
-  headers: string[];
-  data: T[];
-  isSelectable: boolean;
-  onSelect?: (row: any) => void;
-  selectedRowIndex?: number;
-};
-
-type TableRowProps<T> = {
-  isSelected?: boolean;
-  rowIndex: number;
-  item: T;
-  keysValues: (keyof T)[];
-  isSelectable: boolean;
-  onSelect?: (row: any) => void;
-  //   selectRowFunc?: (rowIndex: number) => void;
-};
-
 const TableRow = <T,>(props: TableRowProps<T>) => {
   return (
     <tr

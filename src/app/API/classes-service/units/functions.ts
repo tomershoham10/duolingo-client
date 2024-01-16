@@ -1,11 +1,3 @@
-export interface UnitType {
-    _id: string;
-    levels?: string[];
-    guidebook?: string;
-    description?: string;
-}
-
-
 export const getUnits = async (): Promise<UnitType[] | null> => {
     try {
         const response = await fetch(

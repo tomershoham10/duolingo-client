@@ -1,13 +1,10 @@
 "use client"
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
-
-interface TimeBuffersType {
-    timeBuffer: number;
-    grade: number;
-}
 
 type CreateExerciseState = {
     recordName: string | undefined;
+    recordLength: number | undefined;
     sonolistFiles: string[] | undefined;
     description: string | undefined;
     timeBuffers: TimeBuffersType | undefined;
@@ -18,6 +15,7 @@ type CreateExerciseState = {
 
 type Action = {
     updateRecordName: (recordName: CreateExerciseState['recordName']) => void;
+    updateRecordLength: (recordLength: CreateExerciseState['recordLength']) => void;
     updateSonolistFiles: (sonolistFiles: CreateExerciseState['sonolistFiles']) => void;
     updateDescription: (description: CreateExerciseState['description']) => void;
     updateTimeBuffers: (timeBuffers: CreateExerciseState['timeBuffers']) => void;
@@ -29,6 +27,7 @@ type Action = {
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
     (set) => ({
         recordName: undefined,
+        recordLength: undefined,
         sonolistFiles: undefined,
         description: undefined,
         timeBuffers: undefined,
@@ -36,6 +35,7 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         answersList: undefined,
         acceptableAnswers: undefined,
         updateRecordName: (recordName) => set(() => ({ recordName: recordName })),
+        updateRecordLength: (recordLength) => set(() => ({ recordLength: recordLength })),
         updateSonolistFiles: (sonolistFiles) => set(() => ({ sonolistFiles: sonolistFiles })),
         updateDescription: (description) => set(() => ({ description: description })),
         updateTimeBuffers: (timeBuffers) => set(() => ({ timeBuffers: timeBuffers })),
@@ -44,3 +44,8 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         updateAcceptableAnswers: (acceptableAnswers) => set(() => ({ acceptableAnswers: acceptableAnswers })),
     })
 )
+
+if (process.env.NODE_ENV === 'development') {
+    mountStoreDevtool('useCreateExerciseStore', useCreateExerciseStore);
+}
+

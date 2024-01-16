@@ -1,5 +1,4 @@
 'use client';
-import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
 import {
   getExercisesData,
 } from '@/app/API/classes-service/lessons/functions';

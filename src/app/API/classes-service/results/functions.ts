@@ -1,11 +1,3 @@
-export interface ResultType {
-    _id: string;
-    userId: string;
-    date: Date;
-    exerciseId: string;
-    answers: string[];
-    score: number;
-}
 export const getResultsByLessonAndUser = async (lessonId: string, userId: string): Promise<ResultType[] | null> => {
     try {
         // console.log(`http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`);
@@ -96,7 +88,7 @@ export const submitExercise = async (resultToSubmit: Partial<ResultType>): Promi
             const updatedResult = data.updatedResult;
             console.log("resopnse", updatedResult)
             if (updatedResult) {
-            return updatedResult;
+                return updatedResult;
             } else return null
         } else {
             console.error("Failed to fetch lessons by id.");

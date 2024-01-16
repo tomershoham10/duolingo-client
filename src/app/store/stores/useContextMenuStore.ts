@@ -2,16 +2,6 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
 
-interface CoordinatesType {
-    pageX: number;
-    pageY: number;
-}
-
-interface ContentType {
-    placeHolder: string;
-    onClick: () => void;
-}
-
 type PopupState = {
     isOpen: boolean;
     coordinates: CoordinatesType;

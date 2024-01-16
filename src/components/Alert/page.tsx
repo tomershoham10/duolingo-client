@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 
 import useStore from '@/app/store/useStore';
-import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Button, { Color } from '../Button/page';
+import Button from '../Button/page';
 
 const Alert: React.FC = () => {
   const alerts = useStore(useAlertStore, (state) => state.alerts);
@@ -61,7 +61,7 @@ const Alert: React.FC = () => {
             {alertMessage}
           </span>
           <Button
-            color={Color.BLUE}
+            color={ButtonColors.BLUE}
             label={'Close'}
             style={' col-span-1 col-start-3 h-fit self-end flex-none'}
             onClick={() => removeAlert(alertId)}

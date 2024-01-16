@@ -4,33 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useRouter } from 'next/navigation';
 
-export enum Color {
-  BLUE = 'Blue',
-  GREEN = 'Green',
-  GRAY = 'Gray',
-  WHITE = 'White',
-  PURPLE = 'Purple',
-  RED = 'Red',
-  YELLOW = 'Yellow',
-  ERROR = 'Error',
-}
-
-export enum ButtonTypes {
-  SUBMIT = 'submit',
-  BUTTON = 'button',
-}
-
-interface ButtonProps {
-  label: string;
-  icon?: IconDefinition;
-  color: Color;
-  onClick?: () => void;
-  href?: string;
-  style?: string;
-  isDisabled?: boolean;
-  buttonType?: ButtonTypes;
-}
-
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
   const router = useRouter();
 

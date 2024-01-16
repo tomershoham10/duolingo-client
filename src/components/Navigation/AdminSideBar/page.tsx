@@ -13,23 +13,15 @@ import {
 
 import Link from 'next/link';
 import useStore from '@/app/store/useStore';
-import { useUserStore, TypesOfUser } from '@/app/store/stores/useUserStore';
+import { useUserStore } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   getCourseByName,
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
-
-interface SidebarItem {
-  name: string;
-  popup?: PopupsTypes;
-  icon?: IconDefinition;
-  href?: string;
-  subItems?: SidebarItem[];
-}
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();

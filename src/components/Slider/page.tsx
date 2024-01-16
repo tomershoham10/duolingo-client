@@ -1,24 +1,7 @@
 'use client';
 import _ from 'lodash';
 import { useEffect } from 'react';
-import Tooltip, { TooltipColors } from '../Tooltip/page';
-
-interface SliderProps {
-  isMultiple: boolean;
-  errorMode?: boolean;
-  numberOfSliders?: number;
-  tooltipsValues?: number[] | string[];
-  min: number;
-  max: number;
-  step: number;
-  value: number | number[];
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index?: number
-  ) => void;
-  deleteNode?: (index: number) => void;
-  onContextMenu?: (event: React.MouseEvent<HTMLDivElement>) => void;
-}
+import Tooltip from '@/components/Tooltip/page';
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;

@@ -1,9 +1,3 @@
-import { TargetType } from "@/app/store/stores/useTargetStore";
-
-interface ResponseTargetType extends TargetType {
-    __v: number
-}
-
 export const getTargetsList = async (): Promise<ResponseTargetType[] | null> => {
     try {
         const response = await fetch(

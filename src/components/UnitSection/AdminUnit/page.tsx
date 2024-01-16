@@ -1,25 +1,10 @@
 import { useEffect, useState } from 'react';
 import useStore from '@/app/store/useStore';
-import {
-  useCourseStore,
-} from '@/app/store/stores/useCourseStore';
-import {
-  CoursesType,
-  getCourseByType,
-  getUnitsData,
-} from '@/app/API/classes-service/courses/functions';
-import {
-  UnitType,
-  getLevelsData,
-} from '@/app/API/classes-service/units/functions';
-import {
-  LevelType,
-  getLessonsData,
-} from '@/app/API/classes-service/levels/functions';
-import {
-  LessonType,
-  getExercisesData,
-} from '@/app/API/classes-service/lessons/functions';
+import { useCourseStore } from '@/app/store/stores/useCourseStore';
+import { getUnitsData } from '@/app/API/classes-service/courses/functions';
+import { getLevelsData } from '@/app/API/classes-service/units/functions';
+import { getLessonsData } from '@/app/API/classes-service/levels/functions';
+import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,13 +15,9 @@ import {
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import Button, { Color } from '../../Button/page';
-import {
-  fieldToEditType,
-  useInfoBarStore,
-} from '@/app/store/stores/useInfoBarStore';
+import Button from '../../Button/page';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { usePathname } from 'next/navigation';
-import { FSAType } from '@/app/API/classes-service/exercises/FSA/functions';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
@@ -196,7 +177,7 @@ const AdminUnit: React.FC = () => {
           units.map((unit, unitIndex) => (
             <div key={unitIndex} className='flex-none py-[2rem]'>
               <div className='flex-col'>
-                <div className='grid-col-3 dark:bg-duoGrayDark-dark grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white sm:h-fit'>
+                <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white dark:bg-duoGrayDark-dark sm:h-fit'>
                   <button
                     className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
                     onClick={() => {
@@ -228,7 +209,7 @@ const AdminUnit: React.FC = () => {
                       <div className=''>
                         <Button
                           label={'CREATE GUIDEBOOK'}
-                          color={Color.WHITE}
+                          color={ButtonColors.WHITE}
                         />
                       </div>
                     )}
@@ -250,8 +231,8 @@ const AdminUnit: React.FC = () => {
                                         key={levelIndex}
                                         className={
                                           levelIndex === levels.length
-                                            ? 'dark:border-duoGrayDark-dark flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3'
-                                            : 'dark:border-duoGrayDark-dark flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3'
+                                            ? 'flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
+                                            : 'flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
                                         }
                                       >
                                         <div className='w-full'>
@@ -299,7 +280,7 @@ const AdminUnit: React.FC = () => {
                                                                     </div>
                                                                   </div>
                                                                   <div className='mx-6 w-full'>
-                                                                    <span className='dark:text-duoGrayDark-lightest w-full font-extrabold text-duoGray-dark'>
+                                                                    <span className='w-full font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'>
                                                                       LESSON
                                                                       {' - '}
                                                                       {
@@ -319,7 +300,7 @@ const AdminUnit: React.FC = () => {
                                                                                 key={
                                                                                   exerciseObjectIndex
                                                                                 }
-                                                                                className='dark:divide-duoGrayDark-light w-full divide-y-2'
+                                                                                className='w-full divide-y-2 dark:divide-duoGrayDark-light'
                                                                               >
                                                                                 {exerciseObject.lessonId ===
                                                                                 lesson._id

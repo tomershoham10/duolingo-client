@@ -1,21 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import useStore from '@/app/store/useStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-
-export enum TooltipColors {
-  GREEN = 'green',
-  RED = 'red',
-  WHITE = 'white',
-}
-
-interface tooltipProps {
-  placeholder?: string | number;
-  isFloating: boolean;
-  edittable?: boolean;
-  color: TooltipColors;
-  onDelete?: () => void;
-}
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
 
 const Tooltip: React.FC<tooltipProps> = (props) => {
   const placeholder = props.placeholder;

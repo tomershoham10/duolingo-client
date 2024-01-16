@@ -7,23 +7,13 @@ import { useStore } from 'zustand';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useRef, useState } from 'react';
 import { getUnitsData } from '@/app/API/classes-service/courses/functions';
-import {
-  UnitType,
-  getLevelsData,
-} from '@/app/API/classes-service/units/functions';
-import {
-  LevelType,
-  getLessonsData,
-} from '@/app/API/classes-service/levels/functions';
-import LessonButton, { Status } from '../../LessonButton/page';
+import { getLevelsData } from '@/app/API/classes-service/units/functions';
+import { getLessonsData } from '@/app/API/classes-service/levels/functions';
+import LessonButton from '../../LessonButton/page';
 import { possitionByModularAddition } from '@/app/utils/functions/possitionByModularAddition';
-import Tooltip, { TooltipColors } from '../../Tooltip/page';
-import {
-  LessonType,
-  ResultType,
-  getResultsData,
-} from '@/app/API/classes-service/lessons/functions';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import Tooltip from '../../Tooltip/page';
+import { getResultsData } from '@/app/API/classes-service/lessons/functions';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import StartLessonPopup from '@/app/popups/StartLessonPopup/page';
 library.add(faBook);
 
