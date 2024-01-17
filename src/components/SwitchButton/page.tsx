@@ -14,7 +14,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = (props) => {
         type='checkbox'
         id='switch-button-input'
         checked={isChecked}
-        onClick={() => {
+        onChange={() => {
           setIsChecked(!isChecked);
           props.onSwitch(isChecked);
         }}

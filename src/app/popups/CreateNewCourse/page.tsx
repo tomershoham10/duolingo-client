@@ -7,8 +7,8 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Input, { Types } from '@/components/Input/page';
-import Button, { Color } from '@/components/Button/page';
+import Input, { InputTypes } from '@/components/Input/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
@@ -116,7 +116,7 @@ const CreateNewCourse: React.FC = () => {
 
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
               <Input
-                type={Types.text}
+                type={InputTypes.text}
                 placeholder={'Course Name'}
                 value={courseName}
                 onChange={(value: string) => setCourseName(value)}
@@ -127,7 +127,7 @@ const CreateNewCourse: React.FC = () => {
             <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
               <Button
                 label={'CREATE'}
-                color={Color.BLUE}
+                color={ButtonColors.BLUE}
                 onClick={() => createCourseHandle(courseName)}
               />
             </div>

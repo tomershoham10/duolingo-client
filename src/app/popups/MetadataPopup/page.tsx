@@ -1,5 +1,5 @@
 'use client';
-import { useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
 
 import useStore from '@/app/store/useStore';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
@@ -57,6 +57,19 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
     recordMetadataReducer,
     initialRecordMetaState
   );
+
+  useEffect(() => {
+    console.log('recordMetaState', recordMetaState);
+  }, [recordMetaState]);
+
+  useEffect(() => {
+    !!recordLength
+      ? recordMetaDispatch({
+          type: recordMetaAction.SET_RECORD_LENGTH,
+          payload: recordLength,
+        })
+      : null;
+  }, [recordLength]);
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     recordMetaDispatch({
@@ -126,7 +139,12 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                     isSearchable={false}
                     placeholder={'transmission'}
                     items={['passive', 'active', 'both']}
-                    onChange={() => console.log()}
+                    onChange={(trans) =>
+                      recordMetaDispatch({
+                        type: recordMetaAction.SET_TRANSMISSION_TYPE,
+                        payload: trans as Transmissions,
+                      })
+                    }
                     size={DropdownSizes.SMALL}
                   />
                 </div>
@@ -141,7 +159,12 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                     isSearchable={false}
                     placeholder={'Sonar system'}
                     items={['demon', 'lofar']}
-                    onChange={() => console.log()}
+                    onChange={(sonarSys) =>
+                      recordMetaDispatch({
+                        type: recordMetaAction.SET_SONAR_SYSTEM,
+                        payload: sonarSys as SonarSystem,
+                      })
+                    }
                     size={DropdownSizes.SMALL}
                   />
                 </div>
@@ -156,7 +179,12 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                     isSearchable={false}
                     placeholder={'channels'}
                     items={['Mono', 'Stereo']}
-                    onChange={() => console.log()}
+                    onChange={(channel) =>
+                      recordMetaDispatch({
+                        type: recordMetaAction.SET_NUMBER_OF_CHANNELS,
+                        payload: channel === 'Stereo' ? 2 : 1,
+                      })
+                    }
                     size={DropdownSizes.SMALL}
                   />
                 </div>
@@ -175,7 +203,12 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                         ? targetsList.map((target) => target.name)
                         : []
                     }
-                    onChange={() => console.log()}
+                    onChange={(targetId) =>
+                      recordMetaDispatch({
+                        type: recordMetaAction.SET_TARGETS_IDS,
+                        payload: [targetId],
+                      })
+                    }
                     size={DropdownSizes.SMALL}
                   />
                 </div>
@@ -218,11 +251,11 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
               </div>
               <span></span>
 
-              <div className='col-span-2 flex flex-row items-center justify-between 3xl:py-10'>
-                <span className='text-lg font-bold opacity-80 3xl:text-xl'>
+              <div className='col-span-2 flex gap-4 flex-row items-center justify-between 3xl:py-10'>
+                <span className='text-lg font-bold opacity-80 3xl:text-xl min-w-fit'>
                   difficulty level:
                 </span>
-                <div className='relative w-[90%]'>
+                <div className='relative w-full'>
                   <Slider
                     isMultiple={false}
                     min={0}
