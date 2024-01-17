@@ -7,8 +7,8 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Input, { Types } from '@/components/Input/page';
-import Button, { Color } from '@/components/Button/page';
+import Input, { InputTypes } from '@/components/Input/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
@@ -150,7 +150,7 @@ const CreateNewUser: React.FC = () => {
 
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
               <Input
-                type={Types.text}
+                type={InputTypes.text}
                 placeholder={'User Name'}
                 value={userName}
                 onChange={handleUserName}
@@ -164,7 +164,7 @@ const CreateNewUser: React.FC = () => {
 
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
               <Input
-                type={Types.text}
+                type={InputTypes.text}
                 placeholder={'T-ID (optional)'}
                 value={tId}
                 onChange={handleTId}
@@ -178,7 +178,7 @@ const CreateNewUser: React.FC = () => {
 
             <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
               <Input
-                type={Types.password}
+                type={InputTypes.password}
                 placeholder={'Password'}
                 value={password}
                 onChange={handlePassword}
@@ -229,7 +229,7 @@ const CreateNewUser: React.FC = () => {
               <div className='absolute inset-x-0'>
                 <Button
                   label={'CREATE'}
-                  color={Color.BLUE}
+                  color={ButtonColors.BLUE}
                   onClick={() => createUser(userName, tId, password, role)}
                 />
               </div>

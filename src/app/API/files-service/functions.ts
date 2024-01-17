@@ -1,23 +1,10 @@
-export const uploadFile = async (bucketName: string, files: File | FileList): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+export const uploadFile = async (bucketName: string, files: File | FileList, metadata: RecordMetadataType | SonogramMetadataType): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
     try {
 
         const formData = new FormData();
         if (files instanceof File) {
             // Handle a single File
-            const metadata = {
-                difficulty_level: 8.5,
-                targets_ids_list: ['123a', '1f153'],
-                operation: 'op',
-                source: '4trgdf',
-                is_in_italy: true,
-                transmition: 'active',
-                channels_number: 2,
-                sonar_system: 'lofar',
-                is_backround_vessels: false,
-                aux: true,
-                sonograms_ids: ['asfddaf'],
-                record_length: 10
-            }
+
             formData.append('file', files);
             formData.append('bucketName', bucketName);
             formData.append('metadata', JSON.stringify(metadata));
@@ -42,6 +29,7 @@ export const uploadFile = async (bucketName: string, files: File | FileList): Pr
                 formData.append('file', files[i]);
             }
             formData.append('bucketName', bucketName);
+            formData.append('metadata', JSON.stringify(metadata));
             console.log("formData", formData);
             const uploadSonolistResponse = await fetch(
                 'http://localhost:4002/api/files/uploadFilesArray/', {

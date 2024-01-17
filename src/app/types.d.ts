@@ -254,6 +254,8 @@ enum Themes {
 
 // // useUserStore // //
 
+//*** if changed - also change on file  ***//
+
 enum TypesOfUser {
     LOGGEDOUT = "loggedOut",
     ADMIN = "admin",
@@ -308,6 +310,7 @@ interface ButtonProps {
     style?: string;
     isDisabled?: boolean;
     buttonType?: ButtonTypes;
+    loadingLabel?: string;
 }
 
 // // Dropdown // //
@@ -436,6 +439,12 @@ interface SortableItemProps {
     isGrabbed: boolean;
     isDisabled: boolean;
     addedStyle?: string;
+}
+
+// // SwitchButton // //
+
+interface SwitchButtonProps {
+    onSwitch: () => void;
 }
 
 // // Table // //

@@ -6,7 +6,7 @@ import React, {
   ChangeEvent,
   useState,
 } from 'react';
-import Button from '@/components/Button/page';
+import Button, { ButtonTypes, ButtonColors } from '@/components/Button/page';
 import {
   FaRegFileAudio,
   FaRegTrashAlt,
@@ -14,8 +14,8 @@ import {
   FaExpandAlt,
 } from 'react-icons/fa';
 import { BsClipboard2Data } from 'react-icons/bs';
-import { usePopupStore } from '@/app/store/stores/usePopupStore';
-import { useThemeStore } from '@/app/store/stores/useThemeStore';
+import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
+import { useThemeStore, Themes } from '@/app/store/stores/useThemeStore';
 import { useStore } from 'zustand';
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {

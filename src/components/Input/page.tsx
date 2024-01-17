@@ -1,12 +1,26 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
+export enum InputTypes {
+  text = 'text',
+  password = 'password',
+}
+
+interface InputProps {
+  type: InputTypes;
+  placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+  failed?: boolean;
+}
+
 const Input: React.FC<InputProps> = (props: InputProps) => {
   return (
     <div className={`relative ${props.className} w-full`}>
       <input
         type={props.type}
-        className={`dark:bg-duoGrayDark-dark dark:border-duoGrayDark-light w-full text-xl font-bold rounded-xl border-2 bg-duoGray-lighter p-3 text-duoGray-darkest dark:text-duoGrayDark-lightest dark:focus:border-duoBlueDark-text focus:outline-none ${
+        className={`w-full rounded-xl border-2 bg-duoGray-lighter p-3 text-xl font-bold text-duoGray-darkest focus:outline-none dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark dark:text-duoGrayDark-lightest dark:focus:border-duoBlueDark-text ${
           props.failed ? 'border-duoRed-light' : 'border-duoGray-default'
         }`}
         placeholder={props.placeholder}

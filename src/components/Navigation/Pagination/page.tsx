@@ -1,7 +1,9 @@
 'use client';
+import { useState } from 'react';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button from '@/components/Button/page';
-import { useState } from 'react';
+
+import { ButtonColors } from '@/components/Button/page';
 
 const Pagination: React.FC<PaginationProps> = (props) => {
   const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;

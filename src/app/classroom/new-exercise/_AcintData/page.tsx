@@ -6,11 +6,11 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-import { getAllRecords } from '@/app/API/files-service/functions';
+import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
 import Table from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
-import Button from '@/components/Button/page';
+import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { useStore } from 'zustand';
 
@@ -51,16 +51,15 @@ const AcintDataSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(
-      'recordsData',
-      recordsData,
-      recordsData.map(({ name, id, metadata }) => ({
-        name,
-        id,
-        ...metadata,
-      }))
-    );
-  }, [recordsData]);
+    if (recordName) {
+      updateSelectedRecord(
+        recordsData[
+          recordsData.map((record) => record.name).indexOf(recordName)
+        ]
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recordName, recordsData]);
 
   const recordsHeaders: string[] = [
     'name',
@@ -89,16 +88,15 @@ const AcintDataSection: React.FC = () => {
     updateSelectedRecord(record);
   };
 
-  useEffect(() => {
-    if (recordName) {
-      updateSelectedRecord(
-        recordsData[
-          recordsData.map((record) => record.name).indexOf(recordName)
-        ]
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recordName, recordsData]);
+  const uploadRecord = async () => {
+    await new Promise((res) => setTimeout(res, 2000));
+    // if (!!recordFile && !!sonolistFiles) {
+    //   const sonolistResponse = await uploadFile('sonolist', sonolistFiles);
+    //   if (sonolistResponse) {
+    //     const recordResponse = await uploadFile('records', recordFile);
+    //   }
+    // }
+  };
 
   useEffect(() => {
     if (selectedRecord) {
@@ -162,13 +160,21 @@ const AcintDataSection: React.FC = () => {
         </div>
       </div>
       <div className='relative flex items-center justify-center py-8'>
-        <div className='absolute left-0 w-[10rem]'>
+        <form className='absolute left-0 w-[10rem]' action={uploadRecord}>
           <Button
             label={'UPLOAD'}
-            color={ButtonColors.BLUE}
+            isDisabled={!!!recordFile || !!!sonolistFiles}
+            buttonType={ButtonTypes.SUBMIT}
+            color={
+              !!!recordFile || !!!sonolistFiles
+                ? ButtonColors.GRAY
+                : ButtonColors.BLUE
+            }
             icon={faArrowUpFromBracket}
+            loadingLabel={'Uploading...'}
+            // onClick={uploadRecord}
           />
-        </div>
+        </form>
       </div>
     </section>
   );

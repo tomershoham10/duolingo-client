@@ -21,7 +21,18 @@ import {
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 
+import { PopupsTypes } from '@/app/store/stores/usePopupStore';
+import { TypesOfUser } from '@/app/store/stores/useUserStore';
+
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
+
+interface SidebarItem {
+  name: string;
+  popup?: PopupsTypes;
+  icon?: IconDefinition;
+  href?: string;
+  subItems?: SidebarItem[];
+}
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();

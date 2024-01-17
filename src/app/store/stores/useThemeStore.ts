@@ -2,6 +2,11 @@
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
+export enum Themes {
+    LIGHT = "light",
+    DARK = "dark",
+}
+
 type ThemeState = {
     theme: Themes;
 }

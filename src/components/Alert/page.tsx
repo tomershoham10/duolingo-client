@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 
 import useStore from '@/app/store/useStore';
-import { useAlertStore } from '@/app/store/stores/useAlertStore';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Button from '../Button/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 
 const Alert: React.FC = () => {
   const alerts = useStore(useAlertStore, (state) => state.alerts);

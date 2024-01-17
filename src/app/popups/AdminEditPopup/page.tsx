@@ -22,6 +22,8 @@ import { getUnitById } from '@/app/API/classes-service/units/functions';
 import SortableItem from '@/components/SortableItem/page';
 import Textbox from '@/components/Textbox/page';
 
+import { PopupsTypes } from '@/app/store/stores/usePopupStore';
+
 library.add(faXmark);
 
 const AdminEditPopup: React.FC = () => {

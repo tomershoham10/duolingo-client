@@ -3,6 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
+export enum DropdownSizes {
+  SMALL = 'small',
+  DEFAULT = 'default',
+  LARGE = 'large',
+}
+
 const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [maxHight, setMaxHight] = useState<string>();
@@ -123,12 +129,12 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
         className={`flex h-14 w-full items-center justify-between rounded-xl border-2 font-bold uppercase
    ${
      props.isDisabled
-       ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50'
+       ? 'cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
        : isFailed
          ? 'cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker'
          : props.isSearchable && isOpen
-           ? 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest'
-           : 'dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest'
+           ? 'cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+           : 'cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
    }`}
         onClick={() => setIsOpen(true)}
       >
@@ -150,7 +156,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
               className={` ${
                 isFailed
                   ? 'normal-case dark:text-duoRed-darker'
-                  : 'dark:text-duoBlueDark-text uppercase'
+                  : 'uppercase dark:text-duoBlueDark-text'
               }`}
             >
               {selectedValue || props.placeholder}
@@ -166,7 +172,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
       </div>
       {isOpen && !props.isDisabled && (
         <ul
-          className={`absolute z-50 flex flex-col items-start justify-start ${maxHight} dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark`}
+          className={`absolute z-50 flex flex-col items-start justify-start ${maxHight} mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark`}
         >
           {dropdownItems.length > 0 ? (
             dropdownItems.map((item, index) => (

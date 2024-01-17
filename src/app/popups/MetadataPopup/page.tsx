@@ -7,7 +7,8 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import Button, { Color } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/Button/page';
+import SwitchButton from '@/components/SwitchButton/page';
 
 library.add(faXmark);
 
@@ -47,21 +48,19 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
               Add Metadata
             </div>
             <div className='mt-12 grid w-full grid-cols-4 grid-rows-6'>
-            <span>is in italkia</span>
-            <span>yes/no</span>
-            <span>is in italkia</span>
-            <span>yes/no</span>
-            <span>transmition</span>
+              <span>is in italkia</span>
 
-
-
+              <SwitchButton />
+              <span>is in italkia</span>
+              <span>yes/no</span>
+              <span>transmition</span>
+            </div>
           </div>
-          </div>
-          
+
           <div className='absolute bottom-0 w-[33%]'>
             <Button
               label={'Save'}
-              color={Color.BLUE}
+              color={ButtonColors.BLUE}
               onClick={() => props.onSave('metadata')}
             />
           </div>
