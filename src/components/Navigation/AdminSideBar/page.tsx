@@ -174,7 +174,7 @@ const AdminSideBar: React.FC = () => {
             className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6
            text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'
           >
-            doulingo
+            duolingo
           </label>
 
           <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>

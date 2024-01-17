@@ -71,7 +71,7 @@ const StudentSideBar: React.FC = () => {
   return (
     <div className='flex h-screen flex-col justify-center border-r-2 border-zinc-500/25 text-sm font-extrabold tracking-wide text-gray-500'>
       <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-[2rem] font-[850] text-duoGreen-default'>
-        doulingo
+        duolingo
       </label>
 
       <ul className='flex-grow'>

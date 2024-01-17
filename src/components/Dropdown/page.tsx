@@ -126,7 +126,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   return (
     <div ref={dropdownRef} className={`relative ${props.className} w-full`}>
       <div
-        className={`flex h-14 w-full items-center justify-between rounded-xl border-2 font-bold uppercase
+        className={`flex h-10 w-full items-center justify-between rounded-xl border-2 font-bold uppercase lg:h-14
    ${
      props.isDisabled
        ? 'cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
@@ -138,14 +138,14 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
    }`}
         onClick={() => setIsOpen(true)}
       >
-        <div className='mx-2 flex h-full items-center justify-start text-lg'>
+        <div className='mx-2 flex h-full items-center justify-start text-sm lg:text-lg'>
           {props.isSearchable && isOpen ? (
             <input
               type='text'
               value={selectedValue}
               onChange={handleSearch}
               ref={searchRef}
-              className={`h-full w-[100%] bg-transparent text-lg focus:outline-none ${
+              className={`h-full w-[100%] bg-transparent text-sm focus:outline-none lg:text-lg ${
                 isFailed
                   ? 'dark:text-duoRed-darker'
                   : 'dark:text-duoBlueDark-text'
