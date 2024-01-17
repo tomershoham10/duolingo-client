@@ -1,4 +1,15 @@
-export const uploadFile = async (bucketName: string, files: File | FileList, metadata: RecordMetadataType | SonogramMetadataType): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+export enum Transmissions {
+    PASSIVE = 'passive',
+    ACTIVE = 'active',
+    BOTH = 'both'
+}
+
+export enum SonarSystem {
+    DEMON = 'demon',
+    LOFAR = 'lofar'
+}
+
+export const uploadFile = async (bucketName: string, files: File | FileList, metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
     try {
 
         const formData = new FormData();

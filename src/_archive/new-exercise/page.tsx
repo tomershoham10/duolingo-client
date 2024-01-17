@@ -4,13 +4,13 @@ import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import useStore from '@/app/store/useStore';
-import { TargetType, useTargetStore } from '@/app/store/stores/useTargetStore';
+import { useTargetStore } from '@/app/store/stores/useTargetStore';
 
 import { TiPlus } from 'react-icons/ti';
 import { TbTargetArrow } from 'react-icons/tb';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import Upload, { UploadRef } from '@/components/Upload/page';
+import Upload from '@/components/Upload/page';
 import Slider from '@/components/Slider/page';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import {
@@ -21,19 +21,12 @@ import {
 import SortableItem from '@/components/SortableItem/page';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { UnitType, getUnits } from '@/app/API/classes-service/units/functions';
-import Button, { ButtonTypes, Color } from '@/components/Button/page';
-import {
-  LevelType,
-  getAllLevels,
-} from '@/app/API/classes-service/levels/functions';
-import {
-  LessonType,
-  getAllLessons,
-} from '@/app/API/classes-service/lessons/functions';
+import { getUnits } from '@/app/API/classes-service/units/functions';
+import Button, { ButtonTypes, ButtonColors } from '@/components/Button/page';
+import { getAllLevels } from '@/app/API/classes-service/levels/functions';
+import { getAllLessons } from '@/app/API/classes-service/lessons/functions';
 import MetadataPopup from '@/app/popups/MetadataPopup/page';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
-import { CoursesType } from '@/app/API/classes-service/courses/functions';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
 enum FSAFieldsType {
@@ -396,7 +389,7 @@ const NewExercise: React.FC = () => {
       files ? setRecordFile(files as File) : null;
     }
   };
-  
+
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
     time ? setRecordLength(time) : null;
@@ -509,16 +502,16 @@ const NewExercise: React.FC = () => {
     //     AlertSizes.small
     //   );
     // } else {
-      createFSA({
-        description: description,
-        answersList: answersList.map((target) => target._id),
-        relevant: relevant.map((target) => target._id),
-        difficultyLevel: difficultyLevel,
-        timeBuffers: combinedTimeBuffersArray,
-        records: recordFile as File | FileList,
-        sonolist: sonolistFiles,
-      });
-      addAlert('sumbitted.', AlertSizes.small);
+    createFSA({
+      description: description,
+      answersList: answersList.map((target) => target._id),
+      relevant: relevant.map((target) => target._id),
+      difficultyLevel: difficultyLevel,
+      timeBuffers: combinedTimeBuffersArray,
+      records: recordFile as File | FileList,
+      sonolist: sonolistFiles,
+    });
+    addAlert('sumbitted.', AlertSizes.small);
     // }
   };
 
@@ -528,9 +521,7 @@ const NewExercise: React.FC = () => {
         prevData={undefined}
         onSave={(data) => console.log('metadata', data)}
       />
-      <div
-        className='mx-auto w-[80%] 3xl:w-[65%]'
-      >
+      <div className='mx-auto w-[80%] 3xl:w-[65%]'>
         <div className='mb-3 mt-5 text-4xl font-extrabold uppercase'>
           create new exercise
         </div>

@@ -1,6 +1,10 @@
-import {  useThemeStore } from '@/app/store/stores/useThemeStore';
 import React, { useState, useEffect, useMemo } from 'react';
-import { useStore } from 'zustand';
+
+export enum FontSizes {
+  SMALL = 'small',
+  MEDIUM = 'medium',
+  LARGE = 'large',
+}
 
 const Textbox: React.FC<TextboxProps> = (props) => {
   const prevData = props.prevData;
@@ -10,8 +14,6 @@ const Textbox: React.FC<TextboxProps> = (props) => {
   const propsVal = props.value;
   const onChange = props.onChange;
   const errorMode = props.errorMode;
-
-  const theme = useStore(useThemeStore, (state) => state.theme);
 
   const [fontSize, setFontSize] = useState<string>();
 
@@ -45,9 +47,8 @@ const Textbox: React.FC<TextboxProps> = (props) => {
           ${
             errorMode
               ? 'border-duoRed-default bg-duoRed-lighter text-duoRed-darker'
-              : theme === Themes.DARK
-                ? 'dark:bg-duoGrayDark-dark dark:border-duoGrayDark-light textarea-dark-placeholder bg-duoGray-lighter'
-                : 'dark:bg-duoGrayDark-dark dark:border-duoGrayDark-light bg-duoGray-lighter'
+              : 'textarea-dark-placeholder bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+            // : 'bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
           }
           `}
           //   ${

@@ -1,7 +1,7 @@
 'use client';
 import _ from 'lodash';
 import { useEffect } from 'react';
-import Tooltip from '@/components/Tooltip/page';
+import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;
@@ -149,7 +149,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                 step={propsStep}
                 value={propsValue as number}
                 onChange={propsOnChange}
-                className={`range-slide mb-6 mt-3 w-full ${
+                className={`range-slide w-full ${
                   errorMode ? 'range-slide-error-mode' : ''
                 }`}
                 style={{
@@ -164,7 +164,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                   left: `calc(${(100 * propsValue) / propsMax}% + ${
                     16 - ((100 * propsValue) / propsMax) * 0.32
                   }px)`,
-                  top: '5.25rem',
+                  top: '-1rem',
                 }}
               >
                 <Tooltip

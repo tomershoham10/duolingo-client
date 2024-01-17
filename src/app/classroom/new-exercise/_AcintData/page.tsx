@@ -37,6 +37,10 @@ const AcintDataSection: React.FC = () => {
 
   const [recordsData, setRecordsData] = useState<RecordType[]>([]);
   const [recordFile, setRecordFile] = useState<File>();
+  const [recordMetadata, setRecordMetadata] =
+    useState<Partial<RecordMetadataType>>();
+  const [sonolistMetadata, setSonolistMetadata] =
+    useState<Partial<SonogramMetadataType>[]>();
   const [recordLength, setRecordLength] = useState<number>(0);
   const [sonolistFiles, setSonolistFiles] = useState<FileList>();
 
@@ -93,12 +97,20 @@ const AcintDataSection: React.FC = () => {
 
   const uploadRecord = async () => {
     await new Promise((res) => setTimeout(res, 2000));
-    // if (!!recordFile && !!sonolistFiles) {
-    //   const sonolistResponse = await uploadFile('sonolist', sonolistFiles);
-    //   if (sonolistResponse) {
-    //     const recordResponse = await uploadFile('records', recordFile);
-    //   }
-    // }
+    if (!!recordFile && !!sonolistFiles && recordMetadata && sonolistMetadata) {
+      const sonolistResponse = await uploadFile(
+        'sonolist',
+        sonolistFiles,
+        sonolistMetadata
+      );
+      if (sonolistResponse) {
+        const recordResponse = await uploadFile(
+          'records',
+          recordFile,
+          recordMetadata
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -119,10 +131,7 @@ const AcintDataSection: React.FC = () => {
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      <MetadataPopup
-        prevData={undefined}
-        onSave={(data) => console.log('metadata', data)}
-      />
+      <MetadataPopup onSave={(data) => setRecordMetadata(data)} />
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
       <Table
         headers={recordsHeaders}
@@ -175,7 +184,7 @@ const AcintDataSection: React.FC = () => {
             }
             icon={faArrowUpFromBracket}
             loadingLabel={'Uploading...'}
-            // onClick={uploadRecord}
+            onClick={uploadRecord}
           />
         </form>
       </div>

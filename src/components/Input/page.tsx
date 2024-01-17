@@ -6,15 +6,6 @@ export enum InputTypes {
   password = 'password',
 }
 
-interface InputProps {
-  type: InputTypes;
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-  failed?: boolean;
-}
-
 const Input: React.FC<InputProps> = (props: InputProps) => {
   return (
     <div className={`relative ${props.className} w-full`}>

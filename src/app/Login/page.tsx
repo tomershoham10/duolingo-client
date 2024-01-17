@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 
 import useStore from '../store/useStore';
 import { useUserStore } from '../store/stores/useUserStore';
-import Input, { Types } from '@/components/Input/page';
-import Button, { Color } from '@/components/Button/page';
+import Input, { InputTypes } from '@/components/Input/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
 
 enum TypesOfUser {
@@ -35,7 +35,7 @@ const Login: React.FC = () => {
         router.push('/learn');
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userRole]);
 
   const handleUser = (value: string) => {
@@ -58,20 +58,20 @@ const Login: React.FC = () => {
         <>
           <label className='text-2xl font-extrabold'>Log in</label>
           <Input
-            type={Types.text}
+            type={InputTypes.text}
             placeholder='Username'
             value={user}
             onChange={handleUser}
           />
           <Input
-            type={Types.password}
+            type={InputTypes.password}
             placeholder='Password'
             value={password}
             onChange={handlePassword}
           />
           <Button
             label='LOG IN'
-            color={Color.BLUE}
+            color={ButtonColors.BLUE}
             onClick={() => handleAuth(user, password)}
             href={''}
           />

@@ -1,7 +1,13 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import useStore from '@/app/store/useStore';
-import { usePopupStore } from '@/app/store/stores/usePopupStore';
+import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
+
+export enum TooltipColors {
+  GREEN = 'green',
+  RED = 'red',
+  WHITE = 'white',
+}
 
 const Tooltip: React.FC<tooltipProps> = (props) => {
   const placeholder = props.placeholder;
@@ -35,12 +41,20 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         break;
 
       case TooltipColors.WHITE:
-        setBackgroundColor(isInEditMode ? 'bg-duoRed-light' : 'bg-white dark:bg-duoBlueDark-darkest');
+        setBackgroundColor(
+          isInEditMode
+            ? 'bg-duoRed-light'
+            : 'bg-white dark:bg-duoBlueDark-darkest'
+        );
         setBorderColor(
-          isInEditMode ? 'border-duoRed-darker' : 'border-duoGray-light dark:border-duoGrayDark-light'
+          isInEditMode
+            ? 'border-duoRed-darker'
+            : 'border-duoGray-light dark:border-duoGrayDark-light'
         );
         setTextColor(
-          isInEditMode ? 'text-duoRed-default' : 'text-duoGray-darkText dark:text-duoGrayDark-lightest'
+          isInEditMode
+            ? 'text-duoRed-default'
+            : 'text-duoGray-darkText dark:text-duoGrayDark-lightest'
         );
         break;
     }
@@ -100,7 +114,9 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
           tabIndex={0}
           ref={tooltipRef}
           className={`absolute left-1/2 ${
-            isFloating && !isInEditMode ? 'tooltip cursor-pointer' : 'cursor-default'
+            isFloating && !isInEditMode
+              ? 'tooltip cursor-pointer'
+              : 'cursor-default'
           }`}
         >
           <div className='relative'>

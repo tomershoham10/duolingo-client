@@ -154,8 +154,8 @@ interface RecordMetadataType {
     operation: string;
     source: string;
     is_in_italy: boolean;
-    transmition: Transmissions;
-    channels_number: number;
+    transmission: Transmissions;
+    channels_number: 1 | 2;
     sonar_system: SonarSystem;
     is_backround_vessels: boolean;
     aux: boolean;
@@ -165,7 +165,7 @@ interface SonogramMetadataType {
     targets_ids_list: string[];
     source: string;
     is_in_italy: boolean;
-    transmition: Transmissions;
+    transmission: Transmissions;
     is_backround_vessels: boolean;
 }
 
@@ -242,7 +242,8 @@ enum PopupsTypes {
     NEWUNIT = "newUnit",
     STARTLESSON = "startLesson",
     ADMINEDIT = "adminEdit",
-    METADATA = 'metadata'
+    RECORDMETADATA = 'recordMetadata',
+    SONOLISTMETADATA = 'sonolistMetadata'
 }
 
 // // useThemeStore // //
@@ -335,15 +336,10 @@ interface DropdownProps {
 
 // // Input // //
 
-enum InputTypes {
-    text = 'text',
-    password = 'password',
-}
-
 interface InputProps {
     type: InputTypes;
     placeholder?: string;
-    value: string;
+    value: string | undefined;
     onChange: (value: string) => void;
     className?: string;
     failed?: boolean;

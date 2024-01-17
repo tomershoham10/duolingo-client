@@ -1,7 +1,7 @@
 'use client';
 import { useStore } from 'zustand';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import Pagination2 from '@/components/Navigation/Pagination/page';
+import Pagination from '@/components/Navigation/Pagination/page';
 import AcintDataSection from './_AcintData/page';
 import ExerciseDataSection from './_ExerciseData/page';
 
@@ -50,7 +50,7 @@ const NewExercise: React.FC = () => {
   };
   return (
     <div className='h-full w-full overflow-auto'>
-      <Pagination2
+      <Pagination
         header={'create new exercise'}
         components={components}
         onNext={onNextFuncs}

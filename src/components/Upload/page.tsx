@@ -138,67 +138,58 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           >
             {isFilesListOpen &&
               uploadedFiles.map((file, fileIndex) => (
-                <>
-                  <li
-                    key={fileIndex}
-                    className={`flex cursor-default flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark`}
-                    style={
-                      fileIndex === 0
+                <li
+                  key={fileIndex}
+                  className={`flex cursor-default flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark`}
+                  style={
+                    fileIndex === 0
+                      ? {
+                          borderTopLeftRadius: '4px 4px',
+                          borderTopRightRadius: '4px 4px',
+                        }
+                      : fileIndex === uploadedFiles.length - 1
                         ? {
-                            borderTopLeftRadius: '4px 4px',
-                            borderTopRightRadius: '4px 4px',
+                            borderBottomLeftRadius: '4px 4px',
+                            borderBottomRightRadius: '4px 4px',
                           }
-                        : fileIndex === uploadedFiles.length - 1
-                          ? {
-                              borderBottomLeftRadius: '4px 4px',
-                              borderBottomRightRadius: '4px 4px',
-                            }
-                          : // :
-                            // fileIndex === 0
-                            //   ? {
-                            //       borderTopLeftRadius: '4px 4px',
-                            //       borderTopRightRadius: '4px 4px',
-                            //     }
-                            {}
+                        : {}
+                  }
+                >
+                  <div className='flex w-full flex-row'>
+                    {file.endsWith('.wav') ? (
+                      <FaRegFileAudio className='mr-2 text-xl 3xl:text-2xl' />
+                    ) : (
+                      <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
+                    )}
+                    <span className='w-[80%]'>{file}</span>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setUploadedFiles((prev) =>
+                        prev.filter((_, itemIndex) => itemIndex !== fileIndex)
+                      )
                     }
                   >
-                    <div className='flex w-full flex-row'>
-                      {file.endsWith('.wav') ? (
-                        <FaRegFileAudio className='mr-2 text-xl 3xl:text-2xl' />
-                      ) : (
-                        <FaRegFileImage className='mr-2 text-xl 3xl:text-2xl' />
-                      )}
-                      <span className='w-[80%]'>
-                        {file} {fileIndex}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() =>
-                        setUploadedFiles((prev) =>
-                          prev.filter((_, itemIndex) => itemIndex !== fileIndex)
-                        )
-                      }
-                    >
-                      <FaRegTrashAlt />
-                    </button>
-                  </li>
-                  {file.endsWith('.wav') ? (
-                    <li
-                      className={`flex flex-row items-center justify-between px-3 py-2`}
-                    >
-                      <button
-                        className='flex w-fit flex-row hover:text-duoBlue-default dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
-                        onClick={() => {
-                          updateSelectedPopup(PopupsTypes.METADATA);
-                        }}
-                      >
-                        <BsClipboard2Data className='mr-2 text-xl 3xl:text-2xl' />
-                        <span>add metadata</span>
-                      </button>
-                    </li>
-                  ) : null}
-                </>
+                    <FaRegTrashAlt />
+                  </button>
+                </li>
               ))}
+
+            <li
+              className={`flex flex-row items-center justify-between px-3 py-2`}
+            >
+              <button
+                className='flex w-fit flex-row hover:text-duoBlue-default dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
+                onClick={() => {
+                  props.filesTypes === '.wav'
+                    ? updateSelectedPopup(PopupsTypes.RECORDMETADATA)
+                    : updateSelectedPopup(PopupsTypes.SONOLISTMETADATA);
+                }}
+              >
+                <BsClipboard2Data className='mr-2 text-xl 3xl:text-2xl' />
+                <span>add metadata</span>
+              </button>
+            </li>
           </ul>
         </div>
       ) : null}
