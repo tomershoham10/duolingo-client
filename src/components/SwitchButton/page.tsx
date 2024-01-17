@@ -16,7 +16,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = (props) => {
         checked={isChecked}
         onClick={() => {
           setIsChecked(!isChecked);
-          props.onSwitch;
+          props.onSwitch(isChecked);
         }}
         className='h-[20px] w-[20px]'
       />

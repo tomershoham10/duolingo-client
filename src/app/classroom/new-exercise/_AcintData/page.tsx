@@ -79,7 +79,10 @@ const AcintDataSection: React.FC = () => {
 
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
-    time ? setRecordLength(time) : null;
+    if (!!time) {
+      setRecordLength(time);
+      updateExerciseToSubmit.updateRecordLength(time);
+    }
   };
 
   const handleSelectTableRow = (item: any) => {

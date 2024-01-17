@@ -444,7 +444,7 @@ interface SortableItemProps {
 // // SwitchButton // //
 
 interface SwitchButtonProps {
-    onSwitch: () => void;
+    onSwitch: (isChecked: boolean) => void;
 }
 
 // // Table // //

@@ -9,6 +9,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Button, { ButtonColors } from '@/components/Button/page';
 import SwitchButton from '@/components/SwitchButton/page';
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
+import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 
 library.add(faXmark);
 
@@ -21,6 +23,13 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
   const prevData = props.prevData;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
+  const recordLength = useStore(
+    useCreateExerciseStore,
+    (state) => state.recordLength
+  );
+
+  const [isInItaly, setIsInItaly] = useState<boolean>(false);
 
   return (
     <div
@@ -50,9 +59,13 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
             <div className='mt-12 grid w-full grid-cols-4 grid-rows-6'>
               <span>is in italkia</span>
 
-              <SwitchButton />
-              <span>is in italkia</span>
-              <span>yes/no</span>
+              <SwitchButton onSwitch={(isChecked) => setIsInItaly(isChecked)} />
+              <span>record length</span>
+              <span>
+                {!!recordLength
+                  ? formatNumberToMinutes(recordLength)
+                  : '00:00:00'}
+              </span>
               <span>transmition</span>
             </div>
           </div>
