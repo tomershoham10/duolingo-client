@@ -31,12 +31,16 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     >
       <div className='relative w-full flex-col overflow-auto '>
         <div className='absolute inset-x-0 top-0 mx-8 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
-          <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
-            {props.header}
-          </div>
+          {!!props.header ? (
+            <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
+              {props.header}
+            </div>
+          ) : null}
           <nav
-            className='flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
-         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem]'
+            className={`flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
+         dark:bg-duoBlueDark-darkest 3xl:gap-[25rem] ${
+           !!props.header ? '' : 'mt-10'
+         }`}
           >
             {componentsNames.map((componentLabel, navIndex) => (
               <div
@@ -68,7 +72,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           </nav>
         </div>
       </div>
-      <Component />
+      <Component {...props.subProps} />
 
       <div className='relative w-full'>
         {currentPage === Object.keys(props.components).length - 1 ? (

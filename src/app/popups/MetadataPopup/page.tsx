@@ -1,25 +1,31 @@
 'use client';
 import { useReducer, useEffect } from 'react';
 
-import useStore from '@/app/store/useStore';
-import { useAlertStore } from '@/app/store/stores/useAlertStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+
+import useStore from '@/app/store/useStore';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
+import { useTargetStore } from '@/app/store/stores/useTargetStore';
+
 import Button, { ButtonColors } from '@/components/Button/page';
 import SwitchButton from '@/components/SwitchButton/page';
-import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
+import Pagination from '@/components/Navigation/Pagination/page';
+
 import {
   recordMetaAction,
   recordMetadataReducer,
 } from '@/reducers/recordMetadataReducer';
+
+import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 import { SonarSystem, Transmissions } from '@/app/API/files-service/functions';
+
 
 library.add(faXmark);
 
@@ -251,8 +257,8 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
               </div>
               <span></span>
 
-              <div className='col-span-2 flex gap-4 flex-row items-center justify-between 3xl:py-10'>
-                <span className='text-lg font-bold opacity-80 3xl:text-xl min-w-fit'>
+              <div className='col-span-2 flex flex-row items-center justify-between gap-4 3xl:py-10'>
+                <span className='min-w-fit text-lg font-bold opacity-80 3xl:text-xl'>
                   difficulty level:
                 </span>
                 <div className='relative w-full'>
@@ -278,7 +284,17 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
           </div>
         </div>
       ) : selectedPopup === PopupsTypes.SONOLISTMETADATA ? (
-        <></>
+        <div className='relative m-5 flex h-[40rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[40rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[70rem] 3xl:w-[80rem]'>
+          <Pagination
+            components={{ button: Input }}
+            subProps={{
+              type: InputTypes.text,
+              value: 'afs',
+              onChange: () => console.log('try1'),
+            }}
+            onNext={{ try: () => true }}
+          />
+        </div>
       ) : null}
     </div>
   );
