@@ -103,6 +103,17 @@ const AcintDataSection: React.FC = () => {
     }
   };
 
+  const handleFileRemoved = (fileIndex: number) => {
+    submitRecordDispatch({
+      type: submitRecordAction.REMOVE_SONOGRAM,
+      payload: fileIndex,
+    });
+  };
+
+  useEffect(() => {
+    console.log('sonolist', submitRecordState.sonograms);
+  }, [submitRecordState.sonograms]);
+
   const handleFileLength = (time: number | null) => {
     console.log('file length:', time);
     if (!!time) {
@@ -188,6 +199,7 @@ const AcintDataSection: React.FC = () => {
             isMultiple={false}
             ref={uploadRef}
             onFileChange={handleFileChange}
+            onFileRemoved={handleFileRemoved}
             fileLength={handleFileLength}
           />
         </div>
@@ -199,6 +211,7 @@ const AcintDataSection: React.FC = () => {
             isMultiple={true}
             ref={uploadRef}
             onFileChange={handleFileChange}
+            onFileRemoved={handleFileRemoved}
           />
         </div>
       </div>

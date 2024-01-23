@@ -89,6 +89,14 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     }
   };
 
+  const handleFileRemoved = (index: number) => {
+    setUploadedFiles((prev) =>
+      prev.filter((_, itemIndex) => itemIndex !== index)
+    );
+
+    props.onFileRemoved(index);
+  };
+
   useImperativeHandle(ref, () => ({
     focus: () => {
       if (inputRef && inputRef.current) {
@@ -163,13 +171,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                     )}
                     <span className='w-[80%]'>{file}</span>
                   </div>
-                  <button
-                    onClick={() =>
-                      setUploadedFiles((prev) =>
-                        prev.filter((_, itemIndex) => itemIndex !== fileIndex)
-                      )
-                    }
-                  >
+                  <button onClick={() => handleFileRemoved(fileIndex)}>
                     <FaRegTrashAlt />
                   </button>
                 </li>

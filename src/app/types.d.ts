@@ -507,6 +507,7 @@ interface UploadProps {
     errorMode?: boolean;
     filesTypes: string;
     onFileChange: (files: File | FileList | null) => void;
+    onFileRemoved: (fileIndex: number) => void;
     fileLength?: (size: number | null) => void;
 }
 
