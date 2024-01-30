@@ -9,7 +9,7 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
 import Table from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
-import MetadataPopup from '@/app/popups/MetadataPopup/page';
+import MetadataPopup, { FilesTypes } from '@/app/popups/MetadataPopup/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { useStore } from 'zustand';
@@ -23,7 +23,7 @@ import {
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
-  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+  const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
 
   const updateExerciseToSubmit = {
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
@@ -36,10 +36,7 @@ const AcintDataSection: React.FC = () => {
     useCreateExerciseStore,
     (state) => state.recordName
   );
-  const selectedRecord = useStore(
-    useInfoBarStore,
-    (state) => state.selectedRecord
-  );
+  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
 
   const initialsubmitRecordState: submitDataType = {
     record: undefined,
@@ -68,7 +65,7 @@ const AcintDataSection: React.FC = () => {
 
   useEffect(() => {
     if (recordName) {
-      updateSelectedRecord(
+      updateSelectedFile(
         recordsData[
           recordsData.map((record) => record.name).indexOf(recordName)
         ]
@@ -84,13 +81,16 @@ const AcintDataSection: React.FC = () => {
     'is_in_italy',
   ];
 
-  const handleFileChange = (files: File | FileList | null) => {
-    if (files instanceof FileList) {
+  //   const handleFileChange = (files: File | FileList | null) => {
+  const handleFileChange = (files: File | File[] | null) => {
+    // if (files instanceof FileList) {
+    if (Array.isArray(files)) {
       console.log('sonolist');
       files
         ? submitRecordDispatch({
             type: submitRecordAction.SET_SONOLIST,
-            payload: files as FileList,
+            // payload: files as FileList,
+            payload: files as File[],
           })
         : null;
     } else {
@@ -103,11 +103,22 @@ const AcintDataSection: React.FC = () => {
     }
   };
 
-  const handleFileRemoved = (fileIndex: number) => {
-    submitRecordDispatch({
-      type: submitRecordAction.REMOVE_SONOGRAM,
-      payload: fileIndex,
-    });
+  const handleFileRemoved = (fileIndex: number | undefined) => {
+    if (!!!fileIndex) {
+      submitRecordDispatch({
+        type: submitRecordAction.REMOVE_RECORD_FILE,
+      });
+    } else {
+      submitRecordDispatch({
+        type: submitRecordAction.REMOVE_SONOGRAM,
+        payload: fileIndex,
+      });
+
+      submitRecordDispatch({
+        type: submitRecordAction.REMOVE_SONOGRAM_META,
+        payload: fileIndex,
+      });
+    }
   };
 
   useEffect(() => {
@@ -125,7 +136,7 @@ const AcintDataSection: React.FC = () => {
   const handleSelectTableRow = (item: any) => {
     const record = recordsData.filter((record) => record.name === item.name)[0];
     console.log('handleSelectTableRow', record);
-    updateSelectedRecord(record);
+    updateSelectedFile(record);
   };
 
   const uploadRecord = async () => {
@@ -152,26 +163,28 @@ const AcintDataSection: React.FC = () => {
   };
 
   useEffect(() => {
-    if (selectedRecord) {
-      updateExerciseToSubmit.updateRecordName(selectedRecord.name);
-      updateExerciseToSubmit.updateRecordLength(
-        selectedRecord.metadata.record_length
-      );
-      updateExerciseToSubmit.updateSonolistFiles(
-        selectedRecord.metadata.sonograms_ids
-      );
-      updateExerciseToSubmit.updateAnswersList(
-        selectedRecord.metadata.targets_ids_list
-      );
+    if (selectedFile && selectedFile.name.endsWith('wav')) {
+      const metadata = selectedFile.metadata as Partial<RecordMetadataType>;
+      updateExerciseToSubmit.updateRecordName(selectedFile.name);
+      updateExerciseToSubmit.updateRecordLength(metadata.record_length);
+      updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
+      updateExerciseToSubmit.updateAnswersList(metadata.targets_ids_list);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedRecord]);
+  }, [selectedFile]);
 
   return (
     <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
-        onSave={(data) =>
-          PopupsTypes.RECORDMETADATA ? console.log('metadata', data) : null
+        onSave={(type, data) =>
+          PopupsTypes.RECORDMETADATA
+            ? type === FilesTypes.RECORD
+              ? submitRecordDispatch({
+                  type: submitRecordAction.SET_RECORD_METADATA,
+                  payload: data,
+                })
+              : null
+            : null
         }
       />
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
@@ -182,7 +195,13 @@ const AcintDataSection: React.FC = () => {
           id,
           ...metadata,
         }))}
-        isSelectable={true}
+        isSelectable={
+          selectedFile
+            ? recordsData
+                .map((record) => record.name)
+                .includes(selectedFile.name)
+            : true
+        }
         selectedRowIndex={
           recordName
             ? recordsData.map((record) => record.name).indexOf(recordName)
@@ -198,6 +217,14 @@ const AcintDataSection: React.FC = () => {
             filesTypes={'.wav'}
             isMultiple={false}
             ref={uploadRef}
+            files={
+              submitRecordState.record
+                ? ({
+                    name: submitRecordState.record.name,
+                    metadata: submitRecordState.recordMetadata,
+                  } as RecordType)
+                : undefined
+            }
             onFileChange={handleFileChange}
             onFileRemoved={handleFileRemoved}
             fileLength={handleFileLength}
@@ -210,6 +237,19 @@ const AcintDataSection: React.FC = () => {
             filesTypes={'image/*'}
             isMultiple={true}
             ref={uploadRef}
+            files={
+              submitRecordState.sonograms
+                ? Array.from(submitRecordState.sonograms).map(
+                    (sonogram, sonoIndex) => {
+                      return {
+                        name: sonogram.name,
+                        metadata:
+                          submitRecordState.sonogramsMetadata[sonoIndex],
+                      };
+                    }
+                  )
+                : undefined
+            }
             onFileChange={handleFileChange}
             onFileRemoved={handleFileRemoved}
           />

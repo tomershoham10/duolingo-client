@@ -26,11 +26,15 @@ import {
 import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 import { SonarSystem, Transmissions } from '@/app/API/files-service/functions';
 
-
 library.add(faXmark);
 
+export enum FilesTypes {
+  RECORD = 'record',
+  SONOGRAM = 'sonogram',
+}
+
 interface MetadataProps {
-  onSave: (data: Partial<RecordMetadataType>) => void;
+  onSave: (type: FilesTypes, data: Partial<RecordMetadataType>) => void;
 }
 
 const MetadataPopup: React.FC<MetadataProps> = (props) => {
@@ -279,21 +283,26 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
             <Button
               label={'Save'}
               color={ButtonColors.BLUE}
-              onClick={() => props.onSave(recordMetaState)}
+              onClick={() => {
+                props.onSave(FilesTypes.RECORD, recordMetaState);
+                updateSelectedPopup(PopupsTypes.CLOSED);
+              }}
             />
           </div>
         </div>
       ) : selectedPopup === PopupsTypes.SONOLISTMETADATA ? (
         <div className='relative m-5 flex h-[40rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[40rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[70rem] 3xl:w-[80rem]'>
-          <Pagination
-            components={{ button: Input }}
-            subProps={{
-              type: InputTypes.text,
-              value: 'afs',
-              onChange: () => console.log('try1'),
+          <button
+            onClick={() => {
+              updateSelectedPopup(PopupsTypes.CLOSED);
             }}
-            onNext={{ try: () => true }}
-          />
+            className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
+          >
+            <FontAwesomeIcon
+              className='fa-lg fa-solid flex-none'
+              icon={faXmark}
+            />
+          </button>
         </div>
       ) : null}
     </div>

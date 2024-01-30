@@ -12,7 +12,7 @@ import {
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Textbox from '@/components/Textbox/page';
+import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown from '@/components/Dropdown/page';
 
 import { TiPlus } from 'react-icons/ti';

@@ -72,13 +72,15 @@ interface FSAType {
 }
 
 interface ExerciseRequest {
-    records: File | FileList;
+    // records: File | FileList;
+    records: File | File[];
     difficultyLevel: number;
     relevant?: string[];
     answersList: string[];
     timeBuffers: TimeBuffersType[];
     description?: string;
-    sonolist?: FileList;
+    // sonolist?: FileList;
+    sonolist?: File[];
 }
 
 // ------ results ------- //
@@ -171,14 +173,14 @@ interface SonogramMetadataType {
 
 interface RecordType {
     name: string;
-    id: string;
-    metadata: RecordMetadataType;
+    id?: string;
+    metadata: Partial<RecordMetadataType>;
 }
 
 interface SonogramType {
     name: string;
-    id: string;
-    metadata: SonogramMetadataType;
+    id?: string;
+    metadata: Partial<SonogramMetadataType>;
 }
 
 // // users service // //
@@ -506,8 +508,10 @@ interface UploadProps {
     isMultiple: boolean;
     errorMode?: boolean;
     filesTypes: string;
-    onFileChange: (files: File | FileList | null) => void;
-    onFileRemoved: (fileIndex: number) => void;
+    files: RecordType | SonogramType[] | undefined;
+    // onFileChange: (files: File | FileList | null) => void;
+    onFileChange: (files: File | File[] | null) => void;
+    onFileRemoved: (fileIndex: number | undefined) => void;
     fileLength?: (size: number | null) => void;
 }
 

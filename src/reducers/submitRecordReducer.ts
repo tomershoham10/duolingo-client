@@ -13,11 +13,12 @@ export enum submitRecordAction {
 
 type Action =
     | { type: submitRecordAction.SET_RECORD_FILE; payload: File }
-    | { type: submitRecordAction.REMOVE_RECORD_FILE; payload: number }
+    | { type: submitRecordAction.REMOVE_RECORD_FILE }
     | { type: submitRecordAction.SET_RECORD_METADATA; payload: Partial<RecordMetadataType> }
     | { type: submitRecordAction.REMOVE_RECORD_METADATA; payload: Partial<RecordMetadataType> }
 
-    | { type: submitRecordAction.SET_SONOLIST; payload: FileList }
+    // | { type: submitRecordAction.SET_SONOLIST; payload: FileList }
+    | { type: submitRecordAction.SET_SONOLIST; payload: File[] }
     | { type: submitRecordAction.REMOVE_SONOGRAM; payload: number }
     | { type: submitRecordAction.SET_SONOGRAM_META; payload: Partial<SonogramMetadataType> }
     | { type: submitRecordAction.REMOVE_SONOGRAM_META; payload: number }
@@ -25,7 +26,8 @@ type Action =
 export interface submitDataType {
     record: File | undefined,
     recordMetadata: Partial<RecordMetadataType> | undefined,
-    sonograms: FileList | undefined,
+    // sonograms: FileList | undefined,
+    sonograms: File[] | undefined,
     sonogramsMetadata: Partial<SonogramMetadataType>[],
 }
 
@@ -58,16 +60,18 @@ export const submitRecordReducer = (
     }
 };
 
-function removeFileFromList(fileList: FileList | undefined, indexToRemove: number): FileList | undefined {
+// function removeFileFromList(fileList: FileList | undefined, indexToRemove: number): FileList | undefined {
+function removeFileFromList(fileList: File[] | undefined, indexToRemove: number): File[] | undefined {
     if (!!fileList) {
         const files = Array.from(fileList).filter((_, index) => index !== indexToRemove);
 
-        const dataTransfer = new DataTransfer();
-        files.forEach(file => dataTransfer.items.add(file));
+        // const dataTransfer = new DataTransfer();
+        // files.forEach(file => dataTransfer.items.add(file));
 
-        const newFileList = dataTransfer.files;
+        // const newFileList = dataTransfer.files;
 
-        return newFileList;
+        // return newFileList;
+        return files;
     } else {
         return undefined;
     }

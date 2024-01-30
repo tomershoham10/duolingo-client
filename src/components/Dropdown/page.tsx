@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import useClickOutside from '@/app/utils/hooks/useClickOutside';
 
 export enum DropdownSizes {
   SMALL = 'small',
@@ -11,12 +12,13 @@ export enum DropdownSizes {
 
 const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [maxHight, setMaxHight] = useState<string>();
+  const [maxHight, setMaxHight] = useState<string>(props.size);
   const [selectedValue, setSelectedValue] = useState<string | undefined>(
     props.value?.toString() || ''
   );
   const [dropdownItems, setDropdownItems] = useState<string[]>(props.items);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  //   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useClickOutside(() => setIsOpen(false));
   const searchRef = useRef<HTMLInputElement | null>(null);
 
   const [isFailed, setIsFailed] = useState<boolean>(
@@ -27,36 +29,22 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     setSelectedValue(props.value?.toString());
   }, [props.value]);
 
-  useEffect(() => {
-    // console.log('isOpen', isOpen);
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutsideDropdown);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutsideDropdown);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  //   useEffect(() => {
+  //     // console.log('isOpen', isOpen);
+  //     if (isOpen) {
+  //       document.addEventListener('mousedown', handleClickOutsideDropdown);
+  //       return () => {
+  //         document.removeEventListener('mousedown', handleClickOutsideDropdown);
+  //       };
+  //     }
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && searchRef && searchRef.current) {
       searchRef.current.focus();
     }
   }, [isOpen, searchRef]);
-
-  useEffect(() => {
-    const setHight = () => {
-      switch (props.size) {
-        case DropdownSizes.SMALL:
-          return 'xl:max-h-32 3xl:max-h-52';
-        case DropdownSizes.DEFAULT:
-          return '';
-        case DropdownSizes.LARGE:
-          return 'xl:h-64 3xl:h-96';
-      }
-    };
-    setMaxHight(setHight);
-  }, [props.size]);
 
   //   useEffect(() => {
   //     console.log('dropdownItems', dropdownItems);
@@ -96,32 +84,32 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     setIsOpen(false);
   };
 
-  const handleClickOutsideDropdown = (event: MouseEvent) => {
-    !props.isSearchable
-      ? handleClickOutside(event, dropdownRef)
-        ? null
-        : closeDropdown()
-      : null;
+  //   const handleClickOutsideDropdown = (event: MouseEvent) => {
+  //     !props.isSearchable
+  //       ? handleClickOutside(event, dropdownRef)
+  //         ? null
+  //         : closeDropdown()
+  //       : null;
 
-    handleClickOutside(event, searchRef)
-      ? null
-      : handleClickOutside(event, dropdownRef)
-        ? null
-        : closeDropdown();
-  };
+  //     handleClickOutside(event, searchRef)
+  //       ? null
+  //       : handleClickOutside(event, dropdownRef)
+  //         ? null
+  //         : closeDropdown();
+  //   };
 
-  const handleClickOutside = (
-    event: MouseEvent,
-    ref: React.RefObject<HTMLDivElement | HTMLInputElement | null>
-  ) => {
-    if (ref && ref.current && !ref.current.contains(event.target as Node)) {
-      return false;
-    } else return true;
-  };
-  const closeDropdown = () => {
-    setIsOpen(false);
-    // setDropdownItems(props.items);
-  };
+  //   const handleClickOutside = (
+  //     event: MouseEvent,
+  //     ref: React.RefObject<HTMLDivElement | HTMLInputElement | null>
+  //   ) => {
+  //     if (ref && ref.current && !ref.current.contains(event.target as Node)) {
+  //       return false;
+  //     } else return true;
+  //   };
+  //   const closeDropdown = () => {
+  //     setIsOpen(false);
+  //     // setDropdownItems(props.items);
+  //   };
 
   return (
     <div ref={dropdownRef} className={`relative ${props.className} w-full`}>

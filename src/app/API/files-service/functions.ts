@@ -9,7 +9,8 @@ export enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-export const uploadFile = async (bucketName: string, files: File | FileList, metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+// export const uploadFile = async (bucketName: string, files: File | FileList, metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+export const uploadFile = async (bucketName: string, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
     try {
 
         const formData = new FormData();
@@ -33,7 +34,9 @@ export const uploadFile = async (bucketName: string, files: File | FileList, met
             } else {
                 throw new Error('record - server error');
             }
-        } else if (files instanceof FileList) {
+            // } else if (files instanceof FileList) {
+        } else if (Array.isArray(files)) {
+
             // Handle a FileList
             for (let i = 0; i < files.length; i++) {
                 console.log(files[i])
@@ -61,6 +64,29 @@ export const uploadFile = async (bucketName: string, files: File | FileList, met
 
     } catch (error) {
         throw new Error(`no good ${error}`);
+    }
+}
+
+export const isFileExisted = async (fileName: string, bucketName: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/isFileExisted/${bucketName}/${fileName}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const status = data.status as boolean;
+            // console.log('getAllRecords', files);
+            return status;
+        }
+        return false;
+    }
+    catch (error) {
+        throw new Error(`error checking if file existed - ${error}`);
     }
 }
 

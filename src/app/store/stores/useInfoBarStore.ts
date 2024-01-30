@@ -14,12 +14,12 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 type useInfoBarState = {
     syllabusFieldToEdit: fieldToEditType | undefined;
     syllabusFieldId: string | undefined;
-    selectedRecord: RecordType | undefined;
+    selectedFile: RecordType | SonogramType | undefined;
 }
 type Action = {
     updateSyllabusFieldToEdit: (syllabusFieldToEdit: useInfoBarState['syllabusFieldToEdit']) => void;
     updateSyllabusFieldId: (syllabusFieldId: useInfoBarState['syllabusFieldId']) => void;
-    updateSelectedRecord: (selectedRecord: useInfoBarState['selectedRecord']) => void;
+    updateSelectedFile: (selectedRecord: useInfoBarState['selectedFile']) => void;
 }
 
 
@@ -27,11 +27,11 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
     (set) => ({
         syllabusFieldToEdit: undefined,
         syllabusFieldId: undefined,
-        selectedRecord: undefined,
+        selectedFile: undefined,
         updateSyllabusFieldToEdit: (syllabusFieldToEdit) => set(() => ({ syllabusFieldToEdit: syllabusFieldToEdit })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
-        updateSelectedRecord: (selectedRecord) => set(() => ({ selectedRecord: selectedRecord })),
-    })
+        updateSelectedFile: (newSelectedFile) => set({ selectedFile: newSelectedFile }),
+    }),
 )
 
 if (process.env.NODE_ENV === 'development') {
