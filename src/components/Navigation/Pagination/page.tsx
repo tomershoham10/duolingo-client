@@ -6,7 +6,7 @@ import Button from '@/components/Button/page';
 import { ButtonColors } from '@/components/Button/page';
 
 const Pagination: React.FC<PaginationProps> = (props) => {
-  const updateSelectedRecord = useInfoBarStore.getState().updateSelectedRecord;
+  const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const componentsNames = Object.keys(props.components);
   const Component = Object.values(props.components)[currentPage];
@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     const canNavigate = nextFunc();
     if (canNavigate) {
       setCurrentPage((prev) => prev + 1);
-      updateSelectedRecord(undefined);
+    //   updateSelectedFile(undefined);
     }
   };
 

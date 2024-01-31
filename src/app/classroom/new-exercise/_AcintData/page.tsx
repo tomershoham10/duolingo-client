@@ -17,7 +17,7 @@ import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import {
   submitRecordAction,
   submitRecordReducer,
-  submitDataType,
+  submitRecordDataType,
 } from '@/reducers/submitRecordReducer';
 
 library.add(faArrowUpFromBracket);
@@ -38,7 +38,7 @@ const AcintDataSection: React.FC = () => {
   );
   const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
 
-  const initialsubmitRecordState: submitDataType = {
+  const initialsubmitRecordState: submitRecordDataType = {
     record: undefined,
     recordMetadata: {},
     sonograms: undefined,
@@ -168,7 +168,13 @@ const AcintDataSection: React.FC = () => {
       updateExerciseToSubmit.updateRecordName(selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(metadata.record_length);
       updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
-      updateExerciseToSubmit.updateAnswersList(metadata.targets_ids_list);
+      updateExerciseToSubmit.updateAnswersList(
+        Array.isArray(metadata.targets_ids_list)
+          ? metadata.targets_ids_list
+          : !!metadata.targets_ids_list
+            ? [metadata.targets_ids_list]
+            : []
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile]);

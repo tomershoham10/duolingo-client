@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useReducer } from 'react';
 
 import { useStore } from 'zustand';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -13,7 +13,7 @@ import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Textbox, { FontSizes } from '@/components/Textbox/page';
-import Dropdown from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 
 import { TiPlus } from 'react-icons/ti';
 import { TbTargetArrow } from 'react-icons/tb';
@@ -23,15 +23,36 @@ import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
+import {
+  submitExerciseDataAction,
+  submitExerciseReducer,
+} from '@/reducers/submitExerciseDataReducer';
+import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
+
+enum FSAFieldsType {
+  DESCRIPTION = 'description',
+  RELEVANT = 'relevant',
+  TIMEBUFFERS = 'timeBuffers',
+}
 
 const ExerciseDataSection: React.FC = () => {
   const updateExerciseToSubmit = {
     updateDescription: useCreateExerciseStore.getState().updateDescription,
   };
+  const addAlert = useAlertStore.getState().addAlert;
 
   const targetsList = useStore(useTargetStore, (state) => state.targets);
+
+  const recordLength = useStore(
+    useCreateExerciseStore,
+    (state) => state.recordLength
+  );
+  const answersList = useStore(
+    useCreateExerciseStore,
+    (state) => state.answersList
+  );
+
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
-  const addAlert = useAlertStore.getState().addAlert;
 
   const contextMenuStore = {
     toggleMenuOpen: useContextMenuStore.getState().toggleMenuOpen,
@@ -39,18 +60,34 @@ const ExerciseDataSection: React.FC = () => {
     setContent: useContextMenuStore.getState().setContent,
   };
 
-  const [description, setDescription] = useState<string | undefined>(undefined);
+  const initialsubmitExerciseState = {
+    description: undefined,
+    relevant: [],
+    unfilledFields: [],
+  };
+
+  const initialsubmitDraggingState = {
+    itemsList: [],
+  };
+
+  const [submitExerciseState, submitExerciseDispatch] = useReducer(
+    submitExerciseReducer,
+    initialsubmitExerciseState
+  );
+
+  const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
+    draggingReducer,
+    initialsubmitDraggingState
+  );
+
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
   const [targetFromDropdown, setTargetFromDropdown] =
     useState<TargetType | null>(null);
   const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
-  const [relevant, setRelevant] = useState<TargetType[]>([]);
-  const [answersList, setAnswersList] = useState<TargetType[]>([]);
+  //   const [relevant, setRelevant] = useState<TargetType[]>([]);
   const [grabbedRelevantId, setGrabbedRelevantId] =
     useState<string>('released');
-  const [grabbedAnswerId, setGrabbedAnswerId] = useState<string>('released');
   const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
-  const [recordLength, setRecordLength] = useState<number>(0);
   const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
   const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>(
     []
@@ -78,9 +115,14 @@ const ExerciseDataSection: React.FC = () => {
 
   const addTargetToRelevant = () => {
     if (targetFromDropdown) {
-      const relevantIds = relevant.map((target) => target._id);
+      const relevantIds = submitExerciseState.relevant.map(
+        (target) => target._id
+      );
       if (!relevantIds.includes(targetFromDropdown._id)) {
-        setRelevant((prevList) => [...prevList, targetFromDropdown]);
+        submitExerciseDispatch({
+          type: submitExerciseDataAction.SET_RELEVANT,
+          payload: targetFromDropdown,
+        });
       } else {
         addAlert('target already included.', AlertSizes.small);
       }
@@ -89,30 +131,47 @@ const ExerciseDataSection: React.FC = () => {
     }
   };
 
-  const addTargetToAnswersList = () => {
-    if (targetFromDropdown) {
-      const answersIds = answersList.map((target) => target._id);
-      if (!answersIds.includes(targetFromDropdown._id)) {
-        setAnswersList((prevList) => [...prevList, targetFromDropdown]);
-      } else {
-        addAlert('target already included.', AlertSizes.small);
-      }
-    } else {
-      addAlert('please select a target.', AlertSizes.small);
-    }
-  };
+  //   const addTargetToAnswersList = () => {
+  //     if (targetFromDropdown) {
+  //       const answersIds = answersList.map((target) => target._id);
+  //       if (!answersIds.includes(targetFromDropdown._id)) {
+  //         setAnswersList((prevList) => [...prevList, targetFromDropdown]);
+  //       } else {
+  //         addAlert('target already included.', AlertSizes.small);
+  //       }
+  //     } else {
+  //       addAlert('please select a target.', AlertSizes.small);
+  //     }
+  //   };
 
   const handleRelevantDragMove = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setRelevant((items) => {
-        const activeIndex = items
-          .map((item) => item._id)
-          .indexOf(active.id as string);
-        const overIndex = items
-          .map((item) => item._id)
-          .indexOf(over.id as string);
-        return arrayMove(items, activeIndex, overIndex);
+
+    // if (over && active.id !== over.id) {
+    //   setRelevant((items) => {
+    //     const activeIndex = items
+    //       .map((item) => item._id)
+    //       .indexOf(active.id as string);
+    //     const overIndex = items
+    //       .map((item) => item._id)
+    //       .indexOf(over.id as string);
+    //     return arrayMove(items, activeIndex, overIndex);
+    //   });
+    // }
+
+    const updatedRelevant = relevantDraggingDispatch({
+      type: draggingAction.REARANGE_ITEMS_LIST,
+      payload: {
+        itemsList: submitExerciseState.relevant,
+        active: active,
+        over: over,
+      },
+    });
+
+    if (updatedRelevant !== undefined) {
+      submitExerciseDispatch({
+        type: submitExerciseDataAction.SET_RELEVANT,
+        payload: updatedRelevant,
       });
     }
   };
@@ -120,59 +179,80 @@ const ExerciseDataSection: React.FC = () => {
   const handleRelevantDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setGrabbedRelevantId('released');
+    const updatedRelevant = relevantDraggingDispatch({
+      type: draggingAction.REARANGE_ITEMS_LIST,
+      payload: {
+        itemsList: submitExerciseState.relevant,
+        active: active,
+        over: over,
+      },
+    });
 
-    if (over && active.id !== over.id) {
-      setRelevant((items) => {
-        const activeIndex = items
-          .map((item) => item._id)
-          .indexOf(active.id as string);
-        const overIndex = items
-          .map((item) => item._id)
-          .indexOf(over.id as string);
-        return arrayMove(items, activeIndex, overIndex);
+    if (updatedRelevant !== undefined) {
+      submitExerciseDispatch({
+        type: submitExerciseDataAction.SET_RELEVANT,
+        payload: updatedRelevant,
       });
     }
+    // if (over && active.id !== over.id) {
+    //   setRelevant((items) => {
+    //     const activeIndex = items
+    //       .map((item) => item._id)
+    //       .indexOf(active.id as string);
+    //     const overIndex = items
+    //       .map((item) => item._id)
+    //       .indexOf(over.id as string);
+    //     return arrayMove(items, activeIndex, overIndex);
+    //   });
+    // }
   };
 
-  const removeRelevantItem = (itemId: string) => {
-    setRelevant(relevant.filter((item) => item._id != itemId));
-  };
+  //   const removeRelevantItem = (itemId: string) => {
+  //     // setRelevant(relevant.filter((item) => item._id != itemId));
 
-  const handleAnswerDragMove = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setAnswersList((items) => {
-        const activeIndex = items
-          .map((item) => item._id)
-          .indexOf(active.id as string);
-        const overIndex = items
-          .map((item) => item._id)
-          .indexOf(over.id as string);
-        return arrayMove(items, activeIndex, overIndex);
-      });
-    }
-  };
+  //     submitExerciseDispatch({
+  //       type: submitExerciseDataAction.SET_RELEVANT,
+  //       payload: submitExerciseState.relevant.filter(
+  //         (item) => item._id != itemId
+  //       ),
+  //     });
+  //   };
 
-  const handleAnswerDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setGrabbedAnswerId('released');
+  //   const handleAnswerDragMove = (event: DragEndEvent) => {
+  //     const { active, over } = event;
+  //     if (over && active.id !== over.id) {
+  //       setAnswersList((items) => {
+  //         const activeIndex = items
+  //           .map((item) => item._id)
+  //           .indexOf(active.id as string);
+  //         const overIndex = items
+  //           .map((item) => item._id)
+  //           .indexOf(over.id as string);
+  //         return arrayMove(items, activeIndex, overIndex);
+  //       });
+  //     }
+  //   };
 
-    if (over && active.id !== over.id) {
-      setAnswersList((items) => {
-        const activeIndex = items
-          .map((item) => item._id)
-          .indexOf(active.id as string);
-        const overIndex = items
-          .map((item) => item._id)
-          .indexOf(over.id as string);
-        return arrayMove(items, activeIndex, overIndex);
-      });
-    }
-  };
+  //   const handleAnswerDragEnd = (event: DragEndEvent) => {
+  //     const { active, over } = event;
+  //     setGrabbedAnswerId('released');
 
-  const removeAnswerItem = (itemId: string) => {
-    setAnswersList(answersList.filter((item) => item._id != itemId));
-  };
+  //     if (over && active.id !== over.id) {
+  //       setAnswersList((items) => {
+  //         const activeIndex = items
+  //           .map((item) => item._id)
+  //           .indexOf(active.id as string);
+  //         const overIndex = items
+  //           .map((item) => item._id)
+  //           .indexOf(over.id as string);
+  //         return arrayMove(items, activeIndex, overIndex);
+  //       });
+  //     }
+  //   };
+
+  //   const removeAnswerItem = (itemId: string) => {
+  //     setAnswersList(answersList.filter((item) => item._id != itemId));
+  //   };
 
   const splicer = (index: number, newVal: number, oldArray: number[]) => {
     const newArray = [...oldArray];
@@ -238,9 +318,13 @@ const ExerciseDataSection: React.FC = () => {
               isEditMode={false}
               fontSizeProps={FontSizes.MEDIUM}
               placeHolder={'Add desription...'}
-              value={description}
+              value={submitExerciseState.description}
               onChange={(text: string) => {
-                setDescription(text);
+                submitExerciseDispatch({
+                  type: submitExerciseDataAction.SET_DESCRIPTION,
+                  payload: text,
+                });
+                // setDescription(text);
                 updateExerciseToSubmit.updateDescription(text);
               }}
             />
@@ -279,7 +363,7 @@ const ExerciseDataSection: React.FC = () => {
                 </button>
               </div>
 
-              <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
+              {/* <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
                   className='open-button flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
                   onClick={addTargetToAnswersList}
@@ -289,7 +373,7 @@ const ExerciseDataSection: React.FC = () => {
                     add answer
                   </span>
                 </button>
-              </div>
+              </div> */}
             </div>
           ) : null}
         </div>
@@ -297,7 +381,7 @@ const ExerciseDataSection: React.FC = () => {
         <div className='mb-4'>
           <div>
             <span className='my-3 text-2xl font-bold'>Relevant:</span>
-            {relevant.length > 0 ? (
+            {submitExerciseState.relevant.length > 0 ? (
               <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
                 <DndContext
                   collisionDetection={closestCenter}
@@ -309,38 +393,46 @@ const ExerciseDataSection: React.FC = () => {
                   onDragEnd={handleRelevantDragEnd}
                 >
                   <SortableContext
-                    items={relevant.map((target) => target._id)}
+                    items={submitExerciseState.relevant.map(
+                      (target) => target._id
+                    )}
                     strategy={horizontalListSortingStrategy}
                   >
                     <div className='flex flex-wrap gap-1'>
-                      {relevant.map((target, relevantIndex) => (
-                        <div
-                          key={relevantIndex}
-                          className='mb-2 flex w-[8rem] flex-row'
-                        >
-                          <SortableItem
-                            id={target._id}
+                      {submitExerciseState.relevant.map(
+                        (target, relevantIndex) => (
+                          <div
                             key={relevantIndex}
-                            name={target.name}
-                            isGrabbed={
-                              grabbedRelevantId
-                                ? grabbedRelevantId === target._id
-                                : false
-                            }
-                            isDisabled={false}
-                          />
-                          {grabbedRelevantId !== target._id ? (
-                            <button
-                              onClick={() => {
-                                removeRelevantItem(target._id);
-                              }}
-                              className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
-                            >
-                              <FaRegTrashAlt />
-                            </button>
-                          ) : null}
-                        </div>
-                      ))}
+                            className='mb-2 flex w-[8rem] flex-row'
+                          >
+                            <SortableItem
+                              id={target._id}
+                              key={relevantIndex}
+                              name={target.name}
+                              isGrabbed={
+                                grabbedRelevantId
+                                  ? grabbedRelevantId === target._id
+                                  : false
+                              }
+                              isDisabled={false}
+                            />
+                            {grabbedRelevantId !== target._id ? (
+                              <button
+                                onClick={() => {
+                                  submitExerciseDispatch({
+                                    type: submitExerciseDataAction.SET_RELEVANT,
+                                    payload: target,
+                                  });
+                                  // removeRelevantItem(target._id);
+                                }}
+                                className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
+                              >
+                                <FaRegTrashAlt />
+                              </button>
+                            ) : null}
+                          </div>
+                        )
+                      )}
                     </div>
                   </SortableContext>
                 </DndContext>
@@ -361,53 +453,26 @@ const ExerciseDataSection: React.FC = () => {
             <span className={`my-3 text-2xl font-bold ${'' ? '' : ''}`}>
               Answers:
             </span>
-            {answersList.length > 0 ? (
+            {!!answersList && answersList.length > 0 ? (
               <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragStart={(event: DragEndEvent) => {
-                    const { active } = event;
-                    setGrabbedAnswerId(active.id.toString());
-                  }}
-                  onDragMove={handleAnswerDragMove}
-                  onDragEnd={handleAnswerDragEnd}
-                >
-                  <SortableContext
-                    items={answersList.map((answer) => answer._id)}
-                    strategy={horizontalListSortingStrategy}
-                  >
-                    <div className='flex flex-wrap gap-1'>
-                      {answersList.map((answer, answerIndex) => (
-                        <div
-                          key={answerIndex}
-                          className='mb-2 flex w-[8rem] flex-row'
-                        >
-                          <SortableItem
-                            id={answer._id}
-                            key={answerIndex}
-                            name={answer.name}
-                            isGrabbed={
-                              grabbedAnswerId
-                                ? grabbedAnswerId === answer._id
-                                : false
-                            }
-                            isDisabled={false}
-                          />
-                          {grabbedAnswerId !== answer._id ? (
-                            <button
-                              onClick={() => {
-                                removeAnswerItem(answer._id);
-                              }}
-                              className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
-                            >
-                              <FaRegTrashAlt />
-                            </button>
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                <ul>
+                  {!!answersList &&
+                    answersList.map((answer, answerIndex) => (
+                      <li key={answerIndex}>
+                        {!!targetsList.filter(
+                          (target) => target._id === answer
+                        )[0] ? (
+                          targetsList.filter(
+                            (target) => target._id === answer
+                          )[0].name
+                        ) : (
+                          <span className='font-semibold text-duoGray-dark opacity-70'>
+                            problem.
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                </ul>
               </div>
             ) : (
               <>
@@ -435,7 +500,7 @@ const ExerciseDataSection: React.FC = () => {
             <div
               ref={timeBufferGradeDivRef}
               className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
-                isAddBufferOpen && recordLength > 0
+                isAddBufferOpen && !!recordLength && recordLength > 0
                   ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
                     ? 'bg-duoRed-light text-duoRed-default'
                     : 'bg-duoGray-light dark:bg-duoGrayDark-lighter'
@@ -498,10 +563,9 @@ const ExerciseDataSection: React.FC = () => {
                         }
 
                         setRangeIndex(rangeIndex + 1);
-                        setTimeBufferRangeValues((prevValues) => [
-                          ...prevValues,
-                          recordLength,
-                        ]);
+                        setTimeBufferRangeValues((prevValues) =>
+                          !!recordLength ? [...prevValues, recordLength] : []
+                        );
                         setTimeBuffersScores((prevValues) => [
                           ...prevValues,
                           gradeInput,
@@ -527,7 +591,7 @@ const ExerciseDataSection: React.FC = () => {
 
               <div
                 className={` ${
-                  isAddBufferOpen && recordLength > 0
+                  isAddBufferOpen && !!recordLength && recordLength > 0
                     ? 'w-fit rounded-2xl px-2 text-base'
                     : 'hidden'
                 }`}
@@ -543,22 +607,20 @@ const ExerciseDataSection: React.FC = () => {
             </div>
           </div>
 
-          {timeBufferRangeValues.length > 0 ? (
-            <div className='mt-6 w-full pb-[5rem]'>
-              <Slider
-                isMultiple={true}
-                numberOfSliders={rangeIndex}
-                min={0}
-                max={recordLength}
-                onContextMenu={handleContextMenu}
-                step={1 / 6}
-                value={timeBufferRangeValues}
-                tooltipsValues={timeBuffersScores}
-                onChange={handleTimeBufferRange}
-                deleteNode={(index) => deleteTimeBuffer(index)}
-              />
-            </div>
-          ) : null}
+          <div className='mt-6 w-full pb-[5rem]'>
+            <Slider
+              isMultiple={true}
+              numberOfSliders={rangeIndex}
+              min={0}
+              max={!!recordLength ? recordLength : 0}
+              onContextMenu={handleContextMenu}
+              step={1 / 6}
+              value={timeBufferRangeValues}
+              tooltipsValues={timeBuffersScores}
+              onChange={handleTimeBufferRange}
+              deleteNode={(index) => deleteTimeBuffer(index)}
+            />
+          </div>
         </div>
       </div>
     </div>

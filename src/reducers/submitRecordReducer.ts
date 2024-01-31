@@ -23,7 +23,7 @@ type Action =
     | { type: submitRecordAction.SET_SONOGRAM_META; payload: Partial<SonogramMetadataType> }
     | { type: submitRecordAction.REMOVE_SONOGRAM_META; payload: number }
 
-export interface submitDataType {
+export interface submitRecordDataType {
     record: File | undefined,
     recordMetadata: Partial<RecordMetadataType> | undefined,
     // sonograms: FileList | undefined,
@@ -32,9 +32,9 @@ export interface submitDataType {
 }
 
 export const submitRecordReducer = (
-    state: submitDataType,
+    state: submitRecordDataType,
     action: Action
-): submitDataType => {
+): submitRecordDataType => {
     switch (action.type) {
         case submitRecordAction.SET_RECORD_FILE:
             return { ...state, record: action.payload };

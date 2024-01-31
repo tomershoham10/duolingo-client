@@ -1,5 +1,5 @@
 'use client';
-import Button, { Color } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import { useState, useEffect } from 'react';
 
 export interface PaginationItems {
@@ -81,11 +81,11 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         <div className='relative flex items-center justify-center py-8'>
           <div className='absolute right-4 w-24'>
             {selectedPageNumber === paginationItems.length - 1 ? (
-              <Button label={'SUBMIT'} color={Color.BLUE} />
+              <Button label={'SUBMIT'} color={ButtonColors.BLUE} />
             ) : (
               <Button
                 label={'NEXT'}
-                color={Color.BLUE}
+                color={ButtonColors.BLUE}
                 isDisabled={paginationItems[selectedPageNumber].isDisabled}
                 onClick={() => {
                   setSelectedPageNumber(selectedPageNumber + 1);
@@ -97,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
             <div className='absolute right-[8rem] w-24'>
               <Button
                 label={'BACK'}
-                color={Color.WHITE}
+                color={ButtonColors.WHITE}
                 onClick={() => setSelectedPageNumber(selectedPageNumber - 1)}
               />
             </div>
