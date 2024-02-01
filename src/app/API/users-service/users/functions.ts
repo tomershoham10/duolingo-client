@@ -4,11 +4,13 @@ import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";
 
-const updateUserRole = useUserStore.getState().updateUserRole;
-const updateIsLoggedIn = useUserStore.getState().updateIsLoggedIn;
-const updateNextLessonId = useUserStore.getState().updateNextLessonId;
+const useUserStoreObj = {
 
-const updateAccessToken = useUserStore.getState().updateAccessToken;
+    updateUserRole: useUserStore.getState().updateUserRole,
+    updateIsLoggedIn: useUserStore.getState().updateIsLoggedIn,
+    updateNextLessonId: useUserStore.getState().updateNextLessonId,
+    updateAccessToken: useUserStore.getState().updateAccessToken,
+}
 
 const addAlert = useAlertStore.getState().addAlert;
 
@@ -114,17 +116,17 @@ export const handleAuth = async (userName: string, password: string) => {
                     // console.log("api nextLessonId", nextLessonId);
 
                     localStorage.setItem("jwtToken", token);
-                    if (updateUserRole) {
-                        updateUserRole(role);
+                    if (useUserStoreObj.updateUserRole) {
+                        useUserStoreObj.updateUserRole(role);
                     }
-                    if (updateIsLoggedIn) {
-                        updateIsLoggedIn(true);
+                    if (useUserStoreObj.updateIsLoggedIn) {
+                        useUserStoreObj.updateIsLoggedIn(true);
                     }
-                    if (updateNextLessonId) {
-                        updateNextLessonId(nextLessonId);
+                    if (useUserStoreObj.updateNextLessonId) {
+                        useUserStoreObj.updateNextLessonId(nextLessonId);
                     }
-                    if (updateAccessToken) {
-                        updateAccessToken(token);
+                    if (useUserStoreObj.updateAccessToken) {
+                        useUserStoreObj.updateAccessToken(token);
                     }
 
                     if (role !== TypesOfUser.ADMIN) {
