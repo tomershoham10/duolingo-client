@@ -1,7 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
-import NavBar from '@/components/Navigation/NavBar/page';
 import CreateNewUser from '../popups/CreateNewUser/page';
 import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
 import AdminEditPopup from '../popups/AdminEditPopup/page';
@@ -31,7 +30,6 @@ export default function RootLayout({
           <AdminEditPopup />
           <CreateNewUnit />
           <div className='flex h-screen w-full flex-col'>
-            {pathname.includes('courses') ? <NavBar /> : null}
             <div className='flex h-full flex-row justify-between overflow-hidden'>
               <AdminSideBar />
               {children}
