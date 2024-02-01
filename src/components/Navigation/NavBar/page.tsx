@@ -7,6 +7,13 @@ import { usePathname } from 'next/navigation';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 
+enum coursePages {
+  STUDENTS = 'students',
+  ASSIGNMENTS = 'assignments',
+  SYLLABUS = 'syllabus',
+  SETTINGS = 'settings',
+}
+
 const NavBar: React.FC = () => {
   const [selected, setSelected] = useState<coursePages>();
 
@@ -53,7 +60,7 @@ const NavBar: React.FC = () => {
   return (
     <>
       <div className='block w-full border-b-2 pt-4 dark:border-duoGrayDark-light'>
-        <p className='pb-4 pl-5 pt-2 3xl:pb-10 3xl:pt-5 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest 3xl:text-5xl'>
+        <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest 3xl:pb-10 3xl:pt-5 3xl:text-5xl'>
           {!!courseName ? courseName : null} course
         </p>
         <ul

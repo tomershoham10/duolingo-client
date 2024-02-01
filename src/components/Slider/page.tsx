@@ -55,9 +55,11 @@ const Slider: React.FC<SliderProps> = (props) => {
 
   return (
     <>
-      {isMultiple && numberOfSliders && _.isObject(propsValue) ? (
+      {isMultiple && numberOfSliders !== undefined && _.isObject(propsValue) ? (
         <>
-          {Array.from({ length: numberOfSliders }).map((_, index) => (
+          {Array.from({
+            length: numberOfSliders > 0 ? numberOfSliders : 1,
+          }).map((_, index) => (
             <section key={index}>
               <div className='range-check absolute flex h-[2rem] w-full'>
                 <span
@@ -73,7 +75,11 @@ const Slider: React.FC<SliderProps> = (props) => {
                   min={propsMin}
                   max={propsMax}
                   step={propsStep}
-                  value={(propsValue as number[])[index].toString()}
+                  value={
+                    !!(propsValue as number[])[index]
+                      ? (propsValue as number[])[index].toString()
+                      : []
+                  }
                   onChange={(e) => propsOnChange(e, index)}
                   className='multi-range absolute mb-6 mt-3 w-full'
                 />

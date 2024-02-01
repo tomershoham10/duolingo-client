@@ -166,7 +166,7 @@ const AcintDataSection: React.FC = () => {
     if (selectedFile && selectedFile.name.endsWith('wav')) {
       const metadata = selectedFile.metadata as Partial<RecordMetadataType>;
       updateExerciseToSubmit.updateRecordName(selectedFile.name);
-      updateExerciseToSubmit.updateRecordLength(metadata.record_length);
+      updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
       updateExerciseToSubmit.updateAnswersList(
         Array.isArray(metadata.targets_ids_list)

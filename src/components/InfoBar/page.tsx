@@ -18,32 +18,35 @@ const InfoBar: React.FC = () => {
   const userName = useStore(useUserStore, (state) => state.userName);
   const courseName = useStore(useCourseStore, (state) => state.name);
 
-  const syllabusFieldToEdit = useStore(
-    useInfoBarStore,
-    (state) => state.syllabusFieldToEdit
-  );
-  const syllabusFieldId = useStore(
-    useInfoBarStore,
-    (state) => state.syllabusFieldId
-  );
-  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
+  const useInfoBarStoreObj = {
+    syllabusFieldToEdit: useStore(
+      useInfoBarStore,
+      (state) => state.syllabusFieldToEdit
+    ),
+    syllabusFieldId: useStore(
+      useInfoBarStore,
+      (state) => state.syllabusFieldId
+    ),
+    selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile),
+  };
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   useEffect(() => {
-    console.log('selectedFile', selectedFile);
-  }, [selectedFile]);
+    console.log('selectedFile', useInfoBarStoreObj.selectedFile);
+  }, [useInfoBarStoreObj.selectedFile]);
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
-    <div className='flex h-full w-[35%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 3xl:w-[15%]'>
+    <div className='flex h-full min-w-[25%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 2xl:min-w-[15%]'>
       {pathname.includes('syllabus') ? (
         <div>
           <div>{courseName}</div>
-          {syllabusFieldToEdit ? (
+          {useInfoBarStoreObj.syllabusFieldToEdit ? (
             <div>
               <span>
-                {syllabusFieldToEdit} {syllabusFieldId}
+                {useInfoBarStoreObj.syllabusFieldToEdit}{' '}
+                {useInfoBarStoreObj.syllabusFieldId}
               </span>
               <button
                 onClick={() => {
@@ -57,7 +60,7 @@ const InfoBar: React.FC = () => {
         </div>
       ) : pathname.includes('new-exercise') ? (
         <>
-          {!!selectedFile ? (
+          {!!useInfoBarStoreObj.selectedFile ? (
             <div className='flex flex-col'>
               <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
                 <li className='w-full border-b-2 text-center dark:border-duoGrayDark-light dark:dark:text-duoBlueDark-text'>
@@ -65,40 +68,54 @@ const InfoBar: React.FC = () => {
                 </li>
                 <li className='my-1'>
                   name:{' '}
-                  {selectedFile.name
+                  {useInfoBarStoreObj.selectedFile.name
                     .toLocaleLowerCase()
                     .replace(regexFilesEnding, '')}
                 </li>
 
-                {!!selectedFile.metadata &&
-                  Object.values(selectedFile.metadata).map(
+                {!!useInfoBarStoreObj.selectedFile.metadata &&
+                  Object.values(useInfoBarStoreObj.selectedFile.metadata).map(
                     (meta, metaIndex) => (
-                      <li key={metaIndex} className='my-1'>
-                        {Object.keys(selectedFile.metadata)[metaIndex] !==
-                          'content-type' &&
-                        Object.keys(selectedFile.metadata)[metaIndex] !==
-                          'sonograms_ids'
-                          ? `${Object.keys(selectedFile.metadata)[metaIndex]}: `
-                          : null}
-                        {Object.keys(selectedFile.metadata)[metaIndex] !==
-                          'content-type' &&
-                        Object.keys(selectedFile.metadata)[metaIndex] !==
-                          'sonograms_ids'
-                          ? meta
-                          : null}
-                      </li>
+                      <>
+                        {!!useInfoBarStoreObj.selectedFile ? (
+                          <li key={metaIndex} className='my-1'>
+                            {Object.keys(
+                              useInfoBarStoreObj.selectedFile.metadata
+                            )[metaIndex] !== 'content-type' &&
+                            Object.keys(
+                              useInfoBarStoreObj.selectedFile.metadata
+                            )[metaIndex] !== 'sonograms_ids'
+                              ? `${
+                                  Object.keys(
+                                    useInfoBarStoreObj.selectedFile.metadata
+                                  )[metaIndex]
+                                }: `
+                              : null}
+                            {Object.keys(
+                              useInfoBarStoreObj.selectedFile.metadata
+                            )[metaIndex] !== 'content-type' &&
+                            Object.keys(
+                              useInfoBarStoreObj.selectedFile.metadata
+                            )[metaIndex] !== 'sonograms_ids'
+                              ? meta
+                              : null}
+                          </li>
+                        ) : null}
+                      </>
                     )
                   )}
                 <li>
-                  {selectedFile.name.endsWith('.wav') ? (
-                    !!selectedFile.metadata &&
-                    'sonograms_ids' in selectedFile.metadata &&
-                    selectedFile.metadata.sonograms_ids &&
-                    selectedFile.metadata.sonograms_ids.length > 0 ? (
+                  {useInfoBarStoreObj.selectedFile.name.endsWith('.wav') ? (
+                    !!useInfoBarStoreObj.selectedFile.metadata &&
+                    'sonograms_ids' in
+                      useInfoBarStoreObj.selectedFile.metadata &&
+                    useInfoBarStoreObj.selectedFile.metadata.sonograms_ids &&
+                    useInfoBarStoreObj.selectedFile.metadata.sonograms_ids
+                      .length > 0 ? (
                       <Link
                         className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 hover:text-duoBlue-default
                        dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
-                        href={`${`/sonolist/${selectedFile.name}`}`}
+                        href={`${`/sonolist/${useInfoBarStoreObj.selectedFile.name}`}`}
                         target='_blank'
                       >
                         <FaRegImages />

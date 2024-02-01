@@ -10,7 +10,7 @@ import {
 } from '@dnd-kit/sortable';
 
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
-import { useAlertStore } from '@/app/store/stores/useAlertStore';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
@@ -89,10 +89,10 @@ const ExerciseDataSection: React.FC = () => {
     useState<string>('released');
   const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
   const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
-  const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>(
-    []
-  );
-  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([]);
+  const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>([
+    recordLength ? recordLength : 10,
+  ]);
+  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([100]);
   const [rangeIndex, setRangeIndex] = useState<number>(0);
   const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -612,7 +612,7 @@ const ExerciseDataSection: React.FC = () => {
               isMultiple={true}
               numberOfSliders={rangeIndex}
               min={0}
-              max={!!recordLength ? recordLength : 0}
+              max={!!recordLength ? recordLength : 10}
               onContextMenu={handleContextMenu}
               step={1 / 6}
               value={timeBufferRangeValues}
