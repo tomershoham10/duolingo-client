@@ -38,7 +38,7 @@ const InfoBar: React.FC = () => {
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
-    <div className='flex h-full min-w-[25%] flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest 2xl:min-w-[15%]'>
+    <div className='flex h-full w-full flex-col items-center justify-start border-l-2 border-duoGray-light font-extrabold tracking-wide text-duoGray-darkest dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest'>
       {pathname.includes('syllabus') ? (
         <div>
           <div>{courseName}</div>

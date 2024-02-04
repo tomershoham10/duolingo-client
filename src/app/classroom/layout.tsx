@@ -29,10 +29,12 @@ export default function RootLayout({
           <CreateNewCourse />
           <AdminEditPopup />
           <CreateNewUnit />
-          <div className='flex h-screen w-full flex-col'>
-            <div className='flex h-full flex-row justify-between overflow-hidden'>
+          <div className='flex h-full w-full flex-row'>
+            <div className='w-[25%]'>
               <AdminSideBar />
-              {children}
+            </div>
+            <div className='w-[50%] overflow-x-hidden'>{children}</div>
+            <div className='w-[25%]'>
               <InfoBar />
             </div>
           </div>

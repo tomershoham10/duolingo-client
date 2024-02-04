@@ -7,7 +7,7 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
-import Table from '@/components/Table/page';
+import Table, { TableHead } from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
 import MetadataPopup, { FilesTypes } from '@/app/popups/MetadataPopup/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
@@ -73,13 +73,6 @@ const AcintDataSection: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordName, recordsData]);
-
-  const recordsHeaders: string[] = [
-    'name',
-    'difficulty_level',
-    'targets_ids_list',
-    'is_in_italy',
-  ];
 
   //   const handleFileChange = (files: File | FileList | null) => {
   const handleFileChange = (files: File | File[] | null) => {
@@ -179,8 +172,23 @@ const AcintDataSection: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile]);
 
+  //   const recordsHeaders: string[] = [
+  //     'name',
+  //     'difficulty_level',
+  //     'targets_ids_list',
+  //     'is_in_italy',
+  //   ];
+
+  const TABLE_HEAD: TableHead[] = [
+    { key: 'name', label: 'Name' },
+    { key: 'difficulty_level', label: 'Difficulty level' },
+    { key: 'targets_ids_list', label: 'Targets list' },
+    { key: 'is_in_italy', label: 'is in italy' },
+    // Add more headers as needed
+  ];
+
   return (
-    <section className='mx-auto h-full w-[90%] text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+    <section className='h-full  text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <MetadataPopup
         onSave={(type, data) =>
           PopupsTypes.RECORDMETADATA
@@ -195,12 +203,22 @@ const AcintDataSection: React.FC = () => {
       />
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
       <Table
-        headers={recordsHeaders}
-        data={recordsData.map(({ name, id, metadata }) => ({
-          name,
-          id,
-          ...metadata,
-        }))}
+        head={TABLE_HEAD}
+        rows={
+          recordsData.length > 0
+            ? recordsData.map(({ name, id, metadata }) => ({
+                name,
+                id,
+                ...metadata,
+              }))
+            : recordsData
+        }
+        onSelect={handleSelectTableRow}
+        selectedRowIndex={
+          recordName
+            ? recordsData.map((record) => record.name).indexOf(recordName)
+            : undefined
+        }
         isSelectable={
           selectedFile
             ? recordsData
@@ -208,12 +226,6 @@ const AcintDataSection: React.FC = () => {
                 .includes(selectedFile.name)
             : true
         }
-        selectedRowIndex={
-          recordName
-            ? recordsData.map((record) => record.name).indexOf(recordName)
-            : undefined
-        }
-        onSelect={handleSelectTableRow}
       />
 
       <div className='relative my-3 flex w-full flex-row items-start justify-between gap-5 3xl:w-[55%]'>
