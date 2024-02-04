@@ -30,11 +30,11 @@ export default function RootLayout({
           <AdminEditPopup />
           <CreateNewUnit />
           <div className='flex h-full w-full flex-row'>
-            <div className='w-[25%]'>
+            <div className='basis-1/5'>
               <AdminSideBar />
             </div>
-            <div className='w-[50%] overflow-x-hidden'>{children}</div>
-            <div className='w-[25%]'>
+            <div className='basis-3/5 overflow-x-hidden'>{children}</div>
+            <div className='basis-1/5'>
               <InfoBar />
             </div>
           </div>

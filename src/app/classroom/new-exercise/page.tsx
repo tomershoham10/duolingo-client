@@ -49,7 +49,7 @@ const NewExercise: React.FC = () => {
     },
   };
   return (
-    <div className='h-full w-full overflow-x-hidden'>
+    <div className='h-full w-full overflow-x-hidden px-5'>
       <Pagination
         header={'create new exercise'}
         components={components}

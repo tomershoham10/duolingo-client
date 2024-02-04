@@ -21,7 +21,7 @@ const Table = (props: DefaultTableProps) => {
   const tableData = props.rows;
   const onSelect = props.onSelect;
   return (
-    <div className='mx-auto flex max-h-[70%] max-w-[90%] justify-center overflow-auto'>
+    <div className='mx-auto flex max-h-[70%] justify-center overflow-auto'>
       <table className=' divide-y-2 divide-duoGray-default rounded-lg bg-black text-left dark:divide-duoGrayDark-light 2xl:text-xl'>
         <thead className=' uppercase text-duoGray-darker opacity-70 dark:text-duoGrayDark-lightest'>
           <tr>

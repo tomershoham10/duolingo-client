@@ -76,7 +76,7 @@ const InfoBar: React.FC = () => {
                 {!!useInfoBarStoreObj.selectedFile.metadata &&
                   Object.values(useInfoBarStoreObj.selectedFile.metadata).map(
                     (meta, metaIndex) => (
-                      <>
+                      <section key={metaIndex}>
                         {!!useInfoBarStoreObj.selectedFile ? (
                           <li key={metaIndex} className='my-1'>
                             {Object.keys(
@@ -101,7 +101,7 @@ const InfoBar: React.FC = () => {
                               : null}
                           </li>
                         ) : null}
-                      </>
+                      </section>
                     )
                   )}
                 <li>

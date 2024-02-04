@@ -202,31 +202,33 @@ const AcintDataSection: React.FC = () => {
         }
       />
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
-      <Table
-        head={TABLE_HEAD}
-        rows={
-          recordsData.length > 0
-            ? recordsData.map(({ name, id, metadata }) => ({
-                name,
-                id,
-                ...metadata,
-              }))
-            : recordsData
-        }
-        onSelect={handleSelectTableRow}
-        selectedRowIndex={
-          recordName
-            ? recordsData.map((record) => record.name).indexOf(recordName)
-            : undefined
-        }
-        isSelectable={
-          selectedFile
-            ? recordsData
-                .map((record) => record.name)
-                .includes(selectedFile.name)
-            : true
-        }
-      />
+      <section className='my-5'>
+          <Table
+            head={TABLE_HEAD}
+            rows={
+              recordsData.length > 0
+                ? recordsData.map(({ name, id, metadata }) => ({
+                    name,
+                    id,
+                    ...metadata,
+                  }))
+                : recordsData
+            }
+            onSelect={handleSelectTableRow}
+            selectedRowIndex={
+              recordName
+                ? recordsData.map((record) => record.name).indexOf(recordName)
+                : undefined
+            }
+            isSelectable={
+              selectedFile
+                ? recordsData
+                    .map((record) => record.name)
+                    .includes(selectedFile.name)
+                : true
+            }
+          />
+      </section>
 
       <div className='relative my-3 flex w-full flex-row items-start justify-between gap-5 3xl:w-[55%]'>
         <div className='relative flex w-full flex-col justify-between 3xl:w-[45%]'>
