@@ -249,7 +249,7 @@ const AdminSideBar: React.FC = () => {
                   //   selected === index
                   //     ? 'cursor-pointer bg-duoBlue-lightest pb-3 pl-3 pr-3 pt-3 text-duoBlue-light'
                   // :
-                  'cursor-pointer pb-3 pl-3 pr-3 pt-3 hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark'
+                  'cursor-pointer px-3 py-[0.85rem] hover:bg-duoGray-hover dark:hover:bg-duoBlueDark-dark 2xl:py-6'
                 }`}
               >
                 <button
@@ -266,28 +266,28 @@ const AdminSideBar: React.FC = () => {
                 >
                   {sideBaritem.href ? (
                     <Link
-                      className='flex h-full cursor-pointer overflow-hidden'
+                      className='flex h-full cursor-pointer items-center justify-center overflow-hidden'
                       href={sideBaritem.href}
                     >
                       {sideBaritem.icon ? (
                         <FontAwesomeIcon
-                          className='fa-xs fa-solid h-6 w-6'
+                          className='fa-xs fa-solid h-7 w-7 2xl:h-8 2xl:w-8'
                           icon={sideBaritem.icon}
                         />
                       ) : null}
-                      <p className='ml-4 hidden truncate md:block'>
+                      <p className='ml-4 hidden truncate text-lg md:block 2xl:text-xl'>
                         {sideBaritem.name}
                       </p>
                     </Link>
                   ) : (
                     <span className='overflow-hidden'>
                       {sideBaritem.icon ? (
-                        <span className='flex w-full flex-row'>
+                        <span className='flex w-full flex-row items-center justify-center'>
                           <FontAwesomeIcon
-                            className='fa-xs fa-solid h-6 w-6'
+                            className='fa-xs fa-solid h-7 w-7 2xl:h-8 2xl:w-8'
                             icon={sideBaritem.icon}
                           />
-                          <p className='ml-4 hidden truncate md:block'>
+                          <p className='ml-4 hidden truncate text-lg md:block 2xl:text-xl'>
                             {sideBaritem.name}
                           </p>
                         </span>
@@ -301,7 +301,7 @@ const AdminSideBar: React.FC = () => {
                   <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
                     {sideBaritem.subItems.map((subItem, subItemIndex) => (
                       <li
-                        className='duration-50 min-w-[10rem] py-2 pl-4 transition dark:hover:bg-duoBlueDark-default'
+                        className='duration-50 2xl:text-xl min-w-[10rem] py-2 pl-4 2xl:py-3 2xl:pl-5 transition dark:hover:bg-duoBlueDark-default'
                         key={subItemIndex}
                       >
                         <button
@@ -316,7 +316,7 @@ const AdminSideBar: React.FC = () => {
                           {subItem.href ? (
                             <Link href={subItem.href}>{subItem.name}</Link>
                           ) : (
-                            <span>{subItem.name}</span>
+                            <span >{subItem.name}</span>
                           )}
                         </button>
                       </li>
