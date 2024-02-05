@@ -9,6 +9,7 @@ import {
   faCog,
   faRightToBracket,
   faSquarePlus,
+  faHeadphones,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Link from 'next/link';
@@ -25,7 +26,14 @@ import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { TypesOfUser } from '@/app/store/stores/useUserStore';
 import React from 'react';
 
-library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus);
+library.add(
+  faHome,
+  faUser,
+  faCog,
+  faRightToBracket,
+  faSquarePlus,
+  faHeadphones
+);
 
 interface SidebarItem {
   name: string;
@@ -36,8 +44,6 @@ interface SidebarItem {
 }
 
 const AdminSideBar: React.FC = () => {
-  const storeData = useStore;
-
   const pathname = usePathname();
 
   const sidebarItemRef = useRef<HTMLLIElement | null>(null);
@@ -148,6 +154,12 @@ const AdminSideBar: React.FC = () => {
       popup: PopupsTypes.CLOSED,
       icon: faHome,
       href: '/classroom/',
+    },
+    {
+      name: 'Records',
+      popup: PopupsTypes.CLOSED,
+      icon: faHeadphones,
+      href: '/classroom/records',
     },
     {
       name: 'create',
