@@ -73,9 +73,32 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         </div>
       </div>
       <Component {...props.subProps} />
-      <div className='h-full w-full bg-blue-800'>asv</div>
+      <div className='relative w-full'>
+        {currentPage === Object.keys(props.components).length - 1 ? (
+          <div className='absolute inset-y-1/3 right-[1rem] w-24'>
+            <Button label={'SUBMIT'} color={ButtonColors.BLUE} />
+          </div>
+        ) : (
+          <div className='absolute inset-y-1/3 right-[1rem] w-24'>
+            <Button
+              label={'NEXT'}
+              color={ButtonColors.BLUE}
+              // isDisabled={paginationItems[selectedPageNumber].isDisabled}
+              onClick={handleNextPage}
+            />
+          </div>
+        )}
+        {currentPage > 0 ? (
+          <div className='absolute inset-y-1/3 right-[8rem] w-24'>
+            <Button
+              label={'BACK'}
+              color={ButtonColors.WHITE}
+              onClick={handlePrevPage}
+            />
+          </div>
+        ) : null}
+      </div>
     </div>
-
     // <section
     //   className='grid h-full  overflow-y-auto '
     //   style={{ gridTemplateRows: '180px 1fr 100px' }}

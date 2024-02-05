@@ -309,7 +309,7 @@ const ExerciseDataSection: React.FC = () => {
   };
 
   return (
-    <div className='mx-auto flex h-full w-[90%] flex-col p-4 tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+    <div className='mx-auto flex h-full w-full flex-col tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <div className='mx-auto w-full'>
         <div>
           <span className='my-3 text-2xl font-bold'>Description:</span>
