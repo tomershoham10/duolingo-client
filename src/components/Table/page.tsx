@@ -21,14 +21,14 @@ const Table = (props: DefaultTableProps) => {
   const tableData = props.rows;
   const onSelect = props.onSelect;
   return (
-    <div className='mx-auto flex max-h-[70%] justify-center overflow-auto'>
-      <table className=' divide-y-2 divide-duoGray-default rounded-lg bg-black text-left dark:divide-duoGrayDark-light 2xl:text-xl'>
-        <thead className=' uppercase text-duoGray-darker opacity-70 dark:text-duoGrayDark-lightest'>
+    <div className=' flex max-h-[70%] justify-center overflow-auto'>
+      <table className=' divide-y-2 divide-duoGray-default rounded-lg bg-black text-left dark:divide-duoBlueDark-text dark:divide-opacity-70 2xl:text-xl'>
+        <thead className=' uppercase text-duoGray-darker  dark:text-duoBlueDark-text'>
           <tr>
             {headers.map((header, headerIndex) => (
               <th
                 key={headerIndex}
-                className='h-12 cursor-default px-4 2xl:h-20'
+                className='h-12 cursor-default px-4 2xl:px-8 2xl:h-20'
               >
                 <span className='flex items-center justify-start font-extrabold '>
                   {header.label}
@@ -44,7 +44,7 @@ const Table = (props: DefaultTableProps) => {
             return (
               <tr
                 key={index}
-                className={`cursor-default font-bold hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest
+                className={`cursor-pointer font-bold hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest
                 ${
                   props.selectedRowIndex === index
                     ? 'bg-duoGray-lighter dark:bg-duoBlueDark-darkest'
