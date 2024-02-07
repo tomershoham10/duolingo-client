@@ -130,6 +130,13 @@ interface TargetType {
     subType: TypesOfVessels | TypesOfTorpedos | TypesOfSonars;
 }
 
+// ------ sources ------- //
+
+interface SourceType {
+    _id: string;
+    name: string;
+}
+
 // // files service // //
 
 interface UploadedObjectInfo {

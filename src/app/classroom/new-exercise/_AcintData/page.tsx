@@ -20,12 +20,14 @@ import {
   submitRecordDataType,
 } from '@/reducers/submitRecordReducer';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
+  const addAlert = useAlertStore.getState().addAlert;
 
   const updateExerciseToSubmit = {
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
@@ -182,12 +184,23 @@ const AcintDataSection: React.FC = () => {
             submitRecordState.record,
             submitRecordState.recordMetadata
           );
+          if (recordResponse) {
+            addAlert(
+              'uploaded record and sonolist successfully',
+              AlertSizes.small
+            );
+            return;
+          } else {
+            addAlert('error while uploading record', AlertSizes.small);
+            return;
+          }
         } else {
-          alert('error while uploading sonograms');
+          addAlert('error while uploading sonograms', AlertSizes.small);
+          return;
         }
       }
     } catch (error) {
-      alert(error);
+      addAlert(`${error}`, AlertSizes.small);
     }
   };
 
