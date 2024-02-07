@@ -132,6 +132,10 @@ interface TargetType {
 
 // ------ sources ------- //
 
+interface ResponseSourceType extends SourceType {
+    __v: number
+}
+
 interface SourceType {
     _id: string;
     name: string;

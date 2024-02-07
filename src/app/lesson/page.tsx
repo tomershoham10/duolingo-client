@@ -83,8 +83,7 @@ export default function Page() {
     const fetchTargets = async () => {
       await getTargetsList();
     };
-    const targetData = localStorage.getItem('targetsList');
-    if (!targetData) {
+    if (!!!targetsList) {
       fetchTargets();
     }
   }, []);

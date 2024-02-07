@@ -23,7 +23,7 @@ export const useSourceStore = create<SourceState & Action>(
 
 
 if (typeof window !== 'undefined' && localStorage) {
-    const targetData = localStorage.getItem("sourceIdList");
+    const targetData = localStorage.getItem("sourcesList");
     // console.log("targetData - store", targetData);
     if (targetData) {
         const parsedData = JSON.parse(targetData) as SourceType[];

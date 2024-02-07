@@ -21,12 +21,35 @@ import {
 } from '@/reducers/submitRecordReducer';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { getTargetsList } from '@/app/API/classes-service/targets/functions';
+import { useSourceStore } from '@/app/store/stores/useSourceStore';
+import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
+  const sourcesListDB = useStore(useSourceStore, (state) => state.sources);
+
+  useEffect(() => {
+    const fetchTargets = async () => {
+      await getTargetsList();
+    };
+
+    const fetchSources = async () => {
+      await getSourcesList();
+    };
+
+    if (!!!targetsListDB) {
+      fetchTargets();
+    }
+
+    if (!!!sourcesListDB) {
+      fetchSources();
+    }
+  }, []);
+
   const addAlert = useAlertStore.getState().addAlert;
 
   const updateExerciseToSubmit = {
