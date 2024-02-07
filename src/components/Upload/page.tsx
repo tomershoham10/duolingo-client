@@ -61,6 +61,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
       if (props.filesTypes === '.wav') {
         const file = files[0];
         const isExisted = await isFileExisted(file.name, 'records');
+        console.log('isFileExisted', file.name, isExisted);
         if (isExisted) {
           addAlert('Record already existed!', AlertSizes.small);
           return;
@@ -127,6 +128,8 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
 
         const isValidFile = async (file: File) => {
           const status = await isFileExisted(file.name, 'sonograms');
+          console.log('isFileExisted', file.name, status);
+
           status
             ? addAlert(
                 `Sonogram ${file.name} already existed!`,
@@ -260,7 +263,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                   }
                 >
                   <div
-                    className='flex cursor-pointer w-full flex-row'
+                    className='flex w-full cursor-pointer flex-row'
                     onClick={() => handleUploadedFileSelect(fileIndex)}
                   >
                     {file.endsWith('.wav') ? (

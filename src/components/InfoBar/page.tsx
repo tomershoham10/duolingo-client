@@ -61,13 +61,15 @@ const InfoBar: React.FC = () => {
       ) : pathname.includes('new-exercise') ? (
         <>
           {!!useInfoBarStoreObj.selectedFile ? (
-            <div className='flex flex-col'>
+            <div
+              className='flex w-[90%] flex-col
+            '
+            >
               <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
                 <li className='w-full border-b-2 text-center dark:border-duoGrayDark-light dark:dark:text-duoBlueDark-text'>
                   INFORMATION
                 </li>
-                <li className='my-1'>
-                  name:{' '}
+                <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
                   {useInfoBarStoreObj.selectedFile.name
                     .toLocaleLowerCase()
                     .replace(regexFilesEnding, '')}
@@ -79,18 +81,20 @@ const InfoBar: React.FC = () => {
                       <section key={metaIndex}>
                         {!!useInfoBarStoreObj.selectedFile ? (
                           <li key={metaIndex} className='my-1'>
-                            {Object.keys(
-                              useInfoBarStoreObj.selectedFile.metadata
-                            )[metaIndex] !== 'content-type' &&
-                            Object.keys(
-                              useInfoBarStoreObj.selectedFile.metadata
-                            )[metaIndex] !== 'sonograms_ids'
-                              ? `${
-                                  Object.keys(
-                                    useInfoBarStoreObj.selectedFile.metadata
-                                  )[metaIndex]
-                                }: `
-                              : null}
+                            <span className=''>
+                              {Object.keys(
+                                useInfoBarStoreObj.selectedFile.metadata
+                              )[metaIndex] !== 'content-type' &&
+                              Object.keys(
+                                useInfoBarStoreObj.selectedFile.metadata
+                              )[metaIndex] !== 'sonograms_ids'
+                                ? `${
+                                    Object.keys(
+                                      useInfoBarStoreObj.selectedFile.metadata
+                                    )[metaIndex]
+                                  }: `
+                                : null}
+                            </span>
                             {Object.keys(
                               useInfoBarStoreObj.selectedFile.metadata
                             )[metaIndex] !== 'content-type' &&
@@ -114,7 +118,7 @@ const InfoBar: React.FC = () => {
                       .length > 0 ? (
                       <Link
                         className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 hover:text-duoBlue-default
-                       dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover'
+                       dark:text-duoPurpleDark-default dark:hover:opacity-90'
                         href={`${`/sonolist/${useInfoBarStoreObj.selectedFile.name}`}`}
                         target='_blank'
                       >

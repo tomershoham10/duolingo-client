@@ -7,7 +7,7 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
-import Table, { TableHead } from '@/components/Table/page';
+import Table, { TableHead, TableRow } from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
 import MetadataPopup, { FilesTypes } from '@/app/popups/MetadataPopup/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
@@ -19,11 +19,13 @@ import {
   submitRecordReducer,
   submitRecordDataType,
 } from '@/reducers/submitRecordReducer';
+import { useTargetStore } from '@/app/store/stores/useTargetStore';
 
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
+  const targetsListDB = useStore(useTargetStore, (state) => state.targets);
 
   const updateExerciseToSubmit = {
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
@@ -52,6 +54,7 @@ const AcintDataSection: React.FC = () => {
 
   const [recordsData, setRecordsData] = useState<RecordType[]>([]);
   const [recordLength, setRecordLength] = useState<number>(0);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
 
   const uploadRef = useRef<UploadRef>(null);
 
@@ -71,8 +74,34 @@ const AcintDataSection: React.FC = () => {
         ]
       );
     }
+    setTableData(
+      recordsData.map(({ name, id, metadata }) => ({
+        name,
+        id,
+        ...metadata,
+      }))
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordName, recordsData]);
+
+  useEffect(() => {
+    console.log('tableData1', tableData);
+    tableData.map((row) => {
+      row.targets_list = row.targets_ids_list;
+      if (row.targets_list) {
+        console.log('check2', row.targets_list);
+
+        // for (let i: number = 0; i < row.targets_list.length; i++) {
+        //   console.log('row.targets_list[i]', row.targets_list[i]);
+        //   row.targets_list[i] = targetsListDB.map(
+        //     (target) => target._id === row.targets_list[i]
+        //   );
+        // }
+        delete row.targetsids_list;
+      }
+    });
+    console.log('tableData2', tableData);
+  }, [tableData, targetsListDB]);
 
   //   const handleFileChange = (files: File | FileList | null) => {
   const handleFileChange = (files: File | File[] | null) => {
@@ -133,25 +162,32 @@ const AcintDataSection: React.FC = () => {
   };
 
   const uploadRecord = async () => {
-    await new Promise((res) => setTimeout(res, 2000));
-    if (
-      !!submitRecordState.record &&
-      !!submitRecordState.sonograms &&
-      submitRecordState.recordMetadata &&
-      submitRecordState.sonogramsMetadata
-    ) {
-      const sonolistResponse = await uploadFile(
-        'sonolist',
-        submitRecordState.sonograms,
+    try {
+      await new Promise((res) => setTimeout(res, 2000));
+      if (
+        !!submitRecordState.record &&
+        !!submitRecordState.sonograms &&
+        submitRecordState.recordMetadata &&
         submitRecordState.sonogramsMetadata
-      );
-      if (sonolistResponse) {
-        const recordResponse = await uploadFile(
-          'records',
-          submitRecordState.record,
-          submitRecordState.recordMetadata
+      ) {
+        const sonolistResponse = await uploadFile(
+          'sonograms',
+          submitRecordState.sonograms,
+          submitRecordState.sonogramsMetadata
         );
+        console.log('sonolistResponse', sonolistResponse);
+        if (sonolistResponse) {
+          const recordResponse = await uploadFile(
+            'records',
+            submitRecordState.record,
+            submitRecordState.recordMetadata
+          );
+        } else {
+          alert('error while uploading sonograms');
+        }
       }
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -203,31 +239,23 @@ const AcintDataSection: React.FC = () => {
       />
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
       <section className='my-5 flex justify-start'>
-          <Table
-            head={TABLE_HEAD}
-            rows={
-              recordsData.length > 0
-                ? recordsData.map(({ name, id, metadata }) => ({
-                    name,
-                    id,
-                    ...metadata,
-                  }))
-                : recordsData
-            }
-            onSelect={handleSelectTableRow}
-            selectedRowIndex={
-              recordName
-                ? recordsData.map((record) => record.name).indexOf(recordName)
-                : undefined
-            }
-            isSelectable={
-              selectedFile
-                ? recordsData
-                    .map((record) => record.name)
-                    .includes(selectedFile.name)
-                : true
-            }
-          />
+        <Table
+          head={TABLE_HEAD}
+          rows={tableData}
+          onSelect={handleSelectTableRow}
+          selectedRowIndex={
+            recordName
+              ? recordsData.map((record) => record.name).indexOf(recordName)
+              : undefined
+          }
+          isSelectable={
+            selectedFile
+              ? recordsData
+                  .map((record) => record.name)
+                  .includes(selectedFile.name)
+              : true
+          }
+        />
       </section>
 
       <div className='relative my-3 flex w-full flex-row items-start justify-between gap-5 3xl:w-[55%]'>

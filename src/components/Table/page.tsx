@@ -1,10 +1,9 @@
-
 export interface TableHead {
   key: string;
   label: string;
 }
 
-interface TableRow {
+export interface TableRow {
   [key: string]: any;
 }
 
@@ -28,7 +27,7 @@ const Table = (props: DefaultTableProps) => {
             {headers.map((header, headerIndex) => (
               <th
                 key={headerIndex}
-                className='h-12 cursor-default px-4 2xl:px-8 2xl:h-20'
+                className='h-12 cursor-default px-4 2xl:h-20 2xl:px-8'
               >
                 <span className='flex items-center justify-start font-extrabold '>
                   {header.label}

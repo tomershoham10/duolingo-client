@@ -118,6 +118,10 @@ const config: Config = {
                     darker: '#9C6AE5'
                 },
 
+                'duoPurpleDark': {
+                    default: '#3C4DFF'
+                },
+
                 'duoYellow': {
                     buttonBorder: '#E7A601',
                     buttonHover: '#FFD147',

@@ -10,7 +10,7 @@ export enum SonarSystem {
 }
 
 // export const uploadFile = async (bucketName: string, files: File | FileList, metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
-export const uploadFile = async (bucketName: string, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
+export const uploadFile = async (bucketName: string, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
 
         const formData = new FormData();
@@ -62,8 +62,8 @@ export const uploadFile = async (bucketName: string, files: File | File[], metad
             throw new Error('Invalid file type');
         }
 
-    } catch (error) {
-        throw new Error(`no good ${error}`);
+    } catch (error: any) {
+        return null;
     }
 }
 
@@ -102,8 +102,7 @@ export const getAllRecords = async (): Promise<RecordType[] | null> => {
         })
         if (response.ok) {
             const data = await response.json();
-            const files = data.files as RecordType[];
-            // console.log('getAllRecords', files);
+            const files = data.files;
             return files;
         }
         return null;
@@ -125,8 +124,7 @@ export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
         })
         if (response.ok) {
             const data = await response.json();
-            const files = data.files as RecordType[];
-            // console.log('getAllRecords', files);
+            const files = data.files;
             return files;
         }
         return null;
