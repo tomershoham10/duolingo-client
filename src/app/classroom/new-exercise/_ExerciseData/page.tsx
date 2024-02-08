@@ -131,19 +131,6 @@ const ExerciseDataSection: React.FC = () => {
     }
   };
 
-  //   const addTargetToAnswersList = () => {
-  //     if (targetFromDropdown) {
-  //       const answersIds = answersList.map((target) => target._id);
-  //       if (!answersIds.includes(targetFromDropdown._id)) {
-  //         setAnswersList((prevList) => [...prevList, targetFromDropdown]);
-  //       } else {
-  //         addAlert('target already included.', AlertSizes.small);
-  //       }
-  //     } else {
-  //       addAlert('please select a target.', AlertSizes.small);
-  //     }
-  //   };
-
   const handleRelevantDragMove = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -216,42 +203,6 @@ const ExerciseDataSection: React.FC = () => {
   //         (item) => item._id != itemId
   //       ),
   //     });
-  //   };
-
-  //   const handleAnswerDragMove = (event: DragEndEvent) => {
-  //     const { active, over } = event;
-  //     if (over && active.id !== over.id) {
-  //       setAnswersList((items) => {
-  //         const activeIndex = items
-  //           .map((item) => item._id)
-  //           .indexOf(active.id as string);
-  //         const overIndex = items
-  //           .map((item) => item._id)
-  //           .indexOf(over.id as string);
-  //         return arrayMove(items, activeIndex, overIndex);
-  //       });
-  //     }
-  //   };
-
-  //   const handleAnswerDragEnd = (event: DragEndEvent) => {
-  //     const { active, over } = event;
-  //     setGrabbedAnswerId('released');
-
-  //     if (over && active.id !== over.id) {
-  //       setAnswersList((items) => {
-  //         const activeIndex = items
-  //           .map((item) => item._id)
-  //           .indexOf(active.id as string);
-  //         const overIndex = items
-  //           .map((item) => item._id)
-  //           .indexOf(over.id as string);
-  //         return arrayMove(items, activeIndex, overIndex);
-  //       });
-  //     }
-  //   };
-
-  //   const removeAnswerItem = (itemId: string) => {
-  //     setAnswersList(answersList.filter((item) => item._id != itemId));
   //   };
 
   const splicer = (index: number, newVal: number, oldArray: number[]) => {
