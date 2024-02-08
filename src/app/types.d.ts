@@ -148,10 +148,11 @@ interface UploadedObjectInfo {
     versionId: string | null;
 }
 
-enum Transmissions {
+enum SignatureTypes {
     PASSIVE = 'passive',
     ACTIVE = 'active',
-    BOTH = 'both'
+    PASSIVEACTIVE = 'passive and active',
+    TORPEDO = 'torpedo',
 }
 
 enum SonarSystem {
@@ -165,21 +166,19 @@ interface RecordMetadataType {
     difficulty_level: number;
     targets_ids_list: string[];
     operation: string;
-    source: string;
+    source_id: string;
     is_in_italy: boolean;
-    transmission: Transmissions;
-    channels_number: 1 | 2;
+    signature_type: SignatureTypes;
+    channels_number: number;
     sonar_system: SonarSystem;
     is_backround_vessels: boolean;
     aux: boolean;
 }
 
 interface SonogramMetadataType {
-    targets_ids_list: string[];
-    source: string;
-    is_in_italy: boolean;
-    transmission: Transmissions;
-    is_backround_vessels: boolean;
+    sonogram_type: SonarSystem;
+    fft: number;
+    bw: number;
 }
 
 interface RecordType {

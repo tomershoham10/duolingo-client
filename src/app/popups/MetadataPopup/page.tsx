@@ -16,7 +16,6 @@ import SwitchButton from '@/components/SwitchButton/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
-import Pagination from '@/components/Navigation/Pagination/page';
 
 import {
   recordMetaAction,
@@ -24,7 +23,8 @@ import {
 } from '@/reducers/recordMetadataReducer';
 
 import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
-import { SonarSystem, Transmissions } from '@/app/API/files-service/functions';
+import { SonarSystem, SignatureTypes } from '@/app/API/files-service/functions';
+import { useSourceStore } from '@/app/store/stores/useSourceStore';
 
 library.add(faXmark);
 
@@ -42,6 +42,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const targetsList = useStore(useTargetStore, (state) => state.targets);
+  const sourcesList = useStore(useSourceStore, (state) => state.sources);
 
   const recordLength = useStore(
     useCreateExerciseStore,
@@ -54,9 +55,9 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
     difficulty_level: 0,
     targets_ids_list: [],
     operation: '',
-    source: '',
+    source_id: '',
     is_in_italy: false,
-    transmission: Transmissions.PASSIVE,
+    signature_type: SignatureTypes.PASSIVE,
     channels_number: 1,
     sonar_system: SonarSystem.DEMON,
     is_backround_vessels: false,
@@ -97,7 +98,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
       }
     >
       {selectedPopup === PopupsTypes.RECORDMETADATA ? (
-        <div className='relative m-5 flex h-[40rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[40rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[70rem] 3xl:w-[80rem]'>
+        <div className='relative m-5 flex h-[35rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest md:h-[35rem] xl:h-[35rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[70rem]'>
           <button
             onClick={() => {
               updateSelectedPopup(PopupsTypes.CLOSED);
@@ -113,7 +114,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
             <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
               Add Metadata
             </div>
-            <div className='grid-rows-8 mt-12 grid w-full grid-cols-2 gap-x-12 gap-y-6 px-4 py-4 3xl:gap-y-12'>
+            <div className='mt-12 grid w-full grid-cols-2 grid-rows-5 gap-x-12 gap-y-2 px-4 py-4 3xl:gap-y-12'>
               <div className='col-span-1 flex items-center justify-between'>
                 <span className='text-lg font-bold opacity-80 3xl:text-xl'>
                   Does the record included in Italkia?
@@ -142,17 +143,22 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
 
               <div className='col-span-1 flex items-center justify-between'>
                 <span className='text-lg font-bold opacity-80 3xl:text-xl'>
-                  Transmission:
+                  Signature type:
                 </span>
                 <div className=' w-[12rem]'>
                   <Dropdown
                     isSearchable={false}
-                    placeholder={'transmission'}
-                    items={['passive', 'active', 'both']}
+                    placeholder={'Signature'}
+                    items={[
+                      SignatureTypes.ACTIVE,
+                      SignatureTypes.PASSIVE,
+                      SignatureTypes.PASSIVEACTIVE,
+                      SignatureTypes.TORPEDO,
+                    ]}
                     onChange={(trans) =>
                       recordMetaDispatch({
-                        type: recordMetaAction.SET_TRANSMISSION_TYPE,
-                        payload: trans as Transmissions,
+                        type: recordMetaAction.SET_SIGNATURE_TYPE,
+                        payload: trans as SignatureTypes,
                       })
                     }
                     size={DropdownSizes.SMALL}
@@ -164,10 +170,10 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                 <span className='text-lg font-bold opacity-80 3xl:text-xl'>
                   Sonar system:
                 </span>
-                <div className='w-[14rem]'>
+                <div className='w-[12rem]'>
                   <Dropdown
                     isSearchable={false}
-                    placeholder={'Sonar system'}
+                    placeholder={'S. system'}
                     items={['demon', 'lofar']}
                     onChange={(sonarSys) =>
                       recordMetaDispatch({
@@ -204,7 +210,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                 <span className='text-lg font-bold opacity-80 3xl:text-xl'>
                   Target:
                 </span>
-                <div className='w-[14rem]'>
+                <div className='w-[12rem]'>
                   <Dropdown
                     isSearchable={true}
                     placeholder={'Targets'}
@@ -213,17 +219,51 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                         ? targetsList.map((target) => target.name)
                         : []
                     }
-                    onChange={(targetId) =>
+                    onChange={(targetName) =>
                       recordMetaDispatch({
                         type: recordMetaAction.SET_TARGETS_IDS,
-                        payload: [targetId],
+                        payload: [
+                          targetsList
+                            ? targetsList.filter(
+                                (target) => target.name === targetName
+                              )[0]._id
+                            : '',
+                        ],
                       })
                     }
                     size={DropdownSizes.SMALL}
                   />
                 </div>
               </div>
-
+              <div className='col-span-1 flex items-center justify-between'>
+                <span className='text-lg font-bold opacity-80 3xl:text-xl'>
+                  Source:
+                </span>
+                <div className='w-[12rem]'>
+                  <Dropdown
+                    isSearchable={true}
+                    placeholder={'Source'}
+                    items={
+                      sourcesList
+                        ? sourcesList.map((source) => source.name)
+                        : []
+                    }
+                    onChange={(sourceName) => {
+                      if (sourcesList) {
+                        const sourceId = sourcesList.filter(
+                          (source) => source.name === sourceName
+                        )[0]._id;
+                        console.log(sourceId);
+                        recordMetaDispatch({
+                          type: recordMetaAction.SET_SOURCE_ID,
+                          payload: sourceId,
+                        });
+                      }
+                    }}
+                    size={DropdownSizes.SMALL}
+                  />
+                </div>
+              </div>
               <div className='col-span-1 flex items-center justify-between'>
                 <span className='text-lg font-bold opacity-80 3xl:text-xl'>
                   Operation name:
@@ -242,30 +282,11 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
                 </div>
               </div>
 
-              <div className='col-span-1 flex items-center justify-between'>
-                <span className='text-lg font-bold opacity-80 3xl:text-xl'>
-                  Source:
-                </span>
-                <div className='w-[12rem]'>
-                  <Input
-                    type={InputTypes.text}
-                    value={recordMetaState.source}
-                    onChange={(text: string) =>
-                      recordMetaDispatch({
-                        type: recordMetaAction.SET_SOURCE,
-                        payload: text,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <span></span>
-
               <div className='col-span-2 flex flex-row items-center justify-between gap-4 3xl:py-10'>
                 <span className='min-w-fit text-lg font-bold opacity-80 3xl:text-xl'>
                   difficulty level:
                 </span>
-                <div className='relative w-full'>
+                <div className='relative my-5 w-full'>
                   <Slider
                     isMultiple={false}
                     min={0}
@@ -279,7 +300,7 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
             </div>
           </div>
 
-          <div className='absolute bottom-4 w-[33%] 2xl:w-[20%] 2xl:text-xl'>
+          <div className='absolute bottom-5 w-[33%] 2xl:w-[20%] 2xl:text-xl'>
             <Button
               label={'Save'}
               color={ButtonColors.BLUE}

@@ -34,18 +34,27 @@ const AcintDataSection: React.FC = () => {
 
   useEffect(() => {
     const fetchTargets = async () => {
-      await getTargetsList();
+      try {
+        await getTargetsList();
+      } catch (error) {
+        console.error(error);
+        addAlert(`${error}`, AlertSizes.small);
+      }
     };
 
     const fetchSources = async () => {
-      await getSourcesList();
+      try {
+        await getSourcesList();
+      } catch (error) {
+        console.error(error);
+        addAlert(`${error}`, AlertSizes.small);
+      }
     };
 
-    if (!!!targetsListDB) {
+    if (targetsListDB.length === 0) {
       fetchTargets();
     }
-
-    if (!!!sourcesListDB) {
+    if (sourcesListDB.length === 0) {
       fetchSources();
     }
   }, []);
@@ -92,41 +101,59 @@ const AcintDataSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (recordName) {
-      updateSelectedFile(
-        recordsData[
-          recordsData.map((record) => record.name).indexOf(recordName)
-        ]
-      );
-    }
+    // if (recordName) {
+    //   updateSelectedFile(
+    //     tableData[
+    //         tableData.map((record) => record.name).indexOf(recordName)
+    //     ]
+    //   );
+    // }
     setTableData(
-      recordsData.map(({ name, id, metadata }) => ({
-        name,
-        id,
-        ...metadata,
-      }))
+      recordsData.map(({ name, id, metadata }) => {
+        const ogMetadata = metadata;
+
+        const targetsIds = ogMetadata.targets_ids_list;
+        const sourceId = ogMetadata.source_id;
+
+        const targetsNames: string[] = [];
+        let sourceName: string = '';
+
+        if (!!targetsIds) {
+          for (let i: number = 0; i < targetsIds.length; i++) {
+            targetsNames.push(
+              targetsListDB.filter((target) => target._id === targetsIds[i])[0]
+                .name
+            );
+          }
+        }
+
+        !!sourceId
+          ? (sourceName = sourcesListDB.filter(
+              (source) => source._id === sourceId
+            )[0].name)
+          : null;
+
+        const { targets_ids_list, source_id, ...newMeta } = ogMetadata;
+
+        const updatedMeta = {
+          ...newMeta,
+          targets_list: targetsNames,
+          source_name: sourceName,
+        };
+
+        return {
+          name,
+          id,
+          ...updatedMeta,
+        };
+      })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordName, recordsData]);
 
   useEffect(() => {
-    console.log('tableData1', tableData);
-    tableData.map((row) => {
-      row.targets_list = row.targets_ids_list;
-      if (row.targets_list) {
-        console.log('check2', row.targets_list);
-
-        // for (let i: number = 0; i < row.targets_list.length; i++) {
-        //   console.log('row.targets_list[i]', row.targets_list[i]);
-        //   row.targets_list[i] = targetsListDB.map(
-        //     (target) => target._id === row.targets_list[i]
-        //   );
-        // }
-        delete row.targetsids_list;
-      }
-    });
-    console.log('tableData2', tableData);
-  }, [tableData, targetsListDB]);
+    console.log('tableData', tableData);
+  }, [tableData]);
 
   //   const handleFileChange = (files: File | FileList | null) => {
   const handleFileChange = (files: File | File[] | null) => {
@@ -181,9 +208,31 @@ const AcintDataSection: React.FC = () => {
   };
 
   const handleSelectTableRow = (item: any) => {
-    const record = recordsData.filter((record) => record.name === item.name)[0];
+    console.log('item', item);
+    const record = tableData.filter((record) => record.name === item.name)[0];
     console.log('handleSelectTableRow', record);
-    updateSelectedFile(record);
+
+    const modifiedRecord = {
+      name: record.name,
+      id: record.id,
+      metadata: {
+        record_length: record.record_length,
+        sonograms_ids: record.sonograms_ids,
+        difficulty_level: record.difficulty_level,
+        targets_list: record.targets_list,
+        operation: record.operation,
+        source_name: record.source_name,
+        is_in_italy: record.is_in_italy,
+        signature_type: record.signature_type,
+        channels_number: record.channels_number,
+        sonogram_type: record.sonogram_type,
+        is_backround_vessels: record.is_backround_vessels,
+        aux: record.aux,
+      },
+    };
+
+    console.log('modifiedRecord', modifiedRecord);
+    updateSelectedFile(modifiedRecord);
   };
 
   const uploadRecord = async () => {
@@ -244,17 +293,10 @@ const AcintDataSection: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile]);
 
-  //   const recordsHeaders: string[] = [
-  //     'name',
-  //     'difficulty_level',
-  //     'targets_ids_list',
-  //     'is_in_italy',
-  //   ];
-
   const TABLE_HEAD: TableHead[] = [
     { key: 'name', label: 'Name' },
     { key: 'difficulty_level', label: 'Difficulty level' },
-    { key: 'targets_ids_list', label: 'Targets list' },
+    { key: 'targets_list', label: 'Targets list' },
     { key: 'is_in_italy', label: 'is in italy' },
     // Add more headers as needed
   ];

@@ -3,9 +3,9 @@ export enum recordMetaAction {
     SET_DIFFICULTY_LEVEL = 'setDifficultyLevel',
     SET_TARGETS_IDS = 'setTargetsIds',
     SET_OPERATION_NAME = 'setOperationName',
-    SET_SOURCE = 'setSource',
+    SET_SOURCE_ID = 'setSourceId',
     SET_ITALY_STATUS = 'setItalyStatus',
-    SET_TRANSMISSION_TYPE = 'setTransmissionType',
+    SET_SIGNATURE_TYPE = 'setSignatureType',
     SET_NUMBER_OF_CHANNELS = 'setNumberOfChannels',
     SET_SONAR_SYSTEM = 'setSonarSystem',
     TOGGLE_BACKROUND_VESSELS = 'toggleBackroundVessels',
@@ -17,9 +17,9 @@ type Action =
     | { type: recordMetaAction.SET_DIFFICULTY_LEVEL; payload: number }
     | { type: recordMetaAction.SET_TARGETS_IDS; payload: string[] }
     | { type: recordMetaAction.SET_OPERATION_NAME; payload: string }
-    | { type: recordMetaAction.SET_SOURCE; payload: string }
+    | { type: recordMetaAction.SET_SOURCE_ID; payload: string }
     | { type: recordMetaAction.SET_ITALY_STATUS; payload: boolean }
-    | { type: recordMetaAction.SET_TRANSMISSION_TYPE; payload: Transmissions }
+    | { type: recordMetaAction.SET_SIGNATURE_TYPE; payload: SignatureTypes }
     | { type: recordMetaAction.SET_NUMBER_OF_CHANNELS; payload: 1 | 2 }
     | { type: recordMetaAction.SET_SONAR_SYSTEM; payload: SonarSystem }
     | { type: recordMetaAction.TOGGLE_BACKROUND_VESSELS }
@@ -38,12 +38,12 @@ export const recordMetadataReducer = (
             return { ...state, targets_ids_list: action.payload };
         case recordMetaAction.SET_OPERATION_NAME:
             return { ...state, operation: action.payload };
-        case recordMetaAction.SET_SOURCE:
-            return { ...state, source: action.payload };
+        case recordMetaAction.SET_SOURCE_ID:
+            return { ...state, source_id: action.payload };
         case recordMetaAction.SET_ITALY_STATUS:
             return { ...state, is_in_italy: !state.is_in_italy };
-        case recordMetaAction.SET_TRANSMISSION_TYPE:
-            return { ...state, transmission: action.payload };
+        case recordMetaAction.SET_SIGNATURE_TYPE:
+            return { ...state, signature_type: action.payload };
         case recordMetaAction.SET_NUMBER_OF_CHANNELS:
             return { ...state, channels_number: action.payload };
         case recordMetaAction.SET_SONAR_SYSTEM:

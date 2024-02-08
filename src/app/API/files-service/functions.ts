@@ -1,7 +1,8 @@
-export enum Transmissions {
+export enum SignatureTypes {
     PASSIVE = 'passive',
     ACTIVE = 'active',
-    BOTH = 'both'
+    PASSIVEACTIVE = 'passive and active',
+    TORPEDO = 'torpedo',
 }
 
 export enum SonarSystem {

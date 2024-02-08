@@ -182,7 +182,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           metadata: uploadedFiles.metadata,
         });
       }
-      console.log('selectedFile', selectedFile);
+      console.log('upload - selectedFile', selectedFile);
     }
   };
 

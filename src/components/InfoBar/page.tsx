@@ -33,7 +33,7 @@ const InfoBar: React.FC = () => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   useEffect(() => {
-    console.log('selectedFile', useInfoBarStoreObj.selectedFile);
+    console.log('infobar - selectedFile', useInfoBarStoreObj.selectedFile);
   }, [useInfoBarStoreObj.selectedFile]);
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
@@ -79,7 +79,8 @@ const InfoBar: React.FC = () => {
                   Object.values(useInfoBarStoreObj.selectedFile.metadata).map(
                     (meta, metaIndex) => (
                       <section key={metaIndex}>
-                        {!!useInfoBarStoreObj.selectedFile ? (
+                        {meta !== undefined &&
+                        !!useInfoBarStoreObj.selectedFile ? (
                           <li key={metaIndex} className='my-1'>
                             <span className=''>
                               {Object.keys(
@@ -101,7 +102,7 @@ const InfoBar: React.FC = () => {
                             Object.keys(
                               useInfoBarStoreObj.selectedFile.metadata
                             )[metaIndex] !== 'sonograms_ids'
-                              ? meta
+                              ? String(meta)
                               : null}
                           </li>
                         ) : null}
