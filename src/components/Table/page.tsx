@@ -57,7 +57,7 @@ const Table = (props: DefaultTableProps) => {
                 {headers.map(({ key }) => (
                   <td
                     key={key}
-                    className={`h-16 px-4
+                    className={`h-16 px-4 text-center
                   ${
                     isLast
                       ? headersKeys.indexOf(key) === 0

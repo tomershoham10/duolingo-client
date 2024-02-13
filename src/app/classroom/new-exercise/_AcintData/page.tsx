@@ -133,11 +133,13 @@ const AcintDataSection: React.FC = () => {
             )[0].name)
           : null;
 
-        const { targets_ids_list, source_id, ...newMeta } = ogMetadata;
+        const { targets_ids_list, source_id, is_in_italy, ...newMeta } =
+          ogMetadata;
 
         const updatedMeta = {
           ...newMeta,
           targets_list: targetsNames,
+          is_in_italy: String(is_in_italy),
           source_name: sourceName,
         };
 
@@ -283,10 +285,10 @@ const AcintDataSection: React.FC = () => {
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
       updateExerciseToSubmit.updateAnswersList(
-        Array.isArray(metadata.targets_ids_list)
-          ? metadata.targets_ids_list
-          : !!metadata.targets_ids_list
-            ? [metadata.targets_ids_list]
+        Array.isArray(metadata.targets_list)
+          ? metadata.targets_list
+          : !!metadata.targets_list
+            ? [metadata.targets_list]
             : []
       );
     }

@@ -52,6 +52,8 @@ const ExerciseDataSection: React.FC = () => {
     (state) => state.answersList
   );
 
+  console.log('answersList', answersList);
+
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
 
   const contextMenuStore = {
@@ -409,18 +411,25 @@ const ExerciseDataSection: React.FC = () => {
                 <ul>
                   {!!answersList &&
                     answersList.map((answer, answerIndex) => (
-                      <li key={answerIndex}>
-                        {!!targetsList.filter(
-                          (target) => target._id === answer
-                        )[0] ? (
-                          targetsList.filter(
-                            (target) => target._id === answer
-                          )[0].name
-                        ) : (
-                          <span className='font-semibold text-duoGray-dark opacity-70'>
-                            problem.
+                      <li
+                        key={answerIndex}
+                        className='flex h-[5rem] min-w-fit flex-none items-center justify-start'
+                      >
+                        <div className='border-border-duoGray-regular w-full flex-none cursor-default rounded-xl border-2 border-b-4 px-5 py-4 text-lg font-bold active:translate-y-[1px] active:border-b-2 dark:border-duoGrayDark-light'>
+                          <span className='relative flex items-center justify-center text-ellipsis text-center'>
+                            {!!targetsList.filter(
+                              (target) => target.name === answer
+                            )[0] ? (
+                              targetsList.filter(
+                                (target) => target.name === answer
+                              )[0].name
+                            ) : (
+                              <span className='font-semibold text-duoGray-dark opacity-70'>
+                                problem.
+                              </span>
+                            )}
                           </span>
-                        )}
+                        </div>
                       </li>
                     ))}
                 </ul>

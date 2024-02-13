@@ -164,7 +164,8 @@ interface RecordMetadataType {
     record_length: number;
     sonograms_ids: string[];
     difficulty_level: number;
-    targets_ids_list: string[];
+    targets_ids_list?: string[];
+    targets_list?: string[];
     operation: string;
     source_id: string;
     is_in_italy: boolean;
