@@ -93,37 +93,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         setUploadedFilesNames((prevFiles) => [...prevFiles, file.name]);
       } else {
         console.log('files uploaded', files);
-        // const newFiles = Array.from(files);
-        // Promise.all(
-        //   newFiles.map(async (file) => {
-        //     const isExisted = await isFileExisted(file.name, 'sonograms');
-        //     console.log('fail check', file, file.name, isExisted);
-        //     if (isExisted) {
-        //       addAlert(
-        //         `Sonogram ${file.name} already existed!`,
-        //         AlertSizes.small
-        //       );
-        //       return null;
-        //     }
-        //     const reader = new FileReader();
-        //     return new Promise<string>((resolve) => {
-        //       reader.onload = (e) => {
-        //         if (e.target) {
-        //           resolve(e.target.result as string);
-        //         }
-        //       };
-        //       reader.readAsArrayBuffer(file);
-        //     });
-        //   })
-        // )
-        //   .then((fileBuffers) => {
-        //     console.log('File buffers:', fileBuffers);
-        //   })
-        //   .catch((error) => {
-        //     console.error('Error processing files:', error);
-        //   });
 
-        console.log('files with nulls', files);
         const filesArray: File[] = Array.from(files);
 
         const isValidFile = async (file: File) => {
@@ -219,7 +189,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
               ? ButtonColors.ERROR
               : theme === Themes.LIGHT
                 ? ButtonColors.GRAY
-                : ButtonColors.WHITE
+                : ButtonColors.GRAYBLUE
           }
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFilesNames.length > 0}

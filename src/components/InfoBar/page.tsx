@@ -66,7 +66,7 @@ const InfoBar: React.FC = () => {
             '
             >
               <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
-                <li className='w-full border-b-2 text-center dark:border-duoGrayDark-light dark:dark:text-duoBlueDark-text'>
+                <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
                   INFORMATION
                 </li>
                 <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
@@ -118,8 +118,7 @@ const InfoBar: React.FC = () => {
                     useInfoBarStoreObj.selectedFile.metadata.sonograms_ids
                       .length > 0 ? (
                       <Link
-                        className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 hover:text-duoBlue-default
-                       dark:text-duoPurpleDark-default dark:hover:opacity-90'
+                        className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 text-duoBlue-default hover:text-duoBlue-default dark:text-duoPurpleDark-default dark:hover:opacity-90'
                         href={`${`/sonolist/${useInfoBarStoreObj.selectedFile.name}`}`}
                         target='_blank'
                       >
@@ -127,10 +126,7 @@ const InfoBar: React.FC = () => {
                         sonolist
                       </Link>
                     ) : (
-                      <span
-                        className='flex w-fit cursor-default flex-row items-center justify-start gap-2
-                       opacity-60 dark:text-duoBlueDark-text'
-                      >
+                      <span className='flex w-fit cursor-default flex-row items-center justify-start gap-2 text-duoBlue-default opacity-60 dark:text-duoBlueDark-text'>
                         <FaRegImages />
                         sonolist
                       </span>

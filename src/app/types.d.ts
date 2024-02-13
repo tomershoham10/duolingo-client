@@ -303,6 +303,7 @@ enum ButtonColors {
     BLUE = 'Blue',
     GREEN = 'Green',
     GRAY = 'Gray',
+    GRAYBLUE = 'grayBlue',
     WHITE = 'White',
     PURPLE = 'Purple',
     RED = 'Red',

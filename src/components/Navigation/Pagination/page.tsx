@@ -92,7 +92,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           <div className='absolute inset-y-1/3 right-[8rem] w-24'>
             <Button
               label={'BACK'}
-              color={ButtonColors.WHITE}
+              color={ButtonColors.GRAYBLUE}
               onClick={handlePrevPage}
             />
           </div>

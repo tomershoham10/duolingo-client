@@ -8,6 +8,7 @@ export enum ButtonColors {
   BLUE = 'Blue',
   GREEN = 'Green',
   GRAY = 'Gray',
+  GRAYBLUE = 'grayBlue',
   WHITE = 'White',
   PURPLE = 'Purple',
   RED = 'Red',
@@ -56,6 +57,16 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
       buttonHoverColor = 'hover:bg-duoGray-lighter';
       textColor =
         'dark:text-duoGrayDark-light text-duoGray-darker hover:text-duoGray-midDark';
+      break;
+
+    case 'grayBlue':
+      buttonColor =
+        'bg-white border-t-2 border-l-2 border-r-2 border-duoGray-default hover:border-duoGray-light group-active:translate-y-[2px] group-active:border-2';
+      buttonBorderColor =
+        'bg-duoGray-default hover:bg-duoGray-light group-active:bg-transparent';
+      buttonHoverColor = 'hover:bg-duoGray-lighter';
+      textColor =
+        'text-duoBlue-default hover:text-duoBlue-text';
       break;
 
     case 'White':
