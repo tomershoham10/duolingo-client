@@ -20,7 +20,7 @@ const Table = (props: DefaultTableProps) => {
   const tableData = props.rows;
   const onSelect = props.onSelect;
   return (
-    <div className=' flex max-h-[70%] justify-center overflow-auto rounded-lg border-2'>
+    <div className=' flex max-h-[70%] justify-center overflow-auto rounded-lg border-2 dark:border-duoGrayDark-lighter'>
       <table className=' divide-y-2 divide-duoGray-default dark:bg-duoGrayDark-darkest text-left dark:divide-duoBlueDark-text dark:divide-opacity-70 2xl:text-xl'>
         <thead className=' uppercase text-duoGray-darkText  dark:text-duoBlueDark-text'>
           <tr>
@@ -43,7 +43,7 @@ const Table = (props: DefaultTableProps) => {
             return (
               <tr
                 key={index}
-                className={`cursor-pointer font-bold hover:bg-duoGray-lighter hover:text-duoGray-darkest dark:hover:bg-duoBlueDark-darkest
+                className={`cursor-pointer font-bold hover:bg-duoGray-lighter hover:light:text-duoGray-darkest dark:hover:bg-duoBlueDark-darkest
                 ${
                   props.selectedRowIndex === index
                     ? 'bg-duoGray-lighter text-duoGray-darkest dark:bg-duoBlueDark-darkest'

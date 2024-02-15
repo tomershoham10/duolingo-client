@@ -188,8 +188,8 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
             props.errorMode
               ? ButtonColors.ERROR
               : theme === Themes.LIGHT
-                ? ButtonColors.GRAY
-                : ButtonColors.GRAYBLUE
+                ? ButtonColors.GRAYBLUE
+                : ButtonColors.WHITE
           }
           onClick={() => inputRef.current?.click()}
           isDisabled={!props.isMultiple && uploadedFilesNames.length > 0}
