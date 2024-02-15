@@ -46,7 +46,7 @@ const Table = (props: DefaultTableProps) => {
                 className={`cursor-pointer font-bold hover:bg-duoGray-lighter hover:light:text-duoGray-darkest dark:hover:bg-duoBlueDark-darkest
                 ${
                   props.selectedRowIndex === index
-                    ? 'bg-duoGray-lighter text-duoGray-darkest dark:bg-duoBlueDark-darkest'
+                    ? 'bg-duoGray-lighter light:text-duoGray-darkest dark:bg-duoBlueDark-darkest'
                     : ''
                 }
                 `}

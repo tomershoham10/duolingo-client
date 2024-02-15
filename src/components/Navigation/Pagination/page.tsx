@@ -4,9 +4,12 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button from '@/components/Button/page';
 
 import { ButtonColors } from '@/components/Button/page';
+import { useStore } from 'zustand';
+import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 const Pagination: React.FC<PaginationProps> = (props) => {
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
+  const theme = useStore(useThemeStore, (state) => state.theme);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const componentsNames = Object.keys(props.components);
   const Component = Object.values(props.components)[currentPage];
@@ -92,7 +95,11 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           <div className='absolute inset-y-1/3 right-[8rem] w-24'>
             <Button
               label={'BACK'}
-              color={ButtonColors.GRAYBLUE}
+              color={
+                theme === Themes.LIGHT
+                  ? ButtonColors.GRAYBLUE
+                  : ButtonColors.WHITE
+              }
               onClick={handlePrevPage}
             />
           </div>
