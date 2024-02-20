@@ -40,9 +40,7 @@ const ExerciseDataSection: React.FC = () => {
     updateDescription: useCreateExerciseStore.getState().updateDescription,
   };
   const addAlert = useAlertStore.getState().addAlert;
-
   const targetsList = useStore(useTargetStore, (state) => state.targets);
-
   const recordLength = useStore(
     useCreateExerciseStore,
     (state) => state.recordLength
@@ -51,16 +49,13 @@ const ExerciseDataSection: React.FC = () => {
     useCreateExerciseStore,
     (state) => state.answersList
   );
-
-  console.log('answersList', answersList);
-
-  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
-
   const contextMenuStore = {
     toggleMenuOpen: useContextMenuStore.getState().toggleMenuOpen,
     setCoordinates: useContextMenuStore.getState().setCoordinates,
     setContent: useContextMenuStore.getState().setContent,
   };
+
+  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
 
   const initialsubmitExerciseState = {
     description: undefined,
@@ -99,6 +94,8 @@ const ExerciseDataSection: React.FC = () => {
   const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
 
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
+
+  const [addedValueLeftPerc, setAddedValueLeftPerc] = useState<number>(-1);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     setSelectedTargetIndex(-1);
@@ -214,7 +211,11 @@ const ExerciseDataSection: React.FC = () => {
     return newArray;
   };
 
-  const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleContextMenu = (
+    event: React.MouseEvent<HTMLDivElement>,
+    left: number,
+    right: number
+  ) => {
     event.preventDefault();
     contextMenuStore.toggleMenuOpen();
     contextMenuStore.setCoordinates({ pageX: event.pageX, pageY: event.pageY });
@@ -223,11 +224,14 @@ const ExerciseDataSection: React.FC = () => {
         placeHolder: 'add',
         onClick: () => {
           console.log('clicked');
+          setAddedValueLeftPerc(
+            Math.round(100 * ((event.pageX - left) / (right - left)))
+          );
+          contextMenuStore.toggleMenuOpen();
         },
       },
     ]);
-    // Add your custom logic here
-    console.log('Right-clicked!', event.pageX, event.pageY);
+    console.log(left, right, '%');
   };
 
   const handleTimeBufferRange = (
@@ -579,6 +583,7 @@ const ExerciseDataSection: React.FC = () => {
               tooltipsValues={timeBuffersScores}
               onChange={handleTimeBufferRange}
               deleteNode={(index) => deleteTimeBuffer(index)}
+              addedValLeftPercentage={addedValueLeftPerc}
             />
           </div>
         </div>

@@ -11,16 +11,17 @@ export enum TooltipColors {
 
 const Tooltip: React.FC<tooltipProps> = (props) => {
   const placeholder = props.placeholder;
-  const isFloating = props.isFloating;
+  const isInEditMode = props.editMode;
+  const isFloating = isInEditMode ? false : props.isFloating;
   const propsColor = props.color;
-  const edittable = props.edittable;
+  const deletable = props.deletable;
 
   const onDelete = props.onDelete;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
+  const [isInDeletingMode, setIsInDeletingMode] = useState<boolean>(false);
   const [isPopEffect, setIsPopEffect] = useState<boolean>(false);
 
   const [backgroundColor, setBackgroundColor] = useState<string>();
@@ -34,31 +35,35 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
     switch (propsColor) {
       case TooltipColors.GREEN:
         setBackgroundColor(
-          isInEditMode ? 'bg-duoRed-light' : 'bg-duoGreen-default'
+          isInDeletingMode ? 'bg-duoRed-light' : 'bg-duoGreen-default'
         );
-        setBorderColor(isInEditMode ? 'border-duoRed-darker' : 'border-white');
-        setTextColor(isInEditMode ? 'text-duoRed-default' : 'text-white');
+        setBorderColor(
+          isInDeletingMode ? 'border-duoRed-darker' : 'border-white'
+        );
+        setTextColor(isInDeletingMode ? 'text-duoRed-default' : 'text-white');
         break;
 
       case TooltipColors.WHITE:
         setBackgroundColor(
-          isInEditMode
+          !!isInDeletingMode
             ? 'bg-duoRed-light'
-            : 'bg-white dark:bg-duoBlueDark-darkest'
+            : isInEditMode
+              ? 'bg-white dark:bg-[#1C2536]'
+              : 'bg-white dark:bg-duoBlueDark-darkest'
         );
         setBorderColor(
-          isInEditMode
+          isInDeletingMode
             ? 'border-duoRed-darker'
             : 'border-duoGray-light dark:border-duoGrayDark-light'
         );
         setTextColor(
-          isInEditMode
+          isInDeletingMode
             ? 'text-duoRed-default'
             : 'text-duoGray-darkText dark:text-duoGrayDark-lightest'
         );
         break;
     }
-  }, [isInEditMode, propsColor]);
+  }, [isInDeletingMode, propsColor]);
   useEffect(() => {
     console.log('tooltip', selectedPopup);
     if (selectedPopup === PopupsTypes.STARTLESSON) {
@@ -83,7 +88,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
       tooltipRef.current &&
       !tooltipRef.current.contains(event.target as Node)
     ) {
-      setIsInEditMode(false);
+      setIsInDeletingMode(false);
     }
   };
 
@@ -98,7 +103,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
     if (event.key === 'Delete' && onDelete) {
       console.log('Delete key pressed!');
       onDelete();
-      setIsInEditMode(false);
+      setIsInDeletingMode(false);
     }
   };
 
@@ -107,14 +112,16 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
       {selectedPopup !== PopupsTypes.STARTLESSON ? (
         <div
           id='tooltip-main-div'
-          onClick={() => (edittable ? setIsInEditMode(!isInEditMode) : null)}
+          onClick={() =>
+            deletable ? setIsInDeletingMode(!isInDeletingMode) : null
+          }
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-            isInEditMode ? handleDeleteKeyPress(e) : null
+            isInDeletingMode ? handleDeleteKeyPress(e) : null
           }
           tabIndex={0}
           ref={tooltipRef}
           className={`absolute left-1/2 ${
-            isFloating && !isInEditMode
+            isFloating && !isInDeletingMode
               ? 'tooltip cursor-pointer'
               : 'cursor-default'
           }`}
@@ -127,7 +134,13 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
                ${textColor}`}
               >
                 <div className='min-w-[1.5rem]'>
-                  {placeholder ? placeholder : 'START'}
+                  {isInEditMode ? (
+                    <input className='w-[2rem] text-center bg-transparent' type='text' />
+                  ) : placeholder ? (
+                    placeholder
+                  ) : (
+                    'START'
+                  )}
                 </div>
               </div>
               <div

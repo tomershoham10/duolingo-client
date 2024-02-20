@@ -439,7 +439,8 @@ interface SliderProps {
         index?: number
     ) => void;
     deleteNode?: (index: number) => void;
-    onContextMenu?: (event: React.MouseEvent<HTMLDivElement>) => void;
+    onContextMenu?: (event: React.MouseEvent<HTMLDivElement>, left: number, right: number1) => void;
+    addedValLeftPercentage?: number;
 }
 
 // // SortableItem // //
@@ -507,7 +508,8 @@ enum TooltipColors {
 interface tooltipProps {
     placeholder?: string | number;
     isFloating: boolean;
-    edittable?: boolean;
+    deletable?: boolean;
+    editMode?: boolean;
     color: TooltipColors;
     onDelete?: () => void;
 }

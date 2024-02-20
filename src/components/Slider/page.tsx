@@ -1,6 +1,6 @@
 'use client';
 import _ from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
 
 const Slider: React.FC<SliderProps> = (props) => {
@@ -12,9 +12,15 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsMax = props.max;
   const propsStep = props.step;
   const propsValue = props.value;
+
+  const propsAddedValLeftPerc = props.addedValLeftPercentage;
+
   const propsOnChange = props.onChange;
   const propsDeleteNode = props.deleteNode;
+  const propsOnContextMenu = props.onContextMenu;
+
   //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
+  const rootMultiSlider = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     console.log('timeBufferRangeValues', propsValue);
@@ -39,9 +45,9 @@ const Slider: React.FC<SliderProps> = (props) => {
   const handleContextMenuWrapper = (
     event: React.MouseEvent<HTMLDivElement>
   ) => {
-    console.log('event', event);
-    if (props.onContextMenu) {
-      props.onContextMenu(event);
+    if (propsOnContextMenu && rootMultiSlider.current) {
+      const parentRect = rootMultiSlider.current.getBoundingClientRect();
+      propsOnContextMenu(event, parentRect.left, parentRect.right);
     }
   };
 
@@ -61,7 +67,10 @@ const Slider: React.FC<SliderProps> = (props) => {
             length: numberOfSliders > 0 ? numberOfSliders : 1,
           }).map((_, index) => (
             <section key={index}>
-              <div className='range-check absolute flex h-[2rem] w-full'>
+              <div
+                ref={rootMultiSlider}
+                className='range-check absolute flex h-[2rem] w-full'
+              >
                 <span
                   className='absolute top-3 h-[10px] w-full bg-transparent text-xs text-transparent'
                   onContextMenu={handleContextMenuWrapper}
@@ -83,9 +92,24 @@ const Slider: React.FC<SliderProps> = (props) => {
                   onChange={(e) => propsOnChange(e, index)}
                   className='multi-range absolute mb-6 mt-3 w-full'
                 />
+
+                {!!propsAddedValLeftPerc && propsAddedValLeftPerc > -1 ? (
+                  <p
+                    className='absolute flex items-center justify-center text-center'
+                    style={{ left: `${propsAddedValLeftPerc}%` }}
+                  >
+                    <Tooltip
+                      isFloating={true}
+                      color={TooltipColors.WHITE}
+                      deletable={true}
+                      editMode={true}
+                    />
+                  </p>
+                ) : null}
+
                 {tooltipsValues ? (
                   <div
-                    className={`absolute flex items-center justify-center text-center `}
+                    className='absolute flex items-center justify-center text-center'
                     style={{
                       left: `${
                         index === 0
@@ -104,7 +128,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                       placeholder={tooltipsValues[index]}
                       isFloating={true}
                       color={TooltipColors.WHITE}
-                      edittable={true}
+                      deletable={true}
                       onDelete={() => deleteNode(index)}
                     />
                   </div>
@@ -177,7 +201,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                   placeholder={propsValue === 0 ? '0' : propsValue}
                   isFloating={false}
                   color={TooltipColors.WHITE}
-                  edittable={false}
+                  deletable={false}
                 />
               </div>
             </section>
