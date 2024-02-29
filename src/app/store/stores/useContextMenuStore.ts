@@ -9,6 +9,7 @@ type PopupState = {
 }
 type Action = {
     toggleMenuOpen: () => void;
+    setMenuOpen: () => void;
     setCoordinates: (coordinates: CoordinatesType) => void;
     setContent: (content: ContentType[]) => void;
 }
@@ -18,6 +19,8 @@ export const useContextMenuStore = create<PopupState & Action>((set) => ({
     coordinates: { pageX: 0, pageY: 0 },
     content: [],
     toggleMenuOpen: () => set((state) => ({ isOpen: !state.isOpen })),
+
+    setMenuOpen: () => set((state) => ({ isOpen: true })),
     setCoordinates: (coordinates: CoordinatesType) => set(() => ({ coordinates: coordinates })),
     setContent: (content: any) => set(() => ({ content: content }))
 }));

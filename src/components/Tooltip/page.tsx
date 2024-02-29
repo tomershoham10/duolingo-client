@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import useStore from '@/app/store/useStore';
 import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
+import useClickOutside from '@/app/utils/hooks/useClickOutside';
 
 export enum TooltipColors {
   GREEN = 'green',
@@ -15,11 +16,14 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
   const isFloating = isInEditMode ? false : props.isFloating;
   const propsColor = props.color;
   const deletable = props.deletable;
+  const newVal = props.value;
 
   const onDelete = props.onDelete;
+  const onEdit = props.onEdit;
+  const onSave = props.onSave;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useClickOutside(() => setIsInDeletingMode(false));
 
   const [isInDeletingMode, setIsInDeletingMode] = useState<boolean>(false);
   const [isPopEffect, setIsPopEffect] = useState<boolean>(false);
@@ -28,9 +32,6 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
   const [borderColor, setBorderColor] = useState<string>();
   const [textColor, setTextColor] = useState<string>();
 
-  //   let backgroundColor: string = '';
-  //   let borderColor: string = '';
-  //   let textColor: string = '';
   useEffect(() => {
     switch (propsColor) {
       case TooltipColors.GREEN:
@@ -64,8 +65,9 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         break;
     }
   }, [isInDeletingMode, propsColor]);
+
   useEffect(() => {
-    console.log('tooltip', selectedPopup);
+    // console.log('tooltip', selectedPopup);
     if (selectedPopup === PopupsTypes.STARTLESSON) {
       setIsPopEffect(true);
     }
@@ -83,27 +85,15 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
     }
   }, [isPopEffect, selectedPopup]);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      tooltipRef.current &&
-      !tooltipRef.current.contains(event.target as Node)
-    ) {
-      setIsInDeletingMode(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const handleDeleteKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Delete' && onDelete) {
+    console.log(event.key);
+    if (event.key === 'Delete' && onDelete && isInDeletingMode) {
       console.log('Delete key pressed!');
       onDelete();
       setIsInDeletingMode(false);
+    }
+    if (event.key === 'Enter' && onSave && isInEditMode) {
+      newVal ? onSave(Number(newVal)) : null;
     }
   };
 
@@ -116,7 +106,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
             deletable ? setIsInDeletingMode(!isInDeletingMode) : null
           }
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-            isInDeletingMode ? handleDeleteKeyPress(e) : null
+            isInDeletingMode || isInEditMode ? handleDeleteKeyPress(e) : null
           }
           tabIndex={0}
           ref={tooltipRef}
@@ -135,7 +125,16 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
               >
                 <div className='min-w-[1.5rem]'>
                   {isInEditMode ? (
-                    <input className='w-[2rem] text-center bg-transparent' type='text' />
+                    <input
+                      className='w-[2rem] bg-transparent text-center outline-none'
+                      type='number'
+                      autoFocus
+                      value={typeof newVal === 'number' ? newVal : ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        onEdit ? onEdit(Number(val)) : null;
+                      }}
+                    />
                   ) : placeholder ? (
                     placeholder
                   ) : (
@@ -144,10 +143,9 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
                 </div>
               </div>
               <div
-                className={`absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[120%] rotate-45 transform rounded-sm border-b-2 
-              border-r-2 ${borderColor} ${backgroundColor} text-transparent`}
+                className={`absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[120%] rotate-45 transform rounded-sm border-b-2 border-r-2 ${borderColor} ${backgroundColor} text-transparent`}
               >
-                <div className='origin-center'></div>
+                {/* <div className='origin-center'></div> */}
               </div>
             </section>
           </div>

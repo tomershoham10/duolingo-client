@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useReducer } from 'react';
+import { useState, useRef, useReducer, useEffect } from 'react';
 
 import { useStore } from 'zustand';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -28,6 +28,10 @@ import {
   submitExerciseReducer,
 } from '@/reducers/submitExerciseDataReducer';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faPlus);
 
 enum FSAFieldsType {
   DESCRIPTION = 'description',
@@ -87,10 +91,10 @@ const ExerciseDataSection: React.FC = () => {
   const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
   const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
   const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>([
-    recordLength ? recordLength : 10,
+    recordLength ? recordLength / 2 : 10,
   ]);
   const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([100]);
-  const [rangeIndex, setRangeIndex] = useState<number>(0);
+  const [rangeIndex, setRangeIndex] = useState<number>(1);
   const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
 
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
@@ -221,7 +225,7 @@ const ExerciseDataSection: React.FC = () => {
     contextMenuStore.setCoordinates({ pageX: event.pageX, pageY: event.pageY });
     contextMenuStore.setContent([
       {
-        placeHolder: 'add',
+        icon: faPlus,
         onClick: () => {
           console.log('clicked');
           setAddedValueLeftPerc(
@@ -263,6 +267,78 @@ const ExerciseDataSection: React.FC = () => {
     setTimeBuffersScores(
       timeBuffersScores.filter((item) => item !== timeBuffersScores[index])
     );
+  };
+
+  const handleNewScore = (newScore: number, newTime: number) => {
+    const minutesArrays = timeBufferRangeValues;
+    const scoresArrays = timeBuffersScores;
+
+    if (minutesArrays.includes(newTime) || minutesArrays[0] > newTime) {
+      return false;
+    }
+    const pervScoreIndex = findPervScoreIndex(newScore, newTime);
+    console.log('pervScoreIndex', pervScoreIndex);
+    pervScoreIndex !== undefined
+      ? addNewScoreBuffer(pervScoreIndex, newScore, newTime)
+      : null;
+  };
+
+  const findPervScoreIndex = (
+    newScore: number,
+    newTime: number
+  ): number | undefined => {
+    const scoresArrays = timeBuffersScores;
+    console.log('scoresArrays', scoresArrays);
+    const minutesArrays = timeBufferRangeValues;
+
+    if (scoresArrays[scoresArrays.length - 1] > newScore) {
+      console.log('scoresArrays.length-1', scoresArrays.length - 1);
+      return scoresArrays.length - 1;
+    }
+    for (let i = scoresArrays.length - 1; i >= 0; i--) {
+      console.log(i, scoresArrays[i], newScore, scoresArrays[i - 1]);
+      console.log(
+        'newScore > scoresArrays[i]',
+        newScore > scoresArrays[i],
+        'newScore < scoresArrays[i - 1]',
+        newScore < scoresArrays[i - 1]
+      );
+      if (scoresArrays[i] < newScore && newScore < scoresArrays[i - 1]) {
+        return i;
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log('timeBufferRangeValues', timeBufferRangeValues);
+  }, [timeBufferRangeValues]);
+
+  useEffect(() => {
+    console.log('rangeIndex', rangeIndex);
+  }, [rangeIndex]);
+
+  useEffect(() => {
+    console.log('timeBuffersScores', timeBuffersScores);
+  }, [timeBuffersScores]);
+  timeBuffersScores;
+
+  const addNewScoreBuffer = (
+    pervScoreIndex: number,
+    newScore: number,
+    newTime: number
+  ) => {
+    console.log('pervScoreIndex', pervScoreIndex);
+    setRangeIndex(rangeIndex + 1);
+
+    setTimeBuffersScores((timeBuffersScores) => [
+      ...timeBuffersScores,
+      newScore,
+    ]);
+
+    setTimeBufferRangeValues((timeBufferRangeValues) => [
+      ...timeBufferRangeValues,
+      newTime,
+    ]);
   };
 
   return (
@@ -460,118 +536,9 @@ const ExerciseDataSection: React.FC = () => {
             >
               Time Buffers:
             </span>
-
-            <div
-              ref={timeBufferGradeDivRef}
-              className={`cursor-default' my-3 flex h-fit w-fit flex-row items-center justify-center rounded-full text-2xl ${
-                isAddBufferOpen && !!recordLength && recordLength > 0
-                  ? unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
-                    ? 'bg-duoRed-light text-duoRed-default'
-                    : 'bg-duoGray-light dark:bg-duoGrayDark-lighter'
-                  : unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
-                    ? 'bg-duoRed-lighter text-duoRed-default'
-                    : 'bg-duoGray-lighter dark:bg-duoGrayDark-light'
-              }`}
-            >
-              <button
-                className={`flex h-9 w-9 items-center justify-center   ${
-                  recordLength === 0 ? 'cursor-default' : 'cursor-pointer'
-                }`}
-                onClick={() => {
-                  console.log('clicked', isAddBufferOpen, gradeInput);
-                  if (isAddBufferOpen) {
-                    if (gradeInput) {
-                      if (
-                        timeBufferRangeValues[
-                          timeBufferRangeValues.length - 1
-                        ] === recordLength
-                      ) {
-                        console.log('alert');
-                        addAlert('no good', AlertSizes.small);
-                        return;
-                      } else {
-                        if (
-                          gradeInput >
-                          timeBuffersScores[timeBuffersScores.length - 1]
-                        ) {
-                          for (
-                            let i: number = 0;
-                            i < timeBuffersScores.length - 1;
-                            i++
-                          ) {
-                            if (
-                              gradeInput < timeBuffersScores[i] &&
-                              gradeInput > timeBuffersScores[i + 1]
-                            ) {
-                              setRangeIndex(rangeIndex + 1);
-                              setTimeBufferRangeValues(
-                                splicer(
-                                  i + 1,
-                                  (timeBufferRangeValues[i] +
-                                    timeBufferRangeValues[i + 1]) /
-                                    2,
-                                  timeBufferRangeValues
-                                )
-                              );
-                              setTimeBuffersScores(
-                                splicer(i + 1, gradeInput, timeBuffersScores)
-                              );
-                              setGradeInput(undefined);
-                              timeBufferGradeInputRef.current
-                                ? (timeBufferGradeInputRef.current.value = '')
-                                : null;
-                              setIsAddBufferOpen(!isAddBufferOpen);
-                              return;
-                            }
-                          }
-                        }
-
-                        setRangeIndex(rangeIndex + 1);
-                        setTimeBufferRangeValues((prevValues) =>
-                          !!recordLength ? [...prevValues, recordLength] : []
-                        );
-                        setTimeBuffersScores((prevValues) => [
-                          ...prevValues,
-                          gradeInput,
-                        ]);
-                        setGradeInput(undefined);
-                        timeBufferGradeInputRef.current
-                          ? (timeBufferGradeInputRef.current.value = '')
-                          : null;
-                        setIsAddBufferOpen(!isAddBufferOpen);
-                        return;
-                      }
-                    } else {
-                      addAlert('no good', AlertSizes.small);
-                      return;
-                    }
-                  }
-                  setIsAddBufferOpen(!isAddBufferOpen);
-                }}
-                disabled={recordLength === 0}
-              >
-                <TiPlus />
-              </button>
-
-              <div
-                className={` ${
-                  isAddBufferOpen && !!recordLength && recordLength > 0
-                    ? 'w-fit rounded-2xl px-2 text-base'
-                    : 'hidden'
-                }`}
-              >
-                <input
-                  type='number'
-                  value={gradeInput}
-                  ref={timeBufferGradeInputRef}
-                  onChange={(e) => setGradeInput(Number(e.target.value))}
-                  className='mr-1 h-5 w-8 border-b-[1px] border-duoGray-dark bg-transparent text-center font-extrabold text-duoGray-darkest focus:outline-none dark:text-duoGrayDark-lightest'
-                />
-              </div>
-            </div>
           </div>
 
-          <div className='mt-6 w-full pb-[5rem]'>
+          <div className='mt-6 w-full pb-[5rem] relative flex '>
             <Slider
               isMultiple={true}
               numberOfSliders={rangeIndex}
@@ -584,6 +551,7 @@ const ExerciseDataSection: React.FC = () => {
               onChange={handleTimeBufferRange}
               deleteNode={(index) => deleteTimeBuffer(index)}
               addedValLeftPercentage={addedValueLeftPerc}
+              onSave={(newScore, newTime) => handleNewScore(newScore, newTime)}
             />
           </div>
         </div>

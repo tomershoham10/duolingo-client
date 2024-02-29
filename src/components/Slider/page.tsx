@@ -1,7 +1,9 @@
-'use client';
++'use client';
 import _ from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
+import useClickOutside from '@/app/utils/hooks/useClickOutside';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;
@@ -16,14 +18,22 @@ const Slider: React.FC<SliderProps> = (props) => {
   const propsAddedValLeftPerc = props.addedValLeftPercentage;
 
   const propsOnChange = props.onChange;
+  const propsOnSave = props.onSave;
   const propsDeleteNode = props.deleteNode;
   const propsOnContextMenu = props.onContextMenu;
 
-  //   const [redIndexes, setRedIndexes] = useState<number[]>([]);
+  const addAlert = useAlertStore.getState().addAlert;
+
   const rootMultiSlider = useRef<HTMLDivElement>(null);
+  const newTooltipRef = useClickOutside(() => {
+    hanldeClickOutsideNewVal();
+  });
+
+  const [newVal, setNewVal] = useState<number | undefined>(undefined);
+  const [isNewValOpen, setIsNewValOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('timeBufferRangeValues', propsValue);
+    // console.log('timeBufferRangeValues', propsValue);
     if (_.isObject(propsValue)) {
       for (let i = 0; i < propsValue.length; i++) {
         if (propsValue[i] > propsValue[i + 1]) {
@@ -33,9 +43,15 @@ const Slider: React.FC<SliderProps> = (props) => {
     }
   }, [propsStep, propsValue]);
 
-  //   useEffect(() => {
-  // console.log('redIndexes', redIndexes);
-  //   }, [redIndexes]);
+  useEffect(() => {
+    !!propsAddedValLeftPerc && propsAddedValLeftPerc > -1
+      ? setIsNewValOpen(true)
+      : setIsNewValOpen(false);
+  }, [propsAddedValLeftPerc]);
+
+  useEffect(() => {
+    !isNewValOpen ? setNewVal(undefined) : null;
+  }, [isNewValOpen]);
 
   const deleteNode = (index: number) => {
     console.log('slider - deleteNode - index', index);
@@ -51,16 +67,29 @@ const Slider: React.FC<SliderProps> = (props) => {
     }
   };
 
-  //   useEffect(() => {
-  //     const element = document.querySelector('.range-check');
-  //     console.log('useeffect', element);
-  //     if (element) {
-  //       element.addEventListener('contextmenu', () => console.log('clicked1'));
-  //     }
-  //   }, []);
+  const hanldeClickOutsideNewVal = () => {
+    // console.log('clicked outside tooltip', newVal);
+    setIsNewValOpen(false);
+  };
+
+  const handleNewValSaved = (newScore: number, perc: number) => {
+    alert(perc);
+    const newTimeVal = (perc / 100) * propsMax;
+    propsOnSave ? propsOnSave(newScore, newTimeVal) : null;
+    // console.log(
+    //   'tooltipsValues',
+    //   perc,
+    //   (perc / 100) * propsMax,
+    //   tooltipsValues,
+    //   propsValue,
+    //   propsMax
+    // );
+    setIsNewValOpen(false);
+  };
 
   return (
     <>
+      {/* <p className=' text-white'>00:00</p> */}
       {isMultiple && numberOfSliders !== undefined && _.isObject(propsValue) ? (
         <>
           {Array.from({
@@ -93,18 +122,26 @@ const Slider: React.FC<SliderProps> = (props) => {
                   className='multi-range absolute mb-6 mt-3 w-full'
                 />
 
-                {!!propsAddedValLeftPerc && propsAddedValLeftPerc > -1 ? (
-                  <p
+                {isNewValOpen ? (
+                  <section
                     className='absolute flex items-center justify-center text-center'
                     style={{ left: `${propsAddedValLeftPerc}%` }}
+                    ref={newTooltipRef}
                   >
                     <Tooltip
                       isFloating={true}
                       color={TooltipColors.WHITE}
-                      deletable={true}
+                      deletable={false}
                       editMode={true}
+                      value={newVal}
+                      onEdit={(e) => setNewVal(Number(e))}
+                      onSave={(newScore) =>
+                        propsAddedValLeftPerc
+                          ? handleNewValSaved(newScore, propsAddedValLeftPerc)
+                          : null
+                      }
                     />
-                  </p>
+                  </section>
                 ) : null}
 
                 {tooltipsValues ? (
@@ -129,7 +166,14 @@ const Slider: React.FC<SliderProps> = (props) => {
                       isFloating={true}
                       color={TooltipColors.WHITE}
                       deletable={true}
-                      onDelete={() => deleteNode(index)}
+                      onDelete={() =>
+                        tooltipsValues.length > 1
+                          ? deleteNode(index)
+                          : addAlert(
+                              'cant delete on only one val',
+                              AlertSizes.small
+                            )
+                      }
                     />
                   </div>
                 ) : null}

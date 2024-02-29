@@ -233,7 +233,8 @@ interface CoordinatesType {
 }
 
 interface ContentType {
-    placeHolder: string;
+    placeHolder?: string;
+    icon?: IconDefinition;
     onClick: () => void;
 }
 
@@ -434,13 +435,14 @@ interface SliderProps {
     max: number;
     step: number;
     value: number | number[];
+    addedValLeftPercentage?: number;
+    onSave?: (newScore: number, newTime: number) => void;
+    deleteNode?: (index: number) => void;
     onChange: (
         event: React.ChangeEvent<HTMLInputElement>,
         index?: number
     ) => void;
-    deleteNode?: (index: number) => void;
     onContextMenu?: (event: React.MouseEvent<HTMLDivElement>, left: number, right: number1) => void;
-    addedValLeftPercentage?: number;
 }
 
 // // SortableItem // //
@@ -512,6 +514,9 @@ interface tooltipProps {
     editMode?: boolean;
     color: TooltipColors;
     onDelete?: () => void;
+    value?: number | string;
+    onEdit?: (val: number | string) => void;
+    onSave?: (newVal: number) => void;
 }
 
 // // Upload // //
