@@ -11,6 +11,7 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FaRegImages } from 'react-icons/fa';
 import Link from 'next/link';
+import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 
 const InfoBar: React.FC = () => {
   const pathname = usePathname();
@@ -98,12 +99,16 @@ const InfoBar: React.FC = () => {
                             </span>
                             {Object.keys(
                               useInfoBarStoreObj.selectedFile.metadata
-                            )[metaIndex] !== 'content-type' &&
-                            Object.keys(
-                              useInfoBarStoreObj.selectedFile.metadata
-                            )[metaIndex] !== 'sonograms_ids'
-                              ? String(meta)
-                              : null}
+                            )[metaIndex] === 'record_length'
+                              ? formatNumberToMinutes(Number(meta))
+                              : Object.keys(
+                                    useInfoBarStoreObj.selectedFile.metadata
+                                  )[metaIndex] !== 'content-type' &&
+                                  Object.keys(
+                                    useInfoBarStoreObj.selectedFile.metadata
+                                  )[metaIndex] !== 'sonograms_ids'
+                                ? String(meta)
+                                : null}
                           </li>
                         ) : null}
                       </section>

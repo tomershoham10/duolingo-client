@@ -61,24 +61,24 @@ const ExerciseDataSection: React.FC = () => {
 
   const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
 
-  const initialsubmitExerciseState = {
+  const initialSubmitExerciseState = {
     description: undefined,
     relevant: [],
     unfilledFields: [],
   };
 
-  const initialsubmitDraggingState = {
+  const initialSubmitDraggingState = {
     itemsList: [],
   };
 
   const [submitExerciseState, submitExerciseDispatch] = useReducer(
     submitExerciseReducer,
-    initialsubmitExerciseState
+    initialSubmitExerciseState
   );
 
   const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
     draggingReducer,
-    initialsubmitDraggingState
+    initialSubmitDraggingState
   );
 
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);

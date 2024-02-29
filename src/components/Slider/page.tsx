@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
 import useClickOutside from '@/app/utils/hooks/useClickOutside';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;
@@ -89,7 +90,6 @@ const Slider: React.FC<SliderProps> = (props) => {
 
   return (
     <>
-      {/* <p className=' text-white'>00:00</p> */}
       {isMultiple && numberOfSliders !== undefined && _.isObject(propsValue) ? (
         <>
           {Array.from({
@@ -103,9 +103,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                 <span
                   className='absolute top-3 h-[10px] w-full bg-transparent text-xs text-transparent'
                   onContextMenu={handleContextMenuWrapper}
-                >
-                  a
-                </span>
+                ></span>
                 <input
                   type='range'
                   id={`range${index + 1}`}
@@ -188,25 +186,7 @@ const Slider: React.FC<SliderProps> = (props) => {
                     top: '2.5rem',
                   }}
                 >
-                  {/* {(100 * propsValue[index]) / propsMax} */}
-                  {/* {'  '} */}
-                  {/* {8 - ((100 * propsValue[index]) / propsMax) * 0.15} */}
-                  {`${
-                    Math.floor((propsValue as number[])[index]) === 0
-                      ? '00'
-                      : Math.floor((propsValue as number[])[index]) < 10
-                        ? `0${Math.floor((propsValue as number[])[index])}`
-                        : Math.floor((propsValue as number[])[index])
-                  }:${
-                    (propsValue as number[])[index] ===
-                    Math.floor((propsValue as number[])[index])
-                      ? '00'
-                      : Math.round(
-                          60 *
-                            ((propsValue as number[])[index] -
-                              Math.floor((propsValue as number[])[index]))
-                        )
-                  }`}
+                  {formatNumberToMinutes((propsValue as number[])[index])}
                 </div>
               </div>
             </section>

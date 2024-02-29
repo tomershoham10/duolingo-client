@@ -1,8 +1,13 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useReducer } from 'react';
 import useStore from '@/app/store/useStore';
 import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
 import useClickOutside from '@/app/utils/hooks/useClickOutside';
+import {
+  TooltipType,
+  tooltipAction,
+  tooltipReducer,
+} from '@/reducers/tooltipReducer';
 
 export enum TooltipColors {
   GREEN = 'green',
@@ -23,53 +28,82 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
   const onSave = props.onSave;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
-  const tooltipRef = useClickOutside(() => setIsInDeletingMode(false));
+  const initialTooltipState: TooltipType = {
+    isInDeletingMode: false,
+    isPopEffect: false,
+    backgroundColor: '',
+    borderColor: '',
+    textColor: '',
+  };
 
-  const [isInDeletingMode, setIsInDeletingMode] = useState<boolean>(false);
-  const [isPopEffect, setIsPopEffect] = useState<boolean>(false);
+  const [tooltipState, tooltipDispatch] = useReducer(
+    tooltipReducer,
+    initialTooltipState
+  );
 
-  const [backgroundColor, setBackgroundColor] = useState<string>();
-  const [borderColor, setBorderColor] = useState<string>();
-  const [textColor, setTextColor] = useState<string>();
+  const tooltipRef = useClickOutside(() =>
+    tooltipDispatch({
+      type: tooltipAction.SET_IS_IN_DELETING_MODE,
+      payload: false,
+    })
+  );
 
   useEffect(() => {
     switch (propsColor) {
       case TooltipColors.GREEN:
-        setBackgroundColor(
-          isInDeletingMode ? 'bg-duoRed-light' : 'bg-duoGreen-default'
-        );
-        setBorderColor(
-          isInDeletingMode ? 'border-duoRed-darker' : 'border-white'
-        );
-        setTextColor(isInDeletingMode ? 'text-duoRed-default' : 'text-white');
+        tooltipDispatch({
+          type: tooltipAction.SET_BACKGROUND_COLOR,
+          payload: tooltipState.isInDeletingMode
+            ? 'bg-duoRed-light'
+            : 'bg-duoGreen-default',
+        });
+        tooltipDispatch({
+          type: tooltipAction.SET_BORDER_COLOR,
+          payload: tooltipState.isInDeletingMode
+            ? 'border-duoRed-darker'
+            : 'border-white',
+        });
+
+        tooltipDispatch({
+          type: tooltipAction.SET_TEXT_COLOR,
+          payload: tooltipState.isInDeletingMode
+            ? 'text-duoRed-default'
+            : 'text-white',
+        });
         break;
 
       case TooltipColors.WHITE:
-        setBackgroundColor(
-          !!isInDeletingMode
+        tooltipDispatch({
+          type: tooltipAction.SET_BACKGROUND_COLOR,
+          payload: !!tooltipState.isInDeletingMode
             ? 'bg-duoRed-light'
             : isInEditMode
               ? 'bg-white dark:bg-[#1C2536]'
-              : 'bg-white dark:bg-duoBlueDark-darkest'
-        );
-        setBorderColor(
-          isInDeletingMode
+              : 'bg-white dark:bg-duoBlueDark-darkest',
+        });
+        tooltipDispatch({
+          type: tooltipAction.SET_BORDER_COLOR,
+          payload: tooltipState.isInDeletingMode
             ? 'border-duoRed-darker'
-            : 'border-duoGray-light dark:border-duoGrayDark-light'
-        );
-        setTextColor(
-          isInDeletingMode
+            : 'border-duoGray-light dark:border-duoGrayDark-light',
+        });
+        tooltipDispatch({
+          type: tooltipAction.SET_TEXT_COLOR,
+          payload: tooltipState.isInDeletingMode
             ? 'text-duoRed-default'
-            : 'text-duoGray-darkText dark:text-duoGrayDark-lightest'
-        );
+            : 'text-duoGray-darkText dark:text-duoGrayDark-lightest',
+        });
         break;
     }
-  }, [isInDeletingMode, propsColor]);
+  }, [tooltipState.isInDeletingMode, propsColor]);
 
   useEffect(() => {
     // console.log('tooltip', selectedPopup);
     if (selectedPopup === PopupsTypes.STARTLESSON) {
-      setIsPopEffect(true);
+      tooltipDispatch({
+        type: tooltipAction.SET_IS_POP_EFFECT,
+        payload: true,
+      });
     }
   }, [selectedPopup]);
 
@@ -77,20 +111,23 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
     const tooltipElement = document.getElementById('tooltip-main-div');
     if (
       tooltipElement &&
-      isPopEffect &&
+      tooltipState.isPopEffect &&
       selectedPopup !== PopupsTypes.STARTLESSON
     ) {
       tooltipElement.classList.remove('tooltip');
       tooltipElement.classList.add('bounce-and-pop');
     }
-  }, [isPopEffect, selectedPopup]);
+  }, [tooltipState.isPopEffect, selectedPopup]);
 
   const handleDeleteKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     console.log(event.key);
-    if (event.key === 'Delete' && onDelete && isInDeletingMode) {
+    if (event.key === 'Delete' && onDelete && tooltipState.isInDeletingMode) {
       console.log('Delete key pressed!');
       onDelete();
-      setIsInDeletingMode(false);
+      tooltipDispatch({
+        type: tooltipAction.SET_IS_IN_DELETING_MODE,
+        payload: false,
+      });
     }
     if (event.key === 'Enter' && onSave && isInEditMode) {
       newVal ? onSave(Number(newVal)) : null;
@@ -103,15 +140,21 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         <div
           id='tooltip-main-div'
           onClick={() =>
-            deletable ? setIsInDeletingMode(!isInDeletingMode) : null
+            deletable
+              ? tooltipDispatch({
+                  type: tooltipAction.TOGGLE_DELETING_MODE,
+                })
+              : null
           }
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-            isInDeletingMode || isInEditMode ? handleDeleteKeyPress(e) : null
+            tooltipState.isInDeletingMode || isInEditMode
+              ? handleDeleteKeyPress(e)
+              : null
           }
           tabIndex={0}
           ref={tooltipRef}
           className={`absolute left-1/2 ${
-            isFloating && !isInDeletingMode
+            isFloating && !tooltipState.isInDeletingMode
               ? 'tooltip cursor-pointer'
               : 'cursor-default'
           }`}
@@ -120,8 +163,8 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
             <section className='inline-flex'>
               <div
                 className={`absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[35%] transform rounded-xl
-              border-2 ${borderColor} ${backgroundColor} px-3 py-2 text-center text-base font-extrabold uppercase tracking-wide
-               ${textColor}`}
+              border-2 ${tooltipState.borderColor} ${tooltipState.backgroundColor} px-3 py-2 text-center text-base font-extrabold uppercase tracking-wide
+               ${tooltipState.textColor}`}
               >
                 <div className='min-w-[1.5rem]'>
                   {isInEditMode ? (
@@ -143,7 +186,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
                 </div>
               </div>
               <div
-                className={`absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[120%] rotate-45 transform rounded-sm border-b-2 border-r-2 ${borderColor} ${backgroundColor} text-transparent`}
+                className={`absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[120%] rotate-45 transform rounded-sm border-b-2 border-r-2 ${tooltipState.borderColor} ${tooltipState.backgroundColor} text-transparent`}
               >
                 {/* <div className='origin-center'></div> */}
               </div>
