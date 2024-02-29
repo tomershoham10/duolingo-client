@@ -24,12 +24,16 @@ import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import {
-  submitExerciseDataAction,
-  submitExerciseReducer,
-} from '@/reducers/submitExerciseDataReducer';
+  exerciseDataAction,
+  exerciseDataReducer,
+} from '@/reducers/exerciseDataReducer';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  TimeBuffersAction,
+  timeBuffersReducer,
+} from '@/reducers/timeBuffersReducer';
 
 library.add(faPlus);
 
@@ -59,21 +63,28 @@ const ExerciseDataSection: React.FC = () => {
     setContent: useContextMenuStore.getState().setContent,
   };
 
-  const timeBufferGradeDivRef = useRef<HTMLDivElement | null>(null);
-
-  const initialSubmitExerciseState = {
+  const initialexerciseDataState = {
     description: undefined,
     relevant: [],
     unfilledFields: [],
+    showPlaceholder: true,
+    targetFromDropdown: null,
   };
 
   const initialSubmitDraggingState = {
     itemsList: [],
   };
 
-  const [submitExerciseState, submitExerciseDispatch] = useReducer(
-    submitExerciseReducer,
-    initialSubmitExerciseState
+  const initialTimeBuffersState = {
+    rangeIndex: 1,
+    timeBuffersScores: [100],
+    timeBufferRangeValues: [recordLength ? recordLength / 2 : 10],
+    addedValueLeftPerc: -1,
+  };
+
+  const [exerciseDataState, exerciseDataDispatch] = useReducer(
+    exerciseDataReducer,
+    initialexerciseDataState
   );
 
   const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
@@ -81,29 +92,21 @@ const ExerciseDataSection: React.FC = () => {
     initialSubmitDraggingState
   );
 
-  const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
-  const [targetFromDropdown, setTargetFromDropdown] =
-    useState<TargetType | null>(null);
-  const [selectedTargetIndex, setSelectedTargetIndex] = useState<number>(-1);
+  const [timeBuffersState, timeBuffersDispatch] = useReducer(
+    timeBuffersReducer,
+    initialTimeBuffersState
+  );
+
   //   const [relevant, setRelevant] = useState<TargetType[]>([]);
   const [grabbedRelevantId, setGrabbedRelevantId] =
     useState<string>('released');
-  const [isAddBufferOpen, setIsAddBufferOpen] = useState<boolean>(false);
-  const [gradeInput, setGradeInput] = useState<number | undefined>(undefined);
-  const [timeBufferRangeValues, setTimeBufferRangeValues] = useState<number[]>([
-    recordLength ? recordLength / 2 : 10,
-  ]);
-  const [timeBuffersScores, setTimeBuffersScores] = useState<number[]>([100]);
-  const [rangeIndex, setRangeIndex] = useState<number>(1);
-  const timeBufferGradeInputRef = useRef<HTMLInputElement | null>(null);
-
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
 
-  const [addedValueLeftPerc, setAddedValueLeftPerc] = useState<number>(-1);
-
   const handleTargetsDropdown = (selectedTargetName: string) => {
-    setSelectedTargetIndex(-1);
-    setShowPlaceholder(false);
+    exerciseDataDispatch({
+      type: exerciseDataAction.SET_SHOW_PLACE_HOLDER,
+      payload: false,
+    });
 
     if (targetsList) {
       const selectedTarget = targetsList.find(
@@ -111,20 +114,23 @@ const ExerciseDataSection: React.FC = () => {
       );
 
       if (selectedTarget) {
-        setTargetFromDropdown(selectedTarget);
+        exerciseDataDispatch({
+          type: exerciseDataAction.SET_TARGET_FROM_DROPDOWN,
+          payload: selectedTarget,
+        });
       }
     }
   };
 
   const addTargetToRelevant = () => {
-    if (targetFromDropdown) {
-      const relevantIds = submitExerciseState.relevant.map(
+    if (exerciseDataState.targetFromDropdown) {
+      const relevantIds = exerciseDataState.relevant.map(
         (target) => target._id
       );
-      if (!relevantIds.includes(targetFromDropdown._id)) {
-        submitExerciseDispatch({
-          type: submitExerciseDataAction.SET_RELEVANT,
-          payload: targetFromDropdown,
+      if (!relevantIds.includes(exerciseDataState.targetFromDropdown._id)) {
+        exerciseDataDispatch({
+          type: exerciseDataAction.SET_RELEVANT,
+          payload: exerciseDataState.targetFromDropdown,
         });
       } else {
         addAlert('target already included.', AlertSizes.small);
@@ -152,15 +158,15 @@ const ExerciseDataSection: React.FC = () => {
     const updatedRelevant = relevantDraggingDispatch({
       type: draggingAction.REARANGE_ITEMS_LIST,
       payload: {
-        itemsList: submitExerciseState.relevant,
+        itemsList: exerciseDataState.relevant,
         active: active,
         over: over,
       },
     });
 
     if (updatedRelevant !== undefined) {
-      submitExerciseDispatch({
-        type: submitExerciseDataAction.SET_RELEVANT,
+      exerciseDataDispatch({
+        type: exerciseDataAction.SET_RELEVANT,
         payload: updatedRelevant,
       });
     }
@@ -172,15 +178,15 @@ const ExerciseDataSection: React.FC = () => {
     const updatedRelevant = relevantDraggingDispatch({
       type: draggingAction.REARANGE_ITEMS_LIST,
       payload: {
-        itemsList: submitExerciseState.relevant,
+        itemsList: exerciseDataState.relevant,
         active: active,
         over: over,
       },
     });
 
     if (updatedRelevant !== undefined) {
-      submitExerciseDispatch({
-        type: submitExerciseDataAction.SET_RELEVANT,
+      exerciseDataDispatch({
+        type: exerciseDataAction.SET_RELEVANT,
         payload: updatedRelevant,
       });
     }
@@ -200,9 +206,9 @@ const ExerciseDataSection: React.FC = () => {
   //   const removeRelevantItem = (itemId: string) => {
   //     // setRelevant(relevant.filter((item) => item._id != itemId));
 
-  //     submitExerciseDispatch({
-  //       type: submitExerciseDataAction.SET_RELEVANT,
-  //       payload: submitExerciseState.relevant.filter(
+  //     exerciseDataDispatch({
+  //       type: exerciseDataAction.SET_RELEVANT,
+  //       payload: exerciseDataState.relevant.filter(
   //         (item) => item._id != itemId
   //       ),
   //     });
@@ -228,9 +234,12 @@ const ExerciseDataSection: React.FC = () => {
         icon: faPlus,
         onClick: () => {
           console.log('clicked');
-          setAddedValueLeftPerc(
-            Math.round(100 * ((event.pageX - left) / (right - left)))
-          );
+
+          timeBuffersDispatch({
+            type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC,
+            payload: Math.round(100 * ((event.pageX - left) / (right - left))),
+          });
+
           contextMenuStore.toggleMenuOpen();
         },
       },
@@ -243,35 +252,37 @@ const ExerciseDataSection: React.FC = () => {
     index?: number
   ) => {
     e.preventDefault();
-    setTimeBufferRangeValues((prevArray) => {
-      return prevArray.map((value, i) =>
-        i === index
-          ? Number(e.target.value) > prevArray[i + 1]
-            ? prevArray[i + 1] - 1 / 6
-            : Number(e.target.value) < prevArray[i - 1]
-              ? prevArray[i - 1] + 1 / 6
-              : Number(e.target.value)
-          : value
-      );
-    });
+
+    index
+      ? timeBuffersDispatch({
+          type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY,
+          payload: { index: index, newVal: Number(e.target.value) },
+        })
+      : null;
   };
 
   const deleteTimeBuffer = (index: number) => {
     console.log('new exercise - deleteTimeBuffer - index', index);
-    setRangeIndex(rangeIndex - 1);
-    setTimeBufferRangeValues(
-      timeBufferRangeValues.filter(
-        (item) => item !== timeBufferRangeValues[index]
-      )
-    );
-    setTimeBuffersScores(
-      timeBuffersScores.filter((item) => item !== timeBuffersScores[index])
-    );
+    timeBuffersDispatch({
+      type: TimeBuffersAction.SET_RANGE_INDEX,
+      payload: timeBuffersState.rangeIndex - 1,
+    });
+
+    timeBuffersDispatch({
+      type: TimeBuffersAction.DELETE_TIME_VAL,
+      payload: index,
+    });
+
+    timeBuffersDispatch({
+      type: TimeBuffersAction.SET_SCORES_ARRAY,
+      payload: timeBuffersState.timeBuffersScores.filter(
+        (item) => item !== timeBuffersState.timeBuffersScores[index]
+      ),
+    });
   };
 
   const handleNewScore = (newScore: number, newTime: number) => {
-    const minutesArrays = timeBufferRangeValues;
-    const scoresArrays = timeBuffersScores;
+    const minutesArrays = timeBuffersState.timeBufferRangeValues;
 
     if (minutesArrays.includes(newTime) || minutesArrays[0] > newTime) {
       return false;
@@ -287,9 +298,8 @@ const ExerciseDataSection: React.FC = () => {
     newScore: number,
     newTime: number
   ): number | undefined => {
-    const scoresArrays = timeBuffersScores;
+    const scoresArrays = timeBuffersState.timeBuffersScores;
     console.log('scoresArrays', scoresArrays);
-    const minutesArrays = timeBufferRangeValues;
 
     if (scoresArrays[scoresArrays.length - 1] > newScore) {
       console.log('scoresArrays.length-1', scoresArrays.length - 1);
@@ -309,36 +319,26 @@ const ExerciseDataSection: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('timeBufferRangeValues', timeBufferRangeValues);
-  }, [timeBufferRangeValues]);
-
-  useEffect(() => {
-    console.log('rangeIndex', rangeIndex);
-  }, [rangeIndex]);
-
-  useEffect(() => {
-    console.log('timeBuffersScores', timeBuffersScores);
-  }, [timeBuffersScores]);
-  timeBuffersScores;
-
   const addNewScoreBuffer = (
     pervScoreIndex: number,
     newScore: number,
     newTime: number
   ) => {
     console.log('pervScoreIndex', pervScoreIndex);
-    setRangeIndex(rangeIndex + 1);
+    timeBuffersDispatch({
+      type: TimeBuffersAction.SET_RANGE_INDEX,
+      payload: timeBuffersState.rangeIndex + 1,
+    });
 
-    setTimeBuffersScores((timeBuffersScores) => [
-      ...timeBuffersScores,
-      newScore,
-    ]);
+    timeBuffersDispatch({
+      type: TimeBuffersAction.ADD_SCORE,
+      payload: newScore,
+    });
 
-    setTimeBufferRangeValues((timeBufferRangeValues) => [
-      ...timeBufferRangeValues,
-      newTime,
-    ]);
+    timeBuffersDispatch({
+      type: TimeBuffersAction.ADD_VAL_TIME_ARRAY,
+      payload: newTime,
+    });
   };
 
   return (
@@ -351,10 +351,10 @@ const ExerciseDataSection: React.FC = () => {
               isEditMode={false}
               fontSizeProps={FontSizes.MEDIUM}
               placeHolder={'Add desription...'}
-              value={submitExerciseState.description}
+              value={exerciseDataState.description}
               onChange={(text: string) => {
-                submitExerciseDispatch({
-                  type: submitExerciseDataAction.SET_DESCRIPTION,
+                exerciseDataDispatch({
+                  type: exerciseDataAction.SET_DESCRIPTION,
                   payload: text,
                 });
                 // setDescription(text);
@@ -373,10 +373,10 @@ const ExerciseDataSection: React.FC = () => {
                   placeholder={'targets'}
                   items={targetsList.map((target) => target.name)}
                   value={
-                    showPlaceholder
+                    exerciseDataState.showPlaceholder
                       ? undefined
-                      : targetFromDropdown
-                        ? targetFromDropdown.name
+                      : exerciseDataState.targetFromDropdown
+                        ? exerciseDataState.targetFromDropdown.name
                         : undefined
                   }
                   onChange={handleTargetsDropdown}
@@ -414,7 +414,7 @@ const ExerciseDataSection: React.FC = () => {
         <div className='mb-4'>
           <div>
             <span className='my-3 text-2xl font-bold'>Relevant:</span>
-            {submitExerciseState.relevant.length > 0 ? (
+            {exerciseDataState.relevant.length > 0 ? (
               <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
                 <DndContext
                   collisionDetection={closestCenter}
@@ -426,13 +426,13 @@ const ExerciseDataSection: React.FC = () => {
                   onDragEnd={handleRelevantDragEnd}
                 >
                   <SortableContext
-                    items={submitExerciseState.relevant.map(
+                    items={exerciseDataState.relevant.map(
                       (target) => target._id
                     )}
                     strategy={horizontalListSortingStrategy}
                   >
                     <div className='flex flex-wrap gap-1'>
-                      {submitExerciseState.relevant.map(
+                      {exerciseDataState.relevant.map(
                         (target, relevantIndex) => (
                           <div
                             key={relevantIndex}
@@ -452,8 +452,8 @@ const ExerciseDataSection: React.FC = () => {
                             {grabbedRelevantId !== target._id ? (
                               <button
                                 onClick={() => {
-                                  submitExerciseDispatch({
-                                    type: submitExerciseDataAction.SET_RELEVANT,
+                                  exerciseDataDispatch({
+                                    type: exerciseDataAction.SET_RELEVANT,
                                     payload: target,
                                   });
                                   // removeRelevantItem(target._id);
@@ -538,19 +538,19 @@ const ExerciseDataSection: React.FC = () => {
             </span>
           </div>
 
-          <div className='mt-6 w-full pb-[5rem] relative flex '>
+          <div className='relative mt-6 flex w-full pb-[5rem] '>
             <Slider
               isMultiple={true}
-              numberOfSliders={rangeIndex}
+              numberOfSliders={timeBuffersState.rangeIndex}
               min={0}
               max={!!recordLength ? recordLength : 10}
               onContextMenu={handleContextMenu}
               step={1 / 6}
-              value={timeBufferRangeValues}
-              tooltipsValues={timeBuffersScores}
+              value={timeBuffersState.timeBufferRangeValues}
+              tooltipsValues={timeBuffersState.timeBuffersScores}
               onChange={handleTimeBufferRange}
               deleteNode={(index) => deleteTimeBuffer(index)}
-              addedValLeftPercentage={addedValueLeftPerc}
+              addedValLeftPercentage={timeBuffersState.addedValueLeftPerc}
               onSave={(newScore, newTime) => handleNewScore(newScore, newTime)}
             />
           </div>

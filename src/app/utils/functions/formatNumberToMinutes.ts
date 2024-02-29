@@ -7,7 +7,6 @@ export const formatNumberToMinutes = (time: number) => {
         hours = Math.floor(minutes / 60);
         minutes = minutes - hours * 60;
     }
-    console.log('seconds', seconds, (seconds < 10 ? `0${seconds}` : seconds));
     return hours ?
         (hours < 10 ? `0${hours}` : hours) + ':' : ''
         +
