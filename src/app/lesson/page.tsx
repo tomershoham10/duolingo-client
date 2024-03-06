@@ -14,7 +14,7 @@ import { FaCheck } from 'react-icons/fa6';
 import { FaXmark } from 'react-icons/fa6';
 import { FiFlag } from 'react-icons/fi';
 
-import Button, { Color } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import Alert from '@/components/Alert/page';
 import ProgressBar from '@/components/ProgressBar/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
@@ -578,15 +578,13 @@ export default function Page() {
                           >
                             <div className='relative '>
                               <div
-                                className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 
-                                                                py-4 pl-[45px] pr-[30px] text-lg font-bold sm:min-w-[7rem]
-                                                                lg:min-w-[10rem]  ${
-                                                                  isExerciseStarted
-                                                                    ? !isExerciseFinished
-                                                                      ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
-                                                                      : 'cursor-default'
-                                                                    : 'cursor-default'
-                                                                }
+                                className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold sm:min-w-[7rem] lg:min-w-[10rem]  ${
+                                  isExerciseStarted
+                                    ? !isExerciseFinished
+                                      ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
+                                      : 'cursor-default'
+                                    : 'cursor-default'
+                                }
                                                                ${
                                                                  isExerciseStarted &&
                                                                  !isExerciseFinished &&
@@ -640,10 +638,10 @@ export default function Page() {
                           items={targetsList.map((target) => target.name)}
                           value={
                             showPlaceholder
-                              ? null
+                              ? undefined
                               : targetFromDropdown
                                 ? targetFromDropdown.name
-                                : null
+                                : undefined
                           }
                           onChange={handleTargetsDropdown}
                           isDisabled={!isExerciseStarted || isExerciseFinished}
@@ -840,10 +838,10 @@ export default function Page() {
                       label={'CONTINUE'}
                       color={
                         totalScore === 100
-                          ? Color.GREEN
+                          ? ButtonColors.GREEN
                           : totalScore === 0
-                            ? Color.RED
-                            : Color.YELLOW
+                            ? ButtonColors.RED
+                            : ButtonColors.YELLOW
                       }
                       style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
                       onClick={continueLesson}
@@ -853,7 +851,7 @@ export default function Page() {
                   <>
                     <Button
                       label={'ADD TARGET'}
-                      color={Color.BLUE}
+                      color={ButtonColors.BLUE}
                       style={
                         'w-[15rem] 3xl:w-[20rem] flex-none text-2xl tracking-widest'
                       }
@@ -863,7 +861,7 @@ export default function Page() {
                     />
                     <Button
                       label={'SUBMIT'}
-                      color={Color.GREEN}
+                      color={ButtonColors.GREEN}
                       style={
                         'w-[15rem] 3xl:w-[20rem] text-2xl flex-none tracking-widest'
                       }
@@ -873,7 +871,7 @@ export default function Page() {
                 ) : (
                   <Button
                     label={'START CLOCK'}
-                    color={Color.PURPLE}
+                    color={ButtonColors.PURPLE}
                     style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
                     onClick={() => {
                       startCurrentExercise(

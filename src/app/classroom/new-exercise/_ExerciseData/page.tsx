@@ -27,13 +27,18 @@ import {
   exerciseDataAction,
   exerciseDataReducer,
 } from '@/reducers/exerciseDataReducer';
-import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
+import {
+  DraggingAction,
+  draggingAction,
+  draggingReducer,
+} from '@/reducers/dragReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
   TimeBuffersAction,
   timeBuffersReducer,
 } from '@/reducers/timeBuffersReducer';
+import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 
 library.add(faPlus);
 
@@ -71,7 +76,8 @@ const ExerciseDataSection: React.FC = () => {
     targetFromDropdown: null,
   };
 
-  const initialSubmitDraggingState = {
+  const initialRelevantDraggingState = {
+    grabbedItemId: 'released',
     itemsList: [],
   };
 
@@ -89,7 +95,7 @@ const ExerciseDataSection: React.FC = () => {
 
   const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
     draggingReducer,
-    initialSubmitDraggingState
+    initialRelevantDraggingState
   );
 
   const [timeBuffersState, timeBuffersDispatch] = useReducer(
@@ -97,10 +103,14 @@ const ExerciseDataSection: React.FC = () => {
     initialTimeBuffersState
   );
 
-  //   const [relevant, setRelevant] = useState<TargetType[]>([]);
-  const [grabbedRelevantId, setGrabbedRelevantId] =
-    useState<string>('released');
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
+
+  useEffect(() => {
+    exerciseDataDispatch({
+      type: exerciseDataAction.SET_RELEVANT,
+      payload: relevantDraggingState.itemsList,
+    });
+  }, [relevantDraggingState.itemsList]);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     exerciseDataDispatch({
@@ -124,13 +134,21 @@ const ExerciseDataSection: React.FC = () => {
 
   const addTargetToRelevant = () => {
     if (exerciseDataState.targetFromDropdown) {
-      const relevantIds = exerciseDataState.relevant.map(
-        (target) => target._id
-      );
+      const relevantIds = exerciseDataState.relevant.map((target) => target.id);
       if (!relevantIds.includes(exerciseDataState.targetFromDropdown._id)) {
         exerciseDataDispatch({
-          type: exerciseDataAction.SET_RELEVANT,
-          payload: exerciseDataState.targetFromDropdown,
+          type: exerciseDataAction.ADD_RELEVANT,
+          payload: {
+            id: exerciseDataState.targetFromDropdown._id,
+            name: exerciseDataState.targetFromDropdown.name,
+          },
+        });
+        relevantDraggingDispatch({
+          type: draggingAction.ADD_ITEM,
+          payload: {
+            id: exerciseDataState.targetFromDropdown._id,
+            name: exerciseDataState.targetFromDropdown.name,
+          },
         });
       } else {
         addAlert('target already included.', AlertSizes.small);
@@ -138,87 +156,6 @@ const ExerciseDataSection: React.FC = () => {
     } else {
       addAlert('please select a target.', AlertSizes.small);
     }
-  };
-
-  const handleRelevantDragMove = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    // if (over && active.id !== over.id) {
-    //   setRelevant((items) => {
-    //     const activeIndex = items
-    //       .map((item) => item._id)
-    //       .indexOf(active.id as string);
-    //     const overIndex = items
-    //       .map((item) => item._id)
-    //       .indexOf(over.id as string);
-    //     return arrayMove(items, activeIndex, overIndex);
-    //   });
-    // }
-
-    const updatedRelevant = relevantDraggingDispatch({
-      type: draggingAction.REARANGE_ITEMS_LIST,
-      payload: {
-        itemsList: exerciseDataState.relevant,
-        active: active,
-        over: over,
-      },
-    });
-
-    if (updatedRelevant !== undefined) {
-      exerciseDataDispatch({
-        type: exerciseDataAction.SET_RELEVANT,
-        payload: updatedRelevant,
-      });
-    }
-  };
-
-  const handleRelevantDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setGrabbedRelevantId('released');
-    const updatedRelevant = relevantDraggingDispatch({
-      type: draggingAction.REARANGE_ITEMS_LIST,
-      payload: {
-        itemsList: exerciseDataState.relevant,
-        active: active,
-        over: over,
-      },
-    });
-
-    if (updatedRelevant !== undefined) {
-      exerciseDataDispatch({
-        type: exerciseDataAction.SET_RELEVANT,
-        payload: updatedRelevant,
-      });
-    }
-    // if (over && active.id !== over.id) {
-    //   setRelevant((items) => {
-    //     const activeIndex = items
-    //       .map((item) => item._id)
-    //       .indexOf(active.id as string);
-    //     const overIndex = items
-    //       .map((item) => item._id)
-    //       .indexOf(over.id as string);
-    //     return arrayMove(items, activeIndex, overIndex);
-    //   });
-    // }
-  };
-
-  //   const removeRelevantItem = (itemId: string) => {
-  //     // setRelevant(relevant.filter((item) => item._id != itemId));
-
-  //     exerciseDataDispatch({
-  //       type: exerciseDataAction.SET_RELEVANT,
-  //       payload: exerciseDataState.relevant.filter(
-  //         (item) => item._id != itemId
-  //       ),
-  //     });
-  //   };
-
-  const splicer = (index: number, newVal: number, oldArray: number[]) => {
-    const newArray = [...oldArray];
-    newArray.splice(index, 0, newVal);
-    console.log('newArray', newVal, newArray);
-    return newArray;
   };
 
   const handleContextMenu = (
@@ -253,7 +190,7 @@ const ExerciseDataSection: React.FC = () => {
   ) => {
     e.preventDefault();
 
-    index
+    index !== undefined
       ? timeBuffersDispatch({
           type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY,
           payload: { index: index, newVal: Number(e.target.value) },
@@ -386,27 +323,15 @@ const ExerciseDataSection: React.FC = () => {
 
               <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
-                  className='flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
+                  className='flex h-8 w-8 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter lg:h-9 lg:w-9'
                   onClick={addTargetToRelevant}
                 >
                   <TiPlus />
-                  <span className='ml-1 hidden text-base font-extrabold group-hover:block'>
+                  <span className='ml-1 hidden text-sm font-bold group-hover:block lg:text-base lg:font-extrabold'>
                     relevant
                   </span>
                 </button>
               </div>
-
-              {/* <div className='open-button group my-3 flex cursor-pointer flex-row items-center justify-start'>
-                <button
-                  className='open-button flex h-9 w-9 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter'
-                  onClick={addTargetToAnswersList}
-                >
-                  <TbTargetArrow />
-                  <span className='ml-1 hidden text-base font-extrabold group-hover:block'>
-                    add answer
-                  </span>
-                </button>
-              </div> */}
             </div>
           ) : null}
         </div>
@@ -414,63 +339,134 @@ const ExerciseDataSection: React.FC = () => {
         <div className='mb-4'>
           <div>
             <span className='my-3 text-2xl font-bold'>Relevant:</span>
-            {exerciseDataState.relevant.length > 0 ? (
-              <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragStart={(event: DragEndEvent) => {
-                    const { active } = event;
-                    setGrabbedRelevantId(active.id.toString());
-                  }}
-                  onDragMove={handleRelevantDragMove}
-                  onDragEnd={handleRelevantDragEnd}
-                >
-                  <SortableContext
-                    items={exerciseDataState.relevant.map(
-                      (target) => target._id
-                    )}
-                    strategy={horizontalListSortingStrategy}
-                  >
-                    <div className='flex flex-wrap gap-1'>
-                      {exerciseDataState.relevant.map(
-                        (target, relevantIndex) => (
-                          <div
-                            key={relevantIndex}
-                            className='mb-2 flex w-[8rem] flex-row'
-                          >
-                            <SortableItem
-                              id={target._id}
-                              key={relevantIndex}
-                              name={target.name}
-                              isGrabbed={
-                                grabbedRelevantId
-                                  ? grabbedRelevantId === target._id
-                                  : false
-                              }
-                              isDisabled={false}
-                            />
-                            {grabbedRelevantId !== target._id ? (
-                              <button
-                                onClick={() => {
-                                  exerciseDataDispatch({
-                                    type: exerciseDataAction.SET_RELEVANT,
-                                    payload: target,
-                                  });
-                                  // removeRelevantItem(target._id);
-                                }}
-                                className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
-                              >
-                                <FaRegTrashAlt />
-                              </button>
-                            ) : null}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              </div>
+            {relevantDraggingState.itemsList.length > 0 ? (
+              <DraggbleList
+                items={relevantDraggingState.itemsList}
+                isDisabled={false}
+                draggingState={relevantDraggingState}
+                draggingDispatch={relevantDraggingDispatch}
+                diraction={Diractions.ROW}
+              />
             ) : (
+              //   <DndContext
+              //     collisionDetection={closestCenter}
+              //     onDragStart={(event: DragEndEvent) => {
+              //       console.log('check');
+              //       const { active } = event;
+              //       relevantDraggingDispatch({
+              //         type: draggingAction.SET_GRABBED_ITEM_ID,
+              //         payload: active.id.toString(),
+              //       });
+              //     }}
+              //     onDragMove={(e) =>
+              //       relevantDraggingDispatch({
+              //         type: draggingAction.HANDLE_DRAG_MOVE,
+              //         payload: { active: e.active, over: e.over },
+              //       })
+              //     }
+              //     onDragEnd={(e) =>
+              //       relevantDraggingDispatch({
+              //         type: draggingAction.HANDLE_DRAG_END,
+              //         payload: { active: e.active, over: e.over },
+              //       })
+              //     }
+              //   >
+              //     <SortableContext
+              //       items={exerciseDataState.relevant.map((item) => ({
+              //         id: item._id,
+              //       }))}
+              //       strategy={horizontalListSortingStrategy}
+              //     >
+              //       <div
+              //         className={`flex h-full w-full flex-col items-center justify-start gap-6`}
+              //       >
+              //         {exerciseDataState.relevant
+              //           .map((item) => ({
+              //             id: item._id,
+              //             name: item.name,
+              //           }))
+              //           .map((targetObject, targetObjectIndex) => (
+              //             <div
+              //               key={targetObjectIndex}
+              //               className='mb-2 flex w-[8rem] flex-row'
+              //             >
+              //               <SortableItem
+              //                 id={targetObject.id}
+              //                 name={targetObject.name}
+              //                 key={targetObjectIndex}
+              //                 isGrabbed={
+              //                   relevantDraggingState.grabbedItemId
+              //                     ? relevantDraggingState.grabbedItemId ===
+              //                       targetObject.id
+              //                     : false
+              //                 }
+              //                 isDisabled={false}
+              //               />
+              //             </div>
+              //           ))}
+              //       </div>
+              //     </SortableContext>
+              //   </DndContext>
+              //   <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+              //     <DndContext
+              //       collisionDetection={closestCenter}
+              //       onDragStart={(event: DragEndEvent) => {
+              //         const { active } = event;
+              //         relevantDraggingDispatch({
+              //           type: draggingAction.SET_GRABBED_ITEM_ID,
+              //           payload: active.id.toString(),
+              //         });
+              //       }}
+              //       onDragMove={handleRelevantDragMove}
+              //       onDragEnd={handleRelevantDragEnd}
+              //     >
+              //       <SortableContext
+              //         items={exerciseDataState.relevant.map(
+              //           (target) => target._id
+              //         )}
+              //         strategy={horizontalListSortingStrategy}
+              //       >
+              //         <div className='flex flex-wrap gap-1'>
+              //           {exerciseDataState.relevant.map(
+              //             (target, relevantIndex) => (
+              //               <div
+              //                 key={relevantIndex}
+              //                 className='mb-2 flex w-[8rem] flex-row'
+              //               >
+              //                 <SortableItem
+              //                   id={target._id}
+              //                   key={relevantIndex}
+              //                   name={target.name}
+              //                   isGrabbed={
+              //                     relevantDraggingState.grabbedItemId
+              //                       ? relevantDraggingState.grabbedItemId ===
+              //                         target._id
+              //                       : false
+              //                   }
+              //                   isDisabled={false}
+              //                 />
+              //                 {relevantDraggingState.grabbedItemId !==
+              //                 target._id ? (
+              //                   <button
+              //                     onClick={() => {
+              //                       exerciseDataDispatch({
+              //                         type: exerciseDataAction.SET_RELEVANT,
+              //                         payload: target,
+              //                       });
+              //                       // removeRelevantItem(target._id);
+              //                     }}
+              //                     className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
+              //                   >
+              //                     <FaRegTrashAlt />
+              //                   </button>
+              //                 ) : null}
+              //               </div>
+              //             )
+              //           )}
+              //         </div>
+              //       </SortableContext>
+              //     </DndContext>
+              //   </div>
               <>
                 <br />
                 <span className='font-semibold text-duoGray-dark opacity-70'>
@@ -487,7 +483,7 @@ const ExerciseDataSection: React.FC = () => {
               Answers:
             </span>
             {!!answersList && answersList.length > 0 ? (
-              <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+              <div className='flex h-fit w-full select-none flex-col items-start justify-between font-bold'>
                 <ul>
                   {!!answersList &&
                     answersList.map((answer, answerIndex) => (

@@ -2,6 +2,7 @@ export enum exerciseDataAction {
     SET_DESCRIPTION = 'setDescription',
 
     SET_RELEVANT = 'setRelevant',
+    ADD_RELEVANT = 'addRelevant',
     REMOVE_TARGET_FROM_RELEVANT = 'removeTargetFromRelevant',
 
     SET_UNFILLED_FIELDS = 'setUnfilledFields',
@@ -12,16 +13,21 @@ export enum exerciseDataAction {
 
 type Action =
     | { type: exerciseDataAction.SET_DESCRIPTION; payload: string }
-    | { type: exerciseDataAction.SET_RELEVANT, payload: TargetType }
-    | { type: exerciseDataAction.REMOVE_TARGET_FROM_RELEVANT; payload: TargetType }
+    | { type: exerciseDataAction.SET_RELEVANT, payload: relevantList[] }
+    | { type: exerciseDataAction.ADD_RELEVANT, payload: relevantList }
+    | { type: exerciseDataAction.REMOVE_TARGET_FROM_RELEVANT; payload: relevantList }
     | { type: exerciseDataAction.SET_UNFILLED_FIELDS; payload: FSAFieldsType[] }
     | { type: exerciseDataAction.SET_SHOW_PLACE_HOLDER; payload: boolean }
     | { type: exerciseDataAction.SET_TARGET_FROM_DROPDOWN; payload: TargetType | null }
 
+interface relevantList {
+    id: string,
+    name: string,
+}
 
 export interface exerciseDataType {
     description: string | undefined,
-    relevant: TargetType[],
+    relevant: relevantList[],
     unfilledFields: FSAFieldsType[],
     showPlaceholder: boolean,
     targetFromDropdown: TargetType | null
@@ -34,11 +40,12 @@ export const exerciseDataReducer = (
     switch (action.type) {
         case exerciseDataAction.SET_DESCRIPTION:
             return { ...state, description: action.payload };
-
         case exerciseDataAction.SET_RELEVANT:
+            return { ...state, relevant: action.payload };
+        case exerciseDataAction.ADD_RELEVANT:
             return { ...state, relevant: [...state.relevant, action.payload] };
         case exerciseDataAction.REMOVE_TARGET_FROM_RELEVANT:
-            return { ...state, relevant: state.relevant.filter(target => target._id !== action.payload._id) };
+            return { ...state, relevant: state.relevant };
 
         case exerciseDataAction.SET_UNFILLED_FIELDS:
             return { ...state, unfilledFields: action.payload };

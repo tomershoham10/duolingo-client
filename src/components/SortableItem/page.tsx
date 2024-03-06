@@ -12,7 +12,7 @@ const SortableItem: React.FC<SortableItemProps> = (
 
   return (
     <div
-      className="flex h-[5rem] w-[80%] flex-none items-center justify-start"
+      className="flex h-[5rem] min-w-[5rem] flex-none items-center justify-start select-none"
     >
       <div
         ref={setNodeRef}
@@ -27,7 +27,7 @@ const SortableItem: React.FC<SortableItemProps> = (
             : 'cursor-pointer active:translate-y-[1px] active:border-b-2'
         } ${props.isGrabbed ? 'z-50 bg-white dark:bg-duoGrayDark-dark opacity-100' : ''}`}
       >
-        <span className='relative flex items-center justify-center text-ellipsis text-center'>
+        <span className='relative flex items-center justify-center text-ellipsis text-center px-5'>
           {props.name}
         </span>
       </div>
