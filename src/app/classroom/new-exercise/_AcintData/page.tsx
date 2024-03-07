@@ -321,7 +321,7 @@ const AcintDataSection: React.FC = () => {
       <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
       <section className='my-5 flex justify-start'>
         <Table
-          head={TABLE_HEAD}
+          headers={TABLE_HEAD}
           rows={tableData}
           onSelect={handleSelectTableRow}
           selectedRowIndex={

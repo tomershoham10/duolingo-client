@@ -91,8 +91,8 @@ const Syllabus: React.FC = () => {
   return (
     <div className='mx-1 h-full w-full overflow-y-auto'>
       {unitsIds ? (
-        unitsIds.length > 0 ? (
-          <AdminUnit />
+        unitsIds.length > 0 && !!courseId ? (
+          <AdminUnit courseId={courseId} />
         ) : (
           <div className=''>0 units</div>
         )

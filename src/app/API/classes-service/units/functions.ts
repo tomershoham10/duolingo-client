@@ -52,7 +52,7 @@ export const getUnitById = async (unitId: string): Promise<UnitType | null> => {
     }
 };
 
-export const getLevelsData = async (unitId: string) => {
+export const getLevelsData = async (unitId: string): Promise<LevelType[] | []> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/units/getLevelsById/${unitId}`,
@@ -66,22 +66,14 @@ export const getLevelsData = async (unitId: string) => {
         );
         if (response.ok) {
             const data = await response.json();
-            const resLevels = data.levels;
-            // console.log("api units - getlevels res", data, resLevels);
-
-            // setLevels((pervArr) => [
-            //     ...pervArr,
-            //     { unitId: unitId, levels: resLevels },
-            // ]);
+            const resLevels = data.levels as LevelType[];
 
             return resLevels;
 
         } else {
-            console.error("Failed to fetch unit getLevelsData.");
-            return [];
+            throw new Error('error while fetching levels');
         }
-    } catch (error) {
-        console.error("Error fetching getLevelsData:", error);
-        return [];
+    } catch (error: any) {
+        throw new Error(`error while fetching levels: ${error.message}`);
     }
 };

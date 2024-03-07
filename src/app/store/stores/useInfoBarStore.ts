@@ -20,6 +20,7 @@ type Action = {
     updateSyllabusFieldToEdit: (syllabusFieldToEdit: useInfoBarState['syllabusFieldToEdit']) => void;
     updateSyllabusFieldId: (syllabusFieldId: useInfoBarState['syllabusFieldId']) => void;
     updateSelectedFile: (selectedRecord: useInfoBarState['selectedFile']) => void;
+    resetStore: () => void;
 }
 
 
@@ -31,6 +32,13 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
         updateSyllabusFieldToEdit: (syllabusFieldToEdit) => set(() => ({ syllabusFieldToEdit: syllabusFieldToEdit })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
         updateSelectedFile: (newSelectedFile) => set({ selectedFile: newSelectedFile }),
+        resetStore: () => {
+            set(() => ({
+                syllabusFieldToEdit: undefined,
+                syllabusFieldId: undefined,
+                selectedFile: undefined,
+            }));
+        }
     }),
 )
 

@@ -22,7 +22,11 @@ const Students = () => {
     fetchData();
   }, [courseId]);
 
-  const headers = ['userName', 'permission', 'password'];
+  const headers = [
+    { key: 'userName', label: 'User name' },
+    { key: 'permission', label: 'Permission' },
+    { key: 'password', label: 'Password' },
+  ];
 
   useEffect(() => {
     console.log('users', users);
@@ -35,8 +39,9 @@ const Students = () => {
           <p className='text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
             {Object.values(users).length} students
           </p>
-
-          <Table headers={headers} data={users} isSelectable={false} />
+          <section className='my-5 flex justify-start'>
+            <Table headers={headers} rows={users} isSelectable={false} />
+          </section>
         </div>
       ) : (
         <div className='ml-10 mt-6'>
@@ -44,7 +49,7 @@ const Students = () => {
             0 students
           </p>
 
-          <Table headers={headers} data={[]} isSelectable={false} />
+          <Table headers={headers} rows={[]} isSelectable={false} />
         </div>
       )}
     </>

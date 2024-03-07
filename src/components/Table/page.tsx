@@ -8,7 +8,7 @@ export interface TableRow {
 }
 
 interface DefaultTableProps {
-  head: TableHead[];
+  headers: TableHead[];
   rows: TableRow[];
   onSelect?: (row: any) => void;
   selectedRowIndex?: number;
@@ -16,7 +16,7 @@ interface DefaultTableProps {
 }
 
 const Table = (props: DefaultTableProps) => {
-  const headers = props.head;
+  const headers = props.headers;
   const tableData = props.rows;
   const onSelect = props.onSelect;
   return (

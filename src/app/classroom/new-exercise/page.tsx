@@ -7,6 +7,7 @@ import ExerciseDataSection from './_ExerciseData/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 const NewExercise: React.FC = () => {
   const router = useRouter();

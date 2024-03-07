@@ -128,6 +128,7 @@ const AdminSideBar: React.FC = () => {
       if (
         useUserStoreObj.userRole === TypesOfUser.ADMIN &&
         coursesList &&
+        coursesList.length > 0 &&
         !!!coursesList[0]._id
       ) {
         try {
@@ -298,10 +299,10 @@ const AdminSideBar: React.FC = () => {
                   )}
                 </button>
                 {isHovered && sideBaritem.subItems ? (
-                  <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 py-3 bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
+                  <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
                     {sideBaritem.subItems.map((subItem, subItemIndex) => (
                       <li
-                        className='duration-50 2xl:text-xl min-w-[10rem] py-2 pl-4 2xl:py-3 2xl:pl-5 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default'
+                        className='duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
                         key={subItemIndex}
                       >
                         <button
@@ -316,7 +317,7 @@ const AdminSideBar: React.FC = () => {
                           {subItem.href ? (
                             <Link href={subItem.href}>{subItem.name}</Link>
                           ) : (
-                            <span >{subItem.name}</span>
+                            <span>{subItem.name}</span>
                           )}
                         </button>
                       </li>

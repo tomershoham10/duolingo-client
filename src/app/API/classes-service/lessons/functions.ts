@@ -25,7 +25,7 @@ export const getAllLessons = async (): Promise<LessonType[] | null> => {
     }
 };
 
-export const getExercisesData = async (lessonId: string): Promise<FSAType[] | null> => {
+export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
@@ -42,12 +42,10 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[] | nu
             const resExercises = data.exercises;
             return resExercises;
         } else {
-            console.error("Failed to fetch exercises by id.");
-            return null;
+            throw new Error('error while fetching fsas');
         }
-    } catch (error) {
-        console.error("Error fetching lesson:", error);
-        return [];
+    } catch (error: any) {
+        throw new Error(`error while fetching fsas: ${error.message}`);
     }
 };
 

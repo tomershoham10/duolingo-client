@@ -128,7 +128,7 @@ const CreateNewCourse: React.FC = () => {
               <Button
                 label={'CREATE'}
                 color={ButtonColors.BLUE}
-                onClick={() => createCourseHandle(courseName)}
+                onClick={async () => await createCourseHandle(courseName)}
               />
             </div>
           </div>

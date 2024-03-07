@@ -70,7 +70,7 @@ const ExerciseDataSection: React.FC = () => {
     setContent: useContextMenuStore.getState().setContent,
   };
 
-  const initialexerciseDataState = {
+  const initialExerciseDataState = {
     description: undefined,
     relevant: [],
     unfilledFields: [],
@@ -92,7 +92,7 @@ const ExerciseDataSection: React.FC = () => {
 
   const [exerciseDataState, exerciseDataDispatch] = useReducer(
     exerciseDataReducer,
-    initialexerciseDataState
+    initialExerciseDataState
   );
 
   const [relevantDraggingState, relevantDraggingDispatch] = useReducer(

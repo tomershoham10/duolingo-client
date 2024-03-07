@@ -1,5 +1,6 @@
 export const createCourse = async (name: string): Promise<number | null> => {
     try {
+        console.log('createCourse', name);
         const response = await fetch("http://localhost:8080/api/courses/", {
             method: "POST",
             credentials: "include",
@@ -31,7 +32,7 @@ export const getCourses = async (): Promise<CoursesType[] | null> => {
         if (response.ok) {
             const data = await response.json();
             const coursesList = data.courses as CoursesType[];
-            console.log("coursesList check", coursesList);
+            // console.log("coursesList check", coursesList);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
@@ -77,7 +78,7 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
     }
 };
 
-export const getUnitsData = async (courseId: string): Promise<UnitType | null> => {
+export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
     try {
         // console.log("getUnitsData", courseId);
         const response = await fetch(
@@ -92,15 +93,13 @@ export const getUnitsData = async (courseId: string): Promise<UnitType | null> =
         );
         if (response.ok) {
             const data = await response.json();
-            const resUnits = data.units;
+            const resUnits = data.units as UnitType[];
             // console.log("resUnits", resUnits);
-            return resUnits
+            return resUnits;
         } else {
-            console.error("Failed to fetch course by id.");
-            return null;
+            throw new Error('error while fetching units');
         }
-    } catch (error) {
-        console.error("Error fetching courses:", error);
-        return null;
+    } catch (error: any) {
+        throw new Error(`error while fetching units: ${error.message}`);
     }
 };

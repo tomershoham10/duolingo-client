@@ -25,7 +25,7 @@ export const getAllLevels = async (): Promise<LevelType[] | null> => {
     }
 };
 
-export const getLessonsData = async (levelId: string): Promise<LessonType[] | null> => {
+export const getLessonsData = async (levelId: string): Promise<LessonType[]> => {
     try {
         const response = await fetch(
             `http://localhost:8080/api/levels/getLessonsById/${levelId}`,
@@ -41,18 +41,11 @@ export const getLessonsData = async (levelId: string): Promise<LessonType[] | nu
             const data = await response.json();
             const resLessons = data.lessons;
             console.log("leves api - resLessons", resLessons);
-            // setLessons((pervArr) => [
-            //     ...pervArr,
-            //     { levelId: levelId, lessons: resLessons },
-            // ]);
-
             return resLessons;
         } else {
-            console.error("Failed to fetch lessons by id.");
-            return [];
+            throw new Error('error while fetching lessons');
         }
-    } catch (error) {
-        console.error("Error fetching level:", error);
-        return [];
+    } catch (error: any) {
+        throw new Error(`error while fetching lessons: ${error.message}`);
     }
 };
