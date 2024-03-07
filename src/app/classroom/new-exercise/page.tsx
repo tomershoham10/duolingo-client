@@ -1,12 +1,17 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useStore } from 'zustand';
-import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import Pagination from '@/components/Navigation/Pagination/page';
 import AcintDataSection from './_AcintData/page';
 import ExerciseDataSection from './_ExerciseData/page';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
 
 const NewExercise: React.FC = () => {
+  const router = useRouter();
+  const addAlert = useAlertStore.getState().addAlert;
+
   const exerciseToSubmit = {
     recordId: useStore(useCreateExerciseStore, (state) => state.recordId),
     recordName: useStore(useCreateExerciseStore, (state) => state.recordName),
@@ -22,6 +27,7 @@ const NewExercise: React.FC = () => {
     description: useStore(useCreateExerciseStore, (state) => state.description),
     relevant: useStore(useCreateExerciseStore, (state) => state.relevant),
     timeBuffers: useStore(useCreateExerciseStore, (state) => state.timeBuffers),
+    resetStore: useCreateExerciseStore.getState().resetStore,
   };
 
   const components = {
@@ -47,11 +53,11 @@ const NewExercise: React.FC = () => {
       );
     },
     exercise: () => {
-    //   console.log(
-    //     exerciseToSubmit.description,
-    //     exerciseToSubmit.relevant,
-    //     exerciseToSubmit.timeBuffers
-    //   );
+      //   console.log(
+      //     exerciseToSubmit.description,
+      //     exerciseToSubmit.relevant,
+      //     exerciseToSubmit.timeBuffers
+      //   );
       return (
         !!exerciseToSubmit.description &&
         !!exerciseToSubmit.relevant &&
@@ -62,28 +68,21 @@ const NewExercise: React.FC = () => {
 
   const submitExercise = async () => {
     try {
-        console.log('a')
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          alert('Async operation completed after 2 seconds');
-          resolve(); // Resolve the promise after alerting
-        }, 2000);
+      console.log('submit', exerciseToSubmit);
+      const res = await createFSA({
+        relevant: exerciseToSubmit.relevant,
+        answersList: exerciseToSubmit.answersList,
+        //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
+        timeBuffers: exerciseToSubmit.timeBuffers,
+        description: exerciseToSubmit.description,
+        recordKey: exerciseToSubmit.recordId,
       });
-      //   console.log('submit', exerciseToSubmit);
-      //   const res = await createFSA({
-      //     relevant: exerciseToSubmit.relevant,
-      //     answersList: exerciseToSubmit.answersList,
-      //     //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
-      //     timeBuffers: exerciseToSubmit.timeBuffers,
-      //     description: exerciseToSubmit.description,
-      //     recordKey: exerciseToSubmit.recordId,
-      //   });
-      //   if (res === 'created successfully') {
-      //     alert('created');
-      //   } else {
-      //     alert('bad');
-      //   }
-      //   return;
+      if (res === 'created successfully') {
+        location.reload();
+      } else {
+        addAlert('propblem while creating the exercise', AlertSizes.small);
+      }
+      return;
     } catch (err) {
       console.error(err);
     }
@@ -95,7 +94,6 @@ const NewExercise: React.FC = () => {
         components={components}
         onNext={onNextFuncs}
         onSubmit={submitExercise}
-        
       />
     </div>
   );

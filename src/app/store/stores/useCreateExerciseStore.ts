@@ -24,6 +24,7 @@ type Action = {
     updateRelevant: (relevant: CreateExerciseState['relevant']) => void;
     updateAnswersList: (answersList: CreateExerciseState['answersList']) => void;
     updateAcceptableAnswers: (acceptableAnswers: CreateExerciseState['acceptableAnswers']) => void;
+    resetStore: () => void;
 }
 
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
@@ -46,6 +47,19 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         updateRelevant: (relevant) => set(() => ({ relevant: relevant })),
         updateAnswersList: (answersList) => set(() => ({ answersList: answersList })),
         updateAcceptableAnswers: (acceptableAnswers) => set(() => ({ acceptableAnswers: acceptableAnswers })),
+        resetStore: () => {
+            set(() => ({
+                recordId: undefined,
+                recordName: undefined,
+                recordLength: undefined,
+                sonolistFiles: undefined,
+                description: undefined,
+                timeBuffers: undefined,
+                relevant: undefined,
+                answersList: undefined,
+                acceptableAnswers: undefined,
+            }));
+        }
     })
 )
 
