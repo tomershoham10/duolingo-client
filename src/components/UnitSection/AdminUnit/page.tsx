@@ -23,6 +23,7 @@ import {
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import useCourseData from '@/app/utils/hooks/useCourseData';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
@@ -56,127 +57,129 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
 
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        if (!!courseDataState.courseId) {
-          const response = await getUnitsData(courseDataState.courseId);
-          if (response) {
-            courseDataDispatch({
-              type: courseDataAction.SET_UNITS,
-              payload: response,
-            });
-          } else {
-            addAlert('server error while fetching data', AlertSizes.small);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching units data:', error);
-      }
-    };
-    fetchUnits();
-  }, [courseDataState.courseId]);
+  useCourseData(courseDataState, courseDataDispatch);
 
-  useEffect(() => {
-    const fetchLevels = async () => {
-      try {
-        const promises = courseDataState.units.map(async (unit) => {
-          try {
-            const levelsData = await getLevelsData(unit._id);
-            return { fatherId: unit._id, data: levelsData };
-          } catch (error) {
-            console.error('Error fetching levels for unit:', unit._id, error);
-            return { fatherId: unit._id, data: [] };
-          }
-        });
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_LEVELS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching levels', error);
-        return;
-      }
-    };
+  //   useEffect(() => {
+  //     const fetchUnits = async () => {
+  //       try {
+  //         if (!!courseDataState.courseId) {
+  //           const response = await getUnitsData(courseDataState.courseId);
+  //           if (response) {
+  //             courseDataDispatch({
+  //               type: courseDataAction.SET_UNITS,
+  //               payload: response,
+  //             });
+  //           } else {
+  //             addAlert('server error while fetching data', AlertSizes.small);
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching units data:', error);
+  //       }
+  //     };
+  //     fetchUnits();
+  //   }, [courseDataState.courseId]);
 
-    if (courseDataState.units.length > 0) {
-      fetchLevels();
-    }
-  }, [courseDataState.units]);
+  //   useEffect(() => {
+  //     const fetchLevels = async () => {
+  //       try {
+  //         const promises = courseDataState.units.map(async (unit) => {
+  //           try {
+  //             const levelsData = await getLevelsData(unit._id);
+  //             return { fatherId: unit._id, data: levelsData };
+  //           } catch (error) {
+  //             console.error('Error fetching levels for unit:', unit._id, error);
+  //             return { fatherId: unit._id, data: [] };
+  //           }
+  //         });
+  //         const result = await Promise.all(promises);
+  //         courseDataDispatch({
+  //           type: courseDataAction.SET_LEVELS,
+  //           payload: result,
+  //         });
+  //       } catch (error) {
+  //         console.error('Error fetching levels', error);
+  //         return;
+  //       }
+  //     };
 
-  useEffect(() => {
-    const fetchLessons = async () => {
-      try {
-        const levelsIds = courseDataState.levels
-          .flatMap((level) => level.data)
-          .map((data) => data._id);
-        console.log('levelsIds', levelsIds);
-        const promises = levelsIds.map(async (levelId) => {
-          try {
-            console.log('getLessonsData - levelId', levelId);
-            const lessonsData = await getLessonsData(levelId);
-            return { fatherId: levelId, data: lessonsData };
-          } catch (error) {
-            console.error('Error fetching lessons for level:', levelId, error);
-            return { fatherId: levelId, data: [] };
-          }
-        });
+  //     if (courseDataState.units.length > 0) {
+  //       fetchLevels();
+  //     }
+  //   }, [courseDataState.units]);
 
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_LESSONS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching lessons', error);
-        return [];
-      }
-    };
+  //   useEffect(() => {
+  //     const fetchLessons = async () => {
+  //       try {
+  //         const levelsIds = courseDataState.levels
+  //           .flatMap((level) => level.data)
+  //           .map((data) => data._id);
+  //         console.log('levelsIds', levelsIds);
+  //         const promises = levelsIds.map(async (levelId) => {
+  //           try {
+  //             console.log('getLessonsData - levelId', levelId);
+  //             const lessonsData = await getLessonsData(levelId);
+  //             return { fatherId: levelId, data: lessonsData };
+  //           } catch (error) {
+  //             console.error('Error fetching lessons for level:', levelId, error);
+  //             return { fatherId: levelId, data: [] };
+  //           }
+  //         });
 
-    if (
-      courseDataState.levels.length > 0 &&
-      !!courseDataState.levels[0].fatherId
-    ) {
-      fetchLessons();
-    }
-  }, [courseDataState.levels]);
+  //         const result = await Promise.all(promises);
+  //         courseDataDispatch({
+  //           type: courseDataAction.SET_LESSONS,
+  //           payload: result,
+  //         });
+  //       } catch (error) {
+  //         console.error('Error fetching lessons', error);
+  //         return [];
+  //       }
+  //     };
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const lessons = courseDataState.lessons.flatMap(
-          (lesson) => lesson.data
-        );
-        console.log('fetchExercises', courseDataState.lessons, lessons);
-        const promises = lessons.map(async (lesson) => {
-          try {
-            const exercisesData = await getExercisesData(lesson._id);
-            return { fatherId: lesson._id, data: exercisesData };
-          } catch (error) {
-            console.error('Error fetching fsas for lesson:', lesson._id, error);
-            return { fatherId: lesson._id, data: [] };
-          }
-        });
+  //     if (
+  //       courseDataState.levels.length > 0 &&
+  //       !!courseDataState.levels[0].fatherId
+  //     ) {
+  //       fetchLessons();
+  //     }
+  //   }, [courseDataState.levels]);
 
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_EXERCISES,
-          payload: result.flat(),
-        });
-      } catch (error) {
-        console.error('Error fetching lessons', error);
-        return [];
-      }
-    };
+  //   useEffect(() => {
+  //     const fetchExercises = async () => {
+  //       try {
+  //         const lessons = courseDataState.lessons.flatMap(
+  //           (lesson) => lesson.data
+  //         );
+  //         console.log('fetchExercises', courseDataState.lessons, lessons);
+  //         const promises = lessons.map(async (lesson) => {
+  //           try {
+  //             const exercisesData = await getExercisesData(lesson._id);
+  //             return { fatherId: lesson._id, data: exercisesData };
+  //           } catch (error) {
+  //             console.error('Error fetching fsas for lesson:', lesson._id, error);
+  //             return { fatherId: lesson._id, data: [] };
+  //           }
+  //         });
 
-    if (
-      courseDataState.lessons.length > 0 &&
-      !!courseDataState.lessons[0].fatherId
-    ) {
-      fetchExercises();
-    }
-  }, [courseDataState.lessons]);
+  //         const result = await Promise.all(promises);
+  //         courseDataDispatch({
+  //           type: courseDataAction.SET_EXERCISES,
+  //           payload: result.flat(),
+  //         });
+  //       } catch (error) {
+  //         console.error('Error fetching lessons', error);
+  //         return [];
+  //       }
+  //     };
+
+  //     if (
+  //       courseDataState.lessons.length > 0 &&
+  //       !!courseDataState.lessons[0].fatherId
+  //     ) {
+  //       fetchExercises();
+  //     }
+  //   }, [courseDataState.lessons]);
 
   useEffect(() => {
     console.log('courseDataState.units', courseDataState.units);
@@ -407,7 +410,9 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                       {/* {
                                                                                                         exercise.difficultyLevel
                                                                                                       } */}
-                                                                                                      get from record
+                                                                                                      get
+                                                                                                      from
+                                                                                                      record
                                                                                                     </span>
                                                                                                   </div>
                                                                                                   <div className='flex flex-col'>

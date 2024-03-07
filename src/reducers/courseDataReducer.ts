@@ -10,7 +10,7 @@ interface DataWithFatherId<T> {
     data: T[];
 }
 
-type Action =
+export type CourseDataActionTypes =
     | { type: courseDataAction.SET_UNITS, payload: UnitType[] }
     | { type: courseDataAction.SET_LEVELS, payload: DataWithFatherId<LevelType>[] }
     | { type: courseDataAction.SET_LESSONS, payload: DataWithFatherId<LessonType>[] }
@@ -27,7 +27,7 @@ export interface courseDataType {
 
 export const courseDataReducer = (
     state: courseDataType,
-    action: Action
+    action: CourseDataActionTypes
 ): courseDataType => {
     switch (action.type) {
         case courseDataAction.SET_UNITS:
