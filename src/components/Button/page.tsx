@@ -1,5 +1,4 @@
 'use client';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -65,8 +64,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
       buttonBorderColor =
         'bg-duoGray-default hover:bg-duoGray-light group-active:bg-transparent';
       buttonHoverColor = 'hover:bg-duoGray-lighter';
-      textColor =
-        'text-duoBlue-default hover:text-duoBlue-text';
+      textColor = 'text-duoBlue-default hover:text-duoBlue-text';
       break;
 
     case 'White':
@@ -121,9 +119,9 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
       >
         <button
           className={`flex flex-row items-center justify-center text-center ${buttonColor} w-full rounded-2xl px-3 py-2 ${buttonHoverColor} ${
-            status.pending ? '' : 'gap-2'
+            status.pending || props.isLoading ? 'h-10' : 'gap-2'
           }`}
-          disabled={status.pending ? true : props.isDisabled}
+          disabled={status.pending || props.isLoading ? true : props.isDisabled}
           onClick={() => {
             if (props.onClick) {
               props.onClick();
@@ -134,10 +132,12 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
           }}
           type={props.buttonType}
         >
-          {status.pending ? (
+          {status.pending || props.isLoading ? (
             <>
               <svg
-                className='-ml-1 mr-3 h-5 w-5 animate-spin text-white dark:text-duoBlueDark-darkest'
+                className={`${
+                  props.loadingLabel ? '-ml-1 mr-3' : ''
+                } h-5 w-5 animate-spin text-white dark:text-duoBlueDark-darkest`}
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'
@@ -156,9 +156,11 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
                   d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                 ></path>
               </svg>
-              <p className='tracking-wide dark:text-duoBlueDark-darkest'>
-                {props.loadingLabel ? props.loadingLabel : 'Processing...'}
-              </p>
+              {props.loadingLabel ? (
+                <p className='tracking-wide dark:text-duoBlueDark-darkest'>
+                  {props.loadingLabel}
+                </p>
+              ) : null}
             </>
           ) : (
             <>

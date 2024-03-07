@@ -61,26 +61,13 @@ interface TimeBuffersType {
 
 interface FSAType {
     _id: string;
-    filesKeys: string[];
-    difficultyLevel: number;
-    relevant: string[];
-    answers: string[]; //may be 2 correct answers
-    timeBuffers: TimeBuffersType[];
-    description: string;
-    dateCreated: Date;
-    sonolistKeys: string[];
-}
-
-interface ExerciseRequest {
-    // records: File | FileList;
-    records: File | File[];
-    difficultyLevel: number;
     relevant?: string[];
-    answersList: string[];
+    answersList: string[]; //may be 2 correct answers
+    acceptableAnswers?: string[];
     timeBuffers: TimeBuffersType[];
     description?: string;
-    // sonolist?: FileList;
-    sonolist?: File[];
+    dateCreated: Date;
+    recordKey: string;
 }
 
 // ------ results ------- //
@@ -327,6 +314,7 @@ interface ButtonProps {
     isDisabled?: boolean;
     buttonType?: ButtonTypes;
     loadingLabel?: string;
+    isLoading?:boolean;
 }
 
 // // Dropdown // //
@@ -415,6 +403,7 @@ interface PaginationProps {
     components: Record<string, React.FC<T>>;
     subProps?: T;
     onNext: Record<string, () => boolean>;
+    onSubmit: () => Promise<void>;
 }
 
 // // ProgressBar // //

@@ -62,6 +62,7 @@ const AcintDataSection: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
 
   const updateExerciseToSubmit = {
+    updateRecordId: useCreateExerciseStore.getState().updateRecordId,
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
     updateRecordLength: useCreateExerciseStore.getState().updateRecordLength,
     updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
@@ -239,7 +240,6 @@ const AcintDataSection: React.FC = () => {
 
   const uploadRecord = async () => {
     try {
-      await new Promise((res) => setTimeout(res, 2000));
       if (
         !!submitRecordState.record &&
         !!submitRecordState.sonograms &&
@@ -281,6 +281,7 @@ const AcintDataSection: React.FC = () => {
   useEffect(() => {
     if (selectedFile && selectedFile.name.endsWith('wav')) {
       const metadata = selectedFile.metadata as Partial<RecordMetadataType>;
+      updateExerciseToSubmit.updateRecordId(selectedFile.id);
       updateExerciseToSubmit.updateRecordName(selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);

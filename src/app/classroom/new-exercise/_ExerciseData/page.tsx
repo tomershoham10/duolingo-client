@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useReducer, useEffect } from 'react';
+import { useState, useRef, useReducer, useEffect, useCallback } from 'react';
 
 import { useStore } from 'zustand';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -51,6 +51,8 @@ enum FSAFieldsType {
 const ExerciseDataSection: React.FC = () => {
   const updateExerciseToSubmit = {
     updateDescription: useCreateExerciseStore.getState().updateDescription,
+    updateRelevant: useCreateExerciseStore.getState().updateRelevant,
+    updateTimeBuffers: useCreateExerciseStore.getState().updateTimeBuffers,
   };
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
@@ -105,12 +107,33 @@ const ExerciseDataSection: React.FC = () => {
 
   const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
 
-  useEffect(() => {
+  const setRelevant = useCallback(() => {
     exerciseDataDispatch({
       type: exerciseDataAction.SET_RELEVANT,
       payload: relevantDraggingState.itemsList,
     });
   }, [relevantDraggingState.itemsList]);
+
+  useEffect(() => {
+    setRelevant();
+  }, [setRelevant]);
+
+  const setExerciseStore = useCallback(() => {
+    updateExerciseToSubmit.updateDescription(exerciseDataState.description);
+    updateExerciseToSubmit.updateRelevant(
+      exerciseDataState.relevant.map((item) => item.id)
+    );
+    updateExerciseToSubmit.updateTimeBuffers(
+      timeBuffersState.timeBufferRangeValues.map((timeVal, timeValIndex) => ({
+        timeBuffer: timeVal,
+        grade: timeBuffersState.timeBuffersScores[timeValIndex],
+      }))
+    );
+  }, [exerciseDataState, timeBuffersState]);
+
+  useEffect(() => {
+    setExerciseStore();
+  }, [setExerciseStore]);
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
     exerciseDataDispatch({
@@ -348,125 +371,6 @@ const ExerciseDataSection: React.FC = () => {
                 diraction={Diractions.ROW}
               />
             ) : (
-              //   <DndContext
-              //     collisionDetection={closestCenter}
-              //     onDragStart={(event: DragEndEvent) => {
-              //       console.log('check');
-              //       const { active } = event;
-              //       relevantDraggingDispatch({
-              //         type: draggingAction.SET_GRABBED_ITEM_ID,
-              //         payload: active.id.toString(),
-              //       });
-              //     }}
-              //     onDragMove={(e) =>
-              //       relevantDraggingDispatch({
-              //         type: draggingAction.HANDLE_DRAG_MOVE,
-              //         payload: { active: e.active, over: e.over },
-              //       })
-              //     }
-              //     onDragEnd={(e) =>
-              //       relevantDraggingDispatch({
-              //         type: draggingAction.HANDLE_DRAG_END,
-              //         payload: { active: e.active, over: e.over },
-              //       })
-              //     }
-              //   >
-              //     <SortableContext
-              //       items={exerciseDataState.relevant.map((item) => ({
-              //         id: item._id,
-              //       }))}
-              //       strategy={horizontalListSortingStrategy}
-              //     >
-              //       <div
-              //         className={`flex h-full w-full flex-col items-center justify-start gap-6`}
-              //       >
-              //         {exerciseDataState.relevant
-              //           .map((item) => ({
-              //             id: item._id,
-              //             name: item.name,
-              //           }))
-              //           .map((targetObject, targetObjectIndex) => (
-              //             <div
-              //               key={targetObjectIndex}
-              //               className='mb-2 flex w-[8rem] flex-row'
-              //             >
-              //               <SortableItem
-              //                 id={targetObject.id}
-              //                 name={targetObject.name}
-              //                 key={targetObjectIndex}
-              //                 isGrabbed={
-              //                   relevantDraggingState.grabbedItemId
-              //                     ? relevantDraggingState.grabbedItemId ===
-              //                       targetObject.id
-              //                     : false
-              //                 }
-              //                 isDisabled={false}
-              //               />
-              //             </div>
-              //           ))}
-              //       </div>
-              //     </SortableContext>
-              //   </DndContext>
-              //   <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-              //     <DndContext
-              //       collisionDetection={closestCenter}
-              //       onDragStart={(event: DragEndEvent) => {
-              //         const { active } = event;
-              //         relevantDraggingDispatch({
-              //           type: draggingAction.SET_GRABBED_ITEM_ID,
-              //           payload: active.id.toString(),
-              //         });
-              //       }}
-              //       onDragMove={handleRelevantDragMove}
-              //       onDragEnd={handleRelevantDragEnd}
-              //     >
-              //       <SortableContext
-              //         items={exerciseDataState.relevant.map(
-              //           (target) => target._id
-              //         )}
-              //         strategy={horizontalListSortingStrategy}
-              //       >
-              //         <div className='flex flex-wrap gap-1'>
-              //           {exerciseDataState.relevant.map(
-              //             (target, relevantIndex) => (
-              //               <div
-              //                 key={relevantIndex}
-              //                 className='mb-2 flex w-[8rem] flex-row'
-              //               >
-              //                 <SortableItem
-              //                   id={target._id}
-              //                   key={relevantIndex}
-              //                   name={target.name}
-              //                   isGrabbed={
-              //                     relevantDraggingState.grabbedItemId
-              //                       ? relevantDraggingState.grabbedItemId ===
-              //                         target._id
-              //                       : false
-              //                   }
-              //                   isDisabled={false}
-              //                 />
-              //                 {relevantDraggingState.grabbedItemId !==
-              //                 target._id ? (
-              //                   <button
-              //                     onClick={() => {
-              //                       exerciseDataDispatch({
-              //                         type: exerciseDataAction.SET_RELEVANT,
-              //                         payload: target,
-              //                       });
-              //                       // removeRelevantItem(target._id);
-              //                     }}
-              //                     className='flex w-full items-center justify-center text-duoGray-darkest dark:text-duoBlueDark-text'
-              //                   >
-              //                     <FaRegTrashAlt />
-              //                   </button>
-              //                 ) : null}
-              //               </div>
-              //             )
-              //           )}
-              //         </div>
-              //       </SortableContext>
-              //     </DndContext>
-              //   </div>
               <>
                 <br />
                 <span className='font-semibold text-duoGray-dark opacity-70'>

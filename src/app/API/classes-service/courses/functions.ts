@@ -1,5 +1,3 @@
-import { UnitType } from "../units/functions";
-
 export const createCourse = async (name: string): Promise<number | null> => {
     try {
         const response = await fetch("http://localhost:8080/api/courses/", {

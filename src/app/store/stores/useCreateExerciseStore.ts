@@ -3,17 +3,19 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
 
 type CreateExerciseState = {
+    recordId: string | undefined;
     recordName: string | undefined;
     recordLength: number | undefined;
     sonolistFiles: string[] | undefined;
     description: string | undefined;
-    timeBuffers: TimeBuffersType | undefined;
+    timeBuffers: TimeBuffersType[] | undefined;
     relevant: string[] | undefined;
     answersList: string[] | undefined;
     acceptableAnswers: string[] | undefined;
 }
 
 type Action = {
+    updateRecordId: (recordId: CreateExerciseState['recordId']) => void;
     updateRecordName: (recordName: CreateExerciseState['recordName']) => void;
     updateRecordLength: (recordLength: CreateExerciseState['recordLength']) => void;
     updateSonolistFiles: (sonolistFiles: CreateExerciseState['sonolistFiles']) => void;
@@ -26,6 +28,7 @@ type Action = {
 
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
     (set) => ({
+        recordId: undefined,
         recordName: undefined,
         recordLength: undefined,
         sonolistFiles: undefined,
@@ -34,6 +37,7 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         relevant: undefined,
         answersList: undefined,
         acceptableAnswers: undefined,
+        updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
         updateRecordName: (recordName) => set(() => ({ recordName: recordName })),
         updateRecordLength: (recordLength) => set(() => ({ recordLength: recordLength })),
         updateSonolistFiles: (sonolistFiles) => set(() => ({ sonolistFiles: sonolistFiles })),
