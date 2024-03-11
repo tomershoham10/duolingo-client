@@ -17,7 +17,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import Button, { ButtonColors } from '../../Button/page';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import {
+  fieldToEditType,
+  useInfoBarStore,
+} from '@/app/store/stores/useInfoBarStore';
 import {
   courseDataAction,
   courseDataReducer,
@@ -58,128 +61,6 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
   useCourseData(courseDataState, courseDataDispatch);
-
-  //   useEffect(() => {
-  //     const fetchUnits = async () => {
-  //       try {
-  //         if (!!courseDataState.courseId) {
-  //           const response = await getUnitsData(courseDataState.courseId);
-  //           if (response) {
-  //             courseDataDispatch({
-  //               type: courseDataAction.SET_UNITS,
-  //               payload: response,
-  //             });
-  //           } else {
-  //             addAlert('server error while fetching data', AlertSizes.small);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching units data:', error);
-  //       }
-  //     };
-  //     fetchUnits();
-  //   }, [courseDataState.courseId]);
-
-  //   useEffect(() => {
-  //     const fetchLevels = async () => {
-  //       try {
-  //         const promises = courseDataState.units.map(async (unit) => {
-  //           try {
-  //             const levelsData = await getLevelsData(unit._id);
-  //             return { fatherId: unit._id, data: levelsData };
-  //           } catch (error) {
-  //             console.error('Error fetching levels for unit:', unit._id, error);
-  //             return { fatherId: unit._id, data: [] };
-  //           }
-  //         });
-  //         const result = await Promise.all(promises);
-  //         courseDataDispatch({
-  //           type: courseDataAction.SET_LEVELS,
-  //           payload: result,
-  //         });
-  //       } catch (error) {
-  //         console.error('Error fetching levels', error);
-  //         return;
-  //       }
-  //     };
-
-  //     if (courseDataState.units.length > 0) {
-  //       fetchLevels();
-  //     }
-  //   }, [courseDataState.units]);
-
-  //   useEffect(() => {
-  //     const fetchLessons = async () => {
-  //       try {
-  //         const levelsIds = courseDataState.levels
-  //           .flatMap((level) => level.data)
-  //           .map((data) => data._id);
-  //         console.log('levelsIds', levelsIds);
-  //         const promises = levelsIds.map(async (levelId) => {
-  //           try {
-  //             console.log('getLessonsData - levelId', levelId);
-  //             const lessonsData = await getLessonsData(levelId);
-  //             return { fatherId: levelId, data: lessonsData };
-  //           } catch (error) {
-  //             console.error('Error fetching lessons for level:', levelId, error);
-  //             return { fatherId: levelId, data: [] };
-  //           }
-  //         });
-
-  //         const result = await Promise.all(promises);
-  //         courseDataDispatch({
-  //           type: courseDataAction.SET_LESSONS,
-  //           payload: result,
-  //         });
-  //       } catch (error) {
-  //         console.error('Error fetching lessons', error);
-  //         return [];
-  //       }
-  //     };
-
-  //     if (
-  //       courseDataState.levels.length > 0 &&
-  //       !!courseDataState.levels[0].fatherId
-  //     ) {
-  //       fetchLessons();
-  //     }
-  //   }, [courseDataState.levels]);
-
-  //   useEffect(() => {
-  //     const fetchExercises = async () => {
-  //       try {
-  //         const lessons = courseDataState.lessons.flatMap(
-  //           (lesson) => lesson.data
-  //         );
-  //         console.log('fetchExercises', courseDataState.lessons, lessons);
-  //         const promises = lessons.map(async (lesson) => {
-  //           try {
-  //             const exercisesData = await getExercisesData(lesson._id);
-  //             return { fatherId: lesson._id, data: exercisesData };
-  //           } catch (error) {
-  //             console.error('Error fetching fsas for lesson:', lesson._id, error);
-  //             return { fatherId: lesson._id, data: [] };
-  //           }
-  //         });
-
-  //         const result = await Promise.all(promises);
-  //         courseDataDispatch({
-  //           type: courseDataAction.SET_EXERCISES,
-  //           payload: result.flat(),
-  //         });
-  //       } catch (error) {
-  //         console.error('Error fetching lessons', error);
-  //         return [];
-  //       }
-  //     };
-
-  //     if (
-  //       courseDataState.lessons.length > 0 &&
-  //       !!courseDataState.lessons[0].fatherId
-  //     ) {
-  //       fetchExercises();
-  //     }
-  //   }, [courseDataState.lessons]);
 
   useEffect(() => {
     console.log('courseDataState.units', courseDataState.units);
@@ -305,9 +186,19 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                     }
                                                                     className='2xl:1920px flex w-full flex-row pt-4 text-base font-medium'
                                                                   >
-                                                                    <div className='h-12 w-12 flex-none rounded-full bg-duoGreen-default font-extrabold text-white'>
+                                                                    <div
+                                                                      className='h-12 w-12 flex-none rounded-full bg-duoGreen-default font-extrabold text-white cursor-pointer'
+                                                                      onClick={() => {
+                                                                        infoBarStore.updateSyllabusFieldToEdit(
+                                                                          fieldToEditType.LEVEL
+                                                                        );
+                                                                        infoBarStore.updateSyllabusFieldId(
+                                                                          level._id
+                                                                        );
+                                                                      }}
+                                                                    >
                                                                       <div className='mx-auto my-auto flex h-full flex-col items-center justify-center '>
-                                                                        <div className='mt-1 flex h-full flex-col items-center justify-center'>
+                                                                        <div className='mt-1 flex h-full flex-col items-center justify-center '>
                                                                           <FontAwesomeIcon
                                                                             icon={
                                                                               faStar

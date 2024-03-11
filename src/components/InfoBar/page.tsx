@@ -8,7 +8,7 @@ import { useUserStore } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { usePopupStore } from '@/app/store/stores/usePopupStore';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { FaRegImages } from 'react-icons/fa';
 import Link from 'next/link';
 import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
