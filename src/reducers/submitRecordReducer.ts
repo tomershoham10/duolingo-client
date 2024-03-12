@@ -12,10 +12,10 @@ export enum submitRecordAction {
 }
 
 type Action =
-    | { type: submitRecordAction.SET_RECORD_FILE; payload: File }
+    | { type: submitRecordAction.SET_RECORD_FILE, payload: File }
     | { type: submitRecordAction.REMOVE_RECORD_FILE }
-    | { type: submitRecordAction.SET_RECORD_METADATA; payload: Partial<RecordMetadataType> }
-    | { type: submitRecordAction.REMOVE_RECORD_METADATA; payload: Partial<RecordMetadataType> }
+    | { type: submitRecordAction.SET_RECORD_METADATA, payload: Partial<RecordMetadataType> }
+    | { type: submitRecordAction.REMOVE_RECORD_METADATA, payload: Partial<RecordMetadataType> }
 
     // | { type: submitRecordAction.SET_SONOLIST; payload: FileList }
     | { type: submitRecordAction.SET_SONOLIST; payload: File[] }

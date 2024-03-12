@@ -13,15 +13,15 @@ export enum recordMetaAction {
 }
 
 type Action =
-    | { type: recordMetaAction.SET_RECORD_LENGTH; payload: number }
-    | { type: recordMetaAction.SET_DIFFICULTY_LEVEL; payload: number }
-    | { type: recordMetaAction.SET_TARGETS_IDS; payload: string[] }
-    | { type: recordMetaAction.SET_OPERATION_NAME; payload: string }
-    | { type: recordMetaAction.SET_SOURCE_ID; payload: string }
-    | { type: recordMetaAction.SET_ITALY_STATUS; payload: boolean }
-    | { type: recordMetaAction.SET_SIGNATURE_TYPE; payload: SignatureTypes }
-    | { type: recordMetaAction.SET_NUMBER_OF_CHANNELS; payload: 1 | 2 }
-    | { type: recordMetaAction.SET_SONAR_SYSTEM; payload: SonarSystem }
+    | { type: recordMetaAction.SET_RECORD_LENGTH, payload: number }
+    | { type: recordMetaAction.SET_DIFFICULTY_LEVEL, payload: number }
+    | { type: recordMetaAction.SET_TARGETS_IDS, payload: string[] }
+    | { type: recordMetaAction.SET_OPERATION_NAME, payload: string }
+    | { type: recordMetaAction.SET_SOURCE_ID, payload: string }
+    | { type: recordMetaAction.SET_ITALY_STATUS, payload: boolean }
+    | { type: recordMetaAction.SET_SIGNATURE_TYPE, payload: SignatureTypes }
+    | { type: recordMetaAction.SET_NUMBER_OF_CHANNELS, payload: 1 | 2 }
+    | { type: recordMetaAction.SET_SONAR_SYSTEM, payload: SonarSystem }
     | { type: recordMetaAction.TOGGLE_BACKROUND_VESSELS }
     | { type: recordMetaAction.TOGGLE_AUX };
 

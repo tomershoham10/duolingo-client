@@ -43,14 +43,20 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     updateSyllabusFieldToEdit:
       useInfoBarStore.getState().updateSyllabusFieldToEdit,
     updateSyllabusFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
+    updateSyllabusFieldIndex:
+      useInfoBarStore.getState().updateSyllabusFieldIndex,
   };
 
   const initialCourseDataState = {
     courseId: propsCourseId,
     units: [],
+    unsuspendedUnits: [],
     levels: [{ fatherId: undefined, data: [] }],
+    unsuspendedLevels: [{ fatherId: undefined, data: [] }],
     lessons: [{ fatherId: undefined, data: [] }],
+    unsuspendedLessons: [{ fatherId: undefined, data: [] }],
     exercises: [{ fatherId: undefined, data: [] }],
+    unsuspendedExercises: [{ fatherId: undefined, data: [] }],
   };
 
   const [courseDataState, courseDataDispatch] = useReducer(
@@ -108,6 +114,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                         fieldToEditType.UNIT
                       );
                       infoBarStore.updateSyllabusFieldId(unit._id);
+                      infoBarStore.updateSyllabusFieldIndex(unitIndex);
                     }}
                   >
                     <label className='cursor-pointer'>
@@ -187,13 +194,16 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                     className='2xl:1920px flex w-full flex-row pt-4 text-base font-medium'
                                                                   >
                                                                     <div
-                                                                      className='h-12 w-12 flex-none rounded-full bg-duoGreen-default font-extrabold text-white cursor-pointer'
+                                                                      className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
                                                                       onClick={() => {
                                                                         infoBarStore.updateSyllabusFieldToEdit(
                                                                           fieldToEditType.LEVEL
                                                                         );
                                                                         infoBarStore.updateSyllabusFieldId(
                                                                           level._id
+                                                                        );
+                                                                        infoBarStore.updateSyllabusFieldIndex(
+                                                                          levelIndex
                                                                         );
                                                                       }}
                                                                     >

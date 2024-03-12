@@ -103,3 +103,29 @@ export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
         throw new Error(`error while fetching units: ${error.message}`);
     }
 };
+
+export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitType[]> => {
+    try {
+        // console.log("getUnitsData", courseId);
+        const response = await fetch(
+            `http://localhost:8080/api/courses/getUnsuspendedUnitsById/${courseId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resUnits = data.units as UnitType[];
+            // console.log("resUnits", resUnits);
+            return resUnits;
+        } else {
+            throw new Error('error while fetching units');
+        }
+    } catch (error: any) {
+        throw new Error(`error while fetching units: ${error.message}`);
+    }
+};

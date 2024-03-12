@@ -40,7 +40,32 @@ export const getLessonsData = async (levelId: string): Promise<LessonType[]> => 
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
-            console.log("leves api - resLessons", resLessons);
+            console.log("leves api getLessonsData - resLessons", resLessons);
+            return resLessons;
+        } else {
+            throw new Error('error while fetching lessons');
+        }
+    } catch (error: any) {
+        throw new Error(`error while fetching lessons: ${error.message}`);
+    }
+};
+
+export const getUnsuspendedLessonsData = async (levelId: string): Promise<LessonType[]> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/levels/getsUnsuspendedLessonsById/${levelId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resLessons = data.lessons;
+            console.log("leves api getUnsuspendedLessonsData - resLessons", resLessons);
             return resLessons;
         } else {
             throw new Error('error while fetching lessons');

@@ -111,170 +111,172 @@ const AdminEditPopup: React.FC = () => {
   };
 
   return (
-    // <div
-    //   className={
-    //     selectedPopup === PopupsTypes.ADMINEDIT
-    //       ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-    //       : 'z-0 opacity-0 transition duration-200 ease-in'
-    //   }
-    // >
-    //   {selectedPopup === PopupsTypes.ADMINEDIT ? (
-    //     <div className='relative m-5 flex h-[30rem] w-[40rem] rounded-md bg-white dark:bg-duoGrayDark-darkest p-5 xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
-    //       <button
-    //         onClick={() => {
-    //           updateSelectedPopup(PopupsTypes.CLOSED);
-    //         }}
-    //         className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
-    //       >
-    //         <FontAwesomeIcon
-    //           className='fa-lg fa-solid flex-none'
-    //           icon={faXmark}
-    //         />
-    //       </button>
-    //       <div className='w-full items-start justify-start'>
-    //         <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 dark:border-duoBlueDark-text'>
-    //           <span className='text-xl font-extrabold tracking-widest text-duoGray-dark dark:text-duoBlueDark-text'>
-    //             {fieldToEdit} I
-    //           </span>
-    //         </div>
-    //         {unit ? (
-    //           <div className='mt-12 w-full'>
-    //             <div className='my-2'>{unit._id}</div>
-    //             <div className='my-2 w-[69%]'>
-    //               <span className='text-2xl font-bold'>Description:</span>
-    //               {unit.description ? (
-    //                 <Textbox
-    //                   prevData={unit.description}
-    //                   isEditMode={true}
-    //                   fontSizeProps={FontSizes.SMALL}
-    //                   value={undefined}
-    //                   onChange={() => {}}
-    //                 />
-    //               ) : null}
-    //             </div>
-    //             <div className='my-2'>{unit.guidebook}</div>
-    //             <div className='w-full'>
-    //               <div className='my-2 flex flex-row items-center justify-start gap-3'>
-    //                 <span className='text-2xl font-bold'>Levels:</span>
-    //                 <button
-    //                   onClick={() =>
-    //                     setEdittedArray((prev) => [
-    //                       ...prev,
-    //                       `new_${new Date().getTime()}`,
-    //                     ])
-    //                   }
-    //                   className='flex flex-row items-center justify-center rounded-3xl bg-duoGray-lighter px-3 py-1 font-bold text-duoGray-darkest'
-    //                 >
-    //                   <span className='text-xl'> Add </span>
-    //                   <GoPlus />
-    //                 </button>
-    //               </div>
-    //               {edittedArray && edittedArray.length > 0 ? (
-    //                 <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
-    //                   <DndContext
-    //                     collisionDetection={closestCenter}
-    //                     onDragStart={(event: DragEndEvent) => {
-    //                       const { active } = event;
-    //                       setGrabbedTargetId(active.id.toString());
-    //                     }}
-    //                     onDragMove={handleDragMove}
-    //                     onDragEnd={handleDragEnd}
-    //                   >
-    //                     <SortableContext
-    //                       items={edittedArray}
-    //                       strategy={horizontalListSortingStrategy}
-    //                     >
-    //                       <div className='flex flex-wrap gap-1'>
-    //                         {edittedArray.map((levelId, index) => (
-    //                           <div
-    //                             key={index}
-    //                             className='mb-2 flex w-[8rem] flex-row'
-    //                           >
-    //                             <SortableItem
-    //                               id={levelId}
-    //                               key={index}
-    //                               name={`${
-    //                                 unit.levels && unit.levels.includes(levelId)
-    //                                   ? `level ${
-    //                                       unit.levels
-    //                                         ? unit.levels.indexOf(levelId) + 1
-    //                                         : '0'
-    //                                     }`
-    //                                   : 'new level'
-    //                               }`}
-    //                               isGrabbed={
-    //                                 grabbedTargetId
-    //                                   ? grabbedTargetId === levelId
-    //                                   : false
-    //                               }
-    //                               isDisabled={false}
-    //                               addedStyle={`${
-    //                                 unit.levels && unit.levels.includes(levelId)
-    //                                   ? unit.levels &&
-    //                                     unit.levels.indexOf(levelId) !==
-    //                                       edittedArray.indexOf(levelId)
-    //                                     ? 'border-duoYellow-buttonBorder text-duoYellow-darker hover:bg-duoYellow-lighter'
-    //                                     : ''
-    //                                   : 'border-duoGreen-buttonBorder text-duoGreen-dark hover:bg-duoGreen-lighter'
-    //                               }`}
-    //                             />
-    //                             {grabbedTargetId !== levelId ? (
-    //                               <button
-    //                                 onClick={() => {
-    //                                   removeItem(levelId);
-    //                                 }}
-    //                                 className='text-duoGray-darkest'
-    //                               >
-    //                                 <FaRegTrashAlt />
-    //                               </button>
-    //                             ) : null}
-    //                           </div>
-    //                         ))}
-    //                       </div>
-    //                     </SortableContext>
-    //                   </DndContext>
-    //                 </div>
-    //               ) : (
-    //                 <>
-    //                   {unit && unit.levels && unit.levels.length > 0 ? (
-    //                     <div className='text-lg font-semibold text-duoRed-default'>
-    //                       all the levels has been removed!{' '}
-    //                     </div>
-    //                   ) : (
-    //                     <div>no levels</div>
-    //                   )}
-    //                 </>
-    //               )}
-    //             </div>
-    //           </div>
-    //         ) : null}
-    //       </div>
-    //     </div>
-    //   ) : null}
-    // </div>
-    <section
-      className={
-        selectedPopup === PopupsTypes.ADMINEDIT
-          ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-          : 'z-0 opacity-0 transition duration-200 ease-in'
-      }
-    >
-      {selectedPopup === PopupsTypes.ADMINEDIT &&
-      infoBarStore.fieldId &&
-      infoBarStore.fieldIndex !== undefined ? (
-        infoBarStore.fieldToEdit === fieldToEditType.UNIT ? (
-          <EditUnit
-            unitId={infoBarStore.fieldId}
-            unitIndex={infoBarStore.fieldIndex}
-            onClose={closePopup}
-          />
-        ) : infoBarStore.fieldToEdit === fieldToEditType.LEVEL ? (
-          <EditLevel levelId={infoBarStore.fieldId} onClose={closePopup} />
-        ) : infoBarStore.fieldToEdit === fieldToEditType.LESSON ? (
-          <EditLesson lessonId={infoBarStore.fieldId} onClose={closePopup} />
-        ) : null
-      ) : null}
-    </section>
+   <>
+        {/* <div
+          className={
+            selectedPopup === PopupsTypes.ADMINEDIT
+              ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
+              : 'z-0 opacity-0 transition duration-200 ease-in'
+          }
+        >
+          {selectedPopup === PopupsTypes.ADMINEDIT ? (
+            <div className='relative m-5 flex h-[30rem] w-[40rem] rounded-md bg-white dark:bg-duoGrayDark-darkest p-5 xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
+              <button
+                onClick={() => {
+                  updateSelectedPopup(PopupsTypes.CLOSED);
+                }}
+                className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
+              >
+                <FontAwesomeIcon
+                  className='fa-lg fa-solid flex-none'
+                  icon={faXmark}
+                />
+              </button>
+              <div className='w-full items-start justify-start'>
+                <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 dark:border-duoBlueDark-text'>
+                  <span className='text-xl font-extrabold tracking-widest text-duoGray-dark dark:text-duoBlueDark-text'>
+                    {fieldToEdit} I
+                  </span>
+                </div>
+                {unit ? (
+                  <div className='mt-12 w-full'>
+                    <div className='my-2'>{unit._id}</div>
+                    <div className='my-2 w-[69%]'>
+                      <span className='text-2xl font-bold'>Description:</span>
+                      {unit.description ? (
+                        <Textbox
+                          prevData={unit.description}
+                          isEditMode={true}
+                          fontSizeProps={FontSizes.SMALL}
+                          value={undefined}
+                          onChange={() => {}}
+                        />
+                      ) : null}
+                    </div>
+                    <div className='my-2'>{unit.guidebook}</div>
+                    <div className='w-full'>
+                      <div className='my-2 flex flex-row items-center justify-start gap-3'>
+                        <span className='text-2xl font-bold'>Levels:</span>
+                        <button
+                          onClick={() =>
+                            setEdittedArray((prev) => [
+                              ...prev,
+                              `new_${new Date().getTime()}`,
+                            ])
+                          }
+                          className='flex flex-row items-center justify-center rounded-3xl bg-duoGray-lighter px-3 py-1 font-bold text-duoGray-darkest'
+                        >
+                          <span className='text-xl'> Add </span>
+                          <GoPlus />
+                        </button>
+                      </div>
+                      {edittedArray && edittedArray.length > 0 ? (
+                        <div className='flex h-fit w-full flex-col items-start justify-between font-bold'>
+                          <DndContext
+                            collisionDetection={closestCenter}
+                            onDragStart={(event: DragEndEvent) => {
+                              const { active } = event;
+                              setGrabbedTargetId(active.id.toString());
+                            }}
+                            onDragMove={handleDragMove}
+                            onDragEnd={handleDragEnd}
+                          >
+                            <SortableContext
+                              items={edittedArray}
+                              strategy={horizontalListSortingStrategy}
+                            >
+                              <div className='flex flex-wrap gap-1'>
+                                {edittedArray.map((levelId, index) => (
+                                  <div
+                                    key={index}
+                                    className='mb-2 flex w-[8rem] flex-row'
+                                  >
+                                    <SortableItem
+                                      id={levelId}
+                                      key={index}
+                                      name={`${
+                                        unit.levels && unit.levels.includes(levelId)
+                                          ? `level ${
+                                              unit.levels
+                                                ? unit.levels.indexOf(levelId) + 1
+                                                : '0'
+                                            }`
+                                          : 'new level'
+                                      }`}
+                                      isGrabbed={
+                                        grabbedTargetId
+                                          ? grabbedTargetId === levelId
+                                          : false
+                                      }
+                                      isDisabled={false}
+                                      addedStyle={`${
+                                        unit.levels && unit.levels.includes(levelId)
+                                          ? unit.levels &&
+                                            unit.levels.indexOf(levelId) !==
+                                              edittedArray.indexOf(levelId)
+                                            ? 'border-duoYellow-buttonBorder text-duoYellow-darker hover:bg-duoYellow-lighter'
+                                            : ''
+                                          : 'border-duoGreen-buttonBorder text-duoGreen-dark hover:bg-duoGreen-lighter'
+                                      }`}
+                                    />
+                                    {grabbedTargetId !== levelId ? (
+                                      <button
+                                        onClick={() => {
+                                          removeItem(levelId);
+                                        }}
+                                        className='text-duoGray-darkest'
+                                      >
+                                        <FaRegTrashAlt />
+                                      </button>
+                                    ) : null}
+                                  </div>
+                                ))}
+                              </div>
+                            </SortableContext>
+                          </DndContext>
+                        </div>
+                      ) : (
+                        <>
+                          {unit && unit.levels && unit.levels.length > 0 ? (
+                            <div className='text-lg font-semibold text-duoRed-default'>
+                              all the levels has been removed!{' '}
+                            </div>
+                          ) : (
+                            <div>no levels</div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+        </div> */}
+        <section
+          className={
+            selectedPopup === PopupsTypes.ADMINEDIT
+              ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
+              : 'z-0 opacity-0 transition duration-200 ease-in'
+          }
+        >
+          {selectedPopup === PopupsTypes.ADMINEDIT &&
+          infoBarStore.fieldId &&
+          infoBarStore.fieldIndex !== undefined ? (
+            infoBarStore.fieldToEdit === fieldToEditType.UNIT ? (
+              <EditUnit
+                unitId={infoBarStore.fieldId}
+                unitIndex={infoBarStore.fieldIndex}
+                onClose={closePopup}
+              />
+            ) : infoBarStore.fieldToEdit === fieldToEditType.LEVEL ? (
+              <EditLevel levelId={infoBarStore.fieldId} onClose={closePopup} />
+            ) : infoBarStore.fieldToEdit === fieldToEditType.LESSON ? (
+              <EditLesson lessonId={infoBarStore.fieldId} onClose={closePopup} />
+            ) : null
+          ) : null}
+        </section>
+   </>
   );
 };
 

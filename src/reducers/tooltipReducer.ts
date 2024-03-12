@@ -8,11 +8,11 @@ export enum tooltipAction {
 }
 
 type Action =
-    | { type: tooltipAction.SET_IS_IN_DELETING_MODE; payload: boolean }
-    | { type: tooltipAction.SET_IS_POP_EFFECT; payload: boolean }
-    | { type: tooltipAction.SET_BACKGROUND_COLOR; payload: string }
-    | { type: tooltipAction.SET_BORDER_COLOR; payload: string }
-    | { type: tooltipAction.SET_TEXT_COLOR; payload: string }
+    | { type: tooltipAction.SET_IS_IN_DELETING_MODE, payload: boolean }
+    | { type: tooltipAction.SET_IS_POP_EFFECT, payload: boolean }
+    | { type: tooltipAction.SET_BACKGROUND_COLOR, payload: string }
+    | { type: tooltipAction.SET_BORDER_COLOR, payload: string }
+    | { type: tooltipAction.SET_TEXT_COLOR, payload: string }
     | { type: tooltipAction.TOGGLE_DELETING_MODE }
 
 export interface TooltipType {

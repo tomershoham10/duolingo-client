@@ -49,6 +49,30 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => 
     }
 };
 
+export const getUnsuspendedExercisesData = async (lessonId: string): Promise<FSAType[]> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resExercises = data.exercises;
+            return resExercises;
+        } else {
+            throw new Error('error while fetching fsas');
+        }
+    } catch (error: any) {
+        throw new Error(`error while fetching fsas: ${error.message}`);
+    }
+};
+
 export const getResultsData = async (lessonId: string, userId: string) => {
     try {
         const response = await fetch(

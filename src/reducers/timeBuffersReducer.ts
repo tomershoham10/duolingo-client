@@ -14,13 +14,13 @@ interface NewSliderVal {
 }
 
 type Action =
-    | { type: TimeBuffersAction.SET_RANGE_INDEX; payload: number }
+    | { type: TimeBuffersAction.SET_RANGE_INDEX, payload: number }
     | { type: TimeBuffersAction.ADD_SCORE, payload: number }
     | { type: TimeBuffersAction.SET_SCORES_ARRAY, payload: number[] }
     | { type: TimeBuffersAction.ADD_VAL_TIME_ARRAY, payload: number }
     | { type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY, payload: NewSliderVal }
     | { type: TimeBuffersAction.DELETE_TIME_VAL, payload: number }
-    | { type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC; payload: number }
+    | { type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC, payload: number }
 
 export interface TimeBuffersType {
     rangeIndex: number,

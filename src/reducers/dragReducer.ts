@@ -14,11 +14,11 @@ export enum draggingAction {
 }
 
 export type DraggingAction =
-    | { type: draggingAction.SET_ITEMS_LIST; payload: ItemsList[] }
-    | { type: draggingAction.ADD_ITEM; payload: ItemsList }
-    | { type: draggingAction.SET_GRABBED_ITEM_ID; payload: string }
-    | { type: draggingAction.HANDLE_DRAG_MOVE; payload: { active: Active, over: Over | null } }
-    | { type: draggingAction.HANDLE_DRAG_END; payload: { active: Active, over: Over | null } }
+    | { type: draggingAction.SET_ITEMS_LIST, payload: ItemsList[] }
+    | { type: draggingAction.ADD_ITEM, payload: ItemsList }
+    | { type: draggingAction.SET_GRABBED_ITEM_ID, payload: string }
+    | { type: draggingAction.HANDLE_DRAG_MOVE, payload: { active: Active, over: Over | null } }
+    | { type: draggingAction.HANDLE_DRAG_END, payload: { active: Active, over: Over | null } }
 
 interface ItemsList {
     id: string,

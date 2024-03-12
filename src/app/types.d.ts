@@ -10,13 +10,15 @@ interface CoursesType {
     _id: string;
     name: string;
     units: string[];
+    suspendedUnits: string[];
 }
 
 // ------ units ------- //
 
 interface UnitType {
     _id: string;
-    levels?: string[];
+    levels: string[];
+    suspendedLevels: string[];
     guidebook?: string;
     description?: string;
 }
@@ -25,22 +27,24 @@ interface UnitType {
 
 interface LevelType {
     _id: string;
-    lessons?: string[];
+    lessons: string[];
+    suspendedLessons: string[];
 }
 
 // ------ lessons ------- //
 
-enum TypesOfLessons {
-    searider = "searider",
-    crew = "crew",
-    senior = "senior",
-}
+// enum TypesOfLessons {
+//     searider = "searider",
+//     crew = "crew",
+//     senior = "senior",
+// }
 
 interface LessonType {
     _id: string;
     name: string;
     exercises: string[];
-    type: TypesOfLessons;
+    suspendedExercises: string[];
+    // type: TypesOfLessons;
 }
 
 interface ResultType {
@@ -314,7 +318,7 @@ interface ButtonProps {
     isDisabled?: boolean;
     buttonType?: ButtonTypes;
     loadingLabel?: string;
-    isLoading?:boolean;
+    isLoading?: boolean;
 }
 
 // // Dropdown // //

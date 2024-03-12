@@ -20,7 +20,7 @@ library.add(faBook);
 const UserUnitSection: React.FC = () => {
   const userId = useStore(useUserStore, (state) => state.userId);
   const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
-  const courseId = useStore(useCourseStore, (state) => state.courseId);
+  const courseId = useStore(useCourseStore, (state) => state._id);
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
