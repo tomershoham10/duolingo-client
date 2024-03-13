@@ -28,7 +28,6 @@ import {
   exerciseDataReducer,
 } from '@/reducers/exerciseDataReducer';
 import {
-  DraggingAction,
   draggingAction,
   draggingReducer,
 } from '@/reducers/dragReducer';

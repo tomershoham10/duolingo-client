@@ -25,6 +25,33 @@ export const getAllLevels = async (): Promise<LevelType[] | null> => {
     }
 };
 
+export const getLevelById = async (levelId: string): Promise<LevelType | null> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/levels/${levelId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resLevel = data.level;
+            return resLevel;
+
+        } else {
+            console.error("Failed to fetch level by id.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching level by id:", error);
+        return null;
+    }
+};
+
 export const getLessonsData = async (levelId: string): Promise<LessonType[]> => {
     try {
         const response = await fetch(

@@ -227,13 +227,27 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                       </div>
                                                                     </div>
                                                                     <div className='mx-6 w-full'>
-                                                                      <span className='w-full font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'>
-                                                                        LESSON
-                                                                        {' - '}
-                                                                        {
-                                                                          lesson.name
-                                                                        }
-                                                                      </span>
+                                                                      <button
+                                                                        className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
+                                                                        onClick={() => {
+                                                                          infoBarStore.updateSyllabusFieldToEdit(
+                                                                            fieldToEditType.LESSON
+                                                                          );
+                                                                          infoBarStore.updateSyllabusFieldId(
+                                                                            lesson._id
+                                                                          );
+                                                                          infoBarStore.updateSyllabusFieldIndex(
+                                                                            lessonIndex
+                                                                          );
+                                                                        }}
+                                                                      >
+                                                                        <span>
+                                                                          LESSON{' - '}
+                                                                          {
+                                                                            lesson.name
+                                                                          }
+                                                                        </span>
+                                                                      </button>
                                                                       <div className='flex w-full flex-col'>
                                                                         {courseDataState.exercises &&
                                                                         courseDataState

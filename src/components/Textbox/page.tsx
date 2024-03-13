@@ -35,15 +35,15 @@ const Textbox: React.FC<TextboxProps> = (props) => {
   }, [fontSizeProps]);
 
   return (
-    <form className={`${fontSize}`}>
-      <div className='relative overflow-hidden'>
+    <form className={`${fontSize} h-full`}>
+      <div className='relative overflow-hidden h-full'>
         <textarea
           style={isEditMode ? {} : { resize: 'none' }}
           value={propsVal}
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
             onChange(event.target.value);
           }}
-          className={`w-full rounded-md border-2 px-3 py-2 focus:outline-none
+          className={`h-full w-full rounded-md border-2 px-3 py-2 focus:outline-none
           ${
             errorMode
               ? 'border-duoRed-default bg-duoRed-lighter text-duoRed-darker'

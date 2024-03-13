@@ -111,8 +111,8 @@ const AdminEditPopup: React.FC = () => {
   };
 
   return (
-   <>
-        {/* <div
+    <>
+      {/* <div
           className={
             selectedPopup === PopupsTypes.ADMINEDIT
               ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
@@ -253,30 +253,38 @@ const AdminEditPopup: React.FC = () => {
             </div>
           ) : null}
         </div> */}
-        <section
-          className={
-            selectedPopup === PopupsTypes.ADMINEDIT
-              ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-              : 'z-0 opacity-0 transition duration-200 ease-in'
-          }
-        >
-          {selectedPopup === PopupsTypes.ADMINEDIT &&
-          infoBarStore.fieldId &&
-          infoBarStore.fieldIndex !== undefined ? (
-            infoBarStore.fieldToEdit === fieldToEditType.UNIT ? (
-              <EditUnit
-                unitId={infoBarStore.fieldId}
-                unitIndex={infoBarStore.fieldIndex}
-                onClose={closePopup}
-              />
-            ) : infoBarStore.fieldToEdit === fieldToEditType.LEVEL ? (
-              <EditLevel levelId={infoBarStore.fieldId} onClose={closePopup} />
-            ) : infoBarStore.fieldToEdit === fieldToEditType.LESSON ? (
-              <EditLesson lessonId={infoBarStore.fieldId} onClose={closePopup} />
-            ) : null
-          ) : null}
-        </section>
-   </>
+      <section
+        className={
+          selectedPopup === PopupsTypes.ADMINEDIT
+            ? 'fixed z-20 flex h-screen w-screen items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
+            : 'z-0 opacity-0 transition duration-200 ease-in'
+        }
+      >
+        {selectedPopup === PopupsTypes.ADMINEDIT &&
+        infoBarStore.fieldId &&
+        infoBarStore.fieldIndex !== undefined ? (
+          infoBarStore.fieldToEdit === fieldToEditType.UNIT ? (
+            <EditUnit
+              unitId={infoBarStore.fieldId}
+              unitIndex={infoBarStore.fieldIndex}
+              onClose={closePopup}
+            />
+          ) : infoBarStore.fieldToEdit === fieldToEditType.LEVEL ? (
+            <EditLevel
+              levelId={infoBarStore.fieldId}
+              levelIndex={infoBarStore.fieldIndex}
+              onClose={closePopup}
+            />
+          ) : infoBarStore.fieldToEdit === fieldToEditType.LESSON ? (
+            <EditLesson
+              lessonId={infoBarStore.fieldId}
+              lessonIndex={infoBarStore.fieldIndex}
+              onClose={closePopup}
+            />
+          ) : null
+        ) : null}
+      </section>
+    </>
   );
 };
 
