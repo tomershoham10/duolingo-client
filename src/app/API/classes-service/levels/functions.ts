@@ -64,11 +64,14 @@ export const getLessonsData = async (levelId: string): Promise<LessonType[]> => 
                 },
             },
         );
+
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
             console.log("leves api getLessonsData - resLessons", resLessons);
             return resLessons;
+        } else if (response.status === 404) {
+            return [];
         } else {
             throw new Error('error while fetching lessons');
         }
@@ -89,11 +92,16 @@ export const getUnsuspendedLessonsData = async (levelId: string): Promise<Lesson
                 },
             },
         );
+        console.log('getUnsuspendedLessonsData - response', response);
+
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
             console.log("leves api getUnsuspendedLessonsData - resLessons", resLessons);
             return resLessons;
+        } else if (response.status === 404) {
+            console.log('getUnsuspendedLessonsData - 404');
+            return [];
         } else {
             throw new Error('error while fetching lessons');
         }
@@ -101,3 +109,63 @@ export const getUnsuspendedLessonsData = async (levelId: string): Promise<Lesson
         throw new Error(`error while fetching lessons: ${error.message}`);
     }
 };
+
+export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> => {
+    try {
+        let fieldsToUpdate: Partial<LevelType> = {};
+
+        level.lessons ? fieldsToUpdate.lessons : null;
+        level.suspendedLessons ? fieldsToUpdate.suspendedLessons : null;
+
+        const response = await fetch(
+            `http://localhost:8080/api/levels/${level._id}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(fieldsToUpdate)
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while updating level: ${error.message}`);
+    }
+}
+
+export const suspendLesson = async (levelId: string, lessonId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/levels/suspendLesson/${levelId}/${lessonId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while updating level: ${error.message}`);
+    }
+}
+
+export const unsuspendLesson = async (levelId: string, lessonId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/levels/unsuspendLesson/${levelId}/${lessonId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while updating level: ${error.message}`);
+    }
+}

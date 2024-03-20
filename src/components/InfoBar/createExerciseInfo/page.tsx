@@ -8,9 +8,9 @@ import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinut
 
 const CreateExerciseInfo: React.FC = () => {
   const useInfoBarStoreObj = {
-    syllabusFieldToEdit: useStore(
+    syllabusFieldType: useStore(
       useInfoBarStore,
-      (state) => state.syllabusFieldToEdit
+      (state) => state.syllabusFieldType
     ),
     syllabusFieldId: useStore(
       useInfoBarStore,

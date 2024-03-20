@@ -37,10 +37,13 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => 
                 },
             },
         );
+
         if (response.ok) {
             const data = await response.json();
             const resExercises = data.exercises;
             return resExercises;
+        } else if (response.status === 404) {
+            return [];
         } else {
             throw new Error('error while fetching fsas');
         }
@@ -52,7 +55,7 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => 
 export const getUnsuspendedExercisesData = async (lessonId: string): Promise<FSAType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
+            `http://localhost:8080/api/lessons/getUnsuspendedExercisesById/${lessonId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -61,11 +64,17 @@ export const getUnsuspendedExercisesData = async (lessonId: string): Promise<FSA
                 },
             },
         );
+
         if (response.ok) {
             const data = await response.json();
             const resExercises = data.exercises;
             return resExercises;
-        } else {
+        }
+        else if (response.status === 404) {
+            console.log('getUnsuspendedExercisesData - 404');
+            return [];
+        }
+        else {
             throw new Error('error while fetching fsas');
         }
     } catch (error: any) {

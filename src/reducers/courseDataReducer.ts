@@ -9,7 +9,7 @@ export enum courseDataAction {
     SET_UNSUSPENDED_EXERCISES = 'setUNnsuspendedExercises',
 }
 
-interface DataWithFatherId<T> {
+export interface DataWithFatherId<T> {
     fatherId: string | undefined;
     data: T[];
 }

@@ -22,6 +22,7 @@ import {
   useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
 import {
+  DataWithFatherId,
   courseDataAction,
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
@@ -40,11 +41,13 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const addAlert = useAlertStore.getState().addAlert;
 
   const infoBarStore = {
-    updateSyllabusFieldToEdit:
-      useInfoBarStore.getState().updateSyllabusFieldToEdit,
-    updateSyllabusFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
-    updateSyllabusFieldIndex:
-      useInfoBarStore.getState().updateSyllabusFieldIndex,
+    updateFieldType: useInfoBarStore.getState().updatesyllabusFieldType,
+    updateFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
+    updateFieldIndex: useInfoBarStore.getState().updateSyllabusFieldIndex,
+    updateFieldFatherIndex:
+      useInfoBarStore.getState().updateSyllabusFieldFatherIndex,
+    updateIsFieldSuspended:
+      useInfoBarStore.getState().updateSyllabusIsFieldSuspended,
   };
 
   const initialCourseDataState = {
@@ -99,22 +102,44 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
       : setExerciseAccordion((pervExercises) => [...pervExercises, exerciseId]);
   };
 
+  const isIdInDataWithFatherIdObj = (
+    id: string,
+    obj: DataWithFatherId<LevelType | LessonType | FSAType>[]
+  ): boolean => {
+    return obj.some((levelData) => {
+      return levelData.data.some((doc) => doc._id === id);
+    });
+  };
+
   return (
     <div className='flex w-full'>
       <div className='mx-24 h-full w-full text-black'>
         {courseDataState.units && courseDataState.units.length > 0 ? (
           courseDataState.units.map((unit, unitIndex) => (
-            <div key={unitIndex} className='flex-none py-[2rem]'>
+            <div
+              key={unitIndex}
+              className={`flex-none py-[2rem] ${
+                !courseDataState.unsuspendedUnits
+                  .map((unit) => unit._id)
+                  .includes(unit._id)
+                  ? 'opacity-60'
+                  : ''
+              }`}
+            >
               <div className='flex-col'>
                 <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white dark:bg-duoGrayDark-dark sm:h-fit'>
                   <button
                     className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
                     onClick={() => {
-                      infoBarStore.updateSyllabusFieldToEdit(
-                        fieldToEditType.UNIT
+                      infoBarStore.updateFieldType(fieldToEditType.UNIT);
+                      infoBarStore.updateFieldId(unit._id);
+                      infoBarStore.updateFieldIndex(unitIndex);
+                      infoBarStore.updateFieldFatherIndex(propsCourseId);
+                      infoBarStore.updateIsFieldSuspended(
+                        !courseDataState.unsuspendedUnits
+                          .map((unit) => unit._id)
+                          .includes(unit._id)
                       );
-                      infoBarStore.updateSyllabusFieldId(unit._id);
-                      infoBarStore.updateSyllabusFieldIndex(unitIndex);
                     }}
                   >
                     <label className='cursor-pointer'>
@@ -196,14 +221,23 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                     <div
                                                                       className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
                                                                       onClick={() => {
-                                                                        infoBarStore.updateSyllabusFieldToEdit(
+                                                                        infoBarStore.updateFieldType(
                                                                           fieldToEditType.LEVEL
                                                                         );
-                                                                        infoBarStore.updateSyllabusFieldId(
+                                                                        infoBarStore.updateFieldId(
                                                                           level._id
                                                                         );
-                                                                        infoBarStore.updateSyllabusFieldIndex(
+                                                                        infoBarStore.updateFieldIndex(
                                                                           levelIndex
+                                                                        );
+                                                                        infoBarStore.updateFieldFatherIndex(
+                                                                          unit._id
+                                                                        );
+                                                                        infoBarStore.updateIsFieldSuspended(
+                                                                          !isIdInDataWithFatherIdObj(
+                                                                            level._id,
+                                                                            courseDataState.unsuspendedLevels
+                                                                          )
                                                                         );
                                                                       }}
                                                                     >
@@ -230,19 +264,31 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                       <button
                                                                         className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
                                                                         onClick={() => {
-                                                                          infoBarStore.updateSyllabusFieldToEdit(
+                                                                          infoBarStore.updateFieldType(
                                                                             fieldToEditType.LESSON
                                                                           );
-                                                                          infoBarStore.updateSyllabusFieldId(
+                                                                          infoBarStore.updateFieldId(
                                                                             lesson._id
                                                                           );
-                                                                          infoBarStore.updateSyllabusFieldIndex(
+                                                                          infoBarStore.updateFieldIndex(
                                                                             lessonIndex
+                                                                          );
+                                                                          infoBarStore.updateFieldFatherIndex(
+                                                                            level._id
+                                                                          );
+                                                                          infoBarStore.updateIsFieldSuspended(
+                                                                            !isIdInDataWithFatherIdObj(
+                                                                              lesson._id,
+                                                                              courseDataState.unsuspendedLessons
+                                                                            )
                                                                           );
                                                                         }}
                                                                       >
                                                                         <span>
-                                                                          LESSON{' - '}
+                                                                          LESSON
+                                                                          {
+                                                                            ' - '
+                                                                          }
                                                                           {
                                                                             lesson.name
                                                                           }

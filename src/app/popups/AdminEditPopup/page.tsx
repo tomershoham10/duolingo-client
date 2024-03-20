@@ -36,7 +36,7 @@ const AdminEditPopup: React.FC = () => {
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
   const infoBarStore = {
-    fieldToEdit: useInfoBarStore.getState().syllabusFieldToEdit,
+    fieldToEdit: useInfoBarStore.getState().syllabusFieldType,
     fieldId: useStore(useInfoBarStore, (state) => state.syllabusFieldId),
     fieldIndex: useStore(useInfoBarStore, (state) => state.syllabusFieldIndex),
   };

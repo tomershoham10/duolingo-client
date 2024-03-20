@@ -1,4 +1,4 @@
-export const getAllFSAs = async (): Promise<FSAType[] | null> => {
+export const getAllFSAs = async (): Promise<FSAType[]> => {
     try {
         const response = await fetch(
             "http://localhost:8080/api/FSA/",
@@ -17,11 +17,11 @@ export const getAllFSAs = async (): Promise<FSAType[] | null> => {
             return resFSAs;
         } else {
             console.error("Failed to fetch getAllFSAs.");
-            return null;
+            return [];
         }
     } catch (error) {
         console.error("Error fetching getAllFSAs:", error);
-        return null;
+        return [];
     }
 };
 

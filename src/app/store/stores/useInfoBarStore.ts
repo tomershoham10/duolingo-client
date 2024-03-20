@@ -18,15 +18,21 @@ export enum fieldToEditType {
 }
 
 type useInfoBarState = {
-    syllabusFieldToEdit: fieldToEditType | undefined;
+    syllabusFieldType: fieldToEditType | undefined;
     syllabusFieldId: string | undefined;
-    syllabusFieldIndex: number | undefined;
+    syllabusFieldIndex: number;
+    syllabusFieldFatherId: string | undefined;
+    syllabusIsFieldSuspended: boolean;
+
     selectedFile: RecordType | SonogramType | undefined;
 }
 type Action = {
-    updateSyllabusFieldToEdit: (syllabusFieldToEdit: useInfoBarState['syllabusFieldToEdit']) => void;
+    updatesyllabusFieldType: (syllabusFieldType: useInfoBarState['syllabusFieldType']) => void;
     updateSyllabusFieldId: (syllabusFieldId: useInfoBarState['syllabusFieldId']) => void;
     updateSyllabusFieldIndex: (syllabusFieldIndex: useInfoBarState['syllabusFieldIndex']) => void;
+    updateSyllabusFieldFatherIndex: (syllabusFieldFatherId: useInfoBarState['syllabusFieldFatherId']) => void;
+    updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended: useInfoBarState['syllabusIsFieldSuspended']) => void;
+
     updateSelectedFile: (selectedRecord: useInfoBarState['selectedFile']) => void;
     resetStore: () => void;
 }
@@ -34,17 +40,21 @@ type Action = {
 
 export const useInfoBarStore = create<useInfoBarState & Action>(
     (set) => ({
-        syllabusFieldToEdit: undefined,
+        syllabusFieldType: undefined,
         syllabusFieldId: undefined,
+        syllabusFieldIndex: 0,
+        syllabusFieldFatherId: undefined,
+        syllabusIsFieldSuspended: false,
         selectedFile: undefined,
-        syllabusFieldIndex: undefined,
-        updateSyllabusFieldToEdit: (syllabusFieldToEdit) => set(() => ({ syllabusFieldToEdit: syllabusFieldToEdit })),
+        updatesyllabusFieldType: (syllabusFieldType) => set(() => ({ syllabusFieldType: syllabusFieldType })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
         updateSyllabusFieldIndex: (syllabusFieldIndex) => set(() => ({ syllabusFieldIndex: syllabusFieldIndex })),
+        updateSyllabusFieldFatherIndex: (syllabusFieldFatherId) => set(() => ({ syllabusFieldFatherId: syllabusFieldFatherId })),
+        updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended) => set(() => ({ syllabusIsFieldSuspended: syllabusIsFieldSuspended })),
         updateSelectedFile: (newSelectedFile) => set({ selectedFile: newSelectedFile }),
         resetStore: () => {
             set(() => ({
-                syllabusFieldToEdit: undefined,
+                syllabusFieldType: undefined,
                 syllabusFieldId: undefined,
                 selectedFile: undefined,
             }));

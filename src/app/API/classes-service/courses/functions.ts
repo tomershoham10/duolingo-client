@@ -117,6 +117,9 @@ export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitTyp
                 },
             },
         );
+        if (response.status === 404) {
+            return [];
+        }
         if (response.ok) {
             const data = await response.json();
             const resUnits = data.units as UnitType[];
@@ -129,3 +132,64 @@ export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitTyp
         throw new Error(`error while fetching units: ${error.message}`);
     }
 };
+
+export const updateCourse = async (course: Partial<CoursesType>): Promise<boolean> => {
+    try {
+        let fieldsToUpdate: Partial<CoursesType> = {};
+
+        course.name ? fieldsToUpdate.name : null;
+        course.units ? fieldsToUpdate.units : null;
+        course.suspendedUnits ? fieldsToUpdate.suspendedUnits : null;
+
+        const response = await fetch(
+            `http://localhost:8080/api/courses/${course._id}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(fieldsToUpdate)
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while updating course: ${error.message}`);
+    }
+}
+
+export const suspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/courses/suspendUnit/${courseId}/${unitId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while suspend Unit: ${error.message}`);
+    }
+}
+
+export const unsuspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/courses/unsuspendUnit/${courseId}/${unitId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`error while unsuspend Unit: ${error.message}`);
+    }
+}
