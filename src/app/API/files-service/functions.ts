@@ -91,6 +91,33 @@ export const isFileExisted = async (fileName: string, bucketName: string): Promi
     }
 }
 
+export const getFileMetadataByETag = async (bucketName: string, etag: string): Promise<{
+    name: string,
+    id: string,
+    metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>
+} | null> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/get-metadata-by-etag/${bucketName}/${etag}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const objectInfo = data.objectInfo;
+            return objectInfo;
+        }
+        return null;
+    }
+    catch (error) {
+        throw new Error(`error getting all records - ${error}`);
+    }
+}
+
+
 export const getAllRecords = async (): Promise<RecordType[] | null> => {
     try {
         const response = await fetch(
