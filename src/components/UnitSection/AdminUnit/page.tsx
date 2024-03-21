@@ -28,6 +28,7 @@ import {
 } from '@/reducers/courseDataReducer';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import useCourseData from '@/app/utils/hooks/useCourseData';
+import { useTargetStore } from '@/app/store/stores/useTargetStore';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
@@ -39,6 +40,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const propsCourseId = props.courseId;
 
   const addAlert = useAlertStore.getState().addAlert;
+  const targetsList = useStore(useTargetStore, (state) => state.targets);
 
   const infoBarStore = {
     updateFieldType: useInfoBarStore.getState().updatesyllabusFieldType,
@@ -348,7 +350,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                               {exerciseAccordion.includes(
                                                                                                 exercise._id
                                                                                               ) ? (
-                                                                                                <div className=''>
+                                                                                                <div className='dark:text-duoGrayDark-lightest'>
                                                                                                   <span>
                                                                                                     EXERCISE
                                                                                                     ID
@@ -381,17 +383,35 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                       record
                                                                                                     </span>
                                                                                                   </div>
-                                                                                                  <div className='flex flex-col'>
-                                                                                                    <span className='font-bold'>
-                                                                                                      relevant
-                                                                                                    </span>
-                                                                                                    <span>
-                                                                                                      {
-                                                                                                        exercise.relevant
-                                                                                                      }
-                                                                                                    </span>
-                                                                                                  </div>
-                                                                                                  <div className='flex flex-col'>
+                                                                                                  {targetsList &&
+                                                                                                  exercise.relevant !==
+                                                                                                    undefined &&
+                                                                                                  exercise
+                                                                                                    .relevant
+                                                                                                    .length >
+                                                                                                    0 ? (
+                                                                                                    <div className='flex flex-col'>
+                                                                                                      <span className='text-lg font-extrabold'>
+                                                                                                        relevant
+                                                                                                      </span>
+                                                                                                      <span>
+                                                                                                        {
+                                                                                                          targetsList.filter(
+                                                                                                            (
+                                                                                                              target
+                                                                                                            ) =>
+                                                                                                              exercise.relevant
+                                                                                                                ? target._id ===
+                                                                                                                  exercise
+                                                                                                                    .relevant[0]
+                                                                                                                : null
+                                                                                                          )[0]
+                                                                                                            .name
+                                                                                                        }
+                                                                                                      </span>
+                                                                                                    </div>
+                                                                                                  ) : null}
+                                                                                                  {/* <div className='flex flex-col'>
                                                                                                     {exercise.timeBuffers.map(
                                                                                                       (
                                                                                                         timeBuffer,
@@ -408,10 +428,10 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                         </div>
                                                                                                       )
                                                                                                     )}
-                                                                                                  </div>
+                                                                                                  </div> */}
                                                                                                 </div>
                                                                                               ) : (
-                                                                                                <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter'>
+                                                                                                <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-darker'>
                                                                                                   <label>
                                                                                                     {
                                                                                                       exercise._id
