@@ -8,7 +8,7 @@ import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
 const Students = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
-  const [users, setUsers] = useState<UserType[] | null>(null);
+  const [users, setUsers] = useState<UserType[]>([]);
 
   useEffect(() => {
     console.log('courseId sdfs', courseId);
@@ -16,7 +16,8 @@ const Students = () => {
     const fetchData = async () => {
       if (courseId) {
         const response = await getUsersByCourseId(courseId);
-        setUsers(response);
+        console.log('getUsersByCourseId', response);
+        !!response ? setUsers(response) : null;
       }
     };
     fetchData();
@@ -24,7 +25,6 @@ const Students = () => {
 
   const headers = [
     { key: 'userName', label: 'User name' },
-    { key: 'permission', label: 'Permission' },
     { key: 'password', label: 'Password' },
   ];
 
@@ -40,7 +40,7 @@ const Students = () => {
             {Object.values(users).length} students
           </p>
           <section className='my-5 flex justify-start'>
-            <Table headers={headers} rows={users}  />
+            <Table headers={headers} rows={users} />
           </section>
         </div>
       ) : (

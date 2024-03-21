@@ -66,9 +66,8 @@ export const getUsersByCourseId = async (courseId: string): Promise<UserType[] |
             }
         });
         if (response.ok) {
-            const data = await response.json();
-            console.log("get users by courseId", data);
-            const usersList = data.users as UserType[];
+            const usersList = await response.json() as UserType[];
+            console.log("get users by courseId", usersList);
             return usersList;
         } else return null;
     }
