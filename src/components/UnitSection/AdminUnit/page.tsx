@@ -44,6 +44,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     updateFieldType: useInfoBarStore.getState().updatesyllabusFieldType,
     updateFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
     updateFieldIndex: useInfoBarStore.getState().updateSyllabusFieldIndex,
+    updateFieldSubIdsList:
+      useInfoBarStore.getState().updateSyllabusSubIdsListField,
     updateFieldFatherIndex:
       useInfoBarStore.getState().updateSyllabusFieldFatherIndex,
     updateIsFieldSuspended:
@@ -275,6 +277,9 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                           );
                                                                           infoBarStore.updateFieldFatherIndex(
                                                                             level._id
+                                                                          );
+                                                                          infoBarStore.updateFieldSubIdsList(
+                                                                            lesson.exercises
                                                                           );
                                                                           infoBarStore.updateIsFieldSuspended(
                                                                             !isIdInDataWithFatherIdObj(

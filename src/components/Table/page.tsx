@@ -12,7 +12,6 @@ interface DefaultTableProps {
   rows: TableRow[];
   onSelect?: (row: any) => void;
   selectedRowIndex?: number;
-  isSelectable?: boolean;
 }
 
 const Table = (props: DefaultTableProps) => {

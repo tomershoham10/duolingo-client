@@ -22,6 +22,7 @@ type useInfoBarState = {
     syllabusFieldId: string | undefined;
     syllabusFieldIndex: number;
     syllabusFieldFatherId: string | undefined;
+    syllabusSubIdsListField: string[];
     syllabusIsFieldSuspended: boolean;
 
     selectedFile: RecordType | SonogramType | undefined;
@@ -31,6 +32,7 @@ type Action = {
     updateSyllabusFieldId: (syllabusFieldId: useInfoBarState['syllabusFieldId']) => void;
     updateSyllabusFieldIndex: (syllabusFieldIndex: useInfoBarState['syllabusFieldIndex']) => void;
     updateSyllabusFieldFatherIndex: (syllabusFieldFatherId: useInfoBarState['syllabusFieldFatherId']) => void;
+    updateSyllabusSubIdsListField: (syllabusSubIdsListField: useInfoBarState['syllabusSubIdsListField']) => void;
     updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended: useInfoBarState['syllabusIsFieldSuspended']) => void;
 
     updateSelectedFile: (selectedRecord: useInfoBarState['selectedFile']) => void;
@@ -45,11 +47,13 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
         syllabusFieldIndex: 0,
         syllabusFieldFatherId: undefined,
         syllabusIsFieldSuspended: false,
+        syllabusSubIdsListField: [],
         selectedFile: undefined,
         updatesyllabusFieldType: (syllabusFieldType) => set(() => ({ syllabusFieldType: syllabusFieldType })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
         updateSyllabusFieldIndex: (syllabusFieldIndex) => set(() => ({ syllabusFieldIndex: syllabusFieldIndex })),
         updateSyllabusFieldFatherIndex: (syllabusFieldFatherId) => set(() => ({ syllabusFieldFatherId: syllabusFieldFatherId })),
+        updateSyllabusSubIdsListField: (syllabusSubIdsListField) => set(() => ({ syllabusSubIdsListField: syllabusSubIdsListField })),
         updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended) => set(() => ({ syllabusIsFieldSuspended: syllabusIsFieldSuspended })),
         updateSelectedFile: (newSelectedFile) => set({ selectedFile: newSelectedFile }),
         resetStore: () => {

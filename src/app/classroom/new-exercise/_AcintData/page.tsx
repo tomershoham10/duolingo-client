@@ -329,13 +329,13 @@ const AcintDataSection: React.FC = () => {
               ? recordsData.map((record) => record.name).indexOf(recordName)
               : undefined
           }
-          isSelectable={
-            selectedFile
-              ? recordsData
-                  .map((record) => record.name)
-                  .includes(selectedFile.name)
-              : true
-          }
+        //   isSelectable={
+        //     selectedFile
+        //       ? recordsData
+        //           .map((record) => record.name)
+        //           .includes(selectedFile.name)
+        //       : true
+        //   }
         />
       </section>
 

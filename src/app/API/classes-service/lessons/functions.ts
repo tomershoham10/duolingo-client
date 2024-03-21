@@ -25,6 +25,28 @@ export const getAllLessons = async (): Promise<LessonType[] | null> => {
     }
 };
 
+export const updateLesson = async (lessonId: string, newFields: Partial<LessonType>): Promise<boolean> => {
+    try {
+        console.log("updateLesson newFields", newFields);
+        const response = await fetch(
+            `http://localhost:8080/api/lessons/${lessonId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newFields)
+            },
+        );
+        return response.ok;
+    } catch (error) {
+        console.error("Error fetching lesson:", error);
+        return false;
+    }
+};
+
+
 export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => {
     try {
         const response = await fetch(
@@ -113,3 +135,4 @@ export const getResultsData = async (lessonId: string, userId: string) => {
         return [];
     }
 };
+

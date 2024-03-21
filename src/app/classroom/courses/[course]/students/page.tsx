@@ -40,7 +40,7 @@ const Students = () => {
             {Object.values(users).length} students
           </p>
           <section className='my-5 flex justify-start'>
-            <Table headers={headers} rows={users} isSelectable={false} />
+            <Table headers={headers} rows={users}  />
           </section>
         </div>
       ) : (
@@ -49,7 +49,7 @@ const Students = () => {
             0 students
           </p>
 
-          <Table headers={headers} rows={[]} isSelectable={false} />
+          <Table headers={headers} rows={[]} />
         </div>
       )}
     </>

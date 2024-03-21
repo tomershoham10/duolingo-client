@@ -9,13 +9,13 @@ export enum editLessonAction {
 
 type Action =
     | { type: editLessonAction.SET_FSAS, payload: FSAType[] }
-    | { type: editLessonAction.SET_SELECTED_FSA, payload: FSAType }
+    | { type: editLessonAction.SET_SELECTED_FSA, payload: string }
     | { type: editLessonAction.SET_TABLE_DATA, payload: TableRow[] }
     | { type: editLessonAction.ADD_TABLE_ROW, payload: TableRow }
 
 export interface editLessonType {
     fsasList: FSAType[],
-    selectedFSA: FSAType | undefined,
+    selectedFSA: string | undefined,
     tableHeaders: TableHead[],
     tableData: TableRow[],
 }
