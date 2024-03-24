@@ -7,12 +7,18 @@ export enum courseDataAction {
     SET_UNSUSPENDED_LESSONS = 'setUNnsuspendedLessons',
     SET_EXERCISES = 'setExercises',
     SET_UNSUSPENDED_EXERCISES = 'setUNnsuspendedExercises',
+    SET_RESULTS = 'setResults',
 }
 
 export interface DataWithFatherId<T> {
     fatherId: string | undefined;
     data: T[];
 }
+
+export interface ResultsState {
+    lessonId: string;
+    results: { numOfExercises: number; results: ResultType[] };
+}[];
 
 export type CourseDataActionTypes =
     | { type: courseDataAction.SET_UNITS, payload: UnitType[] }
@@ -23,6 +29,7 @@ export type CourseDataActionTypes =
     | { type: courseDataAction.SET_UNSUSPENDED_LESSONS, payload: DataWithFatherId<LessonType>[] }
     | { type: courseDataAction.SET_EXERCISES, payload: DataWithFatherId<FSAType>[] }
     | { type: courseDataAction.SET_UNSUSPENDED_EXERCISES, payload: DataWithFatherId<FSAType>[] }
+    | { type: courseDataAction.SET_RESULTS, payload: ResultsState[] }
 
 
 export interface courseDataType {
@@ -35,6 +42,7 @@ export interface courseDataType {
     unsuspendedLessons: DataWithFatherId<LessonType>[];
     exercises: DataWithFatherId<FSAType>[];
     unsuspendedExercises: DataWithFatherId<FSAType>[];
+    results: ResultsState[];
 }
 
 export const courseDataReducer = (
@@ -58,6 +66,8 @@ export const courseDataReducer = (
             return { ...state, exercises: action.payload };
         case courseDataAction.SET_UNSUSPENDED_EXERCISES:
             return { ...state, unsuspendedExercises: action.payload };
+        case courseDataAction.SET_RESULTS:
+            return { ...state, results: action.payload };
 
         default:
             return state;

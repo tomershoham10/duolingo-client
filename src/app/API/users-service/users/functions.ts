@@ -1,5 +1,5 @@
-import { useUserStore, TypesOfUser } from "@/app/store/stores/useUserStore";
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
+import { useUserStore } from "@/app/store/stores/useUserStore";
 
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";

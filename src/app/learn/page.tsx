@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import useStore from '../store/useStore';
 import { usePopupStore } from '../store/stores/usePopupStore';
 import { useUserStore } from '../store/stores/useUserStore';
-import UserUnitSection from '../../components/UnitSection/UserUnit/page';
+import UserUnitSection from '../../components/UnitSection/StudentUnit/page';
 
 const Dashboard: React.FC = () => {
   const router = useRouter();

@@ -22,8 +22,10 @@ import {
   getExercisesData,
   getUnsuspendedExercisesData,
 } from '@/app/API/classes-service/lessons/functions';
+import { getResultsByLessonAndUser } from '@/app/API/classes-service/results/functions';
 
 const useCourseData = (
+  userId: string | undefined,
   courseDataState: courseDataType,
   courseDataDispatch: (value: CourseDataActionTypes) => void
 ) => {
@@ -48,7 +50,7 @@ const useCourseData = (
       }
     };
 
-    const fetchnsuspendedUnits = async () => {
+    const fetchUnspendedUnits = async () => {
       try {
         if (!!courseDataState.courseId) {
           const response = await getUnsuspendedUnitsData(
@@ -68,7 +70,7 @@ const useCourseData = (
       }
     };
     fetchUnits();
-    fetchnsuspendedUnits();
+    fetchUnspendedUnits();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.courseId]);
 
@@ -251,12 +253,64 @@ const useCourseData = (
       }
     };
 
+    const fetchResuls = async () => {
+      try {
+        if (!!userId) {
+          const lessons = courseDataState.lessons.flatMap(
+            (lesson) => lesson.data
+          );
+          console.log(
+            'fetchUnsuspendedExercises',
+            courseDataState.lessons,
+            lessons
+          );
+
+          const promises = lessons.map(async (lesson) => {
+            try {
+              const resultsData = await getResultsByLessonAndUser(
+                lesson._id,
+                userId
+              );
+              return {
+                lessonId: lesson._id,
+                results: {
+                  numOfExercises: lesson.exercises.length,
+                  results: resultsData || [],
+                },
+              };
+            } catch (error) {
+              console.error(
+                'Error fetching results for lesson:',
+                lesson._id,
+                error
+              );
+              return {
+                lessonId: lesson._id,
+                results: {
+                  numOfExercises: lesson.exercises.length,
+                  results: [],
+                },
+              };
+            }
+          });
+
+          const result = await Promise.all(promises);
+          courseDataDispatch({
+            type: courseDataAction.SET_RESULTS,
+            payload: result.flat(),
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching units data:', error);
+      }
+    };
     if (
       courseDataState.lessons.length > 0 &&
       !!courseDataState.lessons[0].fatherId
     ) {
       fetchExercises();
       fetchUnsuspendedExercises();
+      userId ? fetchResuls() : null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.lessons]);

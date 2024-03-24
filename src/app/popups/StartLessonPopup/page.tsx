@@ -3,7 +3,7 @@ import { LegacyRef, useEffect, useState } from 'react';
 
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import Button, { Color } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/Button/page';
 import { useRouter } from 'next/navigation';
 
 interface StartLessonPopup {
@@ -48,7 +48,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
                 <div className='absolute pl-1 pt-2 font-black'>level up!</div>
                 <Button
                   label={'START'}
-                  color={Color.WHITE}
+                  color={ButtonColors.WHITE}
                   style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />
@@ -66,7 +66,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = ({
                 </div>
                 <Button
                   label={'START'}
-                  color={Color.WHITE}
+                  color={ButtonColors.WHITE}
                   style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />

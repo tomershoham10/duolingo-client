@@ -64,6 +64,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     unsuspendedLessons: [{ fatherId: undefined, data: [] }],
     exercises: [{ fatherId: undefined, data: [] }],
     unsuspendedExercises: [{ fatherId: undefined, data: [] }],
+    results: [],
   };
 
   const [courseDataState, courseDataDispatch] = useReducer(
@@ -71,9 +72,9 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     initialCourseDataState
   );
 
-  const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
-
   useCourseData(courseDataState, courseDataDispatch);
+
+  const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
   useEffect(() => {
     console.log('courseDataState.units', courseDataState.units);

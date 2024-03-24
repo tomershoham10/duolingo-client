@@ -5,7 +5,7 @@ import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useState } from 'react';
 import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
 
-const Students = () => {
+const Students: React.FC  = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
   const [users, setUsers] = useState<UserType[]>([]);
