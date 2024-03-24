@@ -18,7 +18,7 @@ import StartLessonPopup from '@/app/popups/StartLessonPopup/page';
 import {
   studentDashboardAction,
   studentDashboardReducer,
-} from '@/reducers/studentView/studetDashboardReducer';
+} from '@/reducers/studentView/studentDashboardReducer';
 import { courseDataReducer } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/utils/hooks/useCourseData';
 library.add(faBook);
