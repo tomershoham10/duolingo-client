@@ -72,7 +72,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     initialCourseDataState
   );
 
-  useCourseData(courseDataState, courseDataDispatch);
+  useCourseData(undefined, courseDataState, courseDataDispatch);
 
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 

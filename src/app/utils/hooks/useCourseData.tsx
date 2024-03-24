@@ -118,10 +118,12 @@ const useCourseData = (
         return;
       }
     };
-
-    if (courseDataState.units.length > 0) {
-      fetchLevels();
-      fetchUnsuspendedLevels();
+    if (courseDataState.units !== undefined) {
+      console.log('check', courseDataState.units);
+      if (courseDataState.units.length > 0) {
+        fetchLevels();
+        fetchUnsuspendedLevels();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.units]);
@@ -184,6 +186,7 @@ const useCourseData = (
     };
 
     if (
+      !!courseDataState.levels &&
       courseDataState.levels.length > 0 &&
       !!courseDataState.levels[0].fatherId
     ) {
@@ -305,6 +308,7 @@ const useCourseData = (
       }
     };
     if (
+      !!courseDataState.lessons &&
       courseDataState.lessons.length > 0 &&
       !!courseDataState.lessons[0].fatherId
     ) {

@@ -27,7 +27,7 @@ const StudentUnitSection: React.FC = () => {
   const userStore = {
     userId: useStore(useUserStore, (state) => state.userId),
     nextLessonId: useStore(useUserStore, (state) => state.nextLessonId),
-    courseId: useStore(useCourseStore, (state) => state._id),
+    courseId: useStore(useUserStore, (state) => state.courseId),
   };
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
@@ -49,7 +49,11 @@ const StudentUnitSection: React.FC = () => {
     initialCourseDataState
   );
 
-  useCourseData(userStore.userId, courseDataState, courseDataDispatch);
+  useCourseData(userStore.courseId, courseDataState, courseDataDispatch);
+
+  useEffect(() => {
+    console.log('courseDataState', courseDataState);
+  }, [courseDataState]);
 
   const initialstudentDashboardState = {
     currentLevelId: undefined,

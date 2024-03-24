@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken";
 
 const useUserStoreObj = {
 
+    updateUserName: useUserStore.getState().updateUserName,
     updateUserRole: useUserStore.getState().updateUserRole,
+    updateCourseId: useUserStore.getState().updateCourseId,
     updateIsLoggedIn: useUserStore.getState().updateIsLoggedIn,
     updateNextLessonId: useUserStore.getState().updateNextLessonId,
     updateAccessToken: useUserStore.getState().updateAccessToken,
@@ -109,26 +111,22 @@ export const handleAuth = async (userName: string, password: string) => {
                     // console.log("api decodedToken",decodedToken);
                     const role = decodedToken.role as TypesOfUser;
                     const userId = decodedToken.userId as string;
+                    const courseId = decodedToken.courseId as string;
                     const nextLessonId = decodedToken.nextLessonId as string;
 
                     // console.log("role", role);
                     // console.log("api nextLessonId", nextLessonId);
 
                     localStorage.setItem("jwtToken", token);
-                    if (useUserStoreObj.updateUserRole) {
-                        useUserStoreObj.updateUserRole(role);
-                    }
-                    if (useUserStoreObj.updateIsLoggedIn) {
-                        useUserStoreObj.updateIsLoggedIn(true);
-                    }
-                    if (useUserStoreObj.updateNextLessonId) {
-                        useUserStoreObj.updateNextLessonId(nextLessonId);
-                    }
-                    if (useUserStoreObj.updateAccessToken) {
-                        useUserStoreObj.updateAccessToken(token);
-                    }
+                    useUserStoreObj.updateUserName(userName);
+                    useUserStoreObj.updateUserRole(role);
+                    useUserStoreObj.updateIsLoggedIn(true);
+                    useUserStoreObj.updateNextLessonId(nextLessonId);
+                    useUserStoreObj.updateAccessToken(token);
 
                     if (role !== TypesOfUser.ADMIN) {
+                        useUserStoreObj.updateCourseId(decodedToken.courseId); //
+
                         // console.log('getting course data to local storage');
                         // await getCourseByType(
                         //     mapUserRoleToCourseType(role),
@@ -138,13 +136,14 @@ export const handleAuth = async (userName: string, password: string) => {
                     const userData = {
                         userName: userName,
                         userId: userId,
+                        courseId: courseId,
                         isLoggedIn: true,
                         userPermission: role,
                         nextLessonId: nextLessonId,
                         accessToken: token,
                     };
 
-                    console.log("userData", userData);
+                    console.log("decodedToken", decodedToken);
 
                     localStorage.setItem(
                         "userData",

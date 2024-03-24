@@ -19,7 +19,7 @@ enum TypesOfUser {
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const [user, setUser] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const userStore = {
@@ -39,8 +39,7 @@ const Login: React.FC = () => {
   }, [userStore.isLoggedIn, userStore.userRole]);
 
   const handleUser = (value: string) => {
-    setUser(value);
-    userStore.updateUserName(value);
+    setUserName(value);
   };
 
   const handlePassword = (value: string) => {
@@ -58,7 +57,7 @@ const Login: React.FC = () => {
           <Input
             type={InputTypes.text}
             placeholder='Username'
-            value={user}
+            value={userName}
             onChange={handleUser}
           />
           <Input
@@ -70,8 +69,7 @@ const Login: React.FC = () => {
           <Button
             label='LOG IN'
             color={ButtonColors.BLUE}
-            onClick={() => handleAuth(user, password)}
-            href={''}
+            onClick={() => handleAuth(userName, password)}
           />
         </>
       )}
