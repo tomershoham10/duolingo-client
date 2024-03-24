@@ -5,14 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '@/app/store/stores/useUserStore';
 import { useStore } from 'zustand';
-import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { getUnitsData } from '@/app/API/classes-service/courses/functions';
-import { getLevelsData } from '@/app/API/classes-service/units/functions';
-import { getLessonsData } from '@/app/API/classes-service/levels/functions';
-import LessonButton from '../../LessonButton/page';
+import LessonButton, { Status } from '../../LessonButton/page';
 import { possitionByModularAddition } from '@/app/utils/functions/possitionByModularAddition';
-import Tooltip from '../../Tooltip/page';
-import { getResultsData } from '@/app/API/classes-service/lessons/functions';
+import Tooltip, { TooltipColors } from '../../Tooltip/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import StartLessonPopup from '@/app/popups/StartLessonPopup/page';
 import {
@@ -69,132 +64,12 @@ const StudentUnitSection: React.FC = () => {
     studentDashboardReducer,
     initialstudentDashboardState
   );
-
-  //   const [units, setUnits] = useState<UnitType[]>([]);
-  //   const [levels, setLevels] = useState<
-  //     { unitId: string; levels: LevelType[] }[]
-  //   >([]);
-  //   const [lessons, setLessons] = useState<
-  //     { levelId: string; lessons: LessonType[] }[]
-  //   >([]);
-
-  //   type ResultsState = {
-  //     lessonId: string;
-  //     results: { numOfExercises: number; results: ResultType[] };
-  //   }[];
-
-  //   const [results, setResults] = useState<ResultsState>([]);
-
-  //   const [currentLevelId, setCurrentLevelId] = useState<string>();
-  //   const [currentUnitId, setCurrentUnitId] = useState<string>();
-
-  //   const [lockedLessons, setLockedLessons] = useState<string[]>([]);
-  //   const [lockedLevelsIds, setLockedLevelsIds] = useState<string[]>([]);
-  //   const [finisedLevelsIds, setFinisedLevelsIds] = useState<string[]>([]);
-  //   const [numOfLessonsMade, setNumOfLessonsMade] = useState<number>(0);
-  //   const [isNextLessonPopupVisible, setIsNextLessonPopupVisible] =
-  //     useState<boolean>(false);
+  useEffect(() => {
+    console.log('studentDashboardState', studentDashboardState);
+  }, [studentDashboardState]);
 
   const startLessonRef = useRef<HTMLDivElement>(null);
   const levelButtonRef = useRef<HTMLButtonElement>(null);
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       if (userStore.courseId) {
-  //         const response = await getUnitsData(userStore.courseId);
-  //         setUnits(response);
-  //       }
-  //     };
-  //     fetchData();
-  //   }, [userStore.courseId]);
-
-  //   useEffect(() => {
-  //     const fetchLevels = async () => {
-  //       const promises = units.map(async (unit) => {
-  //         const levelsData = await getLevelsData(unit._id);
-  //         return { unitId: unit._id, levels: levelsData };
-  //       });
-  //       const response = await Promise.all(promises);
-  //       setLevels(response);
-  //     };
-  //     if (units) {
-  //       if (units.length > 0) {
-  //         fetchLevels();
-  //       }
-  //     }
-  //   }, [units]);
-
-  //   useEffect(() => {
-  //     const fetchLessons = async () => {
-  //       const allLevels: { levelId: string; lessons: LessonType[] }[] = [];
-  //       levels.forEach((unit) => {
-  //         unit.levels?.forEach((level) => {
-  //           allLevels.push({ levelId: level._id, lessons: [] });
-  //         });
-  //       });
-
-  //       const promises = allLevels.map(async (level) => {
-  //         const lessonsData = await getLessonsData(level.levelId);
-  //         if (lessonsData) {
-  //           level.lessons = lessonsData;
-  //         }
-  //         return level;
-  //       });
-
-  //       const response = await Promise.all(promises);
-  //       setLessons(response);
-  //     };
-
-  //     if (levels.length > 0) {
-  //       fetchLessons();
-  //     }
-  //   }, [levels]);
-
-  //   useEffect(() => {
-  //     const fetchResults = async () => {
-  //       if (userStore.userId) {
-  //         const allLessons = lessons.reduce(
-  //           (acc, cur) => acc.concat(cur.lessons),
-  //           [] as LessonType[]
-  //         );
-  //         const promises = allLessons.map(async (lesson) => {
-  //           if (!!userStore.userId) {
-  //             const resultsData = await getResultsData(
-  //               lesson._id,
-  //               userStore.userId
-  //             );
-  //             return { lessonId: lesson._id, results: resultsData };
-  //           }
-  //         });
-  //         const result = await Promise.all(promises);
-  //         setResults(result);
-  //       }
-  //     };
-  //     if (lessons.length > 0 && userStore.userId !== undefined) {
-  //       fetchResults();
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [lessons]);
-
-  useEffect(() => {
-    console.log('courseId', userStore.courseId);
-  }, [userStore.courseId]);
-
-  useEffect(() => {
-    console.log('courseDataState.units', courseDataState.units);
-  }, [courseDataState.units]);
-
-  useEffect(() => {
-    console.log('courseDataState.levels', courseDataState.levels);
-  }, [courseDataState.levels]);
-
-  useEffect(() => {
-    console.log('courseDataState.lessons', courseDataState.lessons);
-  }, [courseDataState.lessons]);
-
-  useEffect(() => {
-    console.log('courseDataState.results', courseDataState.results);
-  }, [courseDataState.results]);
 
   useEffect(() => {
     if (courseDataState.results && courseDataState.results.length > 0) {
@@ -219,10 +94,14 @@ const StudentUnitSection: React.FC = () => {
             numOfResultsInCurrentLesson = numOfResultsInCurrentLesson - 1;
           }
         }
-        if (numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson) {
+        if (
+          userStore.nextLessonId !== courseDataState.results[r].lessonId &&
+          numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson &&
           !studentDashboardState.lockedLessons.includes(
             courseDataState.results[r].lessonId
-          );
+          )
+        ) {
+          console.log('ADD_LOCKED_LESSON', courseDataState.results[r].lessonId);
           studentDashboardDispatch({
             type: studentDashboardAction.ADD_LOCKED_LESSON,
             payload: courseDataState.results[r].lessonId,
@@ -235,11 +114,14 @@ const StudentUnitSection: React.FC = () => {
 
   useEffect(() => {
     if (userStore.nextLessonId && courseDataState.lessons) {
+      console.log('current level id 1');
       for (let i: number = 0; i < courseDataState.lessons.length; i++) {
         const lessonsIds = courseDataState.lessons[i].data.map(
           (lesson) => lesson._id
         );
+        console.log('current level id 2', lessonsIds, userStore.nextLessonId);
         if (lessonsIds.includes(userStore.nextLessonId)) {
+          console.log('current level id 3');
           studentDashboardDispatch({
             type: studentDashboardAction.SET_CURRENT_LEVEL_ID,
             payload: courseDataState.lessons[i].fatherId || '',
@@ -473,8 +355,10 @@ const StudentUnitSection: React.FC = () => {
                         ? courseDataState.levels.map(
                             (levelsObject, levelsObjectIndex) => (
                               <div key={levelsObjectIndex} className='h-full'>
-                                {studentDashboardState.lockedLevelsIds.length >
-                                  0 && levelsObject.fatherId === unit._id ? (
+                                {courseDataState.levels.length === 1 ||
+                                (studentDashboardState.lockedLevelsIds.length >
+                                  0 &&
+                                  levelsObject.fatherId === unit._id) ? (
                                   <div className='my-6 flex h-full flex-col items-center'>
                                     {levelsObject.data.length > 0
                                       ? levelsObject.data.map(
@@ -585,26 +469,6 @@ const StudentUnitSection: React.FC = () => {
               ))
             : null
           : null}
-
-        {/* <div className="grid grid-rows-2 grid-col-3 grid-flow-col bg-duoGreen-default w-[38rem] 2xl:w-[60rem] h-[7rem] rounded-xl text-white mb-5">
-                    <label className="col-span-2 flex justify-start items-center pt-4 pl-4 font-extrabold text-2xl">
-                        Unit 1
-                    </label>
-                    <label className="col-span-2 flex justify-start items-center pb-3 pl-4">
-                        Form basic sentences, greet people
-                    </label>
-                    <div className="row-span-2 flex justify-end items-center mr-4 cursor-pointer">
-                        <button className="flex flex-row justify-start items-center w-40 text-sm font-bold border-b-[4px] border-[2.5px] border-duoGreen-darker bg-duoGreen-button p-3 rounded-2xl hover:border-duoGreen-borderHover hover:bg-duoGreen-default hover:text-duoGreen-textHover active:border-[2.5px]">
-                            <FontAwesomeIcon
-                                className="h-6 w-6 mr-2 ml-2"
-                                icon={faBook}
-                            />
-                            <label className="text-center justify-center items-center cursor-pointer font-extrabold text-md">
-                                GUIDEBOOK
-                            </label>
-                        </button>
-                    </div>
-                </div> */}
       </div>
     </div>
   );
