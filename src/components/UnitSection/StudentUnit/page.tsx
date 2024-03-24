@@ -405,12 +405,14 @@ const StudentUnitSection: React.FC = () => {
                                                     } h-fit w-fit`}
                                                   >
                                                     <>
-                                                      <Tooltip
-                                                        isFloating={true}
-                                                        color={
-                                                          TooltipColors.GREEN
-                                                        }
-                                                      />
+                                                    <section className='absolute left-1/2 z-50 -top-2'>
+                                                          <Tooltip
+                                                            isFloating={true}
+                                                            color={
+                                                              TooltipColors.GREEN
+                                                            }
+                                                          />
+                                                    </section>
 
                                                       <LessonButton
                                                         status={Status.PROGRESS}
