@@ -22,27 +22,25 @@ const Login: React.FC = () => {
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const updateUserName = useUserStore.getState().updateUserName;
-
-  const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
-  const userRole = useStore(useUserStore, (state) => state.userRole);
-
+  const userStore = {
+    updateUserName: useUserStore.getState().updateUserName,
+    isLoggedIn: useStore(useUserStore, (state) => state.isLoggedIn),
+    userRole: useStore(useUserStore, (state) => state.userRole),
+  };
   useEffect(() => {
-    if (isLoggedIn && userRole) {
-      if (userRole === TypesOfUser.ADMIN) {
+    if (userStore.isLoggedIn && userStore.userRole) {
+      if (userStore.userRole === TypesOfUser.ADMIN) {
         router.push('/classroom');
       } else {
         router.push('/learn');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoggedIn, userRole]);
+  }, [userStore.isLoggedIn, userStore.userRole]);
 
   const handleUser = (value: string) => {
     setUser(value);
-    if (updateUserName) {
-      updateUserName(value);
-    }
+    userStore.updateUserName(value);
   };
 
   const handlePassword = (value: string) => {
@@ -54,7 +52,7 @@ const Login: React.FC = () => {
       className='mx-auto flex w-[350px] flex-col items-center justify-start space-y-3 pt-10'
       suppressHydrationWarning
     >
-      {isLoggedIn ? null : (
+      {userStore.isLoggedIn ? null : (
         <>
           <label className='text-2xl font-extrabold'>Log in</label>
           <Input

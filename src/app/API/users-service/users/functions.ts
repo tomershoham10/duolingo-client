@@ -1,5 +1,5 @@
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
-import { useUserStore } from "@/app/store/stores/useUserStore";
+import { TypesOfUser, useUserStore } from "@/app/store/stores/useUserStore";
 
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";
@@ -144,7 +144,7 @@ export const handleAuth = async (userName: string, password: string) => {
                         accessToken: token,
                     };
 
-                    // console.log("userData", userData);
+                    console.log("userData", userData);
 
                     localStorage.setItem(
                         "userData",
