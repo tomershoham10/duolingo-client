@@ -42,6 +42,8 @@ import {
   lessonAction,
   lessonReducer,
 } from '@/reducers/studentView/lessonReducer';
+import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
+import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 
 export default function Page() {
   const router = useRouter();
@@ -82,6 +84,16 @@ export default function Page() {
   const [lessonState, lessonDispatch] = useReducer(
     lessonReducer,
     initialLessonState
+  );
+
+  const initialTargetsDraggingState = {
+    grabbedItemId: 'released',
+    itemsList: [],
+  };
+
+  const [targetsDraggingState, targetsDraggingDispatch] = useReducer(
+    draggingReducer,
+    initialTargetsDraggingState
   );
 
   useEffect(() => {
@@ -454,6 +466,11 @@ export default function Page() {
         payload: { id: _id, name: name },
       });
 
+      targetsDraggingDispatch({
+        type: draggingAction.ADD_ITEM,
+        payload: { id: _id, name: name },
+      });
+
       lessonDispatch({
         type: lessonAction.SET_SELECTED_TARGET_INDEX,
         payload: -1,
@@ -821,50 +838,57 @@ export default function Page() {
                 </div>
               </div>
               {lessonState.targetsToSubmit.length > 0 ? (
-                <div className='flex h-fit w-[80%] rounded-2xl border-2 px-4 py-6'>
-                  <div className='flex h-fit w-full flex-col items-center justify-start text-duoGray-darker'>
-                    <span className='w-full self-start font-extrabold md:text-xl xl:mb-6 xl:text-2xl 3xl:mb-12 3xl:text-4xl'>
-                      Suspected targets
-                    </span>
-                    <div className='h-fit w-full'>
-                      <div className='flex h-fit w-full flex-col items-center justify-center text-3xl font-bold 3xl:text-4xl'>
-                        <DndContext
-                          collisionDetection={closestCenter}
-                          onDragStart={(event: DragEndEvent) => {
-                            const { active } = event;
-                            setGrabbedTargetId(active.id.toString());
-                          }}
-                          onDragMove={handleDragMove}
-                          onDragEnd={handleDragEnd}
-                        >
-                          <SortableContext
-                            items={lessonState.targetsToSubmit}
-                            strategy={verticalListSortingStrategy}
-                          >
-                            <div className='flex h-full w-full flex-col items-center justify-center'>
-                              {lessonState.targetsToSubmit.map(
-                                (targetObject, targetObjectIndex) => (
-                                  <SortableItem
-                                    id={targetObject.id}
-                                    name={targetObject.name}
-                                    key={targetObjectIndex}
-                                    isGrabbed={
-                                      grabbedTargetId
-                                        ? grabbedTargetId === targetObject.id
-                                        : false
-                                    }
-                                    isDisabled={isExerciseFinished}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </SortableContext>
-                        </DndContext>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
+                <DraggbleList
+                  items={targetsDraggingState.itemsList}
+                  isDisabled={false}
+                  draggingState={targetsDraggingState}
+                  draggingDispatch={targetsDraggingDispatch}
+                  diraction={Diractions.ROW}
+                />
+              ) : // <div className='flex h-fit w-[80%] rounded-2xl border-2 px-4 py-6'>
+              //   <div className='flex h-fit w-full flex-col items-center justify-start text-duoGray-darker'>
+              //     <span className='w-full self-start font-extrabold md:text-xl xl:mb-6 xl:text-2xl 3xl:mb-12 3xl:text-4xl'>
+              //       Suspected targets
+              //     </span>
+              //     <div className='h-fit w-full'>
+              //       <div className='flex h-fit w-full flex-col items-center justify-center text-3xl font-bold 3xl:text-4xl'>
+              //         <DndContext
+              //           collisionDetection={closestCenter}
+              //           onDragStart={(event: DragEndEvent) => {
+              //             const { active } = event;
+              //             setGrabbedTargetId(active.id.toString());
+              //           }}
+              //           onDragMove={handleDragMove}
+              //           onDragEnd={handleDragEnd}
+              //         >
+              //           <SortableContext
+              //             items={lessonState.targetsToSubmit}
+              //             strategy={verticalListSortingStrategy}
+              //           >
+              //             <div className='flex h-full w-full flex-col items-center justify-center'>
+              //               {lessonState.targetsToSubmit.map(
+              //                 (targetObject, targetObjectIndex) => (
+              //                   <SortableItem
+              //                     id={targetObject.id}
+              //                     name={targetObject.name}
+              //                     key={targetObjectIndex}
+              //                     isGrabbed={
+              //                       grabbedTargetId
+              //                         ? grabbedTargetId === targetObject.id
+              //                         : false
+              //                     }
+              //                     isDisabled={isExerciseFinished}
+              //                   />
+              //                 )
+              //               )}
+              //             </div>
+              //           </SortableContext>
+              //         </DndContext>
+              //       </div>
+              //     </div>
+              //   </div>
+              // </div>
+              null}
             </div>
 
             <div
