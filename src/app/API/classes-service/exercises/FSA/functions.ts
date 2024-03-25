@@ -25,7 +25,7 @@ export const getAllFSAs = async (): Promise<FSAType[]> => {
     }
 };
 
-export const getRelevantByFSAId = async (currentExerciseId: string): Promise<TargetType[] | number | null> => {
+export const getRelevantByFSAId = async (currentExerciseId: string): Promise<TargetType[]> => {
     try {
         // console.log(`http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`);
         const response = await fetch(
@@ -40,7 +40,7 @@ export const getRelevantByFSAId = async (currentExerciseId: string): Promise<Tar
         );
         if (response.status !== 200) {
             console.log("Not found");
-            return response.status;
+            return [];
         }
         if (response.ok) {
             const data = await response.json();
@@ -49,7 +49,7 @@ export const getRelevantByFSAId = async (currentExerciseId: string): Promise<Tar
             return resRelevant;
         } else {
             console.error("Failed to fetch targets by id.");
-            return null;
+            return [];
         }
     } catch (error) {
         console.error("Error fetching targets:", error);

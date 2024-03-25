@@ -50,7 +50,7 @@ const StudentUnitSection: React.FC = () => {
     console.log('courseDataState', courseDataState);
   }, [courseDataState]);
 
-  const initialstudentDashboardState = {
+  const initialStudentDashboardState = {
     currentLevelId: undefined,
     currentUnitId: undefined,
     lockedLessons: [],
@@ -62,7 +62,7 @@ const StudentUnitSection: React.FC = () => {
 
   const [studentDashboardState, studentDashboardDispatch] = useReducer(
     studentDashboardReducer,
-    initialstudentDashboardState
+    initialStudentDashboardState
   );
   useEffect(() => {
     console.log('studentDashboardState', studentDashboardState);
