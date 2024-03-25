@@ -15,7 +15,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className='w-full px-10 py-5'>
       {totalNumOfExercises > 0 ? (
-        <div className='h-4 w-full rounded-2xl bg-duoGray-default text-transparent'>
+        <div className='h-4 w-full rounded-2xl bg-duoGray-default text-transparent dark:bg-duoGrayDark-light'>
           <div
             className='relative flex h-full items-center justify-start rounded-2xl bg-duoGreen-default'
             style={{
