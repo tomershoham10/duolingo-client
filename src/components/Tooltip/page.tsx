@@ -55,20 +55,20 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
           type: tooltipAction.SET_BACKGROUND_COLOR,
           payload: tooltipState.isInDeletingMode
             ? 'bg-duoRed-light'
-            : 'bg-duoGreen-default',
+            : 'bg-duoGreen-default dark:bg-duoGrayDark-darkest',
         });
         tooltipDispatch({
           type: tooltipAction.SET_BORDER_COLOR,
           payload: tooltipState.isInDeletingMode
             ? 'border-duoRed-darker'
-            : 'border-white',
+            : 'border-white dark:border-duoGrayDark-light',
         });
 
         tooltipDispatch({
           type: tooltipAction.SET_TEXT_COLOR,
           payload: tooltipState.isInDeletingMode
             ? 'text-duoRed-default'
-            : 'text-white',
+            : 'text-white dark:text-duoGreenDark-text',
         });
         break;
 

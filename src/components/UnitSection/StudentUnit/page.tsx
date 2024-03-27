@@ -405,7 +405,7 @@ const StudentUnitSection: React.FC = () => {
                                                     } h-fit w-fit`}
                                                   >
                                                     <>
-                                                    <section className='absolute left-1/2 z-50 -top-2'>
+                                                    <section className='absolute left-1/2 z-50'>
                                                           <Tooltip
                                                             isFloating={true}
                                                             color={

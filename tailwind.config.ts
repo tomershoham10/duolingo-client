@@ -43,7 +43,8 @@ const config: Config = {
 
                 'duoGreenDark': {
                     light: '#A9DC5C',
-                    default: '#93D333'
+                    default: '#93D333',
+                    text: '#58CC02'
                 },
 
                 'duoBlue': {
