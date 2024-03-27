@@ -33,7 +33,7 @@
 
 #exrcise-grid {
   display: grid;
-  grid-template-rows: 100px 1fr;
+  grid-template-rows: 75px 1fr;
 }
 
 #lesson-grid {

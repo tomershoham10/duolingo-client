@@ -79,8 +79,9 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
 
     case 'Purple':
       buttonColor =
-        'bg-duoPurple-default group-active:translate-y-[4px] group-active:border-0';
-      buttonBorderColor = 'bg-duoPurple-darker group-active:bg-transparent';
+        'bg-duoPurple-default dark:bg-duoPurpleDark-default group-active:translate-y-[4px] group-active:border-0';
+      buttonBorderColor =
+        'bg-duoPurple-darker dark:bg-duoPurpleDark-dark group-active:bg-transparent';
       buttonHoverColor = 'hover:bg-duoPurple-light';
       textColor = 'text-white';
       break;
@@ -165,7 +166,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
           ) : (
             <>
               {props.icon && (
-                <FontAwesomeIcon className='text-lg' icon={props.icon} />
+                <FontAwesomeIcon className='text-lg' {...props.icon} />
               )}
               <p className='flex items-center justify-center'>{props.label}</p>
             </>

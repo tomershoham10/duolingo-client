@@ -371,6 +371,7 @@ interface LessonButtonProps {
 // // --> CircleGenerator <-- // //
 
 interface CircleGeneratorProps {
+    isDarkMode: boolean;
     numberOfTotalLessons: number;
     numberOfLessonsMade: number;
 }

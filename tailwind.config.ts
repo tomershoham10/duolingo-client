@@ -41,6 +41,11 @@ const config: Config = {
                     textHover: '#DEF5CC',
                 },
 
+                'duoGreenDark': {
+                    light: '#A9DC5C',
+                    default: '#93D333'
+                },
+
                 'duoBlue': {
                     button: '#27B6F5',
                     buttonOpacity: '#7DD3F9',
@@ -119,7 +124,8 @@ const config: Config = {
                 },
 
                 'duoPurpleDark': {
-                    default: '#3C4DFF'
+                    default: '#3B4CD9',
+                    dark: '#4525FF'
                 },
 
                 'duoYellow': {

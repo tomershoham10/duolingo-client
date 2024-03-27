@@ -362,7 +362,7 @@ export default function Page() {
         });
       } else {
         const minutes = Math.floor(totalMinutesForExercise);
-        const seconds = 60 * (totalMinutesForExercise - minutes);
+        const seconds = Math.floor(60 * (totalMinutesForExercise - minutes));
         lessonDispatch({
           type: lessonAction.UPDATE_TIME_REMAINING,
           payload: { minutes: minutes, seconds: seconds },
@@ -666,7 +666,7 @@ export default function Page() {
   };
 
   return (
-    <div className='relative w-full'>
+    <div className='relative w-full dark:text-duoGrayDark-lightest'>
       {userStore.nextLessonId &&
       lessonState.currentExercise &&
       lessonState.relevant &&
@@ -687,8 +687,8 @@ export default function Page() {
                 className='flex w-full flex-row outline-none'
               >
                 <div className='relative h-full w-full outline-none'>
-                  <div className='absolute h-full w-full font-semibold text-duoGray-darkest'>
-                    <div className='mx-auto grid w-[80%] grid-rows-[min-content] items-start justify-center 3xl:h-fit'>
+                  <div className='absolute h-full w-full font-semibold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+                    <div className='mx-auto grid w-[80%] grid-rows-[min-content] items-start justify-start 3xl:h-fit'>
                       <div className='w-full text-left sm:text-sm xl:text-xl 3xl:text-2xl'>
                         {lessonState.currentExercise.description}
                       </div>
@@ -706,7 +706,7 @@ export default function Page() {
                             >
                               <div className='relative '>
                                 <div
-                                  className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold sm:min-w-[7rem] lg:min-w-[10rem]  ${
+                                  className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem]  ${
                                     lessonState.isExerciseStarted
                                       ? !lessonState.isExerciseFinished
                                         ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
@@ -719,7 +719,7 @@ export default function Page() {
                                                                  relevantTargetIndex ===
                                                                    lessonState.selectedTargetIndex
                                                                    ? 'border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text'
-                                                                   : 'border-border-duoGray-regular text-duoGray-dark hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText'
+                                                                   : 'border-border-duoGray-regular text-duoGray-dark hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
                                                                }
                                                                 `}
                                   onClick={() => {
@@ -739,15 +739,14 @@ export default function Page() {
                                   }}
                                 >
                                   <span
-                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 
-                                                                    font-bold sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl                                                                     
+                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl                                                                     
                                                                     ${
                                                                       lessonState.isExerciseStarted &&
                                                                       !lessonState.isExerciseFinished &&
                                                                       relevantTargetIndex ===
                                                                         lessonState.selectedTargetIndex
                                                                         ? 'border-duoBlue-dark text-duoBlue-text'
-                                                                        : 'text-duoGray-dark group-hover:border-duoGray-buttonBorderHover group-hover:text-duoGray-darkText'
+                                                                        : 'text-duoGray-dark group-hover:border-duoGray-buttonBorderHover group-hover:text-duoGray-darkText dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest'
                                                                     }
                                                                     `}
                                   >
@@ -767,25 +766,27 @@ export default function Page() {
                         Select target:
                       </span>
                       {targetsList ? (
-                        <Dropdown
-                          isSearchable={true}
-                          placeholder={'target'}
-                          items={targetsList.map((target) => target.name)}
-                          value={
-                            lessonState.showPlaceholder
-                              ? undefined
-                              : lessonState.targetFromDropdown
-                                ? lessonState.targetFromDropdown.name
-                                : undefined
-                          }
-                          onChange={handleTargetsDropdown}
-                          isDisabled={
-                            !lessonState.isExerciseStarted ||
-                            lessonState.isExerciseFinished
-                          }
-                          size={DropdownSizes.SMALL}
-                          className={'z-10 mt-5 w-[16rem]'}
-                        />
+                        <section className='w-[12rem]'>
+                          <Dropdown
+                            isSearchable={true}
+                            placeholder={'target'}
+                            items={targetsList.map((target) => target.name)}
+                            value={
+                              lessonState.showPlaceholder
+                                ? undefined
+                                : lessonState.targetFromDropdown
+                                  ? lessonState.targetFromDropdown.name
+                                  : undefined
+                            }
+                            onChange={handleTargetsDropdown}
+                            isDisabled={
+                              !lessonState.isExerciseStarted ||
+                              lessonState.isExerciseFinished
+                            }
+                            size={DropdownSizes.SMALL}
+                            className={'z-10 mt-5 w-[16rem]'}
+                          />
+                        </section>
                       ) : (
                         <Dropdown
                           isSearchable={false}
@@ -808,7 +809,7 @@ export default function Page() {
               ref={infoBarRaf} //info bar
               className='right-0 flex flex-col items-center justify-start'
             >
-              <div className='mb-3 mt-5 flex w-[80%] flex-col rounded-2xl border-2 text-center text-duoGray-darker sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
+              <div className='mb-3 mt-5 flex w-[80%] flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
                 <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12  3xl:text-4xl'>
                   Unit 1 - Level 1
                   <br className='3xl:text-4xl' />
@@ -897,18 +898,18 @@ export default function Page() {
                                 ${
                                   lessonState.isExerciseFinished
                                     ? lessonState.totalScore === 100
-                                      ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter'
+                                      ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter dark:border-duoGrayDark-light'
                                       : lessonState.totalScore === 0
-                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter'
-                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light'
-                                    : 'relative col-span-2 flex items-center justify-center border-t-2'
+                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter dark:border-duoGrayDark-light'
+                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light dark:border-duoGrayDark-light'
+                                    : 'relative col-span-2 flex items-center justify-center border-t-2 dark:border-duoGrayDark-light'
                                 }`}
             >
               <div
                 className={
                   lessonState.isExerciseStarted
                     ? lessonState.isExerciseFinished
-                      ? 'absolute w-[60%] 3xl:w-[50%]'
+                      ? 'absolute w-[40%] 3xl:w-[50%]'
                       : 'absolute flex w-[45%] justify-between 3xl:w-[30%]'
                     : 'absolute active:-translate-y-1'
                 }

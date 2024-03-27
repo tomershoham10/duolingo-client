@@ -4,6 +4,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faLock, faStar, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 import CircleGenerator from './CircleGenerator/page';
+import { useStore } from 'zustand';
+import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 library.add(faLock, faStar, faCheck);
 
 export enum Status {
@@ -15,6 +17,7 @@ export enum Status {
 const LessonButton: React.FC<LessonButtonProps> = (
   props: LessonButtonProps
 ) => {
+  const theme = useStore(useThemeStore, (state) => state.theme);
   return (
     <div className='relative z-10 h-[98px] w-[102px]'>
       {props.status === Status.PROGRESS &&
@@ -22,6 +25,7 @@ const LessonButton: React.FC<LessonButtonProps> = (
       props.numberOfLessonsMade !== undefined ? (
         <>
           <CircleGenerator
+            isDarkMode={theme === Themes.DARK}
             numberOfTotalLessons={props.numberOfTotalLessons}
             numberOfLessonsMade={props.numberOfLessonsMade}
           />
