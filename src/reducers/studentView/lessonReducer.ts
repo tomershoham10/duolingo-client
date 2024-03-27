@@ -22,6 +22,7 @@ export enum lessonAction {
     SET_IS_EXERCISE_STARTED = "setIsExerciseStarted",
     SET_IS_EXERCISE_FINISHED = "setIsExerciseFinished",
     STOP_TIMER = "stopTimer",
+    UPDATE_NEXT_EXERCISE = "updateNextExercise"
 }
 
 type TimeType = {
@@ -59,6 +60,7 @@ type Action =
     | { type: lessonAction.SET_FADE_EFFECT, payload: boolean }
     | { type: lessonAction.SET_FADE_EFFECT, payload: boolean }
     | { type: lessonAction.UPDATE_TIME_REMAINING, payload: TimeType }
+    | { type: lessonAction.UPDATE_NEXT_EXERCISE }
 
 export interface lessonType {
     exercisesData: FSAType[],
@@ -132,6 +134,16 @@ export const lessonReducer = (
             return { ...state, fadeEffect: action.payload };
         case lessonAction.UPDATE_TIME_REMAINING:
             return { ...state, timeRemaining: action.payload };
+        case lessonAction.UPDATE_NEXT_EXERCISE:
+            return {
+                ...state, currentExercise: state.exercisesData[state.exercisesData.indexOf(
+                    state.currentExercise || state.exercisesData[0]
+                ) + 1],
+                isExerciseStarted: false,
+                isExerciseFinished: false,
+                totalScore: -1,
+                targetsToSubmit: []
+            };
 
         default:
             return state;

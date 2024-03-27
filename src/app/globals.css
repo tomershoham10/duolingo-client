@@ -22,6 +22,16 @@
     0px 8px 0 rgb(175, 175, 175); /* Box shadow for the circle */
 }
 
+.dark-lesson-button:disabled {
+  box-shadow:
+    0px 2px 0 rgb(45, 56, 63),
+    0px 4px 0 rgb(45, 56, 63),
+    0px 5px 0 rgb(45, 56, 63),
+    0px 6px 0 rgb(45, 56, 63),
+    0px 7px 0 rgb(45, 56, 63),
+    0px 8px 0 rgb(45, 56, 63);
+}
+
 .accordion-item {
   overflow: hidden; /* Ensure the content doesn't overflow during the animation */
   transition: all 0.3s ease-in-out;

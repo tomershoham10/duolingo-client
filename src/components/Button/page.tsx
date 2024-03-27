@@ -20,7 +20,7 @@ export enum ButtonTypes {
   BUTTON = 'button',
 }
 
-const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = (props) => {
   const router = useRouter();
   const status = useFormStatus();
   let addedStyle: string = props.style ? props.style : 'w-full';

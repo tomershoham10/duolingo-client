@@ -19,7 +19,7 @@ const LessonButton: React.FC<LessonButtonProps> = (
 ) => {
   const theme = useStore(useThemeStore, (state) => state.theme);
   return (
-    <div className='relative z-10 h-[98px] w-[102px]'>
+<div className='relative z-10 h-[98px] w-[102px]'>
       {props.status === Status.PROGRESS &&
       props.numberOfTotalLessons !== undefined &&
       props.numberOfLessonsMade !== undefined ? (
@@ -35,7 +35,7 @@ const LessonButton: React.FC<LessonButtonProps> = (
       {props.status === Status.LOCKED && (
         <button
           disabled
-          className='lesson-button absolute left-0 top-0 ml-[18px] mt-[19px] h-[57px] w-[70px] cursor-pointer items-center justify-center rounded-[50%] bg-duoGray-default text-2xl text-duoGray-dark active:translate-y-[8px] active:shadow-none'
+          className='lesson-button dark-lesson-button absolute left-0 top-0 ml-[18px] mt-[19px] h-[57px] w-[70px] cursor-pointer items-center justify-center rounded-[50%] bg-duoGray-default text-2xl text-duoGray-dark active:translate-y-[8px] active:shadow-none dark:bg-duoGrayDark-light dark:text-duoGrayDark-lighter'
         >
           <FontAwesomeIcon icon={faLock} className='text-md' />
         </button>

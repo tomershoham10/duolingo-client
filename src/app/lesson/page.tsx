@@ -1,13 +1,6 @@
 'use client';
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
-import {
-  SortableContext,
-  arrayMove,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
 
 import { TbClockHour12 } from 'react-icons/tb';
 import { FaCheck } from 'react-icons/fa6';
@@ -35,7 +28,6 @@ import {
   submitExercise,
 } from '../API/classes-service/results/functions';
 import { getTargetsList } from '../API/classes-service/targets/functions';
-import SortableItem from '@/components/SortableItem/page';
 import { updateNextLessonIdForUser } from '../API/users-service/users/functions';
 import {
   calculateTimeRemaining,
@@ -95,6 +87,8 @@ export default function Page() {
     draggingReducer,
     initialTargetsDraggingState
   );
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -419,12 +413,14 @@ export default function Page() {
     exerciseId: string,
     userId: string
   ) => {
+    setIsLoading(true);
     const response = await startExercise(nextLessonId, exerciseId, userId);
     if (response) {
       lessonDispatch({
         type: lessonAction.START_TIMER,
       });
     }
+    setIsLoading(false);
   };
 
   const handleTargetsDropdown = (selectedTargetName: string) => {
@@ -645,21 +641,7 @@ export default function Page() {
         }
       } else {
         lessonDispatch({
-          type: lessonAction.SET_CURRENT_EXERCISE,
-          payload: lessonState.exercisesData[indexOfCurrentExercise + 1],
-        });
-        lessonDispatch({
-          type: lessonAction.SET_IS_EXERCISE_STARTED,
-          payload: false,
-        });
-        lessonDispatch({
-          type: lessonAction.SET_IS_EXERCISE_FINISHED,
-          payload: false,
-        });
-        lessonDispatch({ type: lessonAction.SET_TOTAL_SCORE, payload: -1 });
-        lessonDispatch({
-          type: lessonAction.SET_TARGETS_TO_SUBMIT,
-          payload: [],
+          type: lessonAction.UPDATE_NEXT_EXERCISE,
         });
       }
     }
@@ -1026,9 +1008,9 @@ export default function Page() {
                     color={ButtonColors.PURPLE}
                     style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
                     onClick={() => {
-                      userStore.nextLessonId &&
-                      userStore.userId &&
-                      lessonState.currentExercise
+                      !!userStore.nextLessonId &&
+                      !!userStore.userId &&
+                      !!lessonState.currentExercise
                         ? startCurrentExercise(
                             userStore.nextLessonId,
                             lessonState.currentExercise._id,
@@ -1036,6 +1018,7 @@ export default function Page() {
                           )
                         : null;
                     }}
+                    isLoading={isLoading}
                   />
                 )}
               </div>
