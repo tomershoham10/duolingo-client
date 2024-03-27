@@ -1,5 +1,4 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import { useStore } from 'zustand';
 import Pagination from '@/components/Navigation/Pagination/page';
 import AcintDataSection from './_AcintData/page';
@@ -10,7 +9,6 @@ import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 const NewExercise: React.FC = () => {
-  const router = useRouter();
   const addAlert = useAlertStore.getState().addAlert;
 
   const exerciseToSubmit = {

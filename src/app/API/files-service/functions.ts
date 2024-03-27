@@ -107,7 +107,7 @@ export const getFileMetadataByETag = async (bucketName: string, etag: string): P
         })
         if (response.ok) {
             const objectInfo = await response.json();
-            // console.log('getFileMetadataByETag - data', data);
+            console.log('getFileMetadataByETag - data', objectInfo);
             // const objectInfo = data.objectInfo;
             return objectInfo;
         }

@@ -28,8 +28,12 @@ import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 library.add(faArrowUpFromBracket);
 
 const AcintDataSection: React.FC = () => {
-  const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
+  const infoBarStore = {
+    selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile),
+    updateSelectedFile: useInfoBarStore.getState().updateSelectedFile,
+  };
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
+  console.log('targetsListDB', targetsListDB);
   const sourcesListDB = useStore(useSourceStore, (state) => state.sources);
 
   useEffect(() => {
@@ -73,7 +77,6 @@ const AcintDataSection: React.FC = () => {
     useCreateExerciseStore,
     (state) => state.recordName
   );
-  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
 
   const initialsubmitRecordState: submitRecordDataType = {
     record: undefined,
@@ -235,7 +238,7 @@ const AcintDataSection: React.FC = () => {
     };
 
     console.log('modifiedRecord', modifiedRecord);
-    updateSelectedFile(modifiedRecord);
+    infoBarStore.updateSelectedFile(modifiedRecord);
   };
 
   const uploadRecord = async () => {
@@ -279,22 +282,30 @@ const AcintDataSection: React.FC = () => {
   };
 
   useEffect(() => {
-    if (selectedFile && selectedFile.name.endsWith('wav')) {
-      const metadata = selectedFile.metadata as Partial<RecordMetadataType>;
-      updateExerciseToSubmit.updateRecordId(selectedFile.id);
-      updateExerciseToSubmit.updateRecordName(selectedFile.name);
+    if (
+      infoBarStore.selectedFile &&
+      infoBarStore.selectedFile.name.endsWith('wav')
+    ) {
+      const metadata = infoBarStore.selectedFile
+        .metadata as Partial<RecordMetadataType>;
+
+      const answersToSubmit = Array.isArray(metadata.targets_list)
+        ? metadata.targets_list
+        : !!metadata.targets_list
+          ? [metadata.targets_list]
+          : [];
+      const targetIdsToSubmit = targetsListDB
+        .filter((target) => answersToSubmit.includes(target.name))
+        .map((target) => target._id);
+        
+      updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
+      updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
-      updateExerciseToSubmit.updateAnswersList(
-        Array.isArray(metadata.targets_list)
-          ? metadata.targets_list
-          : !!metadata.targets_list
-            ? [metadata.targets_list]
-            : []
-      );
+      updateExerciseToSubmit.updateAnswersList(targetIdsToSubmit);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFile]);
+  }, [infoBarStore.selectedFile]);
 
   const TABLE_HEAD: TableHead[] = [
     { key: 'name', label: 'Name' },
@@ -329,13 +340,13 @@ const AcintDataSection: React.FC = () => {
               ? recordsData.map((record) => record.name).indexOf(recordName)
               : undefined
           }
-        //   isSelectable={
-        //     selectedFile
-        //       ? recordsData
-        //           .map((record) => record.name)
-        //           .includes(selectedFile.name)
-        //       : true
-        //   }
+          //   isSelectable={
+          //     selectedFile
+          //       ? recordsData
+          //           .map((record) => record.name)
+          //           .includes(selectedFile.name)
+          //       : true
+          //   }
         />
       </section>
 

@@ -27,10 +27,7 @@ import {
   exerciseDataAction,
   exerciseDataReducer,
 } from '@/reducers/exerciseDataReducer';
-import {
-  draggingAction,
-  draggingReducer,
-} from '@/reducers/dragReducer';
+import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -49,10 +46,16 @@ enum FSAFieldsType {
 
 const ExerciseDataSection: React.FC = () => {
   const updateExerciseToSubmit = {
+    answersList: useStore(useCreateExerciseStore, (state) => state.answersList),
     updateDescription: useCreateExerciseStore.getState().updateDescription,
     updateRelevant: useCreateExerciseStore.getState().updateRelevant,
     updateTimeBuffers: useCreateExerciseStore.getState().updateTimeBuffers,
   };
+
+  console.log(
+    'updateExerciseToSubmit.answersList',
+    updateExerciseToSubmit.answersList
+  );
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const recordLength = useStore(

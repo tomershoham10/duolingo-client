@@ -10,9 +10,9 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   useEffect(() => {
     if (typeof window !== 'undefined' && localStorage) {
-      console.log('localStorage');
+      //   console.log('localStorage');
       const userData = localStorage.getItem('userData');
-      console.log('localStorage', userData);
+      //   console.log('localStorage', userData);
 
       if (userData) {
         const parsedUserData = JSON.parse(userData);

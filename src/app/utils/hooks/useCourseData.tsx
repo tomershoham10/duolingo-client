@@ -119,7 +119,7 @@ const useCourseData = (
       }
     };
     if (courseDataState.units !== undefined) {
-      console.log('check', courseDataState.units);
+    //   console.log('check', courseDataState.units);
       if (courseDataState.units.length > 0) {
         fetchLevels();
         fetchUnsuspendedLevels();

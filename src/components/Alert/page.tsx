@@ -18,7 +18,7 @@ const Alert: React.FC = () => {
   const [boxHight, setBoxHight] = useState<string>();
 
   useEffect(() => {
-    console.log('alert added');
+    // console.log('alert added');
     if (alerts && alerts?.length > 0) {
       setIsAlertOpened(true);
       setAlertId(alerts[0].id);

@@ -166,7 +166,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
           ) : (
             <>
               {props.icon && (
-                <FontAwesomeIcon className='text-lg' {...props.icon} />
+                <FontAwesomeIcon className='text-lg' icon={props.icon} />
               )}
               <p className='flex items-center justify-center'>{props.label}</p>
             </>

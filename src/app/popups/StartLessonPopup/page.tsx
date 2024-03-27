@@ -13,13 +13,14 @@ interface StartLessonPopup {
   startLessonRef: LegacyRef<HTMLDivElement>;
 }
 
-const StartLessonPopup: React.FC<StartLessonPopup> = ({
-  numberOfLessonsMade,
-  numberOfTotalLessons,
-  nextLessonId,
-  startLessonRef,
-}) => {
-  console.log();
+const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
+  const {
+    numberOfLessonsMade,
+    numberOfTotalLessons,
+    nextLessonId,
+    startLessonRef,
+  } = props;
+  console.log('StartLessonPopup', props);
   const router = useRouter();
 
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
