@@ -102,7 +102,6 @@ const config: Config = {
                     light: '#37464F',
                     dark: '#202F36',
                     midDark: '#2C383F',
-                    darker: '#202F36',
                     darkest: '#131F24'
 
                 },
