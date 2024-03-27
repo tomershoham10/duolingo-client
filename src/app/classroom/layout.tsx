@@ -6,7 +6,7 @@ import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
 import AdminEditPopup from '../popups/AdminEditPopup/page';
 import InfoBar from '@/components/InfoBar/page';
 import useStore from '../store/useStore';
-import { useUserStore, TypesOfUser } from '../store/stores/useUserStore';
+import { useUserStore, PermissionsTypes } from '../store/stores/useUserStore';
 import CreateNewCourse from '../popups/CreateNewCourse/page';
 
 // import { notFound } from 'next/navigation';
@@ -18,11 +18,11 @@ export default function RootLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const userRole = useStore(useUserStore, (state) => state.userRole);
-  //   console.log("classroom layout - userRole",userRole);
+  const permission = useStore(useUserStore, (state) => state.permission);
+  //   console.log("classroom layout - permission",permission);
   return (
     <div className='flex h-screen w-screen flex-row'>
-      {userRole === TypesOfUser.ADMIN ? (
+      {permission === PermissionsTypes.ADMIN ? (
         <>
           {/* <Alert /> */}
           <CreateNewUser />
@@ -41,7 +41,7 @@ export default function RootLayout({
         </>
       ) : (
         <>
-          {userRole === TypesOfUser.LOGGEDOUT ? (
+          {permission === PermissionsTypes.LOGGEDOUT ? (
             router.push('/login')
           ) : (
             <h1>loading...</h1>

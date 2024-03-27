@@ -23,7 +23,7 @@ import {
 } from '@/app/API/classes-service/courses/functions';
 
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
-import { TypesOfUser } from '@/app/store/stores/useUserStore';
+import { PermissionsTypes } from '@/app/store/stores/useUserStore';
 import React from 'react';
 
 library.add(
@@ -49,7 +49,7 @@ const AdminSideBar: React.FC = () => {
   const sidebarItemRef = useRef<HTMLLIElement | null>(null);
 
   const useUserStoreObj = {
-    userRole: useStore(useUserStore, (state) => state.userRole),
+    permission: useStore(useUserStore, (state) => state.permission),
     isLoggedIn: useStore(useUserStore, (state) => state.isLoggedIn),
   };
 
@@ -126,7 +126,7 @@ const AdminSideBar: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (
-        useUserStoreObj.userRole === TypesOfUser.ADMIN &&
+        useUserStoreObj.permission === PermissionsTypes.ADMIN &&
         coursesList &&
         coursesList.length > 0 &&
         !!!coursesList[0]._id
@@ -141,7 +141,7 @@ const AdminSideBar: React.FC = () => {
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coursesList, useUserStoreObj.userRole]);
+  }, [coursesList, useUserStoreObj.permission]);
 
   useEffect(() => {
     usePopupStoreObj.selectedPopup === PopupsTypes.CLOSED
@@ -186,7 +186,7 @@ const AdminSideBar: React.FC = () => {
 
   return (
     <>
-      {useUserStoreObj.userRole === TypesOfUser.ADMIN &&
+      {useUserStoreObj.permission === PermissionsTypes.ADMIN &&
       useUserStoreObj.isLoggedIn ? (
         <div className='flex h-screen w-full flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest'>
           <label

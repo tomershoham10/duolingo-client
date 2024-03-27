@@ -364,7 +364,7 @@ const StudentUnitSection: React.FC = () => {
                                       ? levelsObject.data.map(
                                           (level, levelIndex) => (
                                             <section key={levelIndex}>
-                                              {level &&
+                                            {level &&
                                               level.lessons &&
                                               level.lessons?.length > 0 ? (
                                                 studentDashboardState.lockedLevelsIds.includes(

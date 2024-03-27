@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useStore from './store/useStore';
-import { TypesOfUser, useUserStore } from './store/stores/useUserStore';
+import { PermissionsTypes, useUserStore } from './store/stores/useUserStore';
 import { useThemeStore } from './store/stores/useThemeStore';
 // import { getTargetsList } from "./API/classes-service/targets/functions";
 
 const Home: React.FC = () => {
-  const userRole = useStore(useUserStore, (state) => state.userRole);
+  const permission = useStore(useUserStore, (state) => state.permission);
   const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
   const router = useRouter();
 
@@ -35,12 +35,12 @@ const Home: React.FC = () => {
     if (!isLoggedIn) {
       router.push('/login');
     }
-    if (userRole === TypesOfUser.ADMIN) {
+    if (permission === PermissionsTypes.ADMIN) {
       router.push('/classroom');
-    } else if (userRole && userRole !== TypesOfUser.LOGGEDOUT) {
+    } else if (permission && permission !== PermissionsTypes.LOGGEDOUT) {
       router.push('/learn');
     }
-  }, [isLoggedIn, router, userRole]);
+  }, [isLoggedIn, router, permission]);
 
   return null;
 };

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,38 +13,13 @@ import {
 import Link from 'next/link';
 import useStore from '@/app/store/useStore';
 import { useUserStore } from '@/app/store/stores/useUserStore';
-// import {
-//   CoursesType,
-//   getCourses,
-// } from '@/app/API/classes-service/courses/functions';
-// import { useCourseStore } from '@/app/store/stores/useCourseStore';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
 
 const StudentSideBar: React.FC = () => {
-  const userRole = useStore(useUserStore, (state) => state.userRole);
-  const isLoggedIn = useStore(useUserStore, (state) => state.isLoggedIn);
-
-  //   const courseListStore = useStore(
-  //     useCourseStore,
-  //     (state) => state.coursesList
-  //   );
-  //   const updateCoursesList = useCourseStore.getState().updateCoursesList;
-
+  const permission = useStore(useUserStore, (state) => state.permission);
+  console.log("StudentSideBar",permission)
   const [selected, setSelected] = useState<number>();
-  //   const [coursesList, setCoursesList] = useState<CoursesType[] | null>(null);
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const response = await getCourses();
-  //       setCoursesList(response);
-  //       response ? updateCoursesList(response) : null;
-  //     };
-  //     if (userRole === 'admin' && !!courseListStore) {
-  //       fetchData();
-  //     }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [courseListStore, userRole]);
 
   const sidebarItems: {
     [key: string]: { label: string; icon: any; href?: string }[];
@@ -66,7 +41,7 @@ const StudentSideBar: React.FC = () => {
     teacher: [{ label: 'DASHBOARD', icon: faHome }],
   };
 
-  const items = userRole ? sidebarItems[userRole] : [];
+  const items = permission!== ? sidebarItems[permission] : [];
 
   return (
     <div className='flex h-screen flex-col justify-center border-r-2 border-zinc-500/25 text-sm font-extrabold tracking-wide text-gray-500'>

@@ -1,5 +1,5 @@
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
-import { TypesOfUser, useUserStore } from "@/app/store/stores/useUserStore";
+import { PermissionsTypes, useUserStore } from "@/app/store/stores/useUserStore";
 
 import jwt from "jsonwebtoken";
 // import { getCourseByType } from "../../classes-service/courses/functions";
@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 const useUserStoreObj = {
 
     updateUserName: useUserStore.getState().updateUserName,
-    updateUserRole: useUserStore.getState().updateUserRole,
+    updatepermission: useUserStore.getState().updatepermission,
     updateCourseId: useUserStore.getState().updateCourseId,
     updateIsLoggedIn: useUserStore.getState().updateIsLoggedIn,
     updateNextLessonId: useUserStore.getState().updateNextLessonId,
@@ -16,16 +16,16 @@ const useUserStoreObj = {
 
 const addAlert = useAlertStore.getState().addAlert;
 
-// const mapUserRoleToCourseType = (userRole: TypesOfUser): TypesOfCourses => {
+// const mappermissionToCourseType = (permission: PermissionsTypes): TypesOfCourses => {
 //     // Map user roles to course types here
-//     switch (userRole) {
-//         case TypesOfUser.SEARIDER:
+//     switch (permission) {
+//         case PermissionsTypes.SEARIDER:
 //             return TypesOfCourses.SEARIDER;
-//         case TypesOfUser.SENIOR:
+//         case PermissionsTypes.SENIOR:
 //             return TypesOfCourses.SENIOR;
-//         case TypesOfUser.TEACHER:
+//         case PermissionsTypes.TEACHER:
 //             return TypesOfCourses.UNDEFINED;
-//         case TypesOfUser.CREW:
+//         case PermissionsTypes.CREW:
 //             return TypesOfCourses.CREW;
 //         default:
 //             return TypesOfCourses.UNDEFINED;
@@ -109,7 +109,7 @@ export const handleAuth = async (userName: string, password: string) => {
                         token,
                     ) as jwt.JwtPayload;
                     // console.log("api decodedToken",decodedToken);
-                    const role = decodedToken.role as TypesOfUser;
+                    const role = decodedToken.role as PermissionsTypes;
                     const userId = decodedToken.userId as string;
                     const courseId = decodedToken.courseId as string;
                     const nextLessonId = decodedToken.nextLessonId as string;
@@ -119,17 +119,17 @@ export const handleAuth = async (userName: string, password: string) => {
 
                     localStorage.setItem("jwtToken", token);
                     useUserStoreObj.updateUserName(userName);
-                    useUserStoreObj.updateUserRole(role);
+                    useUserStoreObj.updatepermission(role);
                     useUserStoreObj.updateIsLoggedIn(true);
                     useUserStoreObj.updateNextLessonId(nextLessonId);
                     useUserStoreObj.updateAccessToken(token);
 
-                    if (role !== TypesOfUser.ADMIN) {
+                    if (role !== PermissionsTypes.ADMIN) {
                         useUserStoreObj.updateCourseId(decodedToken.courseId); //
 
                         // console.log('getting course data to local storage');
                         // await getCourseByType(
-                        //     mapUserRoleToCourseType(role),
+                        //     mappermissionToCourseType(role),
                         // );
                     }
 
@@ -185,7 +185,7 @@ export const updateNextLessonIdForUser = async (userId: string): Promise<any | n
         console.log("updateNextLessonIdForUser - response", response);
         if (response.ok) {
             const data = await response.json();
-            const userData = { userName: data.userName, userId: data._id, userRole: data.permission, nextLessonId: data.nextLessonId, isLoggedIn: true }
+            const userData = { userName: data.userName, userId: data._id, permission: data.permission, nextLessonId: data.nextLessonId, isLoggedIn: true }
             localStorage.setItem(
                 "userData",
                 JSON.stringify(userData),

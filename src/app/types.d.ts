@@ -262,7 +262,7 @@ enum Themes {
 
 //*** if changed - also change on file  ***//
 
-enum TypesOfUser {
+enum PermissionsTypes {
     LOGGEDOUT = "loggedOut",
     ADMIN = "admin",
     SEARIDER = "searider",

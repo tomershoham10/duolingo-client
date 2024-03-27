@@ -8,7 +8,7 @@ import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
 
-enum TypesOfUser {
+enum PermissionsTypes {
   LOGGEDOUT = 'loggedOut',
   ADMIN = 'admin',
   SEARIDER = 'searider',
@@ -25,18 +25,18 @@ const Login: React.FC = () => {
   const userStore = {
     updateUserName: useUserStore.getState().updateUserName,
     isLoggedIn: useStore(useUserStore, (state) => state.isLoggedIn),
-    userRole: useStore(useUserStore, (state) => state.userRole),
+    permission: useStore(useUserStore, (state) => state.permission),
   };
   useEffect(() => {
-    if (userStore.isLoggedIn && userStore.userRole) {
-      if (userStore.userRole === TypesOfUser.ADMIN) {
+    if (userStore.isLoggedIn && userStore.permission) {
+      if (userStore.permission === PermissionsTypes.ADMIN) {
         router.push('/classroom');
       } else {
         router.push('/learn');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore.isLoggedIn, userStore.userRole]);
+  }, [userStore.isLoggedIn, userStore.permission]);
 
   const handleUser = (value: string) => {
     setUserName(value);

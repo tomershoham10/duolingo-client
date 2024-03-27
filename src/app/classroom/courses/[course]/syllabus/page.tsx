@@ -11,7 +11,7 @@ import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
-  const userRole = useStore(useUserStore, (state) => state.userRole);
+  const permission = useStore(useUserStore, (state) => state.permission);
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
