@@ -119,7 +119,7 @@ export const getFileMetadataByETag = async (bucketName: string, etag: string): P
 }
 
 
-export const getAllRecords = async (): Promise<RecordType[] | null> => {
+export const getAllRecords = async (): Promise<RecordType[]> => {
     try {
         const response = await fetch(
             'http://localhost:4002/api/files/get-files-by-bucket/records', {
@@ -134,10 +134,36 @@ export const getAllRecords = async (): Promise<RecordType[] | null> => {
             const files = data.files;
             return files;
         }
-        return null;
+        return [];
     }
     catch (error) {
-        throw new Error(`error getting all records - ${error}`);
+        console.error(`error getting all records - ${error}`);
+        return [];
+    }
+}
+
+export const getFileByName = async (bucketName: string, objectName: string): Promise<any> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/download/${bucketName}/${objectName}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+
+        if (response.ok) {
+            // const data = await response;
+            console.log('getFileByName', response.blob());
+            // const files = data.files;
+            return response.blob();
+        }
+        return [];
+    }
+    catch (error) {
+        console.error(`error getting all records - ${error}`);
+        return [];
     }
 }
 
@@ -164,10 +190,10 @@ export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
 
 }
 
-export const getSonolistByRecordId = async (recordId: string): Promise<SonogramType[] | null> => {
+export const getSonolistByRecordId = async (recordId: string): Promise<string[]> => {
     try {
         const response = await fetch(
-            `http://localhost:4002/api/files/getSonolistByRecordId/${recordId}`, {
+            `http://localhost:4002/api/files/get-sonolist-url-by-record-id/${recordId}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -176,11 +202,11 @@ export const getSonolistByRecordId = async (recordId: string): Promise<SonogramT
         })
         if (response.ok) {
             const data = await response.json();
-            const sonolist = data.sonolist as SonogramType[];
-            // console.log('getAllRecords', files);
+            const sonolist = data.files as string[];
+            console.log('getAllRecords', data);
             return sonolist;
         }
-        return null;
+        return [];
     }
     catch (error) {
         throw new Error(`error getting all records - ${error}`);

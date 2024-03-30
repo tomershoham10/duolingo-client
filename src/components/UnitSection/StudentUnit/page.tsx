@@ -364,7 +364,7 @@ const StudentUnitSection: React.FC = () => {
                                       ? levelsObject.data.map(
                                           (level, levelIndex) => (
                                             <section key={levelIndex}>
-                                            {level &&
+                                              {level &&
                                               level.lessons &&
                                               level.lessons?.length > 0 ? (
                                                 studentDashboardState.lockedLevelsIds.includes(
@@ -405,14 +405,14 @@ const StudentUnitSection: React.FC = () => {
                                                     } h-fit w-fit`}
                                                   >
                                                     <>
-                                                    <section className='absolute left-1/2 z-50'>
-                                                          <Tooltip
-                                                            isFloating={true}
-                                                            color={
-                                                              TooltipColors.GREEN
-                                                            }
-                                                          />
-                                                    </section>
+                                                      <section className='absolute left-1/2 z-50'>
+                                                        <Tooltip
+                                                          isFloating={true}
+                                                          color={
+                                                            TooltipColors.GREEN
+                                                          }
+                                                        />
+                                                      </section>
 
                                                       <LessonButton
                                                         status={Status.PROGRESS}

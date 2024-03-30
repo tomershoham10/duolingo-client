@@ -256,6 +256,10 @@ const AcintDataSection: React.FC = () => {
         );
         console.log('sonolistResponse', sonolistResponse);
         if (sonolistResponse) {
+          submitRecordState.recordMetadata = {
+            ...submitRecordState.recordMetadata,
+            sonograms_ids: submitRecordState.sonograms.map((sono) => sono.name),
+          };
           const recordResponse = await uploadFile(
             'records',
             submitRecordState.record,
@@ -297,7 +301,7 @@ const AcintDataSection: React.FC = () => {
       const targetIdsToSubmit = targetsListDB
         .filter((target) => answersToSubmit.includes(target.name))
         .map((target) => target._id);
-        
+
       updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
       updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));

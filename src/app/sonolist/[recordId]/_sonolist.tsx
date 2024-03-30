@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 interface SonolistProps {
-  data: SonogramType[] | null;
+  data: string[] | null;
 }
 
 const Sonograms: React.FC<SonolistProps> = (props) => {
@@ -11,7 +11,15 @@ const Sonograms: React.FC<SonolistProps> = (props) => {
       sonograms
       {props.data?.map((sonogram, index) => (
         <div key={index}>
-          {sonogram.name}
+          {sonogram}
+          <Image
+            src={
+              'http://localhost:9001/sonograms/students_dashboard.JPG?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=your-minio-access-key%2F20240328%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240328T110506Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=c774d319de82b5a3b3dee083d807cc5074549d4ac88a2c59027033b0b2d0989c'
+            }
+            alt='Your Image'
+            width={300}
+            height={200}
+          />
           <br />
           {/* <Image
             src={`\${sonogram.name}`}

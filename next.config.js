@@ -7,6 +7,9 @@ const nextConfig = {
         // !! WARN !!
         ignoreBuildErrors: true,
     },
+    images: {
+        domains: ['server-minio-1','localhost'], // Add your MinIO server hostname here
+    },
     async headers() {
         return [
             {
