@@ -3,19 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useStore from '../store/useStore';
-import { useUserStore } from '../store/stores/useUserStore';
+import { PermissionsTypes, useUserStore } from '../store/stores/useUserStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
-
-enum PermissionsTypes {
-  LOGGEDOUT = 'loggedOut',
-  ADMIN = 'admin',
-  SEARIDER = 'searider',
-  SENIOR = 'senior',
-  TEACHER = 'teacher',
-  CREW = 'crew',
-}
 
 const Login: React.FC = () => {
   const router = useRouter();
