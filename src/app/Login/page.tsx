@@ -10,8 +10,8 @@ import { handleAuth } from '../API/users-service/users/functions';
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const [userName, setUserName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const [password, setPassword] = useState<string | undefined>(undefined);
 
   const userStore = {
     updateUserName: useUserStore.getState().updateUserName,
@@ -60,7 +60,9 @@ const Login: React.FC = () => {
           <Button
             label='LOG IN'
             color={ButtonColors.BLUE}
-            onClick={() => handleAuth(userName, password)}
+            onClick={() =>
+              userName && password ? handleAuth(userName, password) : null
+            }
           />
         </>
       )}
