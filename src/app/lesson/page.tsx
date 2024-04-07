@@ -683,7 +683,7 @@ export default function Page() {
                         {lessonState.relevant.map(
                           (relevantTarget, relevantTargetIndex) => (
                             <div
-                              key={relevantTargetIndex}
+                              key={relevantTarget._id}
                               className='mr-5 flex flex-row items-end self-end'
                             >
                               <div className='relative '>
@@ -941,7 +941,7 @@ export default function Page() {
                               {lessonState.totalScore !== 100
                                 ? lessonState.currentAnswers.map(
                                     (answer, answerKey) => (
-                                      <li key={answerKey}>
+                                      <li key={answer._id}>
                                         {answerKey !== 0
                                           ? `, ${answer.name}`
                                           : answer.name}

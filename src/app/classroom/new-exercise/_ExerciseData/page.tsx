@@ -392,9 +392,13 @@ const ExerciseDataSection: React.FC = () => {
               <div className='flex h-fit w-full select-none flex-col items-start justify-between font-bold'>
                 <ul>
                   {!!answersList &&
-                    answersList.map((answer, answerIndex) => (
+                    answersList.map((answer) => (
                       <li
-                        key={answerIndex}
+                        key={
+                          targetsList.filter(
+                            (target) => target.name === answer
+                          )[0]._id
+                        }
                         className='flex h-[5rem] min-w-fit flex-none items-center justify-start'
                       >
                         <div className='border-border-duoGray-regular w-full flex-none cursor-default rounded-xl border-2 border-b-4 px-5 py-4 text-lg font-bold active:translate-y-[1px] active:border-b-2 dark:border-duoGrayDark-light'>

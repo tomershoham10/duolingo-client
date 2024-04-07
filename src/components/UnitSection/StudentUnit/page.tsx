@@ -321,11 +321,11 @@ const StudentUnitSection: React.FC = () => {
           ? courseDataState.units.length > 0
             ? courseDataState.units.map((unit, unitIndex) => (
                 <div
-                  key={unitIndex}
+                  key={unit._id}
                   className='basis-full items-center justify-center'
                 >
                   <section
-                    key={unitIndex}
+                    key={unit._id}
                     className='absolute inset-x-0  top-0 h-full'
                   >
                     <div className='grid-col-3 mx-auto grid h-[7rem] w-[38rem] grid-flow-col grid-rows-2 rounded-xl bg-duoGreen-default text-white'>
@@ -354,7 +354,10 @@ const StudentUnitSection: React.FC = () => {
                       courseDataState.levels.length > 0
                         ? courseDataState.levels.map(
                             (levelsObject, levelsObjectIndex) => (
-                              <div key={levelsObjectIndex} className='h-full'>
+                              <div
+                                key={levelsObject.fatherId}
+                                className='h-full'
+                              >
                                 {courseDataState.levels.length === 1 ||
                                 (studentDashboardState.lockedLevelsIds.length >
                                   0 &&
@@ -363,7 +366,7 @@ const StudentUnitSection: React.FC = () => {
                                     {levelsObject.data.length > 0
                                       ? levelsObject.data.map(
                                           (level, levelIndex) => (
-                                            <section key={levelIndex}>
+                                            <section key={level._id}>
                                               {level &&
                                               level.lessons &&
                                               level.lessons?.length > 0 ? (

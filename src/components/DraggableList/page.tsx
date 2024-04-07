@@ -30,14 +30,14 @@ interface DraggbleListProps {
   draggingState: draggingType;
   draggingDispatch: Dispatch<DraggingAction>;
   diraction: Diractions;
-//   onDragEnd: () => void;
+  //   onDragEnd: () => void;
 }
 
 const DraggbleList: React.FC<DraggbleListProps> = (props) => {
   const propsItems = props.items;
   const propsState = props.draggingState;
   const propsDispach = props.draggingDispatch;
-    const flexDiraction = props.diraction;
+  const flexDiraction = props.diraction;
   return (
     <div
       className={`flex h-fit w-full ${flexDiraction} items-center font-bold`}
@@ -77,7 +77,7 @@ const DraggbleList: React.FC<DraggbleListProps> = (props) => {
           >
             {props.items.map((targetObject, targetObjectIndex) => (
               <div
-                key={targetObjectIndex}
+                key={targetObject.id}
                 className='mb-2 flex w-[8rem] flex-row'
               >
                 <SortableItem

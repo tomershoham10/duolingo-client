@@ -23,9 +23,9 @@ const Table = (props: DefaultTableProps) => {
       <table className=' divide-y-2 divide-duoGray-default dark:bg-duoGrayDark-darkest text-left dark:divide-duoBlueDark-text dark:divide-opacity-70 2xl:text-xl'>
         <thead className=' uppercase text-duoGray-darkText  dark:text-duoBlueDark-text'>
           <tr>
-            {headers.map((header, headerIndex) => (
+            {headers.map((header) => (
               <th
-                key={headerIndex}
+                key={header.key}
                 className='h-12 cursor-default px-4 2xl:h-20 2xl:px-8'
               >
                 <span className='flex items-center justify-start font-extrabold '>

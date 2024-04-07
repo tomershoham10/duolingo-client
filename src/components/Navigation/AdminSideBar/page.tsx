@@ -203,7 +203,7 @@ const AdminSideBar: React.FC = () => {
                   // coursesList.map((item,index)=><></>)
                   coursesList.map((item, index) => (
                     <li
-                      key={index}
+                      key={item._id}
                       className={`p-3
                        ${
                          item.name
@@ -240,7 +240,7 @@ const AdminSideBar: React.FC = () => {
           <ul className='flex-grow'>
             {sidebarItems.map((sideBaritem, index) => (
               <li
-                key={index}
+                key={sideBaritem.name}
                 onMouseEnter={() =>
                   sideBaritem.subItems ? setIsHovered(true) : null
                 }
@@ -303,7 +303,7 @@ const AdminSideBar: React.FC = () => {
                     {sideBaritem.subItems.map((subItem, subItemIndex) => (
                       <li
                         className='duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
-                        key={subItemIndex}
+                        key={subItem.name}
                       >
                         <button
                           onClick={() =>

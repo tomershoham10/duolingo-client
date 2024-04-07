@@ -75,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           >
             {componentsNames.map((componentLabel, navIndex) => (
               <div
-                key={navIndex}
+                key={componentLabel}
                 className='flex flex-col items-center justify-center'
               >
                 <div className='absolute -bottom-[2.3rem] flex flex-col items-center justify-center'>

@@ -122,7 +122,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
         {courseDataState.units && courseDataState.units.length > 0 ? (
           courseDataState.units.map((unit, unitIndex) => (
             <div
-              key={unitIndex}
+              key={unit._id}
               className={`flex-none py-[2rem] ${
                 !courseDataState.unsuspendedUnits
                   .map((unit) => unit._id)
@@ -179,162 +179,155 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                 </div>
                 <div className='flex flex-col'>
                   {courseDataState.levels && courseDataState.levels.length > 0
-                    ? courseDataState.levels.map(
-                        (levelsObject, levelsObjectIndex) => (
-                          <div key={levelsObjectIndex} className='flex-none'>
-                            {levelsObject.fatherId === unit._id ? (
-                              <div className='flex flex-col'>
-                                {levelsObject.data.length > 0
-                                  ? levelsObject.data.map(
-                                      (level, levelIndex) => (
-                                        <div
-                                          key={levelIndex}
-                                          className={
-                                            levelIndex ===
-                                            courseDataState.levels.length
-                                              ? 'flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
-                                              : 'flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
-                                          }
-                                        >
-                                          <div className='w-full'>
-                                            {courseDataState.lessons &&
-                                            courseDataState.lessons.length > 0
-                                              ? courseDataState.lessons.map(
-                                                  (
-                                                    lessonsObject,
-                                                    lessonsObjectIndex
-                                                  ) => (
-                                                    <div
-                                                      key={lessonsObjectIndex}
-                                                    >
-                                                      {lessonsObject.fatherId ===
-                                                      level._id ? (
-                                                        <div className='divide-y-2 divide-duoGray-hover'>
-                                                          {lessonsObject.data
-                                                            .length > 0
-                                                            ? lessonsObject.data.map(
-                                                                (
-                                                                  lesson,
-                                                                  lessonIndex
-                                                                ) => (
-                                                                  <div
-                                                                    key={
-                                                                      lessonIndex
-                                                                    }
-                                                                    className='2xl:1920px flex w-full flex-row pt-4 text-base font-medium'
-                                                                  >
-                                                                    <div
-                                                                      className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
-                                                                      onClick={() => {
-                                                                        infoBarStore.updateFieldType(
-                                                                          fieldToEditType.LEVEL
-                                                                        );
-                                                                        infoBarStore.updateFieldId(
-                                                                          level._id
-                                                                        );
-                                                                        infoBarStore.updateFieldIndex(
-                                                                          levelIndex
-                                                                        );
-                                                                        infoBarStore.updateFieldFatherIndex(
-                                                                          unit._id
-                                                                        );
-                                                                        infoBarStore.updateIsFieldSuspended(
-                                                                          !isIdInDataWithFatherIdObj(
-                                                                            level._id,
-                                                                            courseDataState.unsuspendedLevels
-                                                                          )
-                                                                        );
-                                                                      }}
-                                                                    >
-                                                                      <div className='mx-auto my-auto flex h-full flex-col items-center justify-center '>
-                                                                        <div className='mt-1 flex h-full flex-col items-center justify-center '>
-                                                                          <FontAwesomeIcon
-                                                                            icon={
-                                                                              faStar
-                                                                            }
-                                                                            size='lg'
-                                                                            className=''
-                                                                          />
-                                                                          <span className='h-fit text-[11px]'>
-                                                                            {levelIndex +
-                                                                              1}
-                                                                            -
-                                                                            {lessonIndex +
-                                                                              1}
-                                                                          </span>
-                                                                        </div>
-                                                                      </div>
+                    ? courseDataState.levels.map((levelsObject) => (
+                        <div key={levelsObject.fatherId} className='flex-none'>
+                          {levelsObject.fatherId === unit._id ? (
+                            <div className='flex flex-col'>
+                              {levelsObject.data.length > 0
+                                ? levelsObject.data.map((level, levelIndex) => (
+                                    <div
+                                      key={level._id}
+                                      className={
+                                        levelIndex ===
+                                        courseDataState.levels.length
+                                          ? 'flex h-fit flex-col rounded-b-lg border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
+                                          : 'flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 py-3 dark:border-duoGrayDark-dark'
+                                      }
+                                    >
+                                      <div className='w-full'>
+                                        {courseDataState.lessons &&
+                                        courseDataState.lessons.length > 0
+                                          ? courseDataState.lessons.map(
+                                              (
+                                                lessonsObject,
+                                                lessonsObjectIndex
+                                              ) => (
+                                                <div
+                                                  key={lessonsObject.fatherId}
+                                                >
+                                                  {lessonsObject.fatherId ===
+                                                  level._id ? (
+                                                    <div className='divide-y-2 divide-duoGray-hover'>
+                                                      {lessonsObject.data
+                                                        .length > 0
+                                                        ? lessonsObject.data.map(
+                                                            (
+                                                              lesson,
+                                                              lessonIndex
+                                                            ) => (
+                                                              <div
+                                                                key={lesson._id}
+                                                                className='2xl:1920px flex w-full flex-row pt-4 text-base font-medium'
+                                                              >
+                                                                <div
+                                                                  className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
+                                                                  onClick={() => {
+                                                                    infoBarStore.updateFieldType(
+                                                                      fieldToEditType.LEVEL
+                                                                    );
+                                                                    infoBarStore.updateFieldId(
+                                                                      level._id
+                                                                    );
+                                                                    infoBarStore.updateFieldIndex(
+                                                                      levelIndex
+                                                                    );
+                                                                    infoBarStore.updateFieldFatherIndex(
+                                                                      unit._id
+                                                                    );
+                                                                    infoBarStore.updateIsFieldSuspended(
+                                                                      !isIdInDataWithFatherIdObj(
+                                                                        level._id,
+                                                                        courseDataState.unsuspendedLevels
+                                                                      )
+                                                                    );
+                                                                  }}
+                                                                >
+                                                                  <div className='mx-auto my-auto flex h-full flex-col items-center justify-center '>
+                                                                    <div className='mt-1 flex h-full flex-col items-center justify-center '>
+                                                                      <FontAwesomeIcon
+                                                                        icon={
+                                                                          faStar
+                                                                        }
+                                                                        size='lg'
+                                                                        className=''
+                                                                      />
+                                                                      <span className='h-fit text-[11px]'>
+                                                                        {levelIndex +
+                                                                          1}
+                                                                        -
+                                                                        {lessonIndex +
+                                                                          1}
+                                                                      </span>
                                                                     </div>
-                                                                    <div className='mx-6 w-full'>
-                                                                      <button
-                                                                        className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
-                                                                        onClick={() => {
-                                                                          infoBarStore.updateFieldType(
-                                                                            fieldToEditType.LESSON
-                                                                          );
-                                                                          infoBarStore.updateFieldId(
-                                                                            lesson._id
-                                                                          );
-                                                                          infoBarStore.updateFieldIndex(
-                                                                            lessonIndex
-                                                                          );
-                                                                          infoBarStore.updateFieldFatherIndex(
-                                                                            level._id
-                                                                          );
-                                                                          infoBarStore.updateFieldSubIdsList(
-                                                                            lesson.exercises
-                                                                          );
-                                                                          infoBarStore.updateIsFieldSuspended(
-                                                                            !isIdInDataWithFatherIdObj(
-                                                                              lesson._id,
-                                                                              courseDataState.unsuspendedLessons
-                                                                            )
-                                                                          );
-                                                                        }}
-                                                                      >
-                                                                        <span>
-                                                                          LESSON
-                                                                          {
-                                                                            ' - '
-                                                                          }
-                                                                          {
-                                                                            lesson.name
-                                                                          }
-                                                                        </span>
-                                                                      </button>
-                                                                      <div className='flex w-full flex-col'>
-                                                                        {courseDataState.exercises &&
-                                                                        courseDataState
-                                                                          .exercises
-                                                                          .length >
-                                                                          0
-                                                                          ? courseDataState.exercises.map(
-                                                                              (
-                                                                                exerciseObject,
-                                                                                exerciseObjectIndex
-                                                                              ) => (
-                                                                                <div
-                                                                                  key={
-                                                                                    exerciseObjectIndex
-                                                                                  }
-                                                                                  className='w-full divide-y-2 dark:divide-duoGrayDark-light'
-                                                                                >
-                                                                                  {exerciseObject.fatherId ===
-                                                                                  lesson._id
-                                                                                    ? exerciseObject
-                                                                                        .data
-                                                                                        .length >
-                                                                                      0
-                                                                                      ? exerciseObject.data.map(
-                                                                                          (
-                                                                                            exercise,
-                                                                                            exerciseIndex
-                                                                                          ) => (
-                                                                                            <div
-                                                                                              key={
-                                                                                                exerciseIndex
-                                                                                              }
-                                                                                              className={`accordion-item flex w-full flex-col
+                                                                  </div>
+                                                                </div>
+                                                                <div className='mx-6 w-full'>
+                                                                  <button
+                                                                    className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
+                                                                    onClick={() => {
+                                                                      infoBarStore.updateFieldType(
+                                                                        fieldToEditType.LESSON
+                                                                      );
+                                                                      infoBarStore.updateFieldId(
+                                                                        lesson._id
+                                                                      );
+                                                                      infoBarStore.updateFieldIndex(
+                                                                        lessonIndex
+                                                                      );
+                                                                      infoBarStore.updateFieldFatherIndex(
+                                                                        level._id
+                                                                      );
+                                                                      infoBarStore.updateFieldSubIdsList(
+                                                                        lesson.exercises
+                                                                      );
+                                                                      infoBarStore.updateIsFieldSuspended(
+                                                                        !isIdInDataWithFatherIdObj(
+                                                                          lesson._id,
+                                                                          courseDataState.unsuspendedLessons
+                                                                        )
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    <span>
+                                                                      LESSON
+                                                                      {' - '}
+                                                                      {
+                                                                        lesson.name
+                                                                      }
+                                                                    </span>
+                                                                  </button>
+                                                                  <div className='flex w-full flex-col'>
+                                                                    {courseDataState.exercises &&
+                                                                    courseDataState
+                                                                      .exercises
+                                                                      .length >
+                                                                      0
+                                                                      ? courseDataState.exercises.map(
+                                                                          (
+                                                                            exerciseObject
+                                                                          ) => (
+                                                                            <div
+                                                                              key={
+                                                                                exerciseObject.fatherId
+                                                                              }
+                                                                              className='w-full divide-y-2 dark:divide-duoGrayDark-light'
+                                                                            >
+                                                                              {exerciseObject.fatherId ===
+                                                                              lesson._id
+                                                                                ? exerciseObject
+                                                                                    .data
+                                                                                    .length >
+                                                                                  0
+                                                                                  ? exerciseObject.data.map(
+                                                                                      (
+                                                                                        exercise,
+                                                                                        exerciseIndex
+                                                                                      ) => (
+                                                                                        <div
+                                                                                          key={
+                                                                                            exercise._id
+                                                                                          }
+                                                                                          className={`accordion-item flex w-full flex-col
                                                                                              ${
                                                                                                exerciseAccordion.includes(
                                                                                                  exercise._id
@@ -342,77 +335,77 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                  ? 'open'
                                                                                                  : ''
                                                                                              }`}
-                                                                                              onClick={() => {
-                                                                                                toggleAccordion(
+                                                                                          onClick={() => {
+                                                                                            toggleAccordion(
+                                                                                              exercise._id
+                                                                                            );
+                                                                                          }}
+                                                                                        >
+                                                                                          {exerciseAccordion.includes(
+                                                                                            exercise._id
+                                                                                          ) ? (
+                                                                                            <div className='dark:text-duoGrayDark-lightest'>
+                                                                                              <span>
+                                                                                                EXERCISE
+                                                                                                ID
+                                                                                                :
+                                                                                                {
                                                                                                   exercise._id
-                                                                                                );
-                                                                                              }}
-                                                                                            >
-                                                                                              {exerciseAccordion.includes(
-                                                                                                exercise._id
-                                                                                              ) ? (
-                                                                                                <div className='dark:text-duoGrayDark-lightest'>
-                                                                                                  <span>
-                                                                                                    EXERCISE
-                                                                                                    ID
-                                                                                                    :
-                                                                                                    {
-                                                                                                      exercise._id
-                                                                                                    }
-                                                                                                  </span>
-                                                                                                  <div className='flex flex-col'>
-                                                                                                    <span className='font-bold'>
-                                                                                                      description
-                                                                                                    </span>
-                                                                                                    <span>
-                                                                                                      {
-                                                                                                        exercise.description
-                                                                                                      }
-                                                                                                    </span>
-                                                                                                  </div>
-                                                                                                  <div className='flex flex-col'>
-                                                                                                    <span className='font-bold'>
-                                                                                                      difficulty
-                                                                                                      Level
-                                                                                                    </span>
-                                                                                                    <span>
-                                                                                                      {/* {
+                                                                                                }
+                                                                                              </span>
+                                                                                              <div className='flex flex-col'>
+                                                                                                <span className='font-bold'>
+                                                                                                  description
+                                                                                                </span>
+                                                                                                <span>
+                                                                                                  {
+                                                                                                    exercise.description
+                                                                                                  }
+                                                                                                </span>
+                                                                                              </div>
+                                                                                              <div className='flex flex-col'>
+                                                                                                <span className='font-bold'>
+                                                                                                  difficulty
+                                                                                                  Level
+                                                                                                </span>
+                                                                                                <span>
+                                                                                                  {/* {
                                                                                                         exercise.difficultyLevel
                                                                                                       } */}
-                                                                                                      get
-                                                                                                      from
-                                                                                                      record
-                                                                                                    </span>
-                                                                                                  </div>
-                                                                                                  {targetsList &&
-                                                                                                  exercise.relevant !==
-                                                                                                    undefined &&
-                                                                                                  exercise
-                                                                                                    .relevant
-                                                                                                    .length >
-                                                                                                    0 ? (
-                                                                                                    <div className='flex flex-col'>
-                                                                                                      <span className='text-lg font-extrabold'>
-                                                                                                        relevant
-                                                                                                      </span>
-                                                                                                      <span>
-                                                                                                        {
-                                                                                                          targetsList.filter(
-                                                                                                            (
-                                                                                                              target
-                                                                                                            ) =>
-                                                                                                              exercise.relevant
-                                                                                                                ? target._id ===
-                                                                                                                  exercise
-                                                                                                                    .relevant[0]
-                                                                                                                : null
-                                                                                                          )[0]
-                                                                                                            .name
-                                                                                                        }
-                                                                                                      </span>
-                                                                                                    </div>
-                                                                                                  ) : null}
-                                                                                                  {/* <div className='flex flex-col'>
+                                                                                                  get
+                                                                                                  from
+                                                                                                  record
+                                                                                                </span>
+                                                                                              </div>
+                                                                                              {targetsList &&
+                                                                                              exercise.relevant !==
+                                                                                                undefined &&
+                                                                                              exercise
+                                                                                                .relevant
+                                                                                                .length >
+                                                                                                0 ? (
+                                                                                                <div className='flex flex-col'>
+                                                                                                  <span className='text-lg font-extrabold'>
+                                                                                                    relevant
+                                                                                                  </span>
+                                                                                                  <span>
+                                                                                                    {
+                                                                                                      targetsList.filter(
+                                                                                                        (
+                                                                                                          target
+                                                                                                        ) =>
+                                                                                                          exercise.relevant
+                                                                                                            ? target._id ===
+                                                                                                              exercise
+                                                                                                                .relevant[0]
+                                                                                                            : null
+                                                                                                      )[0]
+                                                                                                        .name
+                                                                                                    }
+                                                                                                  </span>
+                                                                                                </div>
+                                                                                              ) : null}
+                                                                                              {/* <div className='flex flex-col'>
                                                                                                     {exercise.timeBuffers.map(
                                                                                                       (
                                                                                                         timeBuffer,
@@ -430,52 +423,50 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                       )
                                                                                                     )}
                                                                                                   </div> */}
-                                                                                                </div>
-                                                                                              ) : (
-                                                                                                <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-dark'>
-                                                                                                  <label>
-                                                                                                    {
-                                                                                                      exercise._id
-                                                                                                    }
-                                                                                                  </label>
-                                                                                                  <FontAwesomeIcon
-                                                                                                    icon={
-                                                                                                      faChevronDown
-                                                                                                    }
-                                                                                                  />
-                                                                                                </div>
-                                                                                              )}
                                                                                             </div>
-                                                                                          )
-                                                                                        )
-                                                                                      : null
-                                                                                    : null}
-                                                                                </div>
-                                                                              )
-                                                                            )
-                                                                          : null}
-                                                                      </div>
-                                                                    </div>
+                                                                                          ) : (
+                                                                                            <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-dark'>
+                                                                                              <label>
+                                                                                                {
+                                                                                                  exercise._id
+                                                                                                }
+                                                                                              </label>
+                                                                                              <FontAwesomeIcon
+                                                                                                icon={
+                                                                                                  faChevronDown
+                                                                                                }
+                                                                                              />
+                                                                                            </div>
+                                                                                          )}
+                                                                                        </div>
+                                                                                      )
+                                                                                    )
+                                                                                  : null
+                                                                                : null}
+                                                                            </div>
+                                                                          )
+                                                                        )
+                                                                      : null}
                                                                   </div>
-                                                                )
-                                                              )
-                                                            : null}
-                                                        </div>
-                                                      ) : null}
+                                                                </div>
+                                                              </div>
+                                                            )
+                                                          )
+                                                        : null}
                                                     </div>
-                                                  )
-                                                )
-                                              : null}
-                                          </div>
-                                        </div>
-                                      )
-                                    )
-                                  : null}
-                              </div>
-                            ) : null}
-                          </div>
-                        )
-                      )
+                                                  ) : null}
+                                                </div>
+                                              )
+                                            )
+                                          : null}
+                                      </div>
+                                    </div>
+                                  ))
+                                : null}
+                            </div>
+                          ) : null}
+                        </div>
+                      ))
                     : null}
                 </div>
               </div>

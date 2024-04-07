@@ -37,7 +37,7 @@ const StudentSideBar: React.FC = () => {
       <ul className='mx-auto w-[90%]'>
         {sidebarItems.map((item, index) => (
           <li
-            key={index}
+            key={item.label}
             className={` my-3 cursor-pointer rounded-xl border-2  px-3 py-3 ${
               pathname.includes(item.href)
                 ? 'border-duoBlue-lighter bg-duoBlue-lightest text-duoBlue-light dark:border-duoBlueDark-text dark:bg-duoGrayDark-dark dark:text-duoBlueDark-text'
