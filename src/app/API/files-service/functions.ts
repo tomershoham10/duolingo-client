@@ -177,6 +177,9 @@ export const getFileByName = async (bucketName: string, objectName: string): Pro
 
         const blob = await response.blob();
         // const blob = await response.blob();
+        console.log('getFileByName blob', blob);
+
+      
         return blob;
     }
     catch (error) {

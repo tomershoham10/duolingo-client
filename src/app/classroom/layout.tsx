@@ -1,13 +1,17 @@
 'use client';
+import { lazy } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
-import CreateNewUser from '../popups/CreateNewUser/page';
-import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
-import AdminEditPopup from '../popups/AdminEditPopup/page';
+// import CreateNewUser from '../popups/CreateNewUser/page';
+// import CreateNewUnit from '@/app/popups/CreateNewUnit/page';
 import InfoBar from '@/components/InfoBar/page';
 import useStore from '../store/useStore';
 import { useUserStore, PermissionsTypes } from '../store/stores/useUserStore';
-import CreateNewCourse from '../popups/CreateNewCourse/page';
+// import CreateNewCourse from '../popups/CreateNewCourse/page';
+const AdminEditPopup = lazy(() => import('../popups/AdminEditPopup/page'));
+const CreateNewUser = lazy(() => import('../popups/CreateNewUser/page'));
+const CreateNewCourse = lazy(() => import('../popups/CreateNewCourse/page'));
+const CreateNewUnit = lazy(() => import('@/app/popups/CreateNewUnit/page'));
 
 // import { notFound } from 'next/navigation';
 
@@ -33,7 +37,9 @@ export default function RootLayout({
             <div className='basis-1/5 2xl:basis-[15%] 3xl:basis-[10%]'>
               <AdminSideBar />
             </div>
-            <div className='basis-3/5 2xl:basis-[67.5%] 3xl:basis-[77.5%] overflow-x-hidden'>{children}</div>
+            <div className='basis-3/5 overflow-x-hidden 2xl:basis-[67.5%] 3xl:basis-[77.5%]'>
+              {children}
+            </div>
             <div className='basis-1/5 2xl:basis-[17.5%] 3xl:basis-[12.5%]'>
               <InfoBar />
             </div>

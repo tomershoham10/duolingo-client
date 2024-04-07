@@ -74,9 +74,9 @@ const AdminEditPopup: React.FC = () => {
     }
   }, [unit]);
 
-  useEffect(() => {
-    console.log('edittedArray', edittedArray);
-  }, [edittedArray]);
+//   useEffect(() => {
+//     console.log('edittedArray', edittedArray);
+//   }, [edittedArray]);
 
   const removeItem = (itemId: string) => {
     setEdittedArray(edittedArray.filter((item) => item != itemId));

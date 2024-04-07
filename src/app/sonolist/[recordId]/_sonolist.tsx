@@ -24,6 +24,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
             const promise = new Promise<string>((resolve, reject) => {
               reader.onload = () => {
                 const result = reader.result;
+                console.log('url', result);
                 if (typeof result === 'string') {
                   resolve(result);
                 } else {
@@ -64,16 +65,18 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
 
   return (
     <section className='flex h-full w-full flex-col text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      <p>abc</p>
       {sonolist.length > 0 && (
         <ul className='h-96'>
           {sonolist.map((sonolink, index) => (
-            <li key={index} className='h-[10rem] w-[40%]'>
+            <li
+              key={index}
+              className='w-[20rem] border-2 border-duoGrayDark-light md:w-[24rem] lg:w-[32rem] xl:w-[40rem] 2xl:w-[60rem] 3xl:w-[80rem]'
+            >
               <Image
                 src={sonolink}
                 alt={`Sonogram ${index}`}
-                width={800}
-                height={600}
+                width={0}
+                height={0}
                 layout='responsive'
               />
             </li>

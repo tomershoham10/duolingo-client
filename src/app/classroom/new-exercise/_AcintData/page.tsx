@@ -33,7 +33,7 @@ const AcintDataSection: React.FC = () => {
     updateSelectedFile: useInfoBarStore.getState().updateSelectedFile,
   };
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
-  console.log('targetsListDB', targetsListDB);
+//   console.log('targetsListDB', targetsListDB);
   const sourcesListDB = useStore(useSourceStore, (state) => state.sources);
 
   useEffect(() => {
@@ -202,7 +202,7 @@ const AcintDataSection: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('sonolist', submitRecordState.sonograms);
+    console.log('submitRecordState.sonograms', submitRecordState.sonograms);
   }, [submitRecordState.sonograms]);
 
   const handleFileLength = (time: number | null) => {
@@ -305,7 +305,13 @@ const AcintDataSection: React.FC = () => {
       updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
       updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
-      updateExerciseToSubmit.updateSonolistFiles(metadata.sonograms_ids);
+      updateExerciseToSubmit.updateSonolistFiles(
+        metadata.sonograms_ids &&
+          metadata.sonograms_ids.length > 0 &&
+          metadata.sonograms_ids[0].length > 0
+          ? metadata.sonograms_ids
+          : []
+      );
       updateExerciseToSubmit.updateAnswersList(targetIdsToSubmit);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

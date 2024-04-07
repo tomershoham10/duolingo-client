@@ -6,12 +6,12 @@ type CreateExerciseState = {
     recordId: string | undefined;
     recordName: string | undefined;
     recordLength: number | undefined;
-    sonolistFiles: string[] | undefined;
+    sonolistFiles: string[];
     description: string | undefined;
-    timeBuffers: TimeBuffersType[] | undefined;
-    relevant: string[] | undefined;
-    answersList: string[] | undefined;
-    acceptableAnswers: string[] | undefined;
+    timeBuffers: TimeBuffersType[];
+    relevant: string[];
+    answersList: string[];
+    acceptableAnswers: string[];
 }
 
 type Action = {
@@ -32,12 +32,12 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         recordId: undefined,
         recordName: undefined,
         recordLength: undefined,
-        sonolistFiles: undefined,
+        sonolistFiles: [],
         description: undefined,
-        timeBuffers: undefined,
-        relevant: undefined,
-        answersList: undefined,
-        acceptableAnswers: undefined,
+        timeBuffers: [],
+        relevant: [],
+        answersList: [],
+        acceptableAnswers: [],
         updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
         updateRecordName: (recordName) => set(() => ({ recordName: recordName })),
         updateRecordLength: (recordLength) => set(() => ({ recordLength: recordLength })),
