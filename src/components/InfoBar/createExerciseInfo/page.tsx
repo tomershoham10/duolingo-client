@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 
 const CreateExerciseInfo: React.FC = () => {
-  const useInfoBarStoreObj = {
+  const infoBarStore = {
     syllabusFieldType: useStore(
       useInfoBarStore,
       (state) => state.syllabusFieldType
@@ -20,13 +20,15 @@ const CreateExerciseInfo: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('infobar - selectedFile', useInfoBarStoreObj.selectedFile);
-  }, [useInfoBarStoreObj.selectedFile]);
+    infoBarStore.selectedFile
+      ? console.log('infobar - selectedFile', infoBarStore.selectedFile)
+      : null;
+  }, [infoBarStore.selectedFile]);
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
     <>
-      {!!useInfoBarStoreObj.selectedFile ? (
+      {!!infoBarStore.selectedFile ? (
         <div
           className='flex w-[90%] flex-col
             '
@@ -36,40 +38,40 @@ const CreateExerciseInfo: React.FC = () => {
               INFORMATION
             </li>
             <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
-              {useInfoBarStoreObj.selectedFile.name
+              {infoBarStore.selectedFile.name
                 .toLocaleLowerCase()
                 .replace(regexFilesEnding, '')}
             </li>
 
-            {!!useInfoBarStoreObj.selectedFile.metadata &&
-              Object.values(useInfoBarStoreObj.selectedFile.metadata).map(
+            {!!infoBarStore.selectedFile.metadata &&
+              Object.values(infoBarStore.selectedFile.metadata).map(
                 (meta, metaIndex) => (
                   <section key={metaIndex}>
-                    {meta !== undefined && !!useInfoBarStoreObj.selectedFile ? (
+                    {meta !== undefined && !!infoBarStore.selectedFile ? (
                       <li key={metaIndex} className='my-1'>
                         <span className=''>
                           {Object.keys(
-                            useInfoBarStoreObj.selectedFile.metadata
+                            infoBarStore.selectedFile.metadata
                           )[metaIndex] !== 'content-type' &&
-                          Object.keys(useInfoBarStoreObj.selectedFile.metadata)[
+                          Object.keys(infoBarStore.selectedFile.metadata)[
                             metaIndex
                           ] !== 'sonograms_ids'
                             ? `${
                                 Object.keys(
-                                  useInfoBarStoreObj.selectedFile.metadata
+                                  infoBarStore.selectedFile.metadata
                                 )[metaIndex]
                               }: `
                             : null}
                         </span>
-                        {Object.keys(useInfoBarStoreObj.selectedFile.metadata)[
+                        {Object.keys(infoBarStore.selectedFile.metadata)[
                           metaIndex
                         ] === 'record_length'
                           ? formatNumberToMinutes(Number(meta))
                           : Object.keys(
-                                useInfoBarStoreObj.selectedFile.metadata
+                                infoBarStore.selectedFile.metadata
                               )[metaIndex] !== 'content-type' &&
                               Object.keys(
-                                useInfoBarStoreObj.selectedFile.metadata
+                                infoBarStore.selectedFile.metadata
                               )[metaIndex] !== 'sonograms_ids'
                             ? String(meta)
                             : null}
@@ -79,15 +81,15 @@ const CreateExerciseInfo: React.FC = () => {
                 )
               )}
             <li>
-              {useInfoBarStoreObj.selectedFile.name.endsWith('.wav') ? (
-                !!useInfoBarStoreObj.selectedFile.metadata &&
-                'sonograms_ids' in useInfoBarStoreObj.selectedFile.metadata &&
-                useInfoBarStoreObj.selectedFile.metadata.sonograms_ids &&
-                useInfoBarStoreObj.selectedFile.metadata.sonograms_ids.length >
+              {infoBarStore.selectedFile.name.endsWith('.wav') ? (
+                !!infoBarStore.selectedFile.metadata &&
+                'sonograms_ids' in infoBarStore.selectedFile.metadata &&
+                infoBarStore.selectedFile.metadata.sonograms_ids &&
+                infoBarStore.selectedFile.metadata.sonograms_ids.length >
                   0 ? (
                   <Link
                     className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 text-duoBlue-default hover:text-duoBlue-default dark:text-duoPurpleDark-default dark:hover:opacity-90'
-                    href={`${`/sonolist/${useInfoBarStoreObj.selectedFile.name}`}`}
+                    href={`${`/sonolist/${infoBarStore.selectedFile.name}`}`}
                     target='_blank'
                   >
                     <FaRegImages />
