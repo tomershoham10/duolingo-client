@@ -142,31 +142,6 @@ export const getAllRecords = async (): Promise<RecordType[]> => {
     }
 }
 
-export const getFileByName = async (bucketName: string, objectName: string): Promise<any> => {
-    try {
-        const response = await fetch(
-            `http://localhost:4002/api/files/download/${bucketName}/${objectName}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-
-        if (response.ok) {
-            // const data = await response;
-            console.log('getFileByName', response.blob());
-            // const files = data.files;
-            return response.blob();
-        }
-        return [];
-    }
-    catch (error) {
-        console.error(`error getting all records - ${error}`);
-        return [];
-    }
-}
-
 export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
     try {
         const response = await fetch(
@@ -190,25 +165,53 @@ export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
 
 }
 
-export const getSonolistByRecordId = async (recordId: string): Promise<string[]> => {
+export const getFileByName = async (bucketName: string, objectName: string): Promise<any> => {
     try {
         const response = await fetch(
-            `http://localhost:4002/api/files/get-sonolist-url-by-record-id/${recordId}`, {
+            `http://localhost:4002/api/files/getFileByName/${bucketName}/${objectName}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+
+        console.log("getFileByName response", response);
+
+        const blob = await response.blob();
+        // const blob = await response.blob();
+        return blob;
+    }
+    catch (error) {
+        console.error(`error getFileByName - ${error}`);
+        return null;
+    }
+}
+
+export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
+    try {
+        console.log('getSonolistNamesByRecordId recordId', recordId);
+        const response = await fetch(
+            `http://localhost:4002/api/files/get-sonolist-names-by-record-id/${recordId}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        if (response.ok) {
-            const data = await response.json();
-            const sonolist = data.files as string[];
-            console.log('getAllRecords', data);
-            return sonolist;
-        }
-        return [];
+        // if (response.status !== 200) {
+        //     throw new Error('Failed to fetch images');
+        // }
+
+        // const data = await response.json();
+        // const streams = data.filesStreams as string[];
+        if (!response.ok) return [];
+
+        const data = await response.json();
+        const sonolist = data.sonograms;
+        console.log('getSonolistNamesByRecordId sonolist: ', sonolist);
+        return sonolist;
     }
     catch (error) {
-        throw new Error(`error getting all records - ${error}`);
+        console.error(`error getSonolistByRecordId - ${error}`);
+        return [];
     }
 }
+

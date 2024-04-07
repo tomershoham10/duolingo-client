@@ -1,35 +1,87 @@
+'use client';
+import React, { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
+import {
+  getFileByName,
+  getSonolistNamesByRecordId,
+} from '@/app/API/files-service/functions';
 
 interface SonolistProps {
-  data: string[] | null;
+  recordId: string;
 }
 
-const Sonograms: React.FC<SonolistProps> = (props) => {
-  console.log('sonograms', props.data);
+const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
+  const [sonolist, setSonolist] = useState<string[]>([]);
+
+  const fetchSonograms = useCallback(async () => {
+    try {
+      const sonolistNames = await getSonolistNamesByRecordId(recordId);
+      const promises = sonolistNames.map(async (sonogram) => {
+        try {
+          const blob = await getFileByName('sonograms', sonogram);
+          if (blob) {
+            const reader = new FileReader();
+            const promise = new Promise<string>((resolve, reject) => {
+              reader.onload = () => {
+                const result = reader.result;
+                if (typeof result === 'string') {
+                  resolve(result);
+                } else {
+                  reject(new Error('Failed to read blob data'));
+                }
+              };
+              reader.onerror = reject;
+            });
+
+            reader.readAsDataURL(blob);
+            return promise;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error('Error reading file:', error);
+          return null;
+        }
+      });
+
+      const results = await Promise.all(promises);
+      const filteredResults = results.filter(
+        (result): result is string => typeof result === 'string'
+      );
+      setSonolist(filteredResults); // Set filtered results directly
+    } catch (error) {
+      console.error('Error fetching sonogram names:', error);
+    }
+  }, [recordId]);
+
+  useEffect(() => {
+    fetchSonograms(); // Trigger fetchSonograms when recordId changes
+  }, [fetchSonograms]);
+
+  useEffect(() => {
+    console.log('sonolist', sonolist);
+  }, [sonolist]);
+
   return (
-    <section className='h-full w-full text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      sonograms
-      {props.data?.map((sonogram, index) => (
-        <div key={index}>
-          {sonogram}
-          <Image
-            src={
-              'http://localhost:9001/sonograms/students_dashboard.JPG?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=your-minio-access-key%2F20240328%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240328T110506Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=c774d319de82b5a3b3dee083d807cc5074549d4ac88a2c59027033b0b2d0989c'
-            }
-            alt='Your Image'
-            width={300}
-            height={200}
-          />
-          <br />
-          {/* <Image
-            src={`\${sonogram.name}`}
-            width={500}
-            height={500}
-            alt='sonogram problem'
-          /> */}
-        </div>
-      ))}
+    <section className='flex h-full w-full flex-col text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+      <p>abc</p>
+      {sonolist.length > 0 && (
+        <ul className='h-96'>
+          {sonolist.map((sonolink, index) => (
+            <li key={index} className='h-[10rem] w-[40%]'>
+              <Image
+                src={sonolink}
+                alt={`Sonogram ${index}`}
+                width={800}
+                height={600}
+                layout='responsive'
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 };
+
 export default Sonograms;
