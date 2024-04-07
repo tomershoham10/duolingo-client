@@ -264,9 +264,8 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                     ? updateSelectedPopup(PopupsTypes.RECORDMETADATA)
                     : updateSelectedPopup(PopupsTypes.SONOLISTMETADATA);
                 }}
-                disabled={
-                  props.filesTypes !== '.wav' && selectedFileIndex === -1
-                }
+                // disabled={selectedFileIndex === -1
+                // }
               >
                 <BsClipboard2Data className='mr-2 text-xl 3xl:text-2xl' />
                 <span>add metadata</span>

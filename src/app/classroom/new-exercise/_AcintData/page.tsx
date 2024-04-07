@@ -225,7 +225,8 @@ const AcintDataSection: React.FC = () => {
       id: record.id,
       metadata: {
         record_length: record.record_length,
-        sonograms_ids: record.sonograms_ids,
+        sonograms_ids:
+          record.sonograms_ids,
         difficulty_level: record.difficulty_level,
         targets_list: record.targets_list,
         operation: record.operation,
@@ -308,9 +309,7 @@ const AcintDataSection: React.FC = () => {
       updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(
-        metadata.sonograms_ids &&
-          metadata.sonograms_ids.length > 0 &&
-          metadata.sonograms_ids[0].length > 0
+        metadata.sonograms_ids && metadata.sonograms_ids.length > 0
           ? metadata.sonograms_ids
           : []
       );

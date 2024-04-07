@@ -50,16 +50,16 @@ const CreateExerciseInfo: React.FC = () => {
                     {meta !== undefined && !!infoBarStore.selectedFile ? (
                       <li key={metaIndex} className='my-1'>
                         <span className=''>
-                          {Object.keys(
-                            infoBarStore.selectedFile.metadata
-                          )[metaIndex] !== 'content-type' &&
+                          {Object.keys(infoBarStore.selectedFile.metadata)[
+                            metaIndex
+                          ] !== 'content-type' &&
                           Object.keys(infoBarStore.selectedFile.metadata)[
                             metaIndex
                           ] !== 'sonograms_ids'
                             ? `${
-                                Object.keys(
-                                  infoBarStore.selectedFile.metadata
-                                )[metaIndex]
+                                Object.keys(infoBarStore.selectedFile.metadata)[
+                                  metaIndex
+                                ]
                               }: `
                             : null}
                         </span>
@@ -67,12 +67,12 @@ const CreateExerciseInfo: React.FC = () => {
                           metaIndex
                         ] === 'record_length'
                           ? formatNumberToMinutes(Number(meta))
-                          : Object.keys(
-                                infoBarStore.selectedFile.metadata
-                              )[metaIndex] !== 'content-type' &&
-                              Object.keys(
-                                infoBarStore.selectedFile.metadata
-                              )[metaIndex] !== 'sonograms_ids'
+                          : Object.keys(infoBarStore.selectedFile.metadata)[
+                                metaIndex
+                              ] !== 'content-type' &&
+                              Object.keys(infoBarStore.selectedFile.metadata)[
+                                metaIndex
+                              ] !== 'sonograms_ids'
                             ? String(meta)
                             : null}
                       </li>
@@ -85,8 +85,7 @@ const CreateExerciseInfo: React.FC = () => {
                 !!infoBarStore.selectedFile.metadata &&
                 'sonograms_ids' in infoBarStore.selectedFile.metadata &&
                 infoBarStore.selectedFile.metadata.sonograms_ids &&
-                infoBarStore.selectedFile.metadata.sonograms_ids.length >
-                  0 ? (
+                infoBarStore.selectedFile.metadata.sonograms_ids.length > 0 ? (
                   <Link
                     className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 text-duoBlue-default hover:text-duoBlue-default dark:text-duoPurpleDark-default dark:hover:opacity-90'
                     href={`${`/sonolist/${infoBarStore.selectedFile.name}`}`}
