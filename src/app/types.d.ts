@@ -157,8 +157,8 @@ interface RecordMetadataType {
     difficulty_level: number;
     targets_ids_list?: string[];
     targets_list?: string[];
-    operation: string;
-    source_id: string;
+    operation: string | undefined;
+    source_id: string | undefined;
     is_in_italy: boolean;
     signature_type: SignatureTypes;
     channels_number: number;

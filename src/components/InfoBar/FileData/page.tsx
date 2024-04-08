@@ -13,7 +13,7 @@ const FileData: React.FC = () => {
   return (
     <>
       {!!infoBarStore.selectedFile ? (
-        <div className='flex w-[90%] flex-col'>
+        <div className='flex w-[90%] flex-col mx-auto'>
           <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
             <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
               INFORMATION

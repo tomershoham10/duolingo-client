@@ -20,6 +20,7 @@ import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { FilesTypes } from '../page';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 library.add(faXmark);
 
@@ -28,6 +29,11 @@ interface RecordMetaEditProps {
 }
 
 const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
+  const infoBarStore = {
+    selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile) as
+      | RecordType
+      | undefined,
+  };
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const sourcesList = useStore(useSourceStore, (state) => state.sources);
@@ -37,20 +43,56 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
     (state) => state.recordLength
   );
 
-  const initialRecordMetaState: RecordMetadataType = {
-    record_length: 0,
-    sonograms_ids: [],
-    difficulty_level: 0,
-    targets_ids_list: [],
-    operation: '',
-    source_id: '',
-    is_in_italy: false,
-    signature_type: SignatureTypes.PASSIVE,
-    channels_number: 1,
-    sonar_system: SonarSystem.DEMON,
-    is_backround_vessels: false,
-    aux: false,
-  };
+  const selectedFileMeta = infoBarStore?.selectedFile?.metadata;
+  const initialRecordMetaState: RecordMetadataType = selectedFileMeta
+    ? {
+        record_length:
+          selectedFileMeta.record_length !== undefined
+            ? selectedFileMeta.record_length
+            : 0,
+        sonograms_ids: selectedFileMeta.sonograms_ids
+          ? selectedFileMeta.sonograms_ids
+          : [],
+        difficulty_level: selectedFileMeta.difficulty_level
+          ? selectedFileMeta.difficulty_level
+          : 0,
+        targets_ids_list: selectedFileMeta.targets_ids_list
+          ? selectedFileMeta.targets_ids_list
+          : [],
+        operation: selectedFileMeta.operation,
+        source_id: selectedFileMeta.source_id,
+        is_in_italy:
+          selectedFileMeta.is_in_italy !== undefined
+            ? selectedFileMeta.is_in_italy
+            : false,
+        signature_type: selectedFileMeta.signature_type
+          ? selectedFileMeta.signature_type
+          : SignatureTypes.PASSIVE,
+        channels_number: selectedFileMeta.channels_number
+          ? selectedFileMeta.channels_number
+          : 1,
+        sonar_system: selectedFileMeta.sonar_system
+          ? selectedFileMeta.sonar_system
+          : SonarSystem.DEMON,
+        is_backround_vessels: selectedFileMeta.is_backround_vessels
+          ? selectedFileMeta.is_backround_vessels
+          : false,
+        aux: selectedFileMeta.aux ? selectedFileMeta.aux : false,
+      }
+    : {
+        record_length: 0,
+        sonograms_ids: [],
+        difficulty_level: 0,
+        targets_ids_list: [],
+        operation: undefined,
+        source_id: undefined,
+        is_in_italy: false,
+        signature_type: SignatureTypes.PASSIVE,
+        channels_number: 1,
+        sonar_system: SonarSystem.DEMON,
+        is_backround_vessels: false,
+        aux: false,
+      };
 
   const [recordMetaState, recordMetaDispatch] = useReducer(
     recordMetadataReducer,
