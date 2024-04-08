@@ -9,7 +9,7 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
 import Table, { TableHead, TableRow } from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
-import { FilesTypes } from '@/app/popups/MetadataPopup/page';
+import { FilesTypes } from '@/app/_popups/MetadataPopup/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { useStore } from 'zustand';
@@ -25,7 +25,7 @@ import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 
-const MetadataPopup = lazy(() => import('@/app/popups/MetadataPopup/page'));
+const MetadataPopup = lazy(() => import('@/app/_popups/MetadataPopup/page'));
 
 library.add(faArrowUpFromBracket);
 

@@ -9,7 +9,7 @@ import LessonButton, { Status } from '../../LessonButton/page';
 import { possitionByModularAddition } from '@/app/utils/functions/possitionByModularAddition';
 import Tooltip, { TooltipColors } from '../../Tooltip/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import StartLessonPopup from '@/app/popups/StartLessonPopup/page';
+import StartLessonPopup from '@/app/_popups/StartLessonPopup/page';
 import {
   studentDashboardAction,
   studentDashboardReducer,
