@@ -1,4 +1,5 @@
 'use client';
+// 'use server';
 import { useEffect, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,17 +35,18 @@ const CreateNewCourse: React.FC = () => {
     }
   }, [isFailed, courseName]);
 
-  const createCourseHandle = async (courseName: string) => {
+  const createCourseHandle = async (formData: FormData) => {
     try {
+      const courseName = formData.get('courseName');
       console.log('create course:', courseName);
-      {
-        if (courseName.length < 3) {
-          addAlert('Please enter a valid course name.', AlertSizes.small);
-          setIsFailed(true);
-          return;
-        }
+
+      if (!!!courseName || courseName.length < 3) {
+        addAlert('Please enter a valid course name.', AlertSizes.small);
+        setIsFailed(true);
+        return;
       }
-      const response = await createCourse(courseName);
+
+      const response = await createCourse(courseName.toString());
       console.log('create course - response:', response);
       if (response === 201) {
         addAlert('Course created successfully.', AlertSizes.small);
@@ -88,10 +90,11 @@ const CreateNewCourse: React.FC = () => {
           : 'z-0 opacity-0 transition duration-200 ease-in'
       }
     >
+      <form action={createCourseHandle}></form>
       {selectedPopup === PopupsTypes.NEWCOURSE ? (
         <div
           className='flex h-[18rem] w-fit 
-        rounded-md bg-white px-5 py-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
+         rounded-md bg-white px-5 py-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
         >
           <button
             onClick={() => {
@@ -104,8 +107,10 @@ const CreateNewCourse: React.FC = () => {
               icon={faXmark}
             />
           </button>
-          <div className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none 
-          grid-cols-4 grid-rows-3 flex-col items-center justify-center'>
+          <form
+            className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center'
+            action={createCourseHandle}
+          >
             <p className=' col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
               CREATE NEW COURSE
             </p>
@@ -118,9 +123,10 @@ const CreateNewCourse: React.FC = () => {
               <Input
                 type={InputTypes.text}
                 placeholder={'Course Name'}
+                name={'courseName'}
                 value={courseName}
-                onChange={(value: string) => setCourseName(value)}
-                failed={isFailed ? true : false}
+                // onChange={(value: string) => setCourseName(value)}
+                // failed={isFailed ? true : false}
               />
             </div>
 
@@ -128,10 +134,10 @@ const CreateNewCourse: React.FC = () => {
               <Button
                 label={'CREATE'}
                 color={ButtonColors.BLUE}
-                onClick={async () => await createCourseHandle(courseName)}
+                // onClick={async () => await createCourseHandle(courseName)}
               />
             </div>
-          </div>
+          </form>
         </div>
       ) : null}
     </div>

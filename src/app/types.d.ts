@@ -345,9 +345,10 @@ interface DropdownProps {
 
 interface InputProps {
     type: InputTypes;
+    name?: string;
     placeholder?: string;
-    value: string | undefined;
-    onChange: (value: string) => void;
+    value?: string | undefined;
+    onChange?: (value: string) => void;
     className?: string;
     failed?: boolean;
 }

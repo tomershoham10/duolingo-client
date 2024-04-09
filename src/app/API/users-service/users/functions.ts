@@ -1,7 +1,8 @@
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 import { PermissionsTypes, useUserStore } from "@/app/store/stores/useUserStore";
-
 import jwt from "jsonwebtoken";
+import Cookies from 'js-cookie';
+
 // import { getCourseByType } from "../../classes-service/courses/functions";
 
 const useUserStoreObj = {
@@ -118,6 +119,7 @@ export const handleAuth = async (userName: string, password: string) => {
                     // console.log("api nextLessonId", nextLessonId);
 
                     localStorage.setItem("jwtToken", token);
+                    Cookies.set('jwtToken', token);
                     useUserStoreObj.updateUserName(userName);
                     useUserStoreObj.updatepermission(role);
                     useUserStoreObj.updateIsLoggedIn(true);

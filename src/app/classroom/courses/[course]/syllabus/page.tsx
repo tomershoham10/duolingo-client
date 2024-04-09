@@ -1,19 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { useUserStore } from '@/app/store/stores/useUserStore';
 import useStore from '@/app/store/useStore';
+import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { usePopupStore } from '@/app/store/stores/usePopupStore';
+// import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
-  const permission = useStore(useUserStore, (state) => state.permission);
-
-  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+//   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const addAlert = useAlertStore.getState().addAlert;
 

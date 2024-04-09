@@ -119,7 +119,7 @@ const SyllabusInfo: React.FC = () => {
               </li>
             </ul>
           </section>
-        </div>
+    </div>
       ) : (
         <div className='text-center'>{courseName}</div>
       )}

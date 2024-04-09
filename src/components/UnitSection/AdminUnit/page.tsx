@@ -1,11 +1,5 @@
 import { useEffect, useReducer, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import useStore from '@/app/store/useStore';
-import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { getUnitsData } from '@/app/API/classes-service/courses/functions';
-import { getLevelsData } from '@/app/API/classes-service/units/functions';
-import { getLessonsData } from '@/app/API/classes-service/levels/functions';
-import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -43,6 +37,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const targetsList = useStore(useTargetStore, (state) => state.targets);
 
   const infoBarStore = {
+    fieldId: useInfoBarStore.getState().syllabusFieldId,
+
     updateFieldType: useInfoBarStore.getState().updatesyllabusFieldType,
     updateFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
     updateFieldIndex: useInfoBarStore.getState().updateSyllabusFieldIndex,
@@ -53,6 +49,10 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     updateIsFieldSuspended:
       useInfoBarStore.getState().updateSyllabusIsFieldSuspended,
   };
+
+  useEffect(() => {
+    console.log('infoBarStore.fieldId',infoBarStore.fieldId);
+  }, [infoBarStore.fieldId]);
 
   const initialCourseDataState = {
     courseId: propsCourseId,
@@ -116,6 +116,20 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     });
   };
 
+  const updateInfobarData = (
+    filedType: fieldToEditType,
+    fieldId: string,
+    fieldIndex: number,
+    fatherId: string,
+    isSuspended: boolean
+  ) => {
+    infoBarStore.updateFieldType(filedType);
+    infoBarStore.updateFieldId(fieldId);
+    infoBarStore.updateFieldIndex(fieldIndex);
+    infoBarStore.updateFieldFatherIndex(fatherId);
+    infoBarStore.updateIsFieldSuspended(isSuspended);
+  };
+
   return (
     <div className='flex w-full'>
       <div className='mx-24 h-full w-full text-black'>
@@ -129,25 +143,33 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                   .includes(unit._id)
                   ? 'opacity-60'
                   : ''
-              }`}
+              } `}
             >
               <div className='flex-col'>
                 <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white dark:bg-duoGrayDark-dark sm:h-fit'>
                   <button
                     className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
                     onClick={() => {
-                      infoBarStore.updateFieldType(fieldToEditType.UNIT);
-                      infoBarStore.updateFieldId(unit._id);
-                      infoBarStore.updateFieldIndex(unitIndex);
-                      infoBarStore.updateFieldFatherIndex(propsCourseId);
-                      infoBarStore.updateIsFieldSuspended(
-                        !courseDataState.unsuspendedUnits
-                          .map((unit) => unit._id)
-                          .includes(unit._id)
+                      const isSuspended = !courseDataState.unsuspendedUnits
+                        .map((unit) => unit._id)
+                        .includes(unit._id);
+                      updateInfobarData(
+                        fieldToEditType.UNIT,
+                        unit._id,
+                        unitIndex,
+                        propsCourseId,
+                        isSuspended
                       );
                     }}
                   >
-                    <label className='cursor-pointer'>
+                    <label
+                      className={`cursor-pointer ${
+                        infoBarStore.fieldId === unit._id
+                          ? 'text-duoGreen-button'
+                          : 'dark:text-duoGrayDark-lightest'
+                      }`}
+                    >
+                      {unit._id} {infoBarStore.fieldId}
                       Unit {unitIndex + 1}
                     </label>
                   </button>
@@ -198,10 +220,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                         {courseDataState.lessons &&
                                         courseDataState.lessons.length > 0
                                           ? courseDataState.lessons.map(
-                                              (
-                                                lessonsObject,
-                                                lessonsObjectIndex
-                                              ) => (
+                                              (lessonsObject) => (
                                                 <div
                                                   key={lessonsObject.fatherId}
                                                 >
@@ -222,23 +241,17 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                 <div
                                                                   className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
                                                                   onClick={() => {
-                                                                    infoBarStore.updateFieldType(
-                                                                      fieldToEditType.LEVEL
-                                                                    );
-                                                                    infoBarStore.updateFieldId(
-                                                                      level._id
-                                                                    );
-                                                                    infoBarStore.updateFieldIndex(
-                                                                      levelIndex
-                                                                    );
-                                                                    infoBarStore.updateFieldFatherIndex(
-                                                                      unit._id
-                                                                    );
-                                                                    infoBarStore.updateIsFieldSuspended(
+                                                                    const isSuspended =
                                                                       !isIdInDataWithFatherIdObj(
                                                                         level._id,
                                                                         courseDataState.unsuspendedLevels
-                                                                      )
+                                                                      );
+                                                                    updateInfobarData(
+                                                                      fieldToEditType.LEVEL,
+                                                                      level._id,
+                                                                      levelIndex,
+                                                                      unit._id,
+                                                                      isSuspended
                                                                     );
                                                                   }}
                                                                 >
@@ -265,26 +278,17 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                   <button
                                                                     className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
                                                                     onClick={() => {
-                                                                      infoBarStore.updateFieldType(
-                                                                        fieldToEditType.LESSON
-                                                                      );
-                                                                      infoBarStore.updateFieldId(
-                                                                        lesson._id
-                                                                      );
-                                                                      infoBarStore.updateFieldIndex(
-                                                                        lessonIndex
-                                                                      );
-                                                                      infoBarStore.updateFieldFatherIndex(
-                                                                        level._id
-                                                                      );
-                                                                      infoBarStore.updateFieldSubIdsList(
-                                                                        lesson.exercises
-                                                                      );
-                                                                      infoBarStore.updateIsFieldSuspended(
+                                                                      const isSuspended =
                                                                         !isIdInDataWithFatherIdObj(
                                                                           lesson._id,
                                                                           courseDataState.unsuspendedLessons
-                                                                        )
+                                                                        );
+                                                                      updateInfobarData(
+                                                                        fieldToEditType.LESSON,
+                                                                        lesson._id,
+                                                                        lessonIndex,
+                                                                        level._id,
+                                                                        isSuspended
                                                                       );
                                                                     }}
                                                                   >
@@ -427,9 +431,10 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                           ) : (
                                                                                             <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-dark'>
                                                                                               <label>
-                                                                                                {
-                                                                                                  exercise._id
-                                                                                                }
+                                                                                                exercise
+                                                                                                #
+                                                                                                {exerciseIndex +
+                                                                                                  1}
                                                                                               </label>
                                                                                               <FontAwesomeIcon
                                                                                                 icon={
