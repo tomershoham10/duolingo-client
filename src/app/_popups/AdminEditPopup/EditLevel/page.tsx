@@ -3,9 +3,14 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { getLevelById } from '@/app/API/classes-service/levels/functions';
+import {
+  getLevelById,
+  updateLevel,
+} from '@/app/API/classes-service/levels/functions';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
+import Button, { ButtonColors } from '@/components/Button/page';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
 library.add(faXmark);
 
@@ -16,7 +21,8 @@ interface EditLevelProps {
 }
 
 const EditLevel: React.FC<EditLevelProps> = (props) => {
-  const [levelData, setLevelData] = useState<LevelType | null>(null);
+  //   const [levelData, setLevelData] = useState<LevelType | null>(null);
+  const addAlert = useAlertStore.getState().addAlert;
 
   const initialLessonsDraggingState = {
     grabbedItemId: 'released',
@@ -28,11 +34,15 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
     initialLessonsDraggingState
   );
 
+  useEffect(() => {
+    lessonsDraggingState;
+  }, [lessonsDraggingState]);
+
   const fetchLevel = useCallback(async () => {
     const response = await getLevelById(props.levelId);
     if (response) {
       console.log(response);
-      setLevelData(response);
+      //   setLevelData(response);
       lessonsDraggingDispatch({
         type: draggingAction.SET_ITEMS_LIST,
         payload: response.lessons.map((lesson, levelIndex) => ({
@@ -43,13 +53,28 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
     }
   }, [props.levelId]);
 
-  // Call fetchLevel when the component mounts or props.levelId changes
   useEffect(() => {
     fetchLevel();
-  }, []);
+  }, [props.levelId]);
+
+  const sumbitUpdate = async () => {
+    try {
+      const updatedLevel = {
+        _id: props.levelId,
+        lessons: lessonsDraggingState.itemsList.map((item) => item.id),
+      };
+      const res = await updateLevel(updatedLevel);
+      res
+        ? addAlert('updated successfully', AlertSizes.small)
+        : addAlert('error upadting unit', AlertSizes.small);
+      res ? location.reload() : null;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <section className='relative m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
+    <section className='relative m-5 flex h-[15rem] w-[40rem] rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[20rem] xl:w-[55rem] 2xl:h-[30rem] 2xl:w-[78.5rem] 3xl:h-[30rem] 3xl:w-[110rem]'>
       <button
         onClick={props.onClose}
         className='absolute z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
@@ -71,6 +96,13 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
           draggingDispatch={lessonsDraggingDispatch}
           diraction={Diractions.ROW}
         />
+        <section className='absolute bottom-8 left-1/2 mx-auto w-44 flex-none -translate-x-1/2'>
+          <Button
+            label={'SUBMIT'}
+            color={ButtonColors.BLUE}
+            onClick={sumbitUpdate}
+          />
+        </section>
       </div>
     </section>
   );
