@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
             );
         }
     };
-    if (!!jwtToken && pathname === 'login') {
+    if (!!jwtToken && pathname === '/login') {
         return Redirect();
     }
 
@@ -49,10 +49,15 @@ export async function middleware(request: NextRequest) {
             pathname.includes("/learn") ||
             pathname.includes("/lesson")
         ) {
-            return Response.json(
-                { success: false, message: "authentication failed" },
-                { status: 401 }
-            );
+            return NextResponse.redirect(
+                new URL(
+                    "/login",
+                    request.url
+                ));
+            // return Response.json(
+            //     { success: false, message: "authentication failed" },
+            //     { status: 401 }
+            // );
         }
     } else {
         if (
