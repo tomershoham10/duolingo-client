@@ -164,12 +164,13 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
             diraction={Diractions.ROW}
           />
         </section>
-        <Button
-          label={'SUBMIT'}
-          color={ButtonColors.BLUE}
-          onClick={sumbitUpdate}
-          style={'w-44 flex-none mx-auto flex justify-center items-cetnter'}
-        />
+        <section className='mx-auto w-44 flex-none absolute bottom-8 left-1/2 -translate-x-1/2'>
+          <Button
+            label={'SUBMIT'}
+            color={ButtonColors.BLUE}
+            onClick={sumbitUpdate}
+          />
+        </section>
       </div>
     </section>
   );
