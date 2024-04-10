@@ -3,7 +3,10 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { getUnitById } from '@/app/API/classes-service/units/functions';
+import {
+  getUnitById,
+  updateUnit,
+} from '@/app/API/classes-service/units/functions';
 import {
   editUnitAction,
   editUnitReducer,
@@ -99,6 +102,23 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
     console.log('editUnitState', editUnitState);
   }, [editUnitState]);
 
+  const sumbitUpdate = async () => {
+    try {
+      const updatedUnit = {
+        _id: editUnitState.unitId,
+        description: editUnitState.description,
+        levels: editUnitState.levels,
+      };
+      const res = await updateUnit(updatedUnit);
+      res
+        ? addAlert('updated successfully', AlertSizes.small)
+        : addAlert('error upadting unit', AlertSizes.small);
+      res ? location.reload() : null;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <section className='relative m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>
       <button
@@ -147,14 +167,8 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
         <Button
           label={'SUBMIT'}
           color={ButtonColors.BLUE}
-          onClick={() => {
-            addAlert('try', AlertSizes.small, 'submit', async () =>
-              console.log('submit')
-            );
-          }}
-          style={
-            'w-44 flex-none mx-auto flex justify-center items-cetnter'
-          }
+          onClick={sumbitUpdate}
+          style={'w-44 flex-none mx-auto flex justify-center items-cetnter'}
         />
       </div>
     </section>
