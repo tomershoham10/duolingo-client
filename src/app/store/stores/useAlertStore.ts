@@ -8,15 +8,23 @@ export enum AlertSizes {
     large = "large",
 }
 
+interface AlertObjType {
+    id: number;
+    message: string;
+    size: AlertSizes;
+    actionLabel?: string;
+    action?: () => Promise<void>;
+}
+
 type AlertState = {
-    alerts: Array<{
-        id: number;
-        message: string;
-        size: AlertSizes;
-    }>;
+    alerts: Array<AlertObjType>;
 }
 type Action = {
-    addAlert: (message: string, size: AlertSizes) => void;
+    addAlert: (message: string,
+        size: AlertSizes,
+        actionLabel?: string,
+        action?: () => Promise<void>,
+    ) => void;
     removeAlert: (id: number) => void;
 }
 
@@ -24,7 +32,7 @@ let alertId = 0;
 
 export const useAlertStore = create<AlertState & Action>((set) => ({
     alerts: [],
-    addAlert: (message, size) => {
+    addAlert: (message, size, actionLabel, action) => {
         alertId += 1;
         set((state) => ({
             alerts: [
@@ -33,6 +41,8 @@ export const useAlertStore = create<AlertState & Action>((set) => ({
                     id: alertId,
                     message,
                     size,
+                    actionLabel,
+                    action,
                 },
             ],
         }));

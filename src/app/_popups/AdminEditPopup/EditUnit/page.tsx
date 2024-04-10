@@ -148,10 +148,12 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
           label={'SUBMIT'}
           color={ButtonColors.BLUE}
           onClick={() => {
-            addAlert('try', AlertSizes.small);
+            addAlert('try', AlertSizes.small, 'submit', async () =>
+              console.log('submit')
+            );
           }}
           style={
-            'w-44 flex-none mt-[] mx-auto flex justify-center items-cetnter'
+            'w-44 flex-none mx-auto flex justify-center items-cetnter'
           }
         />
       </div>
