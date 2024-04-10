@@ -6,12 +6,12 @@ export async function middleware(request: NextRequest) {
     const { pathname }: { pathname: string } = request.nextUrl;
 
     const jwtToken = request.cookies.get("jwtToken")?.value;
-    console.log('middleware', jwtToken);
+    // console.log('middleware', jwtToken);
 
     const userData = jwt.decode(
         jwtToken || '',
     ) as jwt.JwtPayload;
-    console.log(userData)
+    // console.log(userData)
     // return NextResponse.redirect(new URL('/login', request.url));
 
     const Redirect = () => {
@@ -66,7 +66,7 @@ export async function middleware(request: NextRequest) {
                 pathname.startsWith("/learn") || pathname.startsWith("/lesson") &&
                 userData.role !== PermissionsTypes.STUDENT)
         ) {
-            console.log(pathname, userData.role);
+            // console.log(pathname, userData.role);
             return Response.json(
                 { success: false, message: "authentication failed" },
                 { status: 401 }

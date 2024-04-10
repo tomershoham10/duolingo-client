@@ -35,6 +35,7 @@ import {
   timeBuffersReducer,
 } from '@/reducers/timeBuffersReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
+import PlusButton from '@/components/PlusButton/page';
 
 library.add(faPlus);
 
@@ -346,7 +347,9 @@ const ExerciseDataSection: React.FC = () => {
                 />
               </div>
 
-              <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
+              <PlusButton label={'relevant'} onClick={addTargetToRelevant} />
+
+              {/* <div className='group my-3 flex cursor-pointer flex-row items-center justify-start'>
                 <button
                   className='flex h-8 w-8 items-center justify-center rounded-full bg-duoGray-lighter text-2xl group-hover:w-fit group-hover:rounded-2xl group-hover:bg-duoGray-hover group-hover:px-2 group-hover:py-3 dark:bg-duoGrayDark-light dark:group-hover:bg-duoGrayDark-lighter lg:h-9 lg:w-9'
                   onClick={addTargetToRelevant}
@@ -356,7 +359,7 @@ const ExerciseDataSection: React.FC = () => {
                     relevant
                   </span>
                 </button>
-              </div>
+              </div> */}
             </div>
           ) : null}
         </div>

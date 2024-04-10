@@ -51,7 +51,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   };
 
   useEffect(() => {
-    console.log('infoBarStore.fieldId',infoBarStore.fieldId);
+    console.log('infoBarStore.fieldId', infoBarStore.fieldId);
   }, [infoBarStore.fieldId]);
 
   const initialCourseDataState = {
@@ -162,14 +162,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                       );
                     }}
                   >
-                    <label
-                      className={`cursor-pointer ${
-                        infoBarStore.fieldId === unit._id
-                          ? 'text-duoGreen-button'
-                          : 'dark:text-duoGrayDark-lightest'
-                      }`}
-                    >
-                      {unit._id} {infoBarStore.fieldId}
+                    <label className={`cursor-pointer`}>
                       Unit {unitIndex + 1}
                     </label>
                   </button>

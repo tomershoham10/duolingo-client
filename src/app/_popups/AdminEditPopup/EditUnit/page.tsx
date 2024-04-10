@@ -12,6 +12,9 @@ import Textbox, { FontSizes } from '@/components/Textbox/page';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import Button, { ButtonColors } from '@/components/Button/page';
+import { GoPlus } from 'react-icons/go';
+import { TiPlus } from 'react-icons/ti';
+import PlusButton from '@/components/PlusButton/page';
 
 library.add(faXmark);
 
@@ -55,34 +58,41 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
     setDragLevelsList();
   }, [setDragLevelsList]);
 
-  useEffect(() => {
-    const fetchUnit = async (unitId: string) => {
-      const response = await getUnitById(unitId);
-      if (response) {
-        editUnitDispatch({
-          type: editUnitAction.SET_DESCRIPTION,
-          payload: response.description,
-        });
+  const fetchUnit = useCallback(
+    async (unitId: string) => {
+      try {
+        const response = await getUnitById(unitId);
+        if (response) {
+          editUnitDispatch({
+            type: editUnitAction.SET_DESCRIPTION,
+            payload: response.description,
+          });
 
-        editUnitDispatch({
-          type: editUnitAction.SET_LEVELS,
-          payload: response.levels,
-        });
-        editUnitDispatch({
-          type: editUnitAction.SET_SUSPENDED_LEVELS,
-          payload: response.suspendedLevels,
-        });
+          editUnitDispatch({
+            type: editUnitAction.SET_LEVELS,
+            payload: response.levels,
+          });
+          editUnitDispatch({
+            type: editUnitAction.SET_SUSPENDED_LEVELS,
+            payload: response.suspendedLevels,
+          });
 
-        levelsDraggingDispatch({
-          type: draggingAction.SET_ITEMS_LIST,
-          payload: response.levels.map((level, levelIndex) => ({
-            id: level,
-            name: `level ${levelIndex + 1}`,
-          })),
-        });
+          levelsDraggingDispatch({
+            type: draggingAction.SET_ITEMS_LIST,
+            payload: response.levels.map((level, levelIndex) => ({
+              id: level,
+              name: `level ${levelIndex + 1}`,
+            })),
+          });
+        }
+      } catch (err) {
+        console.error(err);
       }
-    };
+    },
+    [editUnitState.unitId]
+  );
 
+  useEffect(() => {
     fetchUnit(editUnitState.unitId);
   }, [editUnitState.unitId]);
 
@@ -126,7 +136,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
         <section className='flex h-32 w-full flex-col gap-2'>
           <div className='flex flex-row justify-start'>
             <p className='text-xl font-bold'>Levels list:</p>
-            add
+            <PlusButton onClick={() => {}} />
           </div>
           <DraggbleList
             items={levelsDraggingState.itemsList}
@@ -145,7 +155,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
           style={
             'w-44 flex-none mt-[] mx-auto flex justify-center items-cetnter'
           }
-        />{' '}
+        />
       </div>
     </section>
   );

@@ -412,6 +412,13 @@ interface PaginationProps {
     onSubmit: () => Promise<void>;
 }
 
+// // PlusButton // //
+
+interface PlusButtonProps {
+    onClick: () => void;
+    label?: string;
+}
+
 // // ProgressBar // //
 
 interface ProgressBarProps {
