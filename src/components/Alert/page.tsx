@@ -5,10 +5,13 @@ import useStore from '@/app/store/useStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Button, { ButtonColors } from '@/components/Button/page';
+import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 const Alert: React.FC = () => {
   const alerts = useStore(useAlertStore, (state) => state.alerts);
   const removeAlert = useAlertStore.getState().removeAlert;
+
+  const theme = useStore(useThemeStore, (state) => state.theme);
 
   const [isAlertOpened, setIsAlertOpened] = useState<boolean>(false);
   const [alertId, setAlertId] = useState<number>();
@@ -49,19 +52,21 @@ const Alert: React.FC = () => {
     <div
       className={
         isAlertOpened
-          ? 'fixed z-30 flex h-full w-full cursor-pointer items-start justify-center overflow-auto transition duration-200 ease-out '
+          ? 'fixed z-30 flex h-full w-full cursor-pointer items-start justify-center overflow-auto transition duration-200 ease-out'
           : 'z-0 flex-none opacity-0 transition duration-200 ease-in'
       }
     >
       {isAlertOpened && alertId ? (
         <div
-          className={`mt-5 rounded-xl bg-white ${boxHight} grid min-w-[15rem] max-w-[25rem] flex-none cursor-default grid-cols-3 grid-rows-2 border-2 border-duoGray-light px-4 pb-2 pt-3 shadow-sm`}
+          className={`mt-5 rounded-xl bg-white dark:bg-duoGrayDark-darkest ${boxHight} grid min-w-[15rem] max-w-[25rem] flex-none cursor-default grid-cols-3 grid-rows-2 border-2 border-duoGray-light px-4 pb-2 pt-3 shadow-sm dark:border-duoGrayDark-light`}
         >
-          <span className='col-span-3 h-fit flex-none font-semibold text-duoGray-darkest'>
+          <span className='col-span-3 h-fit flex-none font-semibold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
             {alertMessage}
           </span>
           <Button
-            color={ButtonColors.BLUE}
+            color={
+              theme === Themes.LIGHT ? ButtonColors.BLUE : ButtonColors.WHITE
+            }
             label={'Close'}
             style={' col-span-1 col-start-3 h-fit self-end flex-none'}
             onClick={() => removeAlert(alertId)}

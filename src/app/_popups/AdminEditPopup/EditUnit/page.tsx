@@ -12,9 +12,7 @@ import Textbox, { FontSizes } from '@/components/Textbox/page';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { GoPlus } from 'react-icons/go';
-import { TiPlus } from 'react-icons/ti';
-import PlusButton from '@/components/PlusButton/page';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 library.add(faXmark);
 
@@ -25,6 +23,7 @@ interface EditUnitProps {
 }
 
 const EditUnit: React.FC<EditUnitProps> = (props) => {
+  const addAlert = useAlertStore.getState().addAlert;
   const initialUnitDataState = {
     unitId: props.unitId,
     description: undefined,
@@ -134,10 +133,9 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
           </section>
         </section>
         <section className='flex h-32 w-full flex-col gap-2'>
-          <div className='flex flex-row justify-start'>
-            <p className='text-xl font-bold'>Levels list:</p>
-            <PlusButton onClick={() => {}} />
-          </div>
+          {/* <div className='flex flex-row items-center justify-start'> */}
+          <p className='text-xl font-bold'>Levels list:</p>
+          {/* </div> */}
           <DraggbleList
             items={levelsDraggingState.itemsList}
             isDisabled={false}
@@ -150,7 +148,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
           label={'SUBMIT'}
           color={ButtonColors.BLUE}
           onClick={() => {
-            console.log('submit', editUnitState);
+            addAlert('try', AlertSizes.small);
           }}
           style={
             'w-44 flex-none mt-[] mx-auto flex justify-center items-cetnter'

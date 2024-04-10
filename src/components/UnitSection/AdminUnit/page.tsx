@@ -422,8 +422,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                                   </div> */}
                                                                                             </div>
                                                                                           ) : (
-                                                                                            <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-dark'>
-                                                                                              <label>
+                                                                                            <div className='my-1 flex h-fit w-full items-center justify-between p-2 text-duoGray-darkest hover:rounded-md hover:bg-duoGray-lighter dark:text-duoGrayDark-lightest dark:hover:bg-duoGrayDark-dark cursor-pointer'>
+                                                                                              <label className='cursor-pointer'>
                                                                                                 exercise
                                                                                                 #
                                                                                                 {exerciseIndex +
