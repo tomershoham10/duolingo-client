@@ -2,16 +2,30 @@
 import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
+import { useKeyDown } from '../utils/hooks/useKeyDown';
+import { useCallback } from 'react';
 
 const Login: React.FC = () => {
-  const handleLogin = async (formData: FormData) => {
+  const handleLogin = useCallback(async (formData: FormData) => {
     const userName = formData.get('userName')?.toString();
     const password = formData.get('password')?.toString();
     if (userName && password) {
       const res = await handleAuth(userName, password);
-      res === 200 ? location.reload() : null;
+      if (res === 200) {
+        location.reload();
+      }
     }
-  };
+  }, []);
+
+  const onSubmitCallback = useCallback(() => {
+    const form = document.querySelector('form');
+    if (form instanceof HTMLFormElement) {
+      const formData = new FormData(form);
+      handleLogin(formData);
+    }
+  }, [handleLogin]);
+
+  useKeyDown(onSubmitCallback, ['Enter']);
 
   return (
     <form
