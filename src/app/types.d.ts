@@ -309,7 +309,7 @@ enum ButtonTypes {
 }
 
 interface ButtonProps {
-    label: string;
+    label?: string;
     icon?: IconDefinition;
     color: ButtonColors;
     onClick?: () => void;

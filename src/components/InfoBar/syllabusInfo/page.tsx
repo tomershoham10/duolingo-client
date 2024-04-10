@@ -7,9 +7,21 @@ import {
 } from '@/app/store/stores/useInfoBarStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { suspendUnit, unsuspendUnit } from '@/app/API/classes-service/courses/functions';
-import { suspendLevel, unsuspendLevel } from '@/app/API/classes-service/units/functions';
-import { suspendLesson, unsuspendLesson } from '@/app/API/classes-service/levels/functions';
+import {
+  suspendUnit,
+  unsuspendUnit,
+} from '@/app/API/classes-service/courses/functions';
+import {
+  suspendLevel,
+  unsuspendLevel,
+} from '@/app/API/classes-service/units/functions';
+import {
+  suspendLesson,
+  unsuspendLesson,
+} from '@/app/API/classes-service/levels/functions';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import PlusButton from '@/components/PlusButton/page';
 
 const SyllabusInfo: React.FC = () => {
   const courseName = useStore(useCourseStore, (state) => state.name);
@@ -84,16 +96,21 @@ const SyllabusInfo: React.FC = () => {
           </span>
 
           <section className='flex flex-col gap-4'>
-            <Button
-              label={'Edit'}
-              color={ButtonColors.BLUE}
-              onClick={() => {
-                updateSelectedPopup(PopupsTypes.ADMINEDIT);
-              }}
-            />
+            <section className='flex flex-row items-center justify-between'>
+              <section className='w-[75%]'>
+                <Button
+                  label={'Edit'}
+                  color={ButtonColors.BLUE}
+                  onClick={() => {
+                    updateSelectedPopup(PopupsTypes.ADMINEDIT);
+                  }}
+                />
+              </section>
+              <PlusButton onClick={() => {}} />
+            </section>
 
             <ul className='flex flex-row justify-between'>
-              <li className='w-[47.5%]'>
+              <li className='w-[70%]'>
                 {!useInfoBarStoreObj.isFieldSuspended ? (
                   <Button
                     label={'Suspend'}
@@ -114,12 +131,12 @@ const SyllabusInfo: React.FC = () => {
                   />
                 )}
               </li>
-              <li className='w-[47.5%]'>
-                <Button label={'DELETE'} color={ButtonColors.RED} />
+              <li className='w-[3.5rem]'>
+                <Button color={ButtonColors.RED} icon={faTrashCan} />
               </li>
             </ul>
           </section>
-    </div>
+        </div>
       ) : (
         <div className='text-center'>{courseName}</div>
       )}
