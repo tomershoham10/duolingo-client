@@ -1,10 +1,11 @@
 'use client';
 import { LegacyRef, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { useRouter } from 'next/navigation';
+import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 interface StartLessonPopup {
   numberOfLessonsMade: number | undefined;
@@ -22,6 +23,8 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
   } = props;
   console.log('StartLessonPopup', props);
   const router = useRouter();
+
+  const theme = useStore(useThemeStore, (state) => state.theme);
 
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
@@ -49,7 +52,11 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
                 <div className='absolute pl-1 pt-2 font-black'>level up!</div>
                 <Button
                   label={'START'}
-                  color={ButtonColors.WHITE}
+                  color={
+                    theme === Themes.LIGHT
+                      ? ButtonColors.WHITE
+                      : ButtonColors.GRAYGREEN
+                  }
                   style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />
@@ -67,7 +74,11 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
                 </div>
                 <Button
                   label={'START'}
-                  color={ButtonColors.WHITE}
+                  color={
+                    theme === Themes.LIGHT
+                      ? ButtonColors.WHITE
+                      : ButtonColors.GRAYGREEN
+                  }
                   style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />
