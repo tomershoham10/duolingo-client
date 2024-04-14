@@ -594,7 +594,7 @@ const Lesson: React.FC = () => {
                             >
                               <div className='relative '>
                                 <div
-                                  className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem]  ${
+                                  className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem] ${
                                     lessonState.isExerciseStarted
                                       ? !lessonState.isExerciseFinished
                                         ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
@@ -627,16 +627,18 @@ const Lesson: React.FC = () => {
                                   }}
                                 >
                                   <span
-                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl                                                                     
-                                                                    ${
-                                                                      lessonState.isExerciseStarted &&
-                                                                      !lessonState.isExerciseFinished &&
-                                                                      relevantTargetIndex ===
-                                                                        lessonState.selectedTargetIndex
-                                                                        ? 'border-duoBlue-dark text-duoBlue-text'
-                                                                        : 'text-duoGray-dark group-hover:border-duoGray-buttonBorderHover group-hover:text-duoGray-darkText dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest'
-                                                                    }
-                                                                    `}
+                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl
+                                    ${
+                                      !lessonState.isExerciseStarted &&
+                                      !lessonState.isExerciseFinished
+                                        ? ''
+                                        : lessonState.isExerciseStarted &&
+                                            !lessonState.isExerciseFinished &&
+                                            relevantTargetIndex ===
+                                              lessonState.selectedTargetIndex
+                                          ? 'border-duoBlue-dark text-duoBlue-text'
+                                          : 'group-hover:border-duoGray-buttonBorderHover group-hover:text-duoGray-darkText dark:group-hover:border-duoGrayDark-light dark:group-hover:text-duoGrayDark-lightest'
+                                    }`}
                                   >
                                     {relevantTargetIndex + 1}
                                   </span>
