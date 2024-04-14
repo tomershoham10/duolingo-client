@@ -149,7 +149,7 @@ const StudentUnitSection: React.FC = () => {
             levelsIds.indexOf(studentDashboardState.currentLevelId)
           );
 
-          console.log('finisedLevels1', finisedLevels);
+          console.log('finisedLevels1', levelsIds, finisedLevels);
           for (let f: number = 0; f < finisedLevels.length; f++) {
             if (
               !studentDashboardState.finisedLevelsIds.includes(finisedLevels[f])
@@ -182,7 +182,7 @@ const StudentUnitSection: React.FC = () => {
               !studentDashboardState.lockedLevelsIds.includes(lockedLevels[l])
             ) {
               studentDashboardDispatch({
-                type: studentDashboardAction.ADD_FINISHED_LEVEL_ID,
+                type: studentDashboardAction.ADD_LOCKED_LEVEL,
                 payload: lockedLevels[l],
               });
             }
