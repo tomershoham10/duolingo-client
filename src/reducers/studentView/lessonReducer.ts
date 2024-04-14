@@ -142,7 +142,7 @@ export const lessonReducer = (
                 isExerciseStarted: false,
                 isExerciseFinished: false,
                 totalScore: -1,
-                targetsToSubmit: []
+                targetsToSubmit: [],
             };
 
         default:

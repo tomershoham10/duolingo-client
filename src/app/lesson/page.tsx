@@ -241,6 +241,11 @@ const Lesson: React.FC = () => {
   ]);
 
   useEffect(() => {
+    console.log(
+      'set exercise started check',
+      lessonState,
+      lessonState?.currentResult?.date && lessonState.currentResult.score === -1
+    );
     if (lessonState.currentResult && lessonState.currentExercise) {
       if (
         lessonState.currentResult.exerciseId === lessonState.currentExercise._id
@@ -249,6 +254,7 @@ const Lesson: React.FC = () => {
           lessonState.currentResult.date &&
           lessonState.currentResult.score === -1
         ) {
+          console.log('exercise started');
           lessonDispatch({
             type: lessonAction.START_TIMER,
           });
@@ -267,7 +273,7 @@ const Lesson: React.FC = () => {
         type: lessonAction.SET_IS_EXERCISE_STARTED,
         payload: false,
       });
-  }, [lessonState.currentResult, lessonState.currentExercise]);
+  }, [lessonState.currentResult]);
 
   useEffect(() => {
     console.log('!isExerciseFinished', !lessonState.isExerciseFinished);
@@ -281,8 +287,8 @@ const Lesson: React.FC = () => {
   }, [lessonState.isExerciseFinished]);
 
   useEffect(() => {
-    console.log('lessonState.currentExercise', lessonState.currentExercise);
-  }, [lessonState.currentExercise]);
+    console.log('lessonState', lessonState);
+  }, [lessonState]);
 
   // useEffect(() => {
   //     console.log("userId", userId);
@@ -417,9 +423,22 @@ const Lesson: React.FC = () => {
     async (nextLessonId: string, exerciseId: string, userId: string) => {
       setIsLoading(true);
       const response = await startExercise(nextLessonId, exerciseId, userId);
+      console.log('startCurrentExercise callback', response);
       if (response) {
+        console.log('starting timer');
         lessonDispatch({
           type: lessonAction.START_TIMER,
+        });
+        lessonDispatch({
+          type: lessonAction.SET_CURRENT_RESULT,
+          payload: {
+            _id: response._id,
+            userId: response.userId,
+            date: response.date,
+            exerciseId: response.exerciseId,
+            answers: response.answers,
+            score: response.score,
+          },
         });
       }
       setIsLoading(false);
@@ -696,15 +715,19 @@ const Lesson: React.FC = () => {
                           : 'mx-2 fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
                     }
                   />
-                  <span className='font-extrabold'>
-                    {lessonState.timeRemaining.minutes < 10
-                      ? `0${lessonState.timeRemaining.minutes}`
-                      : lessonState.timeRemaining.minutes}
-                    :
-                    {lessonState.timeRemaining.seconds < 10
-                      ? `0${lessonState.timeRemaining.seconds}`
-                      : lessonState.timeRemaining.seconds}
-                  </span>
+                  {lessonState.isExerciseFinished ? (
+                    <span className='font-extrabold'>00:00</span>
+                  ) : (
+                    <span className='font-extrabold'>
+                      {lessonState.timeRemaining.minutes < 10
+                        ? `0${lessonState.timeRemaining.minutes}`
+                        : lessonState.timeRemaining.minutes}
+                      :
+                      {lessonState.timeRemaining.seconds < 10
+                        ? `0${lessonState.timeRemaining.seconds}`
+                        : lessonState.timeRemaining.seconds}
+                    </span>
+                  )}
                 </div>
               </div>
               {lessonState.targetsToSubmit.length > 0 ? (
