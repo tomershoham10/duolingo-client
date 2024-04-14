@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import useClickOutside from '@/app/utils/hooks/useClickOutside';
@@ -11,34 +11,87 @@ export enum DropdownSizes {
 }
 
 const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
+  const {
+    isSearchable,
+    placeholder,
+    items,
+    value,
+    onChange,
+    className,
+    isFailed,
+    isDisabled,
+    size,
+  } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [maxHight, setMaxHight] = useState<string>(props.size);
+  const [maxHight, setMaxHight] = useState<string>(size);
   const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    props.value?.toString() || ''
+    value?.toString() || ''
   );
-  const [dropdownItems, setDropdownItems] = useState<string[]>(props.items);
+  const [dropdownItems, setDropdownItems] = useState<string[]>(items);
   //   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useClickOutside(() => setIsOpen(false));
   const searchRef = useRef<HTMLInputElement | null>(null);
 
-  const [isFailed, setIsFailed] = useState<boolean>(
-    props.isFailed ? props.isFailed : false
+  const [isSearchFailed, setIsSearchFailed] = useState<boolean>(
+    isFailed ? isFailed : false
   );
 
-  useEffect(() => {
-    setSelectedValue(props.value?.toString());
-  }, [props.value]);
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const originalItems = items;
+      setSelectedValue(event.target.value);
 
-  //   useEffect(() => {
-  //     // console.log('isOpen', isOpen);
-  //     if (isOpen) {
-  //       document.addEventListener('mousedown', handleClickOutsideDropdown);
-  //       return () => {
-  //         document.removeEventListener('mousedown', handleClickOutsideDropdown);
-  //       };
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [isOpen]);
+      const filteredItems: string[] = originalItems.filter((item) =>
+        item
+          .toLocaleLowerCase()
+          .includes(event.target.value.toLocaleLowerCase())
+      );
+      setDropdownItems(filteredItems);
+    },
+    [items]
+  );
+
+  const handleItemClick = useCallback(
+    (item: string) => {
+      setSelectedValue(item);
+      onChange && onChange(item);
+      setIsSearchFailed(false);
+      setIsOpen(false);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onChange]
+  );
+
+  const toggleDropdown = useCallback(() => {
+    if (!isDisabled) {
+      setIsOpen((prevOpen) => !prevOpen);
+    }
+  }, [isDisabled]);
+
+  const dropdownStyle = useMemo(() => {
+    let styleClass =
+      'flex h-10 w-full items-center justify-between rounded-xl border-2 font-bold uppercase md:h-12 lg:h-14';
+
+    if (props.isDisabled) {
+      styleClass +=
+        ' cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+    } else if (isFailed) {
+      styleClass +=
+        ' cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker';
+    } else if (props.isSearchable && isOpen) {
+      styleClass +=
+        ' cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+    } else {
+      styleClass +=
+        ' cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+    }
+
+    return styleClass;
+  }, [props.isDisabled, isFailed, props.isSearchable, isOpen]);
+
+  useEffect(() => {
+    setSelectedValue(value?.toString());
+  }, [value]);
 
   useEffect(() => {
     if (isOpen && searchRef && searchRef.current) {
@@ -46,13 +99,9 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     }
   }, [isOpen, searchRef]);
 
-  //   useEffect(() => {
-  //     console.log('dropdownItems', dropdownItems);
-  //   }, [dropdownItems]);
-
   useEffect(() => {
     // console.log('selectedValue1', selectedValue);
-    const originalItems = props.items;
+    const originalItems = items;
 
     if (selectedValue) {
       //   console.log('selectedValue2', selectedValue);
@@ -61,57 +110,41 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
           .toLocaleLowerCase()
           .includes(selectedValue.toString().toLocaleLowerCase())
       );
-      filteredItems.length === 0 ? setIsFailed(true) : setIsFailed(false);
+      filteredItems.length === 0
+        ? setIsSearchFailed(true)
+        : setIsSearchFailed(false);
     } else {
-      setIsFailed(false);
+      setIsSearchFailed(false);
     }
-  }, [props.items, selectedValue]);
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const originalItems = props.items;
-    setSelectedValue(event.target.value);
-
-    const filteredItems: string[] = originalItems.filter((item) =>
-      item.toLocaleLowerCase().includes(event.target.value.toLocaleLowerCase())
-    );
-    setDropdownItems(filteredItems);
-  };
-
-  const handleItemClick = (item: string) => {
-    setSelectedValue(item);
-    props.onChange && props.onChange(item);
-    setIsFailed(false);
-    setIsOpen(false);
-  };
+  }, [items, selectedValue]);
 
   return (
-    <div ref={dropdownRef} className={`relative ${props.className} w-full`}>
+    <div ref={dropdownRef} className={`relative ${className} w-full`}>
       <div
-        className={`flex h-10 w-full items-center justify-between rounded-xl border-2 font-bold uppercase md:h-12 lg:h-14
-   ${
-     props.isDisabled
-       ? 'cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-       : isFailed
-         ? 'cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker'
-         : props.isSearchable && isOpen
-           ? 'cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-           : 'cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-   }`}
-        onClick={() =>
-          setIsOpen(
-            props.isDisabled !== undefined ? !props.isDisabled && true : true
-          )
+        className={
+          dropdownStyle
+          // `flex h-10 w-full items-center justify-between rounded-xl border-2 font-bold uppercase md:h-12 lg:h-14
+          //     ${
+          //         isDisabled
+          //         ? 'cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+          //         : isSearchFailed
+          //             ? 'cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker'
+          //             : isSearchable && isOpen
+          //             ? 'cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+          //             : 'cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+          // }`
         }
+        onClick={toggleDropdown}
       >
         <div className='mx-2 flex h-full items-center justify-start text-sm md:text-base lg:text-lg'>
-          {props.isSearchable && isOpen ? (
+          {isSearchable && isOpen ? (
             <input
               type='text'
               value={selectedValue}
               onChange={handleSearch}
               ref={searchRef}
               className={`h-full w-[100%] bg-transparent text-sm focus:outline-none md:text-base lg:text-lg ${
-                isFailed
+                isSearchFailed
                   ? 'dark:text-duoRed-darker'
                   : 'dark:text-duoBlueDark-text'
               }`}
@@ -119,23 +152,25 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
           ) : (
             <span
               className={` ${
-                isFailed
+                isSearchFailed
                   ? 'normal-case dark:text-duoRed-darker'
                   : 'uppercase dark:text-duoBlueDark-text'
               }`}
             >
-              {selectedValue || props.placeholder}
+              {selectedValue || placeholder}
             </span>
           )}
         </div>
         <FontAwesomeIcon
           icon={faChevronDown}
           className={`${
-            isFailed ? 'dark:text-duoRed-darker' : 'dark:text-duoBlueDark-text'
+            isSearchFailed
+              ? 'dark:text-duoRed-darker'
+              : 'dark:text-duoBlueDark-text'
           }`}
         />
       </div>
-      {isOpen && !props.isDisabled && (
+      {isOpen && !isDisabled && (
         <ul
           className={`absolute z-50 flex flex-col items-start justify-start ${maxHight} mt-2 w-full overflow-auto rounded-xl border-2 border-duoGray-default bg-duoGray-lighter font-bold uppercase text-duoGray-dark dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark`}
         >
