@@ -187,7 +187,7 @@ const AdminSideBar: React.FC = () => {
       </label>
 
       <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>
-        <ul className='w-full cursor-default text-center text-[0.75rem] uppercase md:text-[0.9rem] lg:text-lg '>
+        <ul className='w-full cursor-default text-center text-[0.75rem] uppercase md:text-[0.9rem] lg:text-lg border-'>
           {coursesList ? (
             coursesList.length > 0 && !!coursesList[0]._id ? (
               // coursesList.map((item,index)=><></>)
