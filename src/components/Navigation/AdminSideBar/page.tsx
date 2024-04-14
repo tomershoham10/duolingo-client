@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { IconDefinition, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +14,6 @@ import {
 
 import Link from 'next/link';
 import useStore from '@/app/store/useStore';
-import { useUserStore } from '@/app/store/stores/useUserStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
@@ -23,8 +22,7 @@ import {
 } from '@/app/API/classes-service/courses/functions';
 
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
-import { PermissionsTypes } from '@/app/store/stores/useUserStore';
-import React from 'react';
+import handleLogout from '@/app/utils/functions/handleLogOut';
 
 library.add(
   faHome,
@@ -40,6 +38,7 @@ interface SidebarItem {
   popup?: PopupsTypes;
   icon?: IconDefinition;
   href?: string;
+  onClick?: () => void;
   subItems?: SidebarItem[];
 }
 
@@ -50,7 +49,7 @@ const AdminSideBar: React.FC = () => {
 
   const courseName = useStore(useCourseStore, (state) => state.name);
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
-  const useCourseStoreObj = React.useMemo(() => {
+  const useCourseStoreObj = useMemo(() => {
     return {
       updateCoursesList: useCourseStore.getState().updateCoursesList,
       updateCourseName: useCourseStore.getState().updateCourseName,
@@ -65,7 +64,7 @@ const AdminSideBar: React.FC = () => {
 
   const [isCourseExisted, setIsCourseExisted] = useState<boolean>(false);
 
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [hoveredElement, setHoveredElement] = useState<string | null>(null);
   useEffect(() => {
     const checkIfCourseExists = async (name: string) => {
       const res = await getCourseByName(name);
@@ -136,7 +135,7 @@ const AdminSideBar: React.FC = () => {
   useEffect(() => {
     usePopupStoreObj.selectedPopup === PopupsTypes.CLOSED
       ? null
-      : setIsHovered(false);
+      : setHoveredElement(null);
   }, [usePopupStoreObj.selectedPopup]);
 
   const sidebarItems: SidebarItem[] = [
@@ -171,7 +170,11 @@ const AdminSideBar: React.FC = () => {
         },
       ],
     },
-    { name: 'Settings', popup: PopupsTypes.CLOSED, icon: faCog },
+    {
+      name: 'Settings',
+      icon: faCog,
+      subItems: [{ name: 'Log out', onClick: () => handleLogout() }],
+    },
   ];
 
   return (
@@ -229,9 +232,9 @@ const AdminSideBar: React.FC = () => {
           <li
             key={sideBaritem.name}
             onMouseEnter={() =>
-              sideBaritem.subItems ? setIsHovered(true) : null
+              sideBaritem.subItems ? setHoveredElement(sideBaritem.name) : null
             }
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseLeave={() => setHoveredElement(null)}
             ref={sidebarItemRef}
             className={`duration-50 relative flex items-center justify-center transition md:justify-start ${
               //   selected === index
@@ -242,13 +245,17 @@ const AdminSideBar: React.FC = () => {
           >
             <button
               className='mx-4 flex cursor-pointer flex-row items-center justify-center overflow-hidden'
-              onClick={() =>
+              onClick={() => {
+                console.log('click');
+
                 sideBaritem.subItems
                   ? null
-                  : sideBaritem.popup
+                  : !!sideBaritem.popup
                     ? usePopupStoreObj.updateSelectedPopup(sideBaritem.popup)
-                    : null
-              }
+                    : sideBaritem.onClick
+                      ? sideBaritem.onClick
+                      : null;
+              }}
             >
               {sideBaritem.href ? (
                 <Link
@@ -283,7 +290,7 @@ const AdminSideBar: React.FC = () => {
                 </span>
               )}
             </button>
-            {isHovered && sideBaritem.subItems ? (
+            {hoveredElement === sideBaritem.name && sideBaritem.subItems ? (
               <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
                 {sideBaritem.subItems.map((subItem, subItemIndex) => (
                   <li
@@ -294,7 +301,9 @@ const AdminSideBar: React.FC = () => {
                       onClick={() =>
                         subItem.popup
                           ? usePopupStoreObj.updateSelectedPopup(subItem.popup)
-                          : null
+                          : subItem.onClick
+                            ? subItem.onClick()
+                            : null
                       }
                     >
                       {subItem.href ? (
