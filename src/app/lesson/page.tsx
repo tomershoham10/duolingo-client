@@ -130,7 +130,7 @@ const Lesson: React.FC = () => {
     fetchData();
     fetchResultsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore.nextLessonId, userStore.userId, lessonState.isExerciseStarted]);
+  }, [userStore.nextLessonId, userStore.userId]);
 
   useEffect(() => {
     lessonState.exercisesData.map((exercise) =>
@@ -236,7 +236,6 @@ const Lesson: React.FC = () => {
   }, [
     userStore.userId,
     lessonState.currentExercise,
-    lessonState.isExerciseStarted,
     lessonState.isExerciseFinished,
     lessonState.exercisesIds,
   ]);
@@ -280,6 +279,10 @@ const Lesson: React.FC = () => {
       });
     }
   }, [lessonState.isExerciseFinished]);
+
+  useEffect(() => {
+    console.log('lessonState.currentExercise', lessonState.currentExercise);
+  }, [lessonState.currentExercise]);
 
   // useEffect(() => {
   //     console.log("userId", userId);

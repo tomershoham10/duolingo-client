@@ -150,11 +150,14 @@ export const lessonReducer = (
     }
 };
 
-export const calculateTimeRemaining = (pastDate: Date, minutes: number) => {
+export const calculateTimeRemaining = (pastDate: Date, totalMinutes: number) => {
     const exerciseStartDate = new Date(pastDate).getTime();
 
     const finalTime = new Date(exerciseStartDate);
-    finalTime.setMinutes(finalTime.getMinutes() + minutes);
+    finalTime.setMinutes(finalTime.getMinutes() + Math.floor(totalMinutes));
+
+    const remainingSeconds = Math.floor((totalMinutes % 1) * 60);
+    finalTime.setSeconds(finalTime.getSeconds() + remainingSeconds);
 
     const now = new Date().getTime();
 
