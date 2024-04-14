@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { TbClockHour12 } from 'react-icons/tb';
@@ -8,7 +8,6 @@ import { FaXmark } from 'react-icons/fa6';
 import { FiFlag } from 'react-icons/fi';
 
 import Button, { ButtonColors } from '@/components/Button/page';
-import Alert from '@/components/Alert/page';
 import ProgressBar from '@/components/ProgressBar/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 
@@ -25,7 +24,6 @@ import {
 import {
   getResultsByLessonAndUser,
   startExercise,
-  submitExercise,
 } from '../API/classes-service/results/functions';
 import { getTargetsList } from '../API/classes-service/targets/functions';
 import { updateNextLessonIdForUser } from '../API/users-service/users/functions';
@@ -91,46 +89,47 @@ const Lesson: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchTargets = async () => {
-      await getTargetsList();
-    };
-    if (!!!targetsList) {
-      fetchTargets();
-    }
+  const fetchTargets = useCallback(async () => {
+    await getTargetsList();
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (userStore.nextLessonId) {
-        const response = await getExercisesData(userStore.nextLessonId);
-        response.length > 0
-          ? lessonDispatch({
-              type: lessonAction.SET_EXERCISES_DATA,
-              payload: response,
-            })
-          : null;
-      }
-    };
+    if (!!!targetsList) {
+      fetchTargets();
+    }
+  }, [fetchTargets, targetsList]);
 
-    const fetchResultsList = async () => {
-      if (userStore.nextLessonId && userStore.userId) {
-        const response = await getResultsByLessonAndUser(
-          userStore.nextLessonId,
-          userStore.userId
-        );
+  const fetchData = useCallback(async () => {
+    if (userStore.nextLessonId) {
+      const response = await getExercisesData(userStore.nextLessonId);
+      response.length > 0
+        ? lessonDispatch({
+            type: lessonAction.SET_EXERCISES_DATA,
+            payload: response,
+          })
+        : null;
+    }
+  }, [userStore.nextLessonId]);
 
-        response
-          ? lessonDispatch({
-              type: lessonAction.SET_LESSON_RESULTS,
-              payload: response,
-            })
-          : null;
-      }
-    };
+  const fetchResultsList = useCallback(async () => {
+    if (userStore.nextLessonId && userStore.userId) {
+      const response = await getResultsByLessonAndUser(
+        userStore.nextLessonId,
+        userStore.userId
+      );
 
+      response
+        ? lessonDispatch({
+            type: lessonAction.SET_LESSON_RESULTS,
+            payload: response,
+          })
+        : null;
+    }
+  }, [userStore.nextLessonId, userStore.userId]);
+  useEffect(() => {
     fetchData();
     fetchResultsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.nextLessonId, userStore.userId, lessonState.isExerciseStarted]);
 
   useEffect(() => {
@@ -186,33 +185,33 @@ const Lesson: React.FC = () => {
     }
   }, [lessonState.exercisesData, lessonState.lessonResults]);
 
+  const fetchRelevantData = useCallback(async () => {
+    if (lessonState.currentExercise) {
+      const currentExerciseId = lessonState.currentExercise._id;
+      const response = await getRelevantByFSAId(currentExerciseId);
+      response.length > 0
+        ? lessonDispatch({
+            type: lessonAction.SET_RELEVANT,
+            payload: response,
+          })
+        : null;
+    }
+  }, [lessonState.currentExercise]);
+
+  const fetchAnswersData = useCallback(async () => {
+    if (lessonState.currentExercise) {
+      const currentExerciseId = lessonState.currentExercise._id;
+      const response = await getAnswersByExerciseId(currentExerciseId);
+      response.length > 0
+        ? lessonDispatch({
+            type: lessonAction.SET_CURRENT_ANSWERS,
+            payload: response,
+          })
+        : null;
+    }
+  }, [lessonState.currentExercise]);
+
   useEffect(() => {
-    const fetchRelevantData = async () => {
-      if (lessonState.currentExercise) {
-        const currentExerciseId = lessonState.currentExercise._id;
-        const response = await getRelevantByFSAId(currentExerciseId);
-        response.length > 0
-          ? lessonDispatch({
-              type: lessonAction.SET_RELEVANT,
-              payload: response,
-            })
-          : null;
-      }
-    };
-
-    const fetchAnswersData = async () => {
-      if (lessonState.currentExercise) {
-        const currentExerciseId = lessonState.currentExercise._id;
-        const response = await getAnswersByExerciseId(currentExerciseId);
-        response.length > 0
-          ? lessonDispatch({
-              type: lessonAction.SET_CURRENT_ANSWERS,
-              payload: response,
-            })
-          : null;
-      }
-    };
-
     if (lessonState.currentExercise) {
       if (!lessonState.isExerciseFinished) {
         lessonDispatch({
@@ -233,6 +232,7 @@ const Lesson: React.FC = () => {
 
     fetchRelevantData();
     fetchAnswersData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     userStore.userId,
     lessonState.currentExercise,
@@ -271,13 +271,14 @@ const Lesson: React.FC = () => {
   }, [lessonState.currentResult, lessonState.currentExercise]);
 
   useEffect(() => {
-    console.log(' !isExerciseFinished', !lessonState.isExerciseFinished);
-    !lessonState.isExerciseFinished
-      ? lessonDispatch({
-          type: lessonAction.SET_FADE_EFFECT,
-          payload: false,
-        })
-      : null;
+    console.log('!isExerciseFinished', !lessonState.isExerciseFinished);
+
+    if (!lessonState.isExerciseFinished) {
+      lessonDispatch({
+        type: lessonAction.SET_FADE_EFFECT,
+        payload: false,
+      });
+    }
   }, [lessonState.isExerciseFinished]);
 
   // useEffect(() => {
@@ -409,44 +410,46 @@ const Lesson: React.FC = () => {
     lessonState.isExerciseFinished,
   ]);
 
-  const startCurrentExercise = async (
-    nextLessonId: string,
-    exerciseId: string,
-    userId: string
-  ) => {
-    setIsLoading(true);
-    const response = await startExercise(nextLessonId, exerciseId, userId);
-    if (response) {
-      lessonDispatch({
-        type: lessonAction.START_TIMER,
-      });
-    }
-    setIsLoading(false);
-  };
-
-  const handleTargetsDropdown = (selectedTargetName: string) => {
-    lessonDispatch({
-      type: lessonAction.SET_SELECTED_TARGET_INDEX,
-      payload: -1,
-    });
-
-    lessonDispatch({ type: lessonAction.HIDE_PLACEHOLDER });
-
-    if (targetsList) {
-      const selectedTarget = targetsList.find(
-        (target) => target.name === selectedTargetName
-      );
-
-      if (selectedTarget) {
+  const startCurrentExercise = useCallback(
+    async (nextLessonId: string, exerciseId: string, userId: string) => {
+      setIsLoading(true);
+      const response = await startExercise(nextLessonId, exerciseId, userId);
+      if (response) {
         lessonDispatch({
-          type: lessonAction.SET_TARGET_FROM_DROPDOWN,
-          payload: selectedTarget,
+          type: lessonAction.START_TIMER,
         });
       }
-    }
-  };
+      setIsLoading(false);
+    },
+    []
+  );
 
-  const addTarget = () => {
+  const handleTargetsDropdown = useCallback(
+    (selectedTargetName: string) => {
+      lessonDispatch({
+        type: lessonAction.SET_SELECTED_TARGET_INDEX,
+        payload: -1,
+      });
+
+      lessonDispatch({ type: lessonAction.HIDE_PLACEHOLDER });
+
+      if (targetsList) {
+        const selectedTarget = targetsList.find(
+          (target) => target.name === selectedTargetName
+        );
+
+        if (selectedTarget) {
+          lessonDispatch({
+            type: lessonAction.SET_TARGET_FROM_DROPDOWN,
+            payload: selectedTarget,
+          });
+        }
+      }
+    },
+    [targetsList]
+  );
+
+  const addTarget = useCallback(() => {
     const targetsIdsList = lessonState.targetsToSubmit.map((target) =>
       target ? target.id : null
     );
@@ -492,9 +495,15 @@ const Lesson: React.FC = () => {
     } else {
       addAlert('The target has already been selected.', AlertSizes.small);
     }
-  };
+  }, [
+    addAlert,
+    lessonState.relevant,
+    lessonState.selectedTargetIndex,
+    lessonState.targetFromDropdown,
+    lessonState.targetsToSubmit,
+  ]);
 
-  const continueLesson = async () => {
+  const continueLesson = useCallback(async () => {
     if (lessonState.currentExercise && userStore.userId) {
       const lengthOfLesson = lessonState.exercisesData.length;
       const indexOfCurrentExercise = lessonState.exercisesData.indexOf(
@@ -515,7 +524,12 @@ const Lesson: React.FC = () => {
         });
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    lessonState.currentExercise,
+    lessonState.exercisesData,
+    userStore.userId,
+  ]);
 
   return (
     <div className='relative w-full dark:text-duoGrayDark-lightest'>
@@ -816,9 +830,7 @@ const Lesson: React.FC = () => {
                       style={
                         'w-[15rem] 3xl:w-[20rem] flex-none text-2xl tracking-widest'
                       }
-                      onClick={() => {
-                        addTarget();
-                      }}
+                      onClick={addTarget}
                     />
                     <Button
                       label={'SUBMIT'}
