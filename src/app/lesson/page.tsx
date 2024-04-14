@@ -36,8 +36,9 @@ import {
 } from '@/reducers/studentView/lessonReducer';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
+import submitCurrentExercise from '../utils/functions/lessonPage/submitCurrentExercise';
 
-export default function Page() {
+const Lesson: React.FC = () => {
   const router = useRouter();
 
   const userStore = {
@@ -493,137 +494,6 @@ export default function Page() {
     }
   };
 
-  //   const handleDragMove = (event: DragEndEvent) => {
-  //     const { active, over } = event;
-  //     if (over && active.id !== over.id) {
-  //       setTargetsToSubmit((items) => {
-  //         const ids = items.map((item) => item.id);
-  //         const activeIndex = ids.indexOf(active.id as string);
-  //         const overIndex = ids.indexOf(over.id as string);
-  //         return arrayMove(items, activeIndex, overIndex);
-  //       });
-  //     }
-  //   };
-
-  //   const handleDragEnd = (event: DragEndEvent) => {
-  //     const { active, over } = event;
-  //     setGrabbedTargetId('released');
-
-  //     if (over && active.id !== over.id) {
-  //       setTargetsToSubmit((items) => {
-  //         const ids = items.map((item) => item.id);
-  //         const activeIndex = ids.indexOf(active.id as string);
-  //         const overIndex = ids.indexOf(over.id as string);
-  //         return arrayMove(items, activeIndex, overIndex);
-  //       });
-  //     }
-  //   };
-
-  const submitCurrentExercise = async () => {
-    let scoreByTargets: number = -1;
-    let scoreByTime: number = -1;
-    let totalScoreToSubmit: number = -1;
-    if (lessonState.targetsToSubmit.length === 0) {
-      addAlert('Please select a target.', AlertSizes.small);
-      return;
-    }
-    if (lessonState.currentResult && lessonState.currentExercise) {
-      const resultId = lessonState.currentResult._id;
-
-      const answersIds = lessonState.currentExercise.answersList;
-      console.log('answersIds', answersIds, answersIds.length);
-      const correctAnswers = lessonState.targetsToSubmit.filter((target) =>
-        answersIds.includes(target.id)
-      );
-      console.log('correctAnswers', correctAnswers);
-      if (correctAnswers.length === 0) {
-        //all tragets was guessed wrong
-        totalScoreToSubmit = 0;
-        scoreByTargets = 0;
-      } else if (
-        correctAnswers.length === answersIds.length &&
-        lessonState.targetsToSubmit.length === answersIds.length
-      ) {
-        scoreByTargets = 100;
-        console.log('scoreByTargets', scoreByTargets);
-      } else if (lessonState.targetsToSubmit.length > answersIds.length) {
-        const firstAnswer: string = correctAnswers[0].id;
-        if (answersIds.indexOf(firstAnswer) === 0) {
-          scoreByTargets = 90;
-
-          console.log('scoreByTargets', scoreByTargets);
-        } else {
-          scoreByTargets = 80;
-          console.log('scoreByTargets', scoreByTargets);
-        }
-      } else if (correctAnswers.length < answersIds.length) {
-        scoreByTargets = 85;
-        console.log('scoreByTargets', scoreByTargets);
-      }
-      const timeBuffersMinutes = lessonState.currentExercise.timeBuffers.map(
-        (timeBuffer) => timeBuffer.timeBuffer
-      );
-
-      const totalMinutesForExercise = timeBuffersMinutes.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0
-      );
-
-      //   if (
-      //     totalMinutesForExercise > timeRemaining.minutes &&
-      //     timeRemaining.minutes + timeRemaining.seconds / 60 >=
-      //       currentExercise.secondTimeBuffer
-      //   ) {
-      //     scoreByTime = 100;
-      //   } else if (
-      //     currentExercise.secondTimeBuffer > timeRemaining.minutes &&
-      //     timeRemaining.minutes + timeRemaining.seconds >= 0
-      //   ) {
-      //     scoreByTime = 75;
-      //   } else {
-      //     scoreByTime = 60;
-      //   }
-
-      scoreByTime = 100;
-
-      totalScoreToSubmit !== 0
-        ? (totalScoreToSubmit = 0.6 * scoreByTargets + 0.4 * scoreByTime)
-        : null;
-      lessonDispatch({
-        type: lessonAction.SET_TOTAL_SCORE,
-        payload: totalScoreToSubmit,
-      });
-      if (
-        totalScoreToSubmit === -1 ||
-        scoreByTime === -1 ||
-        scoreByTargets === -1
-      ) {
-        console.log(
-          'error',
-          totalScoreToSubmit === -1,
-          scoreByTime === -1,
-          scoreByTargets === -1
-        );
-        addAlert('error', AlertSizes.small);
-        return;
-      }
-
-      const resultToSubmit = {
-        _id: resultId,
-        userId: userStore.userId,
-        lessonId: userStore.nextLessonId,
-        exerciseId: lessonState.currentExercise._id,
-        answers: answersIds,
-        score: totalScoreToSubmit,
-      };
-
-      const response = await submitExercise(resultToSubmit);
-      if (response) {
-        lessonDispatch({ type: lessonAction.STOP_TIMER });
-      }
-    }
-  };
-
   const continueLesson = async () => {
     if (lessonState.currentExercise && userStore.userId) {
       const lengthOfLesson = lessonState.exercisesData.length;
@@ -828,50 +698,7 @@ export default function Page() {
                   draggingDispatch={targetsDraggingDispatch}
                   diraction={Diractions.ROW}
                 />
-              ) : // <div className='flex h-fit w-[80%] rounded-2xl border-2 px-4 py-6'>
-              //   <div className='flex h-fit w-full flex-col items-center justify-start text-duoGray-darker'>
-              //     <span className='w-full self-start font-extrabold md:text-xl xl:mb-6 xl:text-2xl 3xl:mb-12 3xl:text-4xl'>
-              //       Suspected targets
-              //     </span>
-              //     <div className='h-fit w-full'>
-              //       <div className='flex h-fit w-full flex-col items-center justify-center text-3xl font-bold 3xl:text-4xl'>
-              //         <DndContext
-              //           collisionDetection={closestCenter}
-              //           onDragStart={(event: DragEndEvent) => {
-              //             const { active } = event;
-              //             setGrabbedTargetId(active.id.toString());
-              //           }}
-              //           onDragMove={handleDragMove}
-              //           onDragEnd={handleDragEnd}
-              //         >
-              //           <SortableContext
-              //             items={lessonState.targetsToSubmit}
-              //             strategy={verticalListSortingStrategy}
-              //           >
-              //             <div className='flex h-full w-full flex-col items-center justify-center'>
-              //               {lessonState.targetsToSubmit.map(
-              //                 (targetObject, targetObjectIndex) => (
-              //                   <SortableItem
-              //                     id={targetObject.id}
-              //                     name={targetObject.name}
-              //                     key={targetObjectIndex}
-              //                     isGrabbed={
-              //                       grabbedTargetId
-              //                         ? grabbedTargetId === targetObject.id
-              //                         : false
-              //                     }
-              //                     isDisabled={isExerciseFinished}
-              //                   />
-              //                 )
-              //               )}
-              //             </div>
-              //           </SortableContext>
-              //         </DndContext>
-              //       </div>
-              //     </div>
-              //   </div>
-              // </div>
-              null}
+              ) : null}
             </div>
 
             <div
@@ -999,7 +826,18 @@ export default function Page() {
                       style={
                         'w-[15rem] 3xl:w-[20rem] text-2xl flex-none tracking-widest'
                       }
-                      onClick={submitCurrentExercise}
+                      onClick={() =>
+                        userStore.userId !== undefined &&
+                        userStore.nextLessonId !== undefined
+                          ? submitCurrentExercise(
+                              lessonState,
+                              lessonDispatch,
+                              addAlert,
+                              userStore.userId,
+                              userStore.nextLessonId
+                            )
+                          : null
+                      }
                     />
                   </>
                 ) : (
@@ -1033,4 +871,6 @@ export default function Page() {
       )}
     </div>
   );
-}
+};
+
+export default Lesson;

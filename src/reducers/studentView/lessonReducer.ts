@@ -35,7 +35,7 @@ type TargetToSubmitType = {
     name: string,
 }
 
-type Action =
+export type LessonDispatchAction =
     | { type: lessonAction.SET_EXERCISES_DATA, payload: FSAType[] }
     | { type: lessonAction.SET_LESSON_RESULTS, payload: ResultType[] }
     | { type: lessonAction.SET_EXERCISES_IDS, payload: string[] }
@@ -85,7 +85,7 @@ export interface lessonType {
 
 export const lessonReducer = (
     state: lessonType,
-    action: Action
+    action: LessonDispatchAction
 ): lessonType => {
     switch (action.type) {
         case lessonAction.SET_EXERCISES_DATA:

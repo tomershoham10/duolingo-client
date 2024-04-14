@@ -378,11 +378,9 @@ const StudentUnitSection: React.FC = () => {
                                                       levelIndex
                                                     )} mt-2 h-fit w-fit`}
                                                   >
-                                                    <>
-                                                      <LessonButton
-                                                        status={Status.LOCKED}
-                                                      />
-                                                    </>
+                                                    <LessonButton
+                                                      status={Status.LOCKED}
+                                                    />
                                                   </div>
                                                 ) : studentDashboardState.finisedLevelsIds.includes(
                                                     level._id
