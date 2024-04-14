@@ -84,33 +84,6 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     setIsOpen(false);
   };
 
-  //   const handleClickOutsideDropdown = (event: MouseEvent) => {
-  //     !props.isSearchable
-  //       ? handleClickOutside(event, dropdownRef)
-  //         ? null
-  //         : closeDropdown()
-  //       : null;
-
-  //     handleClickOutside(event, searchRef)
-  //       ? null
-  //       : handleClickOutside(event, dropdownRef)
-  //         ? null
-  //         : closeDropdown();
-  //   };
-
-  //   const handleClickOutside = (
-  //     event: MouseEvent,
-  //     ref: React.RefObject<HTMLDivElement | HTMLInputElement | null>
-  //   ) => {
-  //     if (ref && ref.current && !ref.current.contains(event.target as Node)) {
-  //       return false;
-  //     } else return true;
-  //   };
-  //   const closeDropdown = () => {
-  //     setIsOpen(false);
-  //     // setDropdownItems(props.items);
-  //   };
-
   return (
     <div ref={dropdownRef} className={`relative ${props.className} w-full`}>
       <div
@@ -124,7 +97,11 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
            ? 'cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
            : 'cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
    }`}
-        onClick={() => setIsOpen(true)}
+        onClick={() =>
+          setIsOpen(
+            props.isDisabled !== undefined ? !props.isDisabled && true : true
+          )
+        }
       >
         <div className='mx-2 flex h-full items-center justify-start text-sm md:text-base lg:text-lg'>
           {props.isSearchable && isOpen ? (
