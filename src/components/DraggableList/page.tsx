@@ -73,12 +73,16 @@ const DraggbleList: React.FC<DraggbleListProps> = (props) => {
           }
         >
           <div
-            className={`flex h-full w-full ${flexDiraction} items-center justify-start`}
+            className={`flex h-full w-full ${flexDiraction} items-center ${
+              flexDiraction === Diractions.ROW
+                ? 'justify-start'
+                : 'justify-center'
+            }`}
           >
             {props.items.map((targetObject, targetObjectIndex) => (
               <div
                 key={targetObject.id}
-                className='mb-2 flex w-[8rem] flex-row'
+                className='mb-2 flex w-full flex-row'
               >
                 <SortableItem
                   id={targetObject.id}

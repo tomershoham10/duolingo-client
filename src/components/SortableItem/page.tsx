@@ -11,23 +11,26 @@ const SortableItem: React.FC<SortableItemProps> = (
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <div
-      className="flex h-[5rem] min-w-[5rem] flex-none items-center justify-start select-none"
-    >
+    <div className='flex h-[5rem] w-full flex-none select-none items-center justify-start'>
       <div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
-        className={`border-border-duoGray-regular dark:border-duoGrayDark-light w-full flex-none rounded-xl border-2 
-        border-b-4 py-4 text-lg font-bold ${props.addedStyle}
+        className={`border-border-duoGray-regular w-full flex-none rounded-xl border-2 border-b-4 py-4 text-lg font-bold dark:border-duoGrayDark-light ${
+          props.addedStyle
+        }
         ${
           props.isDisabled
             ? ' cursor-default'
             : 'cursor-pointer active:translate-y-[1px] active:border-b-2'
-        } ${props.isGrabbed ? 'z-50 bg-white dark:bg-duoGrayDark-dark opacity-100' : ''}`}
+        } ${
+          props.isGrabbed
+            ? 'z-50 bg-white opacity-100 dark:bg-duoGrayDark-dark'
+            : ''
+        }`}
       >
-        <span className='relative flex items-center justify-center text-ellipsis text-center px-5'>
+        <span className='relative flex items-center justify-center text-ellipsis px-5 text-center'>
           {props.name}
         </span>
       </div>

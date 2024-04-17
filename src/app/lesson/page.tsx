@@ -594,7 +594,7 @@ const Lesson: React.FC = () => {
                             >
                               <div className='relative '>
                                 <div
-                                  className={`border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem] ${
+                                  className={`border-border-duoGray-regular border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem] ${
                                     lessonState.isExerciseStarted
                                       ? !lessonState.isExerciseFinished
                                         ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
@@ -602,12 +602,15 @@ const Lesson: React.FC = () => {
                                       : 'cursor-default'
                                   }
                                                                ${
-                                                                 lessonState.isExerciseStarted &&
-                                                                 !lessonState.isExerciseFinished &&
-                                                                 relevantTargetIndex ===
-                                                                   lessonState.selectedTargetIndex
-                                                                   ? 'border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text'
-                                                                   : 'border-border-duoGray-regular text-duoGray-dark hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
+                                                                 !lessonState.isExerciseStarted &&
+                                                                 !lessonState.isExerciseFinished
+                                                                   ? ''
+                                                                   : lessonState.isExerciseStarted &&
+                                                                       !lessonState.isExerciseFinished &&
+                                                                       relevantTargetIndex ===
+                                                                         lessonState.selectedTargetIndex
+                                                                     ? 'cursor-pointer border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text dark:border-duoGrayDark-lighter dark:bg-duoGrayDark-midDark'
+                                                                     : ' cursor-pointer hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText hover:dark:border-duoGrayDark-lighter hover:dark:bg-duoGrayDark-midDark'
                                                                }
                                                                 `}
                                   onClick={() => {
@@ -697,9 +700,9 @@ const Lesson: React.FC = () => {
 
             <div
               ref={infoBarRaf} //info bar
-              className='right-0 flex flex-col items-center justify-start'
+              className='right-0 mx-auto flex flex-col items-center justify-start'
             >
-              <div className='mb-3 mt-5 flex w-[80%] flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
+              <div className='mb-3 mt-5 flex flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
                 <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12  3xl:text-4xl'>
                   Unit 1 - Level 1
                   <br className='3xl:text-4xl' />
@@ -733,13 +736,16 @@ const Lesson: React.FC = () => {
                 </div>
               </div>
               {lessonState.targetsToSubmit.length > 0 ? (
-                <DraggbleList
-                  items={targetsDraggingState.itemsList}
-                  isDisabled={false}
-                  draggingState={targetsDraggingState}
-                  draggingDispatch={targetsDraggingDispatch}
-                  diraction={Diractions.ROW}
-                />
+                <div className='mx-auto w-full'>
+                  <DraggbleList
+                    items={targetsDraggingState.itemsList}
+                    isDisabled={false}
+                    draggingState={targetsDraggingState}
+                    draggingDispatch={targetsDraggingDispatch}
+                    diraction={Diractions.COL}
+                    
+                  />
+                </div>
               ) : null}
             </div>
 
