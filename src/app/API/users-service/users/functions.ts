@@ -187,12 +187,14 @@ export const updateNextLessonIdForUser = async (userId: string): Promise<any | n
         console.log("updateNextLessonIdForUser - response", response);
         if (response.ok) {
             const data = await response.json();
-            const userData = { userName: data.userName, userId: data._id, permission: data.permission, nextLessonId: data.nextLessonId, isLoggedIn: true }
+            let userData: any = { userName: data.userName, userId: data._id, permission: data.permission, nextLessonId: data.nextLessonId, isLoggedIn: true }
+
+            data.courseId ? userData = { ...userData, 'courseId': data.courseId } : null
             localStorage.setItem(
                 "userData",
                 JSON.stringify(userData),
             );
-            return data;
+            return userData;
         } else return null
     } catch (error) {
         console.error("updating user Error:", error);

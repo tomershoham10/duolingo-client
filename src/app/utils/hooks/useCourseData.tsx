@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   CourseDataActionTypes,
   courseDataAction,
@@ -31,289 +31,326 @@ const useCourseData = (
 ) => {
   const addAlert = useAlertStore.getState().addAlert;
 
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        if (!!courseDataState.courseId) {
-          const response = await getUnitsData(courseDataState.courseId);
-          if (response) {
-            courseDataDispatch({
-              type: courseDataAction.SET_UNITS,
-              payload: response,
-            });
-          } else {
-            addAlert('server error while fetching data', AlertSizes.small);
-          }
+  const fetchUnits = useCallback(async () => {
+    try {
+      if (!!courseDataState.courseId) {
+        const response = await getUnitsData(courseDataState.courseId);
+        if (response) {
+          courseDataDispatch({
+            type: courseDataAction.SET_UNITS,
+            payload: response,
+          });
+        } else {
+          addAlert('server error while fetching data', AlertSizes.small);
         }
-      } catch (error) {
-        console.error('Error fetching units data:', error);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching units data:', error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataDispatch, courseDataState.courseId]);
 
-    const fetchUnspendedUnits = async () => {
-      try {
-        if (!!courseDataState.courseId) {
-          const response = await getUnsuspendedUnitsData(
-            courseDataState.courseId
-          );
-          if (response) {
-            courseDataDispatch({
-              type: courseDataAction.SET_UNSUSPENDED_UNITS,
-              payload: response,
-            });
-          } else {
-            addAlert('server error while fetching data', AlertSizes.small);
-          }
+  const fetchUnspendedUnits = useCallback(async () => {
+    try {
+      if (!!courseDataState.courseId) {
+        const response = await getUnsuspendedUnitsData(
+          courseDataState.courseId
+        );
+        if (response) {
+          courseDataDispatch({
+            type: courseDataAction.SET_UNSUSPENDED_UNITS,
+            payload: response,
+          });
+        } else {
+          addAlert('server error while fetching data', AlertSizes.small);
         }
-      } catch (error) {
-        console.error('Error fetching units data:', error);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching units data:', error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataDispatch, courseDataState.courseId]);
+
+  useEffect(() => {
     fetchUnits();
-    fetchUnspendedUnits();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.courseId]);
 
   useEffect(() => {
-    const fetchLevels = async () => {
-      try {
-        const promises = courseDataState.units.map(async (unit) => {
-          try {
-            const levelsData = await getLevelsData(unit._id);
-            return { fatherId: unit._id, data: levelsData };
-          } catch (error) {
-            console.error('Error fetching levels for unit:', unit._id, error);
-            return { fatherId: unit._id, data: [] };
-          }
-        });
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_LEVELS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching levels', error);
-        return;
-      }
-    };
+    fetchUnspendedUnits();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataState.courseId]);
 
-    const fetchUnsuspendedLevels = async () => {
-      try {
-        const promises = courseDataState.units.map(async (unit) => {
-          try {
-            const levelsData = await getUnsuspendedLevelsData(unit._id);
-            return { fatherId: unit._id, data: levelsData };
-          } catch (error) {
-            console.error('Error fetching levels for unit:', unit._id, error);
-            return { fatherId: unit._id, data: [] };
-          }
-        });
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_UNSUSPENDED_LEVELS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching levels', error);
-        return;
-      }
-    };
+  const fetchLevels = useCallback(async () => {
+    try {
+      const promises = courseDataState.units.map(async (unit) => {
+        try {
+          const levelsData = await getLevelsData(unit._id);
+          console.log('fetchLevels - levelsData', levelsData);
+          return { fatherId: unit._id, data: levelsData };
+        } catch (error) {
+          console.error('Error fetching levels for unit:', unit._id, error);
+          return { fatherId: unit._id, data: [] };
+        }
+      });
+      const result = await Promise.all(promises);
+      console.log('fetchLevels', result);
+      courseDataDispatch({
+        type: courseDataAction.SET_LEVELS,
+        payload: result,
+      });
+    } catch (error) {
+      console.error('Error fetching levels', error);
+      return;
+    }
+  }, [courseDataDispatch, courseDataState.units]);
+
+  const fetchUnsuspendedLevels = useCallback(async () => {
+    try {
+      const promises = courseDataState.units.map(async (unit) => {
+        try {
+          const levelsData = await getUnsuspendedLevelsData(unit._id);
+          return { fatherId: unit._id, data: levelsData };
+        } catch (error) {
+          console.error('Error fetching levels for unit:', unit._id, error);
+          return { fatherId: unit._id, data: [] };
+        }
+      });
+      const result = await Promise.all(promises);
+      courseDataDispatch({
+        type: courseDataAction.SET_UNSUSPENDED_LEVELS,
+        payload: result,
+      });
+    } catch (error) {
+      console.error('Error fetching levels', error);
+      return;
+    }
+  }, [courseDataDispatch, courseDataState.units]);
+
+  useEffect(() => {
     if (courseDataState.units !== undefined) {
-    //   console.log('check', courseDataState.units);
+      //   console.log('check', courseDataState.units);
       if (courseDataState.units.length > 0) {
         fetchLevels();
-        fetchUnsuspendedLevels();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.units]);
 
   useEffect(() => {
-    const fetchLessons = async () => {
-      try {
-        const levelsIds = courseDataState.levels
-          .flatMap((level) => level.data)
-          .map((data) => data._id);
-        console.log('levelsIds', levelsIds);
-        const promises = levelsIds.map(async (levelId) => {
-          try {
-            console.log('getLessonsData - levelId', levelId);
-            const lessonsData = await getLessonsData(levelId);
-            return { fatherId: levelId, data: lessonsData };
-          } catch (error) {
-            console.error('Error fetching lessons for level:', levelId, error);
-            return { fatherId: levelId, data: [] };
-          }
-        });
-
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_LESSONS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching lessons', error);
-        return [];
+    if (courseDataState.units !== undefined) {
+      //   console.log('check', courseDataState.units);
+      if (courseDataState.units.length > 0) {
+        fetchUnsuspendedLevels();
       }
-    };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataState.units]);
 
-    const fetchUnsuspendedLessons = async () => {
-      try {
-        const levelsIds = courseDataState.levels
-          .flatMap((level) => level.data)
-          .map((data) => data._id);
-        console.log('levelsIds', levelsIds);
-        const promises = levelsIds.map(async (levelId) => {
-          try {
-            console.log('getLessonsData - levelId', levelId);
-            const lessonsData = await getUnsuspendedLessonsData(levelId);
-            return { fatherId: levelId, data: lessonsData };
-          } catch (error) {
-            console.error('Error fetching lessons for level:', levelId, error);
-            return { fatherId: levelId, data: [] };
-          }
-        });
+  const fetchLessons = useCallback(async () => {
+    try {
+      const levelsIds = courseDataState.levels
+        .flatMap((level) => level.data)
+        .map((data) => data._id);
+      const promises = levelsIds.map(async (levelId) => {
+        try {
+          const lessonsData = await getLessonsData(levelId);
+          return { fatherId: levelId, data: lessonsData };
+        } catch (error) {
+          console.error('Error fetching lessons for level:', levelId, error);
+          return { fatherId: levelId, data: [] };
+        }
+      });
 
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_UNSUSPENDED_LESSONS,
-          payload: result,
-        });
-      } catch (error) {
-        console.error('Error fetching lessons', error);
-        return [];
-      }
-    };
+      const result = await Promise.all(promises);
+      courseDataDispatch({
+        type: courseDataAction.SET_LESSONS,
+        payload: result,
+      });
+    } catch (error) {
+      console.error('Error fetching lessons', error);
+      return [];
+    }
+  }, [courseDataDispatch, courseDataState.levels]);
 
+  const fetchUnsuspendedLessons = useCallback(async () => {
+    try {
+      const levelsIds = courseDataState.levels
+        .flatMap((level) => level.data)
+        .map((data) => data._id);
+      const promises = levelsIds.map(async (levelId) => {
+        try {
+          const lessonsData = await getUnsuspendedLessonsData(levelId);
+          return { fatherId: levelId, data: lessonsData };
+        } catch (error) {
+          console.error('Error fetching lessons for level:', levelId, error);
+          return { fatherId: levelId, data: [] };
+        }
+      });
+
+      const result = await Promise.all(promises);
+      courseDataDispatch({
+        type: courseDataAction.SET_UNSUSPENDED_LESSONS,
+        payload: result,
+      });
+    } catch (error) {
+      console.error('Error fetching lessons', error);
+      return [];
+    }
+  }, [courseDataDispatch, courseDataState.levels]);
+
+  useEffect(() => {
     if (
       !!courseDataState.levels &&
       courseDataState.levels.length > 0 &&
       !!courseDataState.levels[0].fatherId
     ) {
       fetchLessons();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataState.levels]);
+
+  useEffect(() => {
+    if (
+      !!courseDataState.levels &&
+      courseDataState.levels.length > 0 &&
+      !!courseDataState.levels[0].fatherId
+    ) {
       fetchUnsuspendedLessons();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDataState.levels]);
 
-  //Unsuspended
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const lessons = courseDataState.lessons.flatMap(
-          (lesson) => lesson.data
-        );
-        console.log('fetchExercises', courseDataState.lessons, lessons);
-        const promises = lessons.map(async (lesson) => {
-          try {
-            const exercisesData = await getExercisesData(lesson._id);
-            return { fatherId: lesson._id, data: exercisesData };
-          } catch (error) {
-            console.error('Error fetching fsas for lesson:', lesson._id, error);
-            return { fatherId: lesson._id, data: [] };
-          }
-        });
-
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_EXERCISES,
-          payload: result.flat(),
-        });
-      } catch (error) {
-        console.error('Error fetching fsas', error);
-        return [];
-      }
-    };
-
-    const fetchUnsuspendedExercises = async () => {
-      try {
-        const lessons = courseDataState.lessons.flatMap(
-          (lesson) => lesson.data
-        );
-        console.log(
-          'fetchUnsuspendedExercises',
-          courseDataState.lessons,
-          lessons
-        );
-        const promises = lessons.map(async (lesson) => {
-          try {
-            const exercisesData = await getUnsuspendedExercisesData(lesson._id);
-            return { fatherId: lesson._id, data: exercisesData };
-          } catch (error) {
-            console.error('Error fetching fsas for lesson:', lesson._id, error);
-            return { fatherId: lesson._id, data: [] };
-          }
-        });
-
-        const result = await Promise.all(promises);
-        courseDataDispatch({
-          type: courseDataAction.SET_EXERCISES,
-          payload: result.flat(),
-        });
-      } catch (error) {
-        console.error('Error fetching Unsuspended fsas', error);
-        return [];
-      }
-    };
-
-    const fetchResuls = async () => {
-      try {
-        if (!!userId) {
-          const lessons = courseDataState.lessons.flatMap(
-            (lesson) => lesson.data
-          );
-          console.log(
-            'fetchUnsuspendedExercises',
-            courseDataState.lessons,
-            lessons
-          );
-
-          const promises = lessons.map(async (lesson) => {
-            try {
-              const resultsData = await getResultsByLessonAndUser(
-                lesson._id,
-                userId
-              );
-              return {
-                lessonId: lesson._id,
-                results: {
-                  numOfExercises: lesson.exercises.length,
-                  results: resultsData || [],
-                },
-              };
-            } catch (error) {
-              console.error(
-                'Error fetching results for lesson:',
-                lesson._id,
-                error
-              );
-              return {
-                lessonId: lesson._id,
-                results: {
-                  numOfExercises: lesson.exercises.length,
-                  results: [],
-                },
-              };
-            }
-          });
-
-          const result = await Promise.all(promises);
-          courseDataDispatch({
-            type: courseDataAction.SET_RESULTS,
-            payload: result.flat(),
-          });
+  const fetchExercises = useCallback(async () => {
+    try {
+      const lessons = courseDataState.lessons.flatMap((lesson) => lesson.data);
+      console.log('fetchExercises', courseDataState.lessons, lessons);
+      const promises = lessons.map(async (lesson) => {
+        try {
+          const exercisesData = await getExercisesData(lesson._id);
+          return { fatherId: lesson._id, data: exercisesData };
+        } catch (error) {
+          console.error('Error fetching fsas for lesson:', lesson._id, error);
+          return { fatherId: lesson._id, data: [] };
         }
-      } catch (error) {
-        console.error('Error fetching units data:', error);
+      });
+
+      const result = await Promise.all(promises);
+      courseDataDispatch({
+        type: courseDataAction.SET_EXERCISES,
+        payload: result.flat(),
+      });
+    } catch (error) {
+      console.error('Error fetching fsas', error);
+      return [];
+    }
+  }, [courseDataDispatch, courseDataState.lessons]);
+
+  const fetchUnsuspendedExercises = useCallback(async () => {
+    try {
+      const lessons = courseDataState.lessons.flatMap((lesson) => lesson.data);
+     
+      const promises = lessons.map(async (lesson) => {
+        try {
+          const exercisesData = await getUnsuspendedExercisesData(lesson._id);
+          return { fatherId: lesson._id, data: exercisesData };
+        } catch (error) {
+          console.error('Error fetching fsas for lesson:', lesson._id, error);
+          return { fatherId: lesson._id, data: [] };
+        }
+      });
+
+      const result = await Promise.all(promises);
+      courseDataDispatch({
+        type: courseDataAction.SET_EXERCISES,
+        payload: result.flat(),
+      });
+    } catch (error) {
+      console.error('Error fetching Unsuspended fsas', error);
+      return [];
+    }
+  }, [courseDataDispatch, courseDataState.lessons]);
+
+  const fetchResuls = useCallback(async () => {
+    try {
+      if (!!userId) {
+        const lessons = courseDataState.lessons.flatMap(
+          (lesson) => lesson.data
+        );
+        // console.log(
+        //   'fetchUnsuspendedExercises',
+        //   courseDataState.lessons,
+        //   lessons
+        // );
+
+        const promises = lessons.map(async (lesson) => {
+          try {
+            const resultsData = await getResultsByLessonAndUser(
+              lesson._id,
+              userId
+            );
+            return {
+              lessonId: lesson._id,
+              results: {
+                numOfExercises: lesson.exercises.length,
+                results: resultsData || [],
+              },
+            };
+          } catch (error) {
+            console.error(
+              'Error fetching results for lesson:',
+              lesson._id,
+              error
+            );
+            return {
+              lessonId: lesson._id,
+              results: {
+                numOfExercises: lesson.exercises.length,
+                results: [],
+              },
+            };
+          }
+        });
+
+        const result = await Promise.all(promises);
+        courseDataDispatch({
+          type: courseDataAction.SET_RESULTS,
+          payload: result.flat(),
+        });
       }
-    };
+    } catch (error) {
+      console.error('Error fetching units data:', error);
+    }
+  }, [courseDataDispatch, courseDataState.lessons, userId]);
+
+  useEffect(() => {
     if (
       !!courseDataState.lessons &&
       courseDataState.lessons.length > 0 &&
       !!courseDataState.lessons[0].fatherId
     ) {
       fetchExercises();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataState.lessons]);
+
+  useEffect(() => {
+    if (
+      !!courseDataState.lessons &&
+      courseDataState.lessons.length > 0 &&
+      !!courseDataState.lessons[0].fatherId
+    ) {
       fetchUnsuspendedExercises();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDataState.lessons]);
+
+  useEffect(() => {
+    if (
+      !!courseDataState.lessons &&
+      courseDataState.lessons.length > 0 &&
+      !!courseDataState.lessons[0].fatherId
+    ) {
       userId ? fetchResuls() : null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

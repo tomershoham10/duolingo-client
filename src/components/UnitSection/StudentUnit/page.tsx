@@ -44,7 +44,7 @@ const StudentUnitSection: React.FC = () => {
     initialCourseDataState
   );
 
-  useCourseData(userStore.courseId, courseDataState, courseDataDispatch);
+  useCourseData(userStore.userId, courseDataState, courseDataDispatch);
 
   useEffect(() => {
     console.log('courseDataState', courseDataState);
@@ -119,7 +119,12 @@ const StudentUnitSection: React.FC = () => {
         const lessonsIds = courseDataState.lessons[i].data.map(
           (lesson) => lesson._id
         );
-        console.log('current level id 2', lessonsIds, userStore.nextLessonId);
+        console.log(
+          'current level id 2',
+          courseDataState.lessons,
+          lessonsIds,
+          userStore.nextLessonId
+        );
         if (lessonsIds.includes(userStore.nextLessonId)) {
           console.log('current level id 3');
           studentDashboardDispatch({
@@ -133,13 +138,16 @@ const StudentUnitSection: React.FC = () => {
   }, [userStore.nextLessonId, courseDataState.lessons]);
 
   useEffect(() => {
+    console.log('0000000', studentDashboardState);
     if (studentDashboardState.currentLevelId && courseDataState.units) {
       for (let i: number = 0; i < courseDataState.units.length; i++) {
+        console.log('111111111111');
         const levelsIds = courseDataState.units[i].levels;
         if (
           levelsIds &&
           levelsIds.includes(studentDashboardState.currentLevelId)
         ) {
+          console.log('22222222222222');
           studentDashboardDispatch({
             type: studentDashboardAction.SET_CURRENT_UNIT_ID,
             payload: courseDataState.units[i]._id,
@@ -154,6 +162,7 @@ const StudentUnitSection: React.FC = () => {
             if (
               !studentDashboardState.finisedLevelsIds.includes(finisedLevels[f])
             ) {
+              console.log('33333333333333');
               studentDashboardDispatch({
                 type: studentDashboardAction.ADD_FINISHED_LEVEL_ID,
                 payload: finisedLevels[f],
@@ -249,19 +258,18 @@ const StudentUnitSection: React.FC = () => {
       //     (lessonObject) =>
       //       lessonObject.fatherId === studentDashboardState.currentLevelId
       //   )[0];
-      const lessonsIds = courseDataState.lessons.flatMap((lesson) =>
-        lesson.data.map((ls) => ls._id)
+
+      const currentLevelLessons = courseDataState.lessons.find(
+        (lessons) => lessons.fatherId === studentDashboardState.currentLevelId
       );
-      console.log(
-        'index',
-        lessonsIds,
-        userStore.nextLessonId,
-        lessonsIds.indexOf(userStore.nextLessonId)
-      );
-      studentDashboardDispatch({
-        type: studentDashboardAction.SET_NUM_OF_LESSONS_MADE,
-        payload: lessonsIds.indexOf(userStore.nextLessonId),
-      });
+      if (currentLevelLessons !== undefined) {
+        const lessonsIds = currentLevelLessons.data.map((lesson) => lesson._id);
+        console.log('index', lessonsIds, userStore.nextLessonId);
+        studentDashboardDispatch({
+          type: studentDashboardAction.SET_NUM_OF_LESSONS_MADE,
+          payload: lessonsIds.indexOf(userStore.nextLessonId),
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentDashboardState.currentLevelId, userStore.nextLessonId]);
@@ -354,10 +362,7 @@ const StudentUnitSection: React.FC = () => {
                       courseDataState.levels.length > 0
                         ? courseDataState.levels.map(
                             (levelsObject, levelsObjectIndex) => (
-                              <div
-                                key={levelsObject.fatherId}
-                                className='h-full'
-                              >
+                              <div key={levelsObjectIndex} className='h-full'>
                                 {courseDataState.levels.length === 1 ||
                                 (studentDashboardState.lockedLevelsIds.length >
                                   0 &&
@@ -414,7 +419,6 @@ const StudentUnitSection: React.FC = () => {
                                                           }
                                                         />
                                                       </section>
-
                                                       <LessonButton
                                                         status={Status.PROGRESS}
                                                         numberOfLessonsMade={
@@ -434,7 +438,6 @@ const StudentUnitSection: React.FC = () => {
                                                           levelButtonRef
                                                         }
                                                       />
-
                                                       <StartLessonPopup
                                                         numberOfLessonsMade={
                                                           studentDashboardState.numOfLessonsMade +

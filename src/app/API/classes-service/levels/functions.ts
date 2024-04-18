@@ -97,7 +97,7 @@ export const getUnsuspendedLessonsData = async (levelId: string): Promise<Lesson
         if (response.ok) {
             const data = await response.json();
             const resLessons = data.lessons;
-            console.log("leves api getUnsuspendedLessonsData - resLessons", resLessons);
+            // console.log("leves api getUnsuspendedLessonsData - resLessons", resLessons);
             return resLessons;
         } else if (response.status === 404) {
             console.log('getUnsuspendedLessonsData - 404');

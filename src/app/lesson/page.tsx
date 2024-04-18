@@ -34,7 +34,9 @@ import {
 } from '@/reducers/studentView/lessonReducer';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
-import submitCurrentExercise from '../utils/functions/lessonPage/submitCurrentExercise';
+import submitCurrentExercise, {
+  submitCurrentExerciseParams,
+} from '../utils/functions/lessonPage/submitCurrentExercise';
 
 const Lesson: React.FC = () => {
   const router = useRouter();
@@ -63,6 +65,7 @@ const Lesson: React.FC = () => {
     totalScore: -1,
     isExerciseStarted: false,
     isExerciseFinished: false,
+    isExerciseSubmitted: false,
     isTimerRunning: false,
     timeRemaining: { minutes: 0, seconds: 0 },
     selectedTargetIndex: -1,
@@ -102,12 +105,14 @@ const Lesson: React.FC = () => {
   const fetchData = useCallback(async () => {
     if (userStore.nextLessonId) {
       const response = await getExercisesData(userStore.nextLessonId);
-      response.length > 0
-        ? lessonDispatch({
-            type: lessonAction.SET_EXERCISES_DATA,
-            payload: response,
-          })
-        : null;
+      if (response.length > 0) {
+        lessonDispatch({
+          type: lessonAction.SET_EXERCISES_DATA,
+          payload: response,
+        });
+        fetchRelevantData();
+        fetchAnswersData();
+      }
     }
   }, [userStore.nextLessonId]);
 
@@ -212,23 +217,23 @@ const Lesson: React.FC = () => {
   }, [lessonState.currentExercise]);
 
   useEffect(() => {
-    if (lessonState.currentExercise) {
-      if (!lessonState.isExerciseFinished) {
-        lessonDispatch({
-          type: lessonAction.SET_NUM_OF_EXERCISES_MADE,
-          payload: lessonState.exercisesIds.indexOf(
-            lessonState.currentExercise._id
-          ),
-        });
-      } else {
-        lessonDispatch({
-          type: lessonAction.SET_NUM_OF_EXERCISES_MADE,
-          payload:
-            lessonState.exercisesIds.indexOf(lessonState.currentExercise._id) +
-            1,
-        });
-      }
-    }
+    //   if (lessonState.currentExercise) {
+    //     if (!lessonState.isExerciseFinished) {
+    //       lessonDispatch({
+    //         type: lessonAction.SET_NUM_OF_EXERCISES_MADE,
+    //         payload: lessonState.exercisesIds.indexOf(
+    //           lessonState.currentExercise._id
+    //         ),
+    //       });
+    //     } else {
+    //       lessonDispatch({
+    //         type: lessonAction.SET_NUM_OF_EXERCISES_MADE,
+    //         payload:
+    //           lessonState.exercisesIds.indexOf(lessonState.currentExercise._id) +
+    //           1,
+    //       });
+    //     }
+    //   }
 
     fetchRelevantData();
     fetchAnswersData();
@@ -288,7 +293,7 @@ const Lesson: React.FC = () => {
 
   useEffect(() => {
     console.log('lessonState', lessonState);
-  }, [lessonState]);
+  }, [lessonState.targetFromDropdown]);
 
   // useEffect(() => {
   //     console.log("userId", userId);
@@ -494,6 +499,10 @@ const Lesson: React.FC = () => {
       });
 
       lessonDispatch({
+        type: lessonAction.SET_TARGET_FROM_DROPDOWN,
+        payload: null,
+      });
+      lessonDispatch({
         type: lessonAction.SET_SELECTED_TARGET_INDEX,
         payload: -1,
       });
@@ -507,6 +516,12 @@ const Lesson: React.FC = () => {
         type: lessonAction.ADD_TARGET_TO_SUBMIT,
         payload: { id: _id, name: name },
       });
+
+      targetsDraggingDispatch({
+        type: draggingAction.ADD_ITEM,
+        payload: { id: _id, name: name },
+      });
+
       lessonDispatch({
         type: lessonAction.SET_TARGET_FROM_DROPDOWN,
         payload: null,
@@ -525,6 +540,28 @@ const Lesson: React.FC = () => {
     lessonState.targetsToSubmit,
   ]);
 
+  const submitExercise = useCallback(
+    async (params: submitCurrentExerciseParams) => {
+      const response = await submitCurrentExercise(params);
+      if (response && !!lessonState.currentExercise) {
+        lessonDispatch({ type: lessonAction.STOP_TIMER });
+        lessonDispatch({
+          type: lessonAction.SET_IS_EXERCISE_SUBMITTED,
+          payload: true,
+        });
+        lessonDispatch({
+          type: lessonAction.SET_NUM_OF_EXERCISES_MADE,
+          payload:
+            lessonState.exercisesIds.indexOf(lessonState.currentExercise._id) +
+            1,
+        });
+        // fetchRelevantData();
+        // fetchAnswersData();
+      }
+    },
+    [lessonState.currentExercise, lessonState.exercisesIds]
+  );
+
   const continueLesson = useCallback(async () => {
     if (lessonState.currentExercise && userStore.userId) {
       const lengthOfLesson = lessonState.exercisesData.length;
@@ -537,8 +574,10 @@ const Lesson: React.FC = () => {
         console.log('last exercise');
         const response = await updateNextLessonIdForUser(userStore.userId);
         console.log('last exercise- response', response);
-        if (response) {
+        if (!!response) {
           router.push('/learn');
+        } else {
+          addAlert('error while submitting the lesson', AlertSizes.small);
         }
       } else {
         lessonDispatch({
@@ -596,17 +635,17 @@ const Lesson: React.FC = () => {
                                 <div
                                   className={`border-border-duoGray-regular border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem] ${
                                     lessonState.isExerciseStarted
-                                      ? !lessonState.isExerciseFinished
+                                      ? !lessonState.isExerciseSubmitted
                                         ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
                                         : 'cursor-default'
                                       : 'cursor-default'
                                   }
                                                                ${
                                                                  !lessonState.isExerciseStarted &&
-                                                                 !lessonState.isExerciseFinished
+                                                                 !lessonState.isExerciseSubmitted
                                                                    ? ''
                                                                    : lessonState.isExerciseStarted &&
-                                                                       !lessonState.isExerciseFinished &&
+                                                                       !lessonState.isExerciseSubmitted &&
                                                                        relevantTargetIndex ===
                                                                          lessonState.selectedTargetIndex
                                                                      ? 'cursor-pointer border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text dark:border-duoGrayDark-lighter dark:bg-duoGrayDark-midDark'
@@ -615,7 +654,7 @@ const Lesson: React.FC = () => {
                                                                 `}
                                   onClick={() => {
                                     if (
-                                      !lessonState.isExerciseFinished &&
+                                      !lessonState.isExerciseSubmitted &&
                                       lessonState.isExerciseStarted
                                     ) {
                                       lessonDispatch({
@@ -633,10 +672,10 @@ const Lesson: React.FC = () => {
                                     className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl
                                     ${
                                       !lessonState.isExerciseStarted &&
-                                      !lessonState.isExerciseFinished
+                                      !lessonState.isExerciseSubmitted
                                         ? ''
                                         : lessonState.isExerciseStarted &&
-                                            !lessonState.isExerciseFinished &&
+                                            !lessonState.isExerciseSubmitted &&
                                             relevantTargetIndex ===
                                               lessonState.selectedTargetIndex
                                           ? 'border-duoBlue-dark text-duoBlue-text'
@@ -674,7 +713,7 @@ const Lesson: React.FC = () => {
                             onChange={handleTargetsDropdown}
                             isDisabled={
                               !lessonState.isExerciseStarted ||
-                              lessonState.isExerciseFinished
+                              lessonState.isExerciseSubmitted
                             }
                             size={DropdownSizes.SMALL}
                             className={'z-10 mt-5 w-[16rem]'}
@@ -687,7 +726,7 @@ const Lesson: React.FC = () => {
                           items={['']}
                           value={''}
                           onChange={() => console.log('')}
-                          isDisabled={!lessonState.isExerciseStarted}
+                          isDisabled={!lessonState.isExerciseSubmitted}
                           size={DropdownSizes.SMALL}
                           className={'z-10 mt-5 w-[16rem]'}
                         />
@@ -743,7 +782,6 @@ const Lesson: React.FC = () => {
                     draggingState={targetsDraggingState}
                     draggingDispatch={targetsDraggingDispatch}
                     diraction={Diractions.COL}
-                    
                   />
                 </div>
               ) : null}
@@ -753,25 +791,28 @@ const Lesson: React.FC = () => {
               // ref={buttonsBarRef} //buttons bar
               className={`
                                 ${
-                                  lessonState.isExerciseFinished
+                                  lessonState.isExerciseFinished &&
+                                  lessonState.isExerciseSubmitted
                                     ? lessonState.totalScore === 100
-                                      ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter dark:border-duoGrayDark-light'
+                                      ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
                                       : lessonState.totalScore === 0
-                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter dark:border-duoGrayDark-light'
-                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light dark:border-duoGrayDark-light'
+                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light dark:border-duoGrayDark-light  dark:bg-duoGrayDark-dark'
                                     : 'relative col-span-2 flex items-center justify-center border-t-2 dark:border-duoGrayDark-light'
                                 }`}
             >
               <div
                 className={
                   lessonState.isExerciseStarted
-                    ? lessonState.isExerciseFinished
+                    ? lessonState.isExerciseFinished &&
+                      lessonState.isExerciseSubmitted
                       ? 'absolute w-[40%] 3xl:w-[50%]'
                       : 'absolute flex w-[45%] justify-between 3xl:w-[30%]'
                     : 'absolute active:-translate-y-1'
                 }
               >
-                {lessonState.isExerciseFinished ? (
+                {lessonState.isExerciseFinished &&
+                lessonState.isExerciseSubmitted ? (
                   <div className='absolute flex h-full w-full items-center justify-between'>
                     <div className='flex h-full flex-none flex-row items-center '>
                       {lessonState.totalScore === 100 ? (
@@ -829,7 +870,7 @@ const Lesson: React.FC = () => {
                         }
 
                         <button
-                          className={`flex flex-row items-center justify-start font-extrabold uppercase ${
+                          className={`flex flex-row items-center justify-start font-extrabold uppercase dark:opacity-70 ${
                             lessonState.totalScore === 100
                               ? 'text-duoGreen-text hover:text-duoGreen-midText'
                               : lessonState.totalScore === 0
@@ -872,18 +913,19 @@ const Lesson: React.FC = () => {
                       style={
                         'w-[15rem] 3xl:w-[20rem] text-2xl flex-none tracking-widest'
                       }
-                      onClick={() =>
-                        userStore.userId !== undefined &&
-                        userStore.nextLessonId !== undefined
-                          ? submitCurrentExercise(
+                      onClick={() => {
+                        const userId = userStore.userId;
+                        const nextLessonId = userStore.nextLessonId;
+                        userId !== undefined && nextLessonId !== undefined
+                          ? submitExercise({
                               lessonState,
                               lessonDispatch,
                               addAlert,
-                              userStore.userId,
-                              userStore.nextLessonId
-                            )
-                          : null
-                      }
+                              userId,
+                              nextLessonId,
+                            })
+                          : null;
+                      }}
                     />
                   </>
                 ) : (

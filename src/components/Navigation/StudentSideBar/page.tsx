@@ -12,15 +12,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Link from 'next/link';
-import useStore from '@/app/store/useStore';
-import { useUserStore } from '@/app/store/stores/useUserStore';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
 
 const StudentSideBar: React.FC = () => {
   const pathname = usePathname();
-  const permission = useStore(useUserStore, (state) => state.permission);
-  console.log('StudentSideBar', permission);
+
   const [selected, setSelected] = useState<number>();
 
   const sidebarItems: { label: string; icon: any; href: string }[] = [

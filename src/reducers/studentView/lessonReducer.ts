@@ -21,6 +21,7 @@ export enum lessonAction {
     START_TIMER = "startTimer",
     SET_IS_EXERCISE_STARTED = "setIsExerciseStarted",
     SET_IS_EXERCISE_FINISHED = "setIsExerciseFinished",
+    SET_IS_EXERCISE_SUBMITTED = "setIsExerciseSubmitted",
     STOP_TIMER = "stopTimer",
     UPDATE_NEXT_EXERCISE = "updateNextExercise"
 }
@@ -51,6 +52,7 @@ export type LessonDispatchAction =
     | { type: lessonAction.STOP_TIMER }
     | { type: lessonAction.SET_IS_EXERCISE_STARTED, payload: boolean }
     | { type: lessonAction.SET_IS_EXERCISE_FINISHED, payload: boolean }
+    | { type: lessonAction.SET_IS_EXERCISE_SUBMITTED, payload: boolean }
     | { type: lessonAction.SET_SELECTED_TARGET_INDEX, payload: number }
     | { type: lessonAction.SET_TARGETS_TO_SUBMIT, payload: TargetToSubmitType[] }
     | { type: lessonAction.ADD_TARGET_TO_SUBMIT, payload: TargetToSubmitType }
@@ -75,6 +77,7 @@ export interface lessonType {
     totalScore: number, //-1
     isExerciseStarted: boolean, //false
     isExerciseFinished: boolean,//false
+    isExerciseSubmitted: boolean,
     timeRemaining: TimeType, //{ minutes: 0, seconds: 0 }
     selectedTargetIndex: number //-1,
     targetsToSubmit: TargetToSubmitType[],
@@ -116,6 +119,8 @@ export const lessonReducer = (
             return { ...state, isExerciseStarted: action.payload };
         case lessonAction.SET_IS_EXERCISE_FINISHED:
             return { ...state, isExerciseFinished: action.payload };
+        case lessonAction.SET_IS_EXERCISE_SUBMITTED:
+            return { ...state, isExerciseSubmitted: action.payload };
         case lessonAction.STOP_TIMER:
             return { ...state, isExerciseFinished: true };
         case lessonAction.SET_SELECTED_TARGET_INDEX:
@@ -141,6 +146,8 @@ export const lessonReducer = (
                 ) + 1],
                 isExerciseStarted: false,
                 isExerciseFinished: false,
+                isExerciseSubmitted: false,
+                targetFromDropdown: null,
                 totalScore: -1,
                 targetsToSubmit: [],
             };

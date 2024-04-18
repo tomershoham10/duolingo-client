@@ -21,7 +21,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
     nextLessonId,
     startLessonRef,
   } = props;
-  console.log('StartLessonPopup', props);
+//   console.log('StartLessonPopup', props);
   const router = useRouter();
 
   const theme = useStore(useThemeStore, (state) => state.theme);
