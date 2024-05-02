@@ -6,11 +6,12 @@ import Button, { ButtonColors } from '@/components/Button/page';
 // import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
+import LodingAdminSection from '@/components/UnitSection/AdminUnit/LodingAdminSection/page';
 
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
-//   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+  //   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const addAlert = useAlertStore.getState().addAlert;
 
@@ -91,7 +92,11 @@ const Syllabus: React.FC = () => {
         unitsIds.length > 0 && !!courseId ? (
           <AdminUnit courseId={courseId} />
         ) : (
-          <div className=''>0 units</div>
+          <div className='flex w-full'>
+            <div className='mx-24 h-full w-full'>
+              <LodingAdminSection />
+            </div>
+          </div>
         )
       ) : (
         <div className='flex h-full w-full flex-col justify-start'>

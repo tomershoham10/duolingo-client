@@ -1,3 +1,5 @@
+import { downloadFile } from "@/app/API/files-service/functions";
+
 export enum lessonAction {
     SET_EXERCISES_DATA = 'setExercisesData',
     SET_LESSON_RESULTS = 'setLessonResults',
@@ -23,7 +25,8 @@ export enum lessonAction {
     SET_IS_EXERCISE_FINISHED = "setIsExerciseFinished",
     SET_IS_EXERCISE_SUBMITTED = "setIsExerciseSubmitted",
     STOP_TIMER = "stopTimer",
-    UPDATE_NEXT_EXERCISE = "updateNextExercise"
+    DOWNLOAD_EXERCISE_RECORD = "downloadExerciseRecord",
+    UPDATE_NEXT_EXERCISE = "updateNextExercise",
 }
 
 type TimeType = {
@@ -62,6 +65,7 @@ export type LessonDispatchAction =
     | { type: lessonAction.SET_FADE_EFFECT, payload: boolean }
     | { type: lessonAction.SET_FADE_EFFECT, payload: boolean }
     | { type: lessonAction.UPDATE_TIME_REMAINING, payload: TimeType }
+    | { type: lessonAction.DOWNLOAD_EXERCISE_RECORD }
     | { type: lessonAction.UPDATE_NEXT_EXERCISE }
 
 export interface lessonType {
@@ -86,10 +90,10 @@ export interface lessonType {
     fadeEffect: boolean, //true
 }
 
-export const lessonReducer = (
+export const lessonReducer = async (
     state: lessonType,
     action: LessonDispatchAction
-): lessonType => {
+): Promise<lessonType> => {
     switch (action.type) {
         case lessonAction.SET_EXERCISES_DATA:
             return { ...state, exercisesData: action.payload };
@@ -139,6 +143,10 @@ export const lessonReducer = (
             return { ...state, fadeEffect: action.payload };
         case lessonAction.UPDATE_TIME_REMAINING:
             return { ...state, timeRemaining: action.payload };
+
+        case lessonAction.DOWNLOAD_EXERCISE_RECORD:
+            state.currentExercise?.recordKey ? await downloadExerciseRecord(state.currentExercise?.recordKey) : null;
+            return { ...state };
         case lessonAction.UPDATE_NEXT_EXERCISE:
             return {
                 ...state, currentExercise: state.exercisesData[state.exercisesData.indexOf(
@@ -156,6 +164,10 @@ export const lessonReducer = (
             return state;
     }
 };
+
+const downloadExerciseRecord = async (recordKey: string) => {
+    const res = await downloadFile('records',recordKey);
+}
 
 export const calculateTimeRemaining = (pastDate: Date, totalMinutes: number) => {
     const exerciseStartDate = new Date(pastDate).getTime();

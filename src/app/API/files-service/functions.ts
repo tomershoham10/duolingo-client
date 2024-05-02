@@ -118,7 +118,6 @@ export const getFileMetadataByETag = async (bucketName: string, etag: string): P
     }
 }
 
-
 export const getAllRecords = async (): Promise<RecordType[]> => {
     try {
         const response = await fetch(
@@ -179,7 +178,7 @@ export const getFileByName = async (bucketName: string, objectName: string): Pro
         // const blob = await response.blob();
         console.log('getFileByName blob', blob);
 
-      
+
         return blob;
     }
     catch (error) {
@@ -218,3 +217,16 @@ export const getSonolistNamesByRecordId = async (recordId: string): Promise<stri
     }
 }
 
+export const downloadFile = async (bucketName: string, objectName: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/downloadFile/${bucketName}/${objectName}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+        return true;
+    } catch (error) {
+        console.error(`error downloadFile - ${error}`);
+        return false;
+    }
+}

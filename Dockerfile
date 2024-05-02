@@ -1,9 +1,15 @@
-FROM node:20.6 
+FROM node:20.6.1
 
-WORKDIR /usr/src/app
+WORKDIR /app
+
+COPY package*.json .
 
 COPY . .
 
-RUN npm install --production
+RUN npm install
+
 RUN npm run build
-CMD ["npm","start"]
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
