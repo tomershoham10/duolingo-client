@@ -13,6 +13,7 @@ import Table, { TableRow } from '@/components/Table/page';
 import { getFileMetadataByETag } from '@/app/API/files-service/functions';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
+import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -48,7 +49,11 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
 
   useEffect(() => {
     const fetchFSA = async () => {
-      const res = await getAllFSAs();
+      //   const res = await getAllFSAs();
+
+      const res = await pRetry(getAllFSAs, {
+        retries: 5,
+      });
       console.log('fetch FSA', res);
       editLessonDispatch({ type: editLessonAction.SET_FSAS, payload: res });
     };
@@ -61,14 +66,34 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
         try {
           const fsaRecKey = fsa.recordKey;
           console.log('fsa loop - fsaRecKey', fsaRecKey);
-          const recData = (await getFileMetadataByETag(
-            'records',
-            fsaRecKey
+
+          const recData = (await pRetry(
+            () => getFileMetadataByETag('records', fsaRecKey),
+            {
+              retries: 5,
+            }
           )) as {
             name: string;
             id: string;
             metadata: Partial<RecordMetadataType>;
           };
+          //   const recData = (await getFileMetadataByETag(
+          //     'records',
+          //     fsaRecKey
+          //   )) as {
+          //     name: string;
+          //     id: string;
+          //     metadata: Partial<RecordMetadataType>;
+          //   };
+
+          //   const recData = (await getFileMetadataByETag(
+          //     'records',
+          //     fsaRecKey
+          //   )) as {
+          //     name: string;
+          //     id: string;
+          //     metadata: Partial<RecordMetadataType>;
+          //   };
           console.log('recData', recData);
           if (!recData) {
             return null;
@@ -107,12 +132,23 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
   }, [editLessonState.tableData]);
 
   const addFsaToLesson = async () => {
-    if (!!editLessonState.selectedFSA) {
-      const status = await updateLesson(props.lessonId, {
-        exercises: [...props.exercisesList, editLessonState.selectedFSA],
-      });
-      alert(status);
-    }
+    // if (!!editLessonState.selectedFSA) {
+    const status = await pRetry(
+      () =>
+        !!editLessonState.selectedFSA
+          ? updateLesson(props.lessonId, {
+              exercises: [...props.exercisesList, editLessonState.selectedFSA],
+            })
+          : null,
+      {
+        retries: 5,
+      }
+    );
+    //   const status = await updateLesson(props.lessonId, {
+    //     exercises: [...props.exercisesList, editLessonState.selectedFSA],
+    //   });
+    alert(status);
+    // }
   };
 
   return (

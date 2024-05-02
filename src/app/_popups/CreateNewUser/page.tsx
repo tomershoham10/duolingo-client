@@ -14,6 +14,7 @@ import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { registerUser } from '@/app/API/users-service/users/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
+import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -93,12 +94,18 @@ const CreateNewUser: React.FC = () => {
       }
       return;
     }
-    const response = await registerUser(
-      userName,
-      tId,
-      password,
-      role,
-      courseId
+    // const response = await registerUser(
+    //   userName,
+    //   tId,
+    //   password,
+    //   role,
+    //   courseId
+    // );
+    const response = await pRetry(
+      () => registerUser(userName, tId, password, role, courseId),
+      {
+        retries: 5,
+      }
     );
     console.log(response);
     if (response === 201) {

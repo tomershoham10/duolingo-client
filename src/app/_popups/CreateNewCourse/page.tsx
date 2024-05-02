@@ -17,6 +17,7 @@ import {
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
+import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -46,7 +47,10 @@ const CreateNewCourse: React.FC = () => {
         return;
       }
 
-      const response = await createCourse(courseName.toString());
+      //   const response = await createCourse(courseName.toString());
+      const response = await pRetry(() => createCourse(courseName.toString()), {
+        retries: 5,
+      });
       console.log('create course - response:', response);
       if (response === 201) {
         addAlert('Course created successfully.', AlertSizes.small);
@@ -69,7 +73,10 @@ const CreateNewCourse: React.FC = () => {
 
   const updateCourseStore = async () => {
     try {
-      const response = await getCourses();
+      //   const response = await getCourses();
+      const response = await pRetry(getCourses, {
+        retries: 5,
+      });
       if (response) {
         updateCoursesList(response);
         updateSelectedPopup(PopupsTypes.CLOSED);

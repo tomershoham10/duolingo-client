@@ -16,6 +16,7 @@ import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -63,7 +64,10 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
   const fetchUnit = useCallback(
     async (unitId: string) => {
       try {
-        const response = await getUnitById(unitId);
+        // const response = await getUnitById(unitId);
+        const response = await pRetry(() => getUnitById(unitId), {
+          retries: 5,
+        });
         if (response) {
           editUnitDispatch({
             type: editUnitAction.SET_DESCRIPTION,
@@ -109,11 +113,14 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
         description: editUnitState.description,
         levels: editUnitState.levels,
       };
-      const res = await updateUnit(updatedUnit);
-      res
+      //   const res = await updateUnit(updatedUnit);
+      const response = await pRetry(() => updateUnit(updatedUnit), {
+        retries: 5,
+      });
+      response
         ? addAlert('updated successfully', AlertSizes.small)
         : addAlert('error upadting unit', AlertSizes.small);
-      res ? location.reload() : null;
+      response ? location.reload() : null;
     } catch (err) {
       console.error(err);
     }
@@ -164,7 +171,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
             diraction={Diractions.ROW}
           />
         </section>
-        <section className='mx-auto w-44 flex-none absolute bottom-8 left-1/2 -translate-x-1/2'>
+        <section className='absolute bottom-8 left-1/2 mx-auto w-44 flex-none -translate-x-1/2'>
           <Button
             label={'SUBMIT'}
             color={ButtonColors.BLUE}

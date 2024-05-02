@@ -11,6 +11,7 @@ import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
+import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -39,7 +40,10 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
   }, [lessonsDraggingState]);
 
   const fetchLevel = useCallback(async () => {
-    const response = await getLevelById(props.levelId);
+    // const response = await getLevelById(props.levelId);
+    const response = await pRetry(() => getLevelById(props.levelId), {
+      retries: 5,
+    });
     if (response) {
       console.log(response);
       //   setLevelData(response);
@@ -63,7 +67,10 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
         _id: props.levelId,
         lessons: lessonsDraggingState.itemsList.map((item) => item.id),
       };
-      const res = await updateLevel(updatedLevel);
+      //   const res = await updateLevel(updatedLevel);
+      const res = await pRetry(() => updateLevel(updatedLevel), {
+        retries: 5,
+      });
       res
         ? addAlert('updated successfully', AlertSizes.small)
         : addAlert('error upadting unit', AlertSizes.small);

@@ -8,6 +8,9 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import LodingAdminSection from '@/components/UnitSection/AdminUnit/LodingAdminSection/page';
 
+const run = async ()=>{}
+
+
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 

@@ -4,8 +4,9 @@ import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useEffect, useState } from 'react';
 import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
+import pRetry from 'p-retry';
 
-const Students: React.FC  = () => {
+const Students: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
 
   const [users, setUsers] = useState<UserType[]>([]);
@@ -15,7 +16,10 @@ const Students: React.FC  = () => {
 
     const fetchData = async () => {
       if (courseId) {
-        const response = await getUsersByCourseId(courseId);
+        // const response = await getUsersByCourseId(courseId);
+        const response = await pRetry(() => getUsersByCourseId(courseId), {
+          retries: 5,
+        });
         console.log('getUsersByCourseId', response);
         !!response ? setUsers(response) : null;
       }
