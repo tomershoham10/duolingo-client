@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect } from 'react';
+import pRetry from 'p-retry';
 import {
   CourseDataActionTypes,
   courseDataAction,
@@ -33,16 +34,22 @@ const useCourseData = (
 
   const fetchUnits = useCallback(async () => {
     try {
-      if (!!courseDataState.courseId) {
-        const response = await getUnitsData(courseDataState.courseId);
-        if (response) {
-          courseDataDispatch({
-            type: courseDataAction.SET_UNITS,
-            payload: response,
-          });
-        } else {
-          addAlert('server error while fetching data', AlertSizes.small);
+      const response = await pRetry(
+        () =>
+          !!courseDataState.courseId
+            ? getUnitsData(courseDataState.courseId)
+            : null,
+        {
+          retries: 5,
         }
+      );
+      if (response) {
+        courseDataDispatch({
+          type: courseDataAction.SET_UNITS,
+          payload: response,
+        });
+      } else {
+        addAlert('server error while fetching data', AlertSizes.small);
       }
     } catch (error) {
       console.error('Error fetching units data:', error);
@@ -52,18 +59,22 @@ const useCourseData = (
 
   const fetchUnspendedUnits = useCallback(async () => {
     try {
-      if (!!courseDataState.courseId) {
-        const response = await getUnsuspendedUnitsData(
-          courseDataState.courseId
-        );
-        if (response) {
-          courseDataDispatch({
-            type: courseDataAction.SET_UNSUSPENDED_UNITS,
-            payload: response,
-          });
-        } else {
-          addAlert('server error while fetching data', AlertSizes.small);
+      const response = await pRetry(
+        () =>
+          !!courseDataState.courseId
+            ? getUnsuspendedUnitsData(courseDataState.courseId)
+            : null,
+        {
+          retries: 5,
         }
+      );
+      if (response) {
+        courseDataDispatch({
+          type: courseDataAction.SET_UNSUSPENDED_UNITS,
+          payload: response,
+        });
+      } else {
+        addAlert('server error while fetching data', AlertSizes.small);
       }
     } catch (error) {
       console.error('Error fetching units data:', error);
@@ -85,7 +96,9 @@ const useCourseData = (
     try {
       const promises = courseDataState.units.map(async (unit) => {
         try {
-          const levelsData = await getLevelsData(unit._id);
+          const levelsData = await pRetry(() => getLevelsData(unit._id), {
+            retries: 5,
+          });
           console.log('fetchLevels - levelsData', levelsData);
           return { fatherId: unit._id, data: levelsData };
         } catch (error) {
@@ -109,7 +122,12 @@ const useCourseData = (
     try {
       const promises = courseDataState.units.map(async (unit) => {
         try {
-          const levelsData = await getUnsuspendedLevelsData(unit._id);
+          const levelsData = await pRetry(
+            () => getUnsuspendedLevelsData(unit._id),
+            {
+              retries: 5,
+            }
+          );
           return { fatherId: unit._id, data: levelsData };
         } catch (error) {
           console.error('Error fetching levels for unit:', unit._id, error);
@@ -154,7 +172,9 @@ const useCourseData = (
         .map((data) => data._id);
       const promises = levelsIds.map(async (levelId) => {
         try {
-          const lessonsData = await getLessonsData(levelId);
+          const lessonsData = await pRetry(() => getLessonsData(levelId), {
+            retries: 5,
+          });
           return { fatherId: levelId, data: lessonsData };
         } catch (error) {
           console.error('Error fetching lessons for level:', levelId, error);
@@ -180,7 +200,12 @@ const useCourseData = (
         .map((data) => data._id);
       const promises = levelsIds.map(async (levelId) => {
         try {
-          const lessonsData = await getUnsuspendedLessonsData(levelId);
+          const lessonsData = await pRetry(
+            () => getUnsuspendedLessonsData(levelId),
+            {
+              retries: 5,
+            }
+          );
           return { fatherId: levelId, data: lessonsData };
         } catch (error) {
           console.error('Error fetching lessons for level:', levelId, error);
@@ -227,7 +252,12 @@ const useCourseData = (
       console.log('fetchExercises', courseDataState.lessons, lessons);
       const promises = lessons.map(async (lesson) => {
         try {
-          const exercisesData = await getExercisesData(lesson._id);
+          const exercisesData = await pRetry(
+            () => getExercisesData(lesson._id),
+            {
+              retries: 5,
+            }
+          );
           return { fatherId: lesson._id, data: exercisesData };
         } catch (error) {
           console.error('Error fetching fsas for lesson:', lesson._id, error);
@@ -249,10 +279,15 @@ const useCourseData = (
   const fetchUnsuspendedExercises = useCallback(async () => {
     try {
       const lessons = courseDataState.lessons.flatMap((lesson) => lesson.data);
-     
+
       const promises = lessons.map(async (lesson) => {
         try {
-          const exercisesData = await getUnsuspendedExercisesData(lesson._id);
+          const exercisesData = await pRetry(
+            () => getUnsuspendedExercisesData(lesson._id),
+            {
+              retries: 5,
+            }
+          );
           return { fatherId: lesson._id, data: exercisesData };
         } catch (error) {
           console.error('Error fetching fsas for lesson:', lesson._id, error);
@@ -285,10 +320,13 @@ const useCourseData = (
 
         const promises = lessons.map(async (lesson) => {
           try {
-            const resultsData = await getResultsByLessonAndUser(
-              lesson._id,
-              userId
+            const resultsData = await pRetry(
+              () => getResultsByLessonAndUser(lesson._id, userId),
+              {
+                retries: 5,
+              }
             );
+
             return {
               lessonId: lesson._id,
               results: {
