@@ -45,11 +45,11 @@ export type LessonDispatchAction =
     | { type: lessonAction.SET_EXERCISES_IDS, payload: string[] }
     | { type: lessonAction.ADD_EXERCISE_ID, payload: string }
     | { type: lessonAction.SET_NUM_OF_EXERCISES_MADE, payload: number }
-    | { type: lessonAction.SET_CURRENT_EXERCISE, payload: FSAType }
+    | { type: lessonAction.SET_CURRENT_EXERCISE, payload: FSAType | null }
     | { type: lessonAction.SET_RELEVANT, payload: TargetType[] }
     | { type: lessonAction.SET_CURRENT_ANSWERS, payload: TargetType[] }
-    | { type: lessonAction.SET_CURRENT_RESULT, payload: ResultType | undefined }
-    | { type: lessonAction.SET_GRABBED_TARGET_ID, payload: string }
+    | { type: lessonAction.SET_CURRENT_RESULT, payload: ResultType | null }
+    | { type: lessonAction.SET_GRABBED_TARGET_ID, payload: string | null }
     | { type: lessonAction.SET_TOTAL_SCORE, payload: number }
     | { type: lessonAction.START_TIMER }
     | { type: lessonAction.STOP_TIMER }
@@ -68,20 +68,20 @@ export type LessonDispatchAction =
     | { type: lessonAction.DOWNLOAD_EXERCISE_RECORD }
     | { type: lessonAction.UPDATE_NEXT_EXERCISE }
 
-export interface lessonType {
+export interface lessonObjType {
     exercisesData: FSAType[],
     lessonResults: ResultType[],
     exercisesIds: string[],
     numOfExercisesMade: number, //0
-    currentExercise: FSAType | undefined,
+    currentExercise: FSAType | null,
     relevant: TargetType[],
     currentAnswers: TargetType[],
-    currentResult: ResultType | undefined,
-    grabbedTargetId: string | undefined,
+    currentResult: ResultType | null,
+    grabbedTargetId: string | null,
     totalScore: number, //-1
     isExerciseStarted: boolean, //false
     isExerciseFinished: boolean,//false
-    isExerciseSubmitted: boolean,
+    isExerciseSubmitted: boolean, //false
     timeRemaining: TimeType, //{ minutes: 0, seconds: 0 }
     selectedTargetIndex: number //-1,
     targetsToSubmit: TargetToSubmitType[],
@@ -90,10 +90,10 @@ export interface lessonType {
     fadeEffect: boolean, //true
 }
 
-export const lessonReducer = async (
-    state: lessonType,
+export const lessonReducer =  (
+    state: lessonObjType,
     action: LessonDispatchAction
-): Promise<lessonType> => {
+): lessonObjType => {
     switch (action.type) {
         case lessonAction.SET_EXERCISES_DATA:
             return { ...state, exercisesData: action.payload };
@@ -144,9 +144,9 @@ export const lessonReducer = async (
         case lessonAction.UPDATE_TIME_REMAINING:
             return { ...state, timeRemaining: action.payload };
 
-        case lessonAction.DOWNLOAD_EXERCISE_RECORD:
-            state.currentExercise?.recordKey ? await downloadExerciseRecord(state.currentExercise?.recordKey) : null;
-            return { ...state };
+        // case lessonAction.DOWNLOAD_EXERCISE_RECORD:
+        //     state.currentExercise?.recordKey ? await downloadExerciseRecord(state.currentExercise?.recordKey) : null;
+        //     return { ...state };
         case lessonAction.UPDATE_NEXT_EXERCISE:
             return {
                 ...state, currentExercise: state.exercisesData[state.exercisesData.indexOf(
@@ -166,7 +166,7 @@ export const lessonReducer = async (
 };
 
 const downloadExerciseRecord = async (recordKey: string) => {
-    const res = await downloadFile('records',recordKey);
+    const res = await downloadFile('records', recordKey);
 }
 
 export const calculateTimeRemaining = (pastDate: Date, totalMinutes: number) => {

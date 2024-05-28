@@ -52,27 +52,49 @@ const Lesson: React.FC = () => {
   const infoBarRaf = useRef<HTMLDivElement | null>(null);
   // const buttonsBarRef = useRef<HTMLDivElement | null>(null);
 
+  //   const initialLessonState = {
+  //     exercisesData: [],
+  //     lessonResults: [],
+  //     exercisesIds: [],
+  //     numOfExercisesMade: 0,
+  //     currentExercise: null,
+  //     relevant: [],
+  //     currentAnswers: [],
+  //     currentResult: null,
+  //     grabbedTargetId: null,
+  //     totalScore: -1,
+  //     isExerciseStarted: false,
+  //     isExerciseFinished: false,
+  //     isExerciseSubmitted: false,
+  //     isTimerRunning: false,
+  //     timeRemaining: { minutes: 0, seconds: 0 },
+  //     selectedTargetIndex: -1,
+  //     targetsToSubmit: [],
+  //     targetFromDropdown: null,
+  //     showPlaceholder: true,
+  //     fadeEffect: true,
+  //   };
+
   const initialLessonState = {
     exercisesData: [],
     lessonResults: [],
     exercisesIds: [],
-    numOfExercisesMade: 0,
-    currentExercise: undefined,
+    numOfExercisesMade: 0, //0
+    currentExercise: null,
     relevant: [],
     currentAnswers: [],
-    currentResult: undefined,
-    grabbedTargetId: undefined,
-    totalScore: -1,
-    isExerciseStarted: false,
-    isExerciseFinished: false,
+    currentResult: null,
+    grabbedTargetId: null,
+    totalScore: -1, //-1
+    isExerciseStarted: false, //false
+    isExerciseFinished: false, //false
     isExerciseSubmitted: false,
-    isTimerRunning: false,
-    timeRemaining: { minutes: 0, seconds: 0 },
-    selectedTargetIndex: -1,
+    timeRemaining: { minutes: 0, seconds: 0 }, //{ minutes: 0, seconds: 0 }
+    selectedTargetIndex: -1, //-1,
     targetsToSubmit: [],
     targetFromDropdown: null,
-    showPlaceholder: true,
-    fadeEffect: true,
+    showPlaceholder: true, //true
+    fadeEffect: true, //true
   };
 
   const [lessonState, lessonDispatch] = useReducer(
@@ -105,7 +127,7 @@ const Lesson: React.FC = () => {
   const fetchData = useCallback(async () => {
     if (userStore.nextLessonId) {
       const response = await getExercisesData(userStore.nextLessonId);
-      if (response.length > 0) {
+      if (response && response.length > 0) {
         lessonDispatch({
           type: lessonAction.SET_EXERCISES_DATA,
           payload: response,
@@ -183,7 +205,7 @@ const Lesson: React.FC = () => {
           });
           lessonDispatch({
             type: lessonAction.SET_CURRENT_RESULT,
-            payload: undefined,
+            payload: null,
           });
         }
       }
