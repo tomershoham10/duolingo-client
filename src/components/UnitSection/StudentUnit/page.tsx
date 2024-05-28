@@ -16,6 +16,9 @@ import {
 } from '@/reducers/studentView/studentDashboardReducer';
 import { courseDataReducer } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/utils/hooks/useCourseData';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:4002');
 library.add(faBook);
 
 const StudentUnitSection: React.FC = () => {
@@ -25,6 +28,20 @@ const StudentUnitSection: React.FC = () => {
     courseId: useStore(useUserStore, (state) => state.courseId),
   };
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server');
+    });
+
+    socket.on('message', (message: string) => {
+      console.log('Received message:', message);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const initialCourseDataState = {
     courseId: userStore.courseId,

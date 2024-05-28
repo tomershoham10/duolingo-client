@@ -1,8 +1,10 @@
+import { COURSES_SERVICE_ENDPOINTS, RESULTS_API } from "../apis";
+
 export const getResultsByLessonAndUser = async (lessonId: string, userId: string): Promise<ResultType[] | null> => {
     try {
         // console.log(`http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`);
         const response = await fetch(
-            `http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`,
+            `${RESULTS_API.GET_RESULTS_BY_LESSON_AND_USER}/${lessonId}/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -36,7 +38,7 @@ export const startExercise = async (lessonId: string, exerciseId: string, userId
             "answers:", [],
             "score:", -1)
         const response = await fetch(
-            `http://localhost:8080/api/results/`,
+            `${COURSES_SERVICE_ENDPOINTS.RESULTS}`,
             {
                 method: "POST",
                 credentials: "include",
@@ -71,7 +73,7 @@ export const startExercise = async (lessonId: string, exerciseId: string, userId
 export const submitExercise = async (resultToSubmit: Partial<ResultType>): Promise<ResultType | null> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/results/${resultToSubmit._id}`,
+            `${COURSES_SERVICE_ENDPOINTS.RESULTS}/${resultToSubmit._id}`,
             {
                 method: "PUT",
                 credentials: "include",

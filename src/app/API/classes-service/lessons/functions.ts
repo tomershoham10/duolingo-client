@@ -1,7 +1,9 @@
+import { COURSES_SERVICE_ENDPOINTS, LESSONS_API } from "../apis";
+
 export const getAllLessons = async (): Promise<LessonType[] | null> => {
     try {
         const response = await fetch(
-            "http://localhost:8080/api/lessons/",
+            `${COURSES_SERVICE_ENDPOINTS.LESSONS}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -29,7 +31,7 @@ export const updateLesson = async (lessonId: string, newFields: Partial<LessonTy
     try {
         console.log("updateLesson newFields", newFields);
         const response = await fetch(
-            `http://localhost:8080/api/lessons/${lessonId}`,
+            `${COURSES_SERVICE_ENDPOINTS.LESSONS}/${lessonId}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -50,7 +52,7 @@ export const updateLesson = async (lessonId: string, newFields: Partial<LessonTy
 export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/lessons/getExercisesById/${lessonId}`,
+            `${LESSONS_API.GET_EXERCISES_BY_ID}/${lessonId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -77,7 +79,7 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => 
 export const getUnsuspendedExercisesData = async (lessonId: string): Promise<FSAType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/lessons/getUnsuspendedExercisesById/${lessonId}`,
+            `${LESSONS_API.GET_EXERCISES_BY_ID}/${lessonId}`,
             {
                 method: "GET",
                 credentials: "include",

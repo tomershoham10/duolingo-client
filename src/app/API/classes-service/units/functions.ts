@@ -1,7 +1,9 @@
+import { COURSES_SERVICE_ENDPOINTS, UNITS_API } from "../apis";
+
 export const getUnits = async (): Promise<UnitType[] | null> => {
     try {
         const response = await fetch(
-            "http://localhost:8080/api/units/",
+            `${COURSES_SERVICE_ENDPOINTS.UNITS}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -30,7 +32,7 @@ export const getUnits = async (): Promise<UnitType[] | null> => {
 export const getUnitById = async (unitId: string): Promise<UnitType | null> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/${unitId}`,
+            `${COURSES_SERVICE_ENDPOINTS.UNITS}/${unitId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -57,7 +59,7 @@ export const getUnitById = async (unitId: string): Promise<UnitType | null> => {
 export const getLevelsData = async (unitId: string): Promise<LevelType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/getLevelsById/${unitId}`,
+            `${UNITS_API.GET_LEVELS_BY_ID}/${unitId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -85,7 +87,7 @@ export const getLevelsData = async (unitId: string): Promise<LevelType[]> => {
 export const getUnsuspendedLevelsData = async (unitId: string): Promise<LevelType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/getUnsuspendedLevelsById/${unitId}`,
+            `${UNITS_API.GET_UNSUSPENDED_LEVELS_BY_ID}/${unitId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -123,7 +125,7 @@ export const updateUnit = async (unit: Partial<UnitType>): Promise<boolean> => {
         console.log('updateUnit', fieldsToUpdate)
 
         const response = await fetch(
-            `http://localhost:8080/api/units/${unit._id}`,
+            `${COURSES_SERVICE_ENDPOINTS.UNITS}/${unit._id}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -142,7 +144,7 @@ export const updateUnit = async (unit: Partial<UnitType>): Promise<boolean> => {
 export const suspendLevel = async (unitId: string, levelId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/suspendLevel/${unitId}/${levelId}`,
+            `${UNITS_API.SUSPENDED_LEVEL}/${unitId}/${levelId}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -160,7 +162,7 @@ export const suspendLevel = async (unitId: string, levelId: string): Promise<boo
 export const unsuspendLevel = async (unitId: string, levelId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/units/unsuspendLevel/${unitId}/${levelId}`,
+            `${UNITS_API.UNSUSPENDED_LEVEL}/${unitId}/${levelId}`,
             {
                 method: "PUT",
                 credentials: "include",

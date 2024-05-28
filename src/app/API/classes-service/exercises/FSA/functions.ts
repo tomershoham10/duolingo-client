@@ -1,7 +1,9 @@
+import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API } from "@/app/API/classes-service/apis";
+
 export const getAllFSAs = async (): Promise<FSAType[]> => {
     try {
         const response = await fetch(
-            "http://localhost:8080/api/FSA/",
+            `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -29,7 +31,7 @@ export const getRelevantByFSAId = async (currentExerciseId: string): Promise<Tar
     try {
         // console.log(`http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`);
         const response = await fetch(
-            `http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`,
+            `${EXERCISES_API.FSA.GET_RELEVANT_BY_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -60,7 +62,7 @@ export const getRelevantByFSAId = async (currentExerciseId: string): Promise<Tar
 export const getAnswersByExerciseId = async (currentExerciseId: string) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/FSA/getAnswersByFSAId/${currentExerciseId}`,
+            `${EXERCISES_API.FSA.GET_ANSWERS_BY_FSA_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -90,7 +92,7 @@ export const getAnswersByExerciseId = async (currentExerciseId: string) => {
 export const getResultByUserAndFSAId = async (currentExerciseId: string, userId: string) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/FSA/getResultByUserAndFSAId/${currentExerciseId}/${userId}`,
+            `${EXERCISES_API.FSA.GET_RESULT_BY_USER_AND_FSA_ID}/${currentExerciseId}/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -131,7 +133,7 @@ export const createFSA = async (newFSA: Partial<FSAType>): Promise<string> => {
         // }
 
         const response = await fetch(
-            'http://localhost:8080/api/FSA/',
+            `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}`,
             {
                 method: "POST",
                 credentials: "include",

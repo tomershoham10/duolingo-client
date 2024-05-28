@@ -1,7 +1,9 @@
+import { COURSES_SERVICE_ENDPOINTS, LEVELS_API } from "../apis";
+
 export const getAllLevels = async (): Promise<LevelType[] | null> => {
     try {
         const response = await fetch(
-            "http://localhost:8080/api/levels/",
+            `${COURSES_SERVICE_ENDPOINTS.LEVELS}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -28,7 +30,7 @@ export const getAllLevels = async (): Promise<LevelType[] | null> => {
 export const getLevelById = async (levelId: string): Promise<LevelType | null> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/levels/${levelId}`,
+            `${COURSES_SERVICE_ENDPOINTS.LEVELS}/${levelId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -55,7 +57,7 @@ export const getLevelById = async (levelId: string): Promise<LevelType | null> =
 export const getLessonsData = async (levelId: string): Promise<LessonType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/levels/getLessonsById/${levelId}`,
+            `${LEVELS_API.GET_LESSONS_BY_ID}/${levelId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -83,7 +85,7 @@ export const getLessonsData = async (levelId: string): Promise<LessonType[]> => 
 export const getUnsuspendedLessonsData = async (levelId: string): Promise<LessonType[]> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/levels/getsUnsuspendedLessonsById/${levelId}`,
+            `${LEVELS_API.GET_UNSUSPENDED_LESSON_BY_ID}/${levelId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -118,7 +120,7 @@ export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> =
         level.suspendedLessons ? fieldsToUpdate.suspendedLessons : null;
 
         const response = await fetch(
-            `http://localhost:8080/api/levels/${level._id}`,
+            `${COURSES_SERVICE_ENDPOINTS.LEVELS}/${level._id}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -137,7 +139,7 @@ export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> =
 export const suspendLesson = async (levelId: string, lessonId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/levels/suspendLesson/${levelId}/${lessonId}`,
+            `${LEVELS_API.SUSPENDED_LESSON}/${levelId}/${lessonId}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -155,7 +157,7 @@ export const suspendLesson = async (levelId: string, lessonId: string): Promise<
 export const unsuspendLesson = async (levelId: string, lessonId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/levels/unsuspendLesson/${levelId}/${lessonId}`,
+            `${LEVELS_API.UNSUSPENDED_LESSON}/${levelId}/${lessonId}`,
             {
                 method: "PUT",
                 credentials: "include",

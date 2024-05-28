@@ -1,7 +1,9 @@
+import { COURSES_API, COURSES_SERVICE_ENDPOINTS } from "../apis";
+
 export const createCourse = async (name: string): Promise<number | null> => {
     try {
         console.log('createCourse', name);
-        const response = await fetch("http://localhost:8080/api/courses/", {
+        const response = await fetch(COURSES_SERVICE_ENDPOINTS.COURSES, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -20,7 +22,7 @@ export const createCourse = async (name: string): Promise<number | null> => {
 
 export const getCourses = async (): Promise<CoursesType[] | null> => {
     try {
-        const response = await fetch("http://localhost:8080/api/courses/", {
+        const response = await fetch(COURSES_SERVICE_ENDPOINTS.COURSES, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -47,7 +49,7 @@ export const getCourses = async (): Promise<CoursesType[] | null> => {
 export const getCourseByName = async (courseName: string): Promise<CoursesType | null> => {
     try {
         // console.log("courses api - courseName", courseName);
-        const response = await fetch(`http://localhost:8080/api/courses/getByName/${courseName}`, {
+        const response = await fetch(`${COURSES_API.GET_COURSE_BY_NAME}/${courseName}`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -82,7 +84,7 @@ export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
     try {
         // console.log("getUnitsData", courseId);
         const response = await fetch(
-            `http://localhost:8080/api/courses/getUnitsById/${courseId}`,
+            `${COURSES_API.GET_UNITS_BY_ID}/${courseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -108,7 +110,7 @@ export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitTyp
     try {
         // console.log("getUnitsData", courseId);
         const response = await fetch(
-            `http://localhost:8080/api/courses/getUnsuspendedUnitsById/${courseId}`,
+            `${COURSES_API.GET_UNSUSPENDED_UNITS_BY_ID}/${courseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -142,7 +144,7 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
         course.suspendedUnits ? fieldsToUpdate.suspendedUnits : null;
 
         const response = await fetch(
-            `http://localhost:8080/api/courses/${course._id}`,
+            `${COURSES_SERVICE_ENDPOINTS.COURSES}/${course._id}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -161,7 +163,7 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
 export const suspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/courses/suspendUnit/${courseId}/${unitId}`,
+            `${COURSES_API.SUSPENDED_UNITS}/${courseId}/${unitId}`,
             {
                 method: "PUT",
                 credentials: "include",
@@ -179,7 +181,7 @@ export const suspendUnit = async (courseId: string, unitId: string): Promise<boo
 export const unsuspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/courses/unsuspendUnit/${courseId}/${unitId}`,
+            `${COURSES_API.UNSUSPENDED_UNIT}/${courseId}/${unitId}`,
             {
                 method: "PUT",
                 credentials: "include",

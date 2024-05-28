@@ -1,7 +1,9 @@
+import { COURSES_SERVICE_ENDPOINTS } from "../apis";
+
 export const getTargetsList = async (): Promise<ResponseTargetType[] | null> => {
     try {
         const response = await fetch(
-            "http://localhost:8080/api/targets",
+            `${COURSES_SERVICE_ENDPOINTS.TARGETS}`,
             {
                 method: "GET",
                 credentials: "include",
