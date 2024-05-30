@@ -50,30 +50,6 @@ const Lesson: React.FC = () => {
 
   const exerciseRef = useRef<HTMLDivElement | null>(null);
   const infoBarRaf = useRef<HTMLDivElement | null>(null);
-  // const buttonsBarRef = useRef<HTMLDivElement | null>(null);
-
-  //   const initialLessonState = {
-  //     exercisesData: [],
-  //     lessonResults: [],
-  //     exercisesIds: [],
-  //     numOfExercisesMade: 0,
-  //     currentExercise: null,
-  //     relevant: [],
-  //     currentAnswers: [],
-  //     currentResult: null,
-  //     grabbedTargetId: null,
-  //     totalScore: -1,
-  //     isExerciseStarted: false,
-  //     isExerciseFinished: false,
-  //     isExerciseSubmitted: false,
-  //     isTimerRunning: false,
-  //     timeRemaining: { minutes: 0, seconds: 0 },
-  //     selectedTargetIndex: -1,
-  //     targetsToSubmit: [],
-  //     targetFromDropdown: null,
-  //     showPlaceholder: true,
-  //     fadeEffect: true,
-  //   };
 
   const initialLessonState = {
     exercisesData: [],
@@ -128,6 +104,7 @@ const Lesson: React.FC = () => {
     if (userStore.nextLessonId) {
       const response = await getExercisesData(userStore.nextLessonId);
       if (response && response.length > 0) {
+        console.log('SET_EXERCISES_DATA', response);
         lessonDispatch({
           type: lessonAction.SET_EXERCISES_DATA,
           payload: response,

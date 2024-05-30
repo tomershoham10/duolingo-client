@@ -68,7 +68,7 @@ export type LessonDispatchAction =
     | { type: lessonAction.DOWNLOAD_EXERCISE_RECORD }
     | { type: lessonAction.UPDATE_NEXT_EXERCISE }
 
-export interface lessonObjType {
+export interface lessonType {
     exercisesData: FSAType[],
     lessonResults: ResultType[],
     exercisesIds: string[],
@@ -91,9 +91,9 @@ export interface lessonObjType {
 }
 
 export const lessonReducer =  (
-    state: lessonObjType,
+    state: lessonType,
     action: LessonDispatchAction
-): lessonObjType => {
+): lessonType => {
     switch (action.type) {
         case lessonAction.SET_EXERCISES_DATA:
             return { ...state, exercisesData: action.payload };
