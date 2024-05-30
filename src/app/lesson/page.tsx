@@ -113,6 +113,7 @@ const Lesson: React.FC = () => {
         fetchAnswersData();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.nextLessonId]);
 
   const fetchResultsList = useCallback(async () => {
@@ -277,6 +278,7 @@ const Lesson: React.FC = () => {
         type: lessonAction.SET_IS_EXERCISE_STARTED,
         payload: false,
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessonState.currentResult]);
 
   useEffect(() => {
@@ -289,10 +291,6 @@ const Lesson: React.FC = () => {
       });
     }
   }, [lessonState.isExerciseFinished]);
-
-  useEffect(() => {
-    console.log('lessonState', lessonState);
-  }, [lessonState.targetFromDropdown]);
 
   // useEffect(() => {
   //     console.log("userId", userId);
