@@ -187,6 +187,30 @@ export const getFileByName = async (bucketName: string, objectName: string): Pro
     }
 }
 
+export const getEncryptedFileByName = async (bucketName: string, objectName: string): Promise<any> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4002/api/files/downloadEncryptedZip/${bucketName}/${objectName}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+
+        console.log("downloadEncryptedZip response", response);
+
+        const blob = await response.blob();
+        // const blob = await response.blob();
+        console.log('getEncryptedFileByName blob', blob);
+        const url = window.URL.createObjectURL(blob);
+
+        return url;
+    }
+    catch (error) {
+        console.error(`error getFileByName - ${error}`);
+        return null;
+    }
+}
+
+
 export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
     try {
         console.log('getSonolistNamesByRecordId recordId', recordId);
