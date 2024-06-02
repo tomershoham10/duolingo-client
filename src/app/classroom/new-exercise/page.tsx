@@ -12,7 +12,7 @@ const NewExercise: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
 
   const exerciseToSubmit = {
-    recordId: useStore(useCreateExerciseStore, (state) => state.recordId),
+    // recordName: useStore(useCreateExerciseStore, (state) => state.recordId),
     recordName: useStore(useCreateExerciseStore, (state) => state.recordName),
     recordLength: useStore(
       useCreateExerciseStore,
@@ -44,7 +44,7 @@ const NewExercise: React.FC = () => {
         exerciseToSubmit.answersList
       );
       return (
-        !!exerciseToSubmit.recordId &&
+        // !!exerciseToSubmit.recordId &&
         !!exerciseToSubmit.recordName &&
         !!exerciseToSubmit.recordLength &&
         !!exerciseToSubmit.sonolistFiles &&
@@ -68,20 +68,22 @@ const NewExercise: React.FC = () => {
   const submitExercise = async () => {
     try {
       console.log('submit', exerciseToSubmit);
-      const res = await createFSA({
-        relevant: exerciseToSubmit.relevant,
-        answersList: exerciseToSubmit.answersList,
-        //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
-        timeBuffers: exerciseToSubmit.timeBuffers,
-        description: exerciseToSubmit.description,
-        recordKey: exerciseToSubmit.recordId,
-      });
-      if (res === 'created successfully') {
-        location.reload();
-      } else {
-        addAlert('propblem while creating the exercise', AlertSizes.small);
+      if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
+        const res = await createFSA({
+          relevant: exerciseToSubmit.relevant,
+          answersList: exerciseToSubmit.answersList,
+          //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
+          timeBuffers: exerciseToSubmit.timeBuffers,
+          description: exerciseToSubmit.description,
+          recordName: exerciseToSubmit.recordName,
+        });
+        if (res === 'created successfully') {
+          location.reload();
+        } else {
+          addAlert('propblem while creating the exercise', AlertSizes.small);
+        }
+        return;
       }
-      return;
     } catch (err) {
       console.error(err);
     }

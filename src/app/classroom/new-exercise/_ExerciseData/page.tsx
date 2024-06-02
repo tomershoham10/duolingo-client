@@ -122,7 +122,9 @@ const ExerciseDataSection: React.FC = () => {
   }, [setRelevant]);
 
   const setExerciseStore = useCallback(() => {
-    updateExerciseToSubmit.updateDescription(exerciseDataState.description);
+    exerciseDataState.description
+      ? updateExerciseToSubmit.updateDescription(exerciseDataState.description)
+      : null;
     updateExerciseToSubmit.updateRelevant(
       exerciseDataState.relevant.map((item) => item.id)
     );

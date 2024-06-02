@@ -926,23 +926,47 @@ const Lesson: React.FC = () => {
                     />
                   </>
                 ) : (
-                  <Button
-                    label={'START CLOCK'}
-                    color={ButtonColors.PURPLE}
-                    style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
-                    onClick={() => {
-                      !!userStore.nextLessonId &&
-                      !!userStore.userId &&
-                      !!lessonState.currentExercise
-                        ? startCurrentExercise(
-                            userStore.nextLessonId,
-                            lessonState.currentExercise._id,
-                            userStore.userId
-                          )
-                        : null;
-                    }}
-                    isLoading={isLoading}
-                  />
+                  <>
+                    {lessonState.currentExercise &&
+                    lessonState.currentExercise.recordName ? (
+                      <Button
+                        label={lessonState.currentExercise.recordName}
+                        color={ButtonColors.PURPLE}
+                        style={
+                          'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'
+                        }
+                        onClick={() => {
+                          !!userStore.nextLessonId &&
+                          !!userStore.userId &&
+                          !!lessonState.currentExercise
+                            ? startCurrentExercise(
+                                userStore.nextLessonId,
+                                lessonState.currentExercise._id,
+                                userStore.userId
+                              )
+                            : null;
+                        }}
+                        isLoading={isLoading}
+                      />
+                    ) : null}
+                    <Button
+                      label={'START CLOCK'}
+                      color={ButtonColors.PURPLE}
+                      style={'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'}
+                      onClick={() => {
+                        !!userStore.nextLessonId &&
+                        !!userStore.userId &&
+                        !!lessonState.currentExercise
+                          ? startCurrentExercise(
+                              userStore.nextLessonId,
+                              lessonState.currentExercise._id,
+                              userStore.userId
+                            )
+                          : null;
+                      }}
+                      isLoading={isLoading}
+                    />
+                  </>
                 )}
               </div>
             </div>

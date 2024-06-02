@@ -64,11 +64,11 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
     const fetchRecords = async () => {
       const fetchPromises = editLessonState.fsasList.map(async (fsa) => {
         try {
-          const fsaRecKey = fsa.recordKey;
-          console.log('fsa loop - fsaRecKey', fsaRecKey);
+          const fsaRecName = fsa.recordName;
+          console.log('fsa loop - fsaRecName', fsaRecName);
 
           const recData = (await pRetry(
-            () => getFileMetadataByETag('records', fsaRecKey),
+            () => getFileMetadataByETag('records', fsaRecName),
             {
               retries: 5,
             }
@@ -79,7 +79,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
           };
           //   const recData = (await getFileMetadataByETag(
           //     'records',
-          //     fsaRecKey
+          //     fsaRecName
           //   )) as {
           //     name: string;
           //     id: string;
@@ -88,7 +88,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
 
           //   const recData = (await getFileMetadataByETag(
           //     'records',
-          //     fsaRecKey
+          //     fsaRecName
           //   )) as {
           //     name: string;
           //     id: string;

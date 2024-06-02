@@ -3,11 +3,11 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
 
 type CreateExerciseState = {
-    recordId: string | undefined;
-    recordName: string | undefined;
-    recordLength: number | undefined;
+    // recordId: string | undefined;
+    recordName: string | null;
+    recordLength: number | null;
     sonolistFiles: string[];
-    description: string | undefined;
+    description: string | null;
     timeBuffers: TimeBuffersType[];
     relevant: string[];
     answersList: string[];
@@ -15,7 +15,7 @@ type CreateExerciseState = {
 }
 
 type Action = {
-    updateRecordId: (recordId: CreateExerciseState['recordId']) => void;
+    // updateRecordId: (recordId: CreateExerciseState['recordId']) => void;
     updateRecordName: (recordName: CreateExerciseState['recordName']) => void;
     updateRecordLength: (recordLength: CreateExerciseState['recordLength']) => void;
     updateSonolistFiles: (sonolistFiles: CreateExerciseState['sonolistFiles']) => void;
@@ -29,16 +29,16 @@ type Action = {
 
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
     (set) => ({
-        recordId: undefined,
-        recordName: undefined,
-        recordLength: undefined,
+        // recordId: undefined,
+        recordName: null,
+        recordLength: null,
         sonolistFiles: [],
-        description: undefined,
+        description: null,
         timeBuffers: [],
         relevant: [],
         answersList: [],
         acceptableAnswers: [],
-        updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
+        // updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
         updateRecordName: (recordName) => set(() => ({ recordName: recordName })),
         updateRecordLength: (recordLength) => set(() => ({ recordLength: recordLength })),
         updateSonolistFiles: (sonolistFiles) => set(() => ({ sonolistFiles: sonolistFiles })),
@@ -49,15 +49,15 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         updateAcceptableAnswers: (acceptableAnswers) => set(() => ({ acceptableAnswers: acceptableAnswers })),
         resetStore: () => {
             set(() => ({
-                recordId: undefined,
-                recordName: undefined,
-                recordLength: undefined,
-                sonolistFiles: undefined,
-                description: undefined,
-                timeBuffers: undefined,
-                relevant: undefined,
-                answersList: undefined,
-                acceptableAnswers: undefined,
+                // recordId: undefined,
+                recordName: null,
+                recordLength: null,
+                sonolistFiles: [],
+                description: null,
+                timeBuffers: [],
+                relevant: [],
+                answersList: [],
+                acceptableAnswers: [],
             }));
         }
     })
