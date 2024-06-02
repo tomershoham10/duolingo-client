@@ -1,3 +1,9 @@
+/*
+    This file contains a set of functions designed to interact with the file-service API.
+    These functions facilitate various file operations such as uploading, downloading,
+    and retrieving metadata for files stored in different buckets on the server.
+*/
+
 export enum SignatureTypes {
     PASSIVE = 'passive',
     ACTIVE = 'active',
@@ -10,7 +16,6 @@ export enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-// export const uploadFile = async (bucketName: string, files: File | FileList, metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][]> => {
 export const uploadFile = async (bucketName: string, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
 
@@ -209,7 +214,6 @@ export const getEncryptedFileByName = async (bucketName: string, objectName: str
         return null;
     }
 }
-
 
 export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
     try {

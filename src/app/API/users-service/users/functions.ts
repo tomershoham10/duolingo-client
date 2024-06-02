@@ -3,8 +3,6 @@ import { PermissionsTypes, useUserStore } from "@/app/store/stores/useUserStore"
 import jwt from "jsonwebtoken";
 import Cookies from 'js-cookie';
 
-// import { getCourseByType } from "../../classes-service/courses/functions";
-
 const useUserStoreObj = {
 
     updateUserName: useUserStore.getState().updateUserName,
@@ -16,22 +14,6 @@ const useUserStoreObj = {
 }
 
 const addAlert = useAlertStore.getState().addAlert;
-
-// const mappermissionToCourseType = (permission: PermissionsTypes): TypesOfCourses => {
-//     // Map user roles to course types here
-//     switch (permission) {
-//         case PermissionsTypes.SEARIDER:
-//             return TypesOfCourses.SEARIDER;
-//         case PermissionsTypes.SENIOR:
-//             return TypesOfCourses.SENIOR;
-//         case PermissionsTypes.TEACHER:
-//             return TypesOfCourses.UNDEFINED;
-//         case PermissionsTypes.CREW:
-//             return TypesOfCourses.CREW;
-//         default:
-//             return TypesOfCourses.UNDEFINED;
-//     }
-// };
 
 export const registerUser = async (userName: string, tId: string, password: string, permission: string, courseId: string | undefined): Promise<number | undefined> => {
     try {
