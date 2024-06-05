@@ -10,7 +10,10 @@ import {
   editLessonType,
 } from '@/reducers/adminEditPopup/editLessonReducer';
 import Table, { TableRow } from '@/components/Table/page';
-import { getFileMetadataByETag } from '@/app/API/files-service/functions';
+import {
+  BUCKETS_NAMES,
+  getFileMetadataByETag,
+} from '@/app/API/files-service/functions';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
 import pRetry from 'p-retry';
@@ -68,7 +71,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
           console.log('fsa loop - fsaRecName', fsaRecName);
 
           const recData = (await pRetry(
-            () => getFileMetadataByETag('records', fsaRecName),
+            () => getFileMetadataByETag(BUCKETS_NAMES.RECORDS, fsaRecName),
             {
               retries: 5,
             }
