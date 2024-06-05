@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import {
+  BUCKETS_NAMES,
   getFileByName,
   getSonolistNamesByRecordId,
 } from '@/app/API/files-service/functions';
@@ -18,7 +19,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
       const sonolistNames = await getSonolistNamesByRecordId(recordId);
       const promises = sonolistNames.map(async (sonogram) => {
         try {
-          const blob = await getFileByName('sonograms', sonogram);
+          const blob = await getFileByName(BUCKETS_NAMES.SONOLIST, sonogram);
           if (blob) {
             const reader = new FileReader();
             const promise = new Promise<string>((resolve, reject) => {
