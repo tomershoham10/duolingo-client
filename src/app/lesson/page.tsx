@@ -44,6 +44,7 @@ import {
 } from '../API/files-service/functions';
 import { getZipPassword } from '../API/auth-service/functions';
 import pRetry from 'p-retry';
+import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 const Lesson: React.FC = () => {
   const router = useRouter();
@@ -97,6 +98,7 @@ const Lesson: React.FC = () => {
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [downloadingFile, setDownloadingFile] = useState<boolean>(false);
 
   const fetchTargets = useCallback(async () => {
     // await getTargetsList();
@@ -243,7 +245,11 @@ const Lesson: React.FC = () => {
         }
       }
     }
-  }, [lessonState.exercisesData, lessonState.lessonResults]);
+  }, [
+    lessonState.currentExercise,
+    lessonState.exercisesData,
+    lessonState.lessonResults,
+  ]);
 
   const fetchRelevantData = useCallback(async () => {
     if (lessonState.currentExercise) {
@@ -495,6 +501,7 @@ const Lesson: React.FC = () => {
       //     BUCKETS_NAMES.RECORDS,
       //     recordName
       //   );
+      setDownloadingFile(true);
       const url = await pRetry(
         () => getEncryptedFileByName(BUCKETS_NAMES.RECORDS, recordName),
         {
@@ -512,6 +519,7 @@ const Lesson: React.FC = () => {
         window.URL.revokeObjectURL(url);
         console.log('finished');
       }
+      setDownloadingFile(false);
     } catch (err) {
       console.error(err);
     }
@@ -857,12 +865,6 @@ const Lesson: React.FC = () => {
               className='right-0 mx-auto flex flex-col items-center justify-start'
             >
               <div className='mb-3 mt-5 flex flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
-                {lessonState.zipPassword ? (
-                  <>
-                    <FaCopy />
-                    <p>{lessonState.zipPassword}</p>
-                  </>
-                ) : null}
                 <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12  3xl:text-4xl'>
                   Unit 1 - Level 1
                   <br className='3xl:text-4xl' />
@@ -895,6 +897,27 @@ const Lesson: React.FC = () => {
                   )}
                 </div>
               </div>
+              {lessonState.isExerciseStarted ? (
+                <section className='flex w-full flex-row items-center justify-center gap-3'>
+                  <p className='text-base font-extrabold opacity-75'>
+                    Password:
+                  </p>
+                  <button
+                    className='flex flex-row items-center gap-1 leading-5  opacity-75 hover:opacity-95'
+                    onClick={() => {
+                      lessonState.zipPassword
+                        ? navigator.clipboard.writeText(
+                            lessonState.zipPassword.toString()
+                          )
+                        : null;
+                    }}
+                  >
+                    <FaCopy />
+                    <p>{lessonState.zipPassword}</p>
+                  </button>
+                </section>
+              ) : null}
+
               {lessonState.targetsToSubmit.length > 0 ? (
                 <div className='mx-auto w-full'>
                   <DraggbleList
@@ -1020,6 +1043,24 @@ const Lesson: React.FC = () => {
                   </div>
                 ) : lessonState.isExerciseStarted ? (
                   <>
+                   {lessonState.currentExercise &&
+                    lessonState.currentExercise.recordName ? (
+                      <Button
+                        color={ButtonColors.PURPLE}
+                        icon={faFileArrowDown}
+                        style={
+                          'text-2xl tracking-widest'
+                        }
+                        onClick={() => {
+                          !!lessonState.currentExercise
+                            ? downloadRecord(
+                                lessonState.currentExercise.recordName
+                              )
+                            : null;
+                        }}
+                        isLoading={downloadingFile}
+                      />
+                    ) : null}
                     <Button
                       label={'ADD TARGET'}
                       color={ButtonColors.BLUE}
@@ -1066,7 +1107,7 @@ const Lesson: React.FC = () => {
                               )
                             : null;
                         }}
-                        isLoading={isLoading}
+                        isLoading={downloadingFile}
                       />
                     ) : null}
                     <Button
