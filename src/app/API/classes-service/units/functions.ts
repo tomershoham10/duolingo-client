@@ -29,6 +29,29 @@ export const getUnits = async (): Promise<UnitType[] | null> => {
     }
 };
 
+export const createByCourse = async (courseId: string): Promise<number> => {
+    try {
+        const response = await fetch(
+            'http://localhost:8080/api/units/createByCourse',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    unitData: { levels: [] },
+                    courseId: courseId,
+                }),
+            }
+        );
+        return response.status;
+    } catch (error) {
+        console.error("Error creating unit ny course:", error);
+        return 500;
+    }
+};
+
 export const getUnitById = async (unitId: string): Promise<UnitType | null> => {
     try {
         const response = await fetch(
