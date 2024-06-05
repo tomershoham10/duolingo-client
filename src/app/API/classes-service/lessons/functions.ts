@@ -72,6 +72,7 @@ export const getExercisesData = async (lessonId: string): Promise<FSAType[]> => 
             throw new Error('error while fetching fsas');
         }
     } catch (error: any) {
+        console.log(error.message)
         throw new Error(`error while fetching fsas: ${error.message}`);
     }
 };
