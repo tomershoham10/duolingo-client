@@ -36,7 +36,7 @@ const FILES_API = {
 
 export enum BUCKETS_NAMES {
     RECORDS = 'records',
-    SONOLIST = 'sonolist'
+    SONOGRAMS = 'sonograms'
 }
 
 export const uploadFile = async (bucketName: BUCKETS_NAMES, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {

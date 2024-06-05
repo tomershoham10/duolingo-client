@@ -1,6 +1,7 @@
 import { submitExercise } from "@/app/API/classes-service/results/functions";
 import { AlertSizes } from "@/app/store/stores/useAlertStore";
 import { LessonDispatchAction, lessonAction, lessonType } from "@/reducers/studentView/lessonReducer";
+import pRetry from "p-retry";
 import { Dispatch } from "react";
 
 export interface submitCurrentExerciseParams {
@@ -21,7 +22,7 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
     let scoreByTargets: number = -1;
     let scoreByTime: number = -1;
     let totalScoreToSubmit: number = -1;
-    
+
     if (lessonState.targetsToSubmit.length === 0) {
         addAlert('Please select a target.', AlertSizes.small);
         return null;
@@ -122,7 +123,13 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
         score: totalScoreToSubmit,
     };
 
-    const response = await submitExercise(resultToSubmit);
+    // const response = await submitExercise(resultToSubmit);
+    const response = await pRetry(
+        () => submitExercise(resultToSubmit),
+        {
+            retries: 5,
+        }
+    );
     return response;
     // if (response) {
     //     lessonDispatch({ type: lessonAction.STOP_TIMER });

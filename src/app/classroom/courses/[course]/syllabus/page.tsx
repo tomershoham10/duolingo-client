@@ -7,9 +7,11 @@ import Button, { ButtonColors } from '@/components/Button/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import LodingAdminSection from '@/components/UnitSection/AdminUnit/LodingAdminSection/page';
+import pRetry from 'p-retry';
+import { createByCourse } from '@/app/API/classes-service/units/functions';
+import { getCourseById } from '@/app/API/classes-service/courses/functions';
 
-const run = async ()=>{}
-
+const run = async () => {};
 
 const Syllabus: React.FC = () => {
   const courseId = useStore(useCourseStore, (state) => state._id);
@@ -35,26 +37,31 @@ const Syllabus: React.FC = () => {
         addAlert('Error starting the course', AlertSizes.small);
         return;
       }
-      const response = await fetch(
-        'http://localhost:8080/api/units/createByCourse',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            unitData: { levels: [] },
-            courseId: courseId,
-          }),
-        }
-      );
+      //   const response = await fetch(
+      //     'http://localhost:8080/api/units/createByCourse',
+      //     {
+      //       method: 'POST',
+      //       credentials: 'include',
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      //       body: JSON.stringify({
+      //         unitData: { levels: [] },
+      //         courseId: courseId,
+      //       }),
+      //     }
+      //   );
 
-      if (response.status === 200) {
+      //   if (response.status === 200) {
+      //     getUnits();
+      //   }
+      const response = await pRetry(() => createByCourse(courseId), {
+        retries: 5,
+      });
+      if (response === 200) {
         getUnits();
       }
-
-      // console.log(response);
+      console.log(response);
     } catch (err) {
       console.log(err);
     }
@@ -62,27 +69,30 @@ const Syllabus: React.FC = () => {
 
   const getUnits = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/courses/${courseId}`,
+      //   const response = await fetch(
+      //     `http://localhost:8080/api/courses/${courseId}`,
+      //     {
+      //       method: 'GET',
+      //       credentials: 'include',
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      //     }
+      //   );
+
+      const response = await pRetry(
+        () => (courseId ? getCourseById(courseId) : null),
         {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          retries: 5,
         }
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        const course = data.course;
-        const unitsIdsList = course.units;
-        // console.log("syllabus2", unitsIdsList);
-        setUnitsIds(unitsIdsList);
-      } else {
+      if (!!!response) {
         console.error('Failed to fetch course by id.');
         return [];
       }
+      const unitsIdsList = response.units;
+      // console.log("syllabus2", unitsIdsList);
+      setUnitsIds(unitsIdsList);
     } catch (error) {
       console.error('Error fetching courses:', error);
       return [];

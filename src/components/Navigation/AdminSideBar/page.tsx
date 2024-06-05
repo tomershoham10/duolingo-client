@@ -23,6 +23,7 @@ import {
 
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import handleLogout from '@/app/utils/functions/handleLogOut';
+import pRetry from 'p-retry';
 
 library.add(
   faHome,
@@ -67,7 +68,11 @@ const AdminSideBar: React.FC = () => {
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
   useEffect(() => {
     const checkIfCourseExists = async (name: string) => {
-      const res = await getCourseByName(name);
+      //   const res = await getCourseByName(name);
+
+      const res = await pRetry(() => getCourseByName(name), {
+        retries: 5,
+      });
       //   console.log('checkIfCourseExists', !!res);
       setIsCourseExisted(!!res);
     };
@@ -121,7 +126,11 @@ const AdminSideBar: React.FC = () => {
     const fetchData = async () => {
       if (coursesList && coursesList.length > 0 && !!!coursesList[0]._id) {
         try {
-          const coursesList = await getCourses();
+          //   const coursesList = await getCourses();
+          const coursesList = await pRetry(getCourses, {
+            retries: 5,
+          });
+
           coursesList ? useCourseStoreObj.updateCoursesList(coursesList) : null;
         } catch (error) {
           console.error('Error fetching courses:', error);
@@ -187,7 +196,7 @@ const AdminSideBar: React.FC = () => {
       </label>
 
       <div className='flex items-center justify-center border-b-2 dark:border-duoGrayDark-light'>
-        <ul className='w-full cursor-default text-center text-[0.75rem] uppercase md:text-[0.9rem] lg:text-lg border-'>
+        <ul className='border- w-full cursor-default text-center text-[0.75rem] uppercase md:text-[0.9rem] lg:text-lg'>
           {coursesList ? (
             coursesList.length > 0 && !!coursesList[0]._id ? (
               // coursesList.map((item,index)=><></>)

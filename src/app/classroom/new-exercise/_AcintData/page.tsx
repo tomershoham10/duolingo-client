@@ -6,7 +6,11 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-import { getAllRecords, uploadFile } from '@/app/API/files-service/functions';
+import {
+  BUCKETS_NAMES,
+  getFileByBucketName,
+  uploadFile,
+} from '@/app/API/files-service/functions';
 import Table, { TableHead, TableRow } from '@/components/Table/page';
 import Upload from '@/components/Upload/page';
 import { FilesTypes } from '@/app/_popups/MetadataPopup/page';
@@ -24,6 +28,7 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
+import pRetry from 'p-retry';
 
 const MetadataPopup = lazy(() => import('@/app/_popups/MetadataPopup/page'));
 
@@ -41,7 +46,10 @@ const AcintDataSection: React.FC = () => {
   useEffect(() => {
     const fetchTargets = async () => {
       try {
-        await getTargetsList();
+        // await getTargetsList();
+        await pRetry(getTargetsList, {
+          retries: 5,
+        });
       } catch (error) {
         console.error(error);
         addAlert(`${error}`, AlertSizes.small);
@@ -50,7 +58,10 @@ const AcintDataSection: React.FC = () => {
 
     const fetchSources = async () => {
       try {
-        await getSourcesList();
+        // await getSourcesList();
+        await pRetry(getSourcesList, {
+          retries: 5,
+        });
       } catch (error) {
         console.error(error);
         addAlert(`${error}`, AlertSizes.small);
@@ -68,7 +79,7 @@ const AcintDataSection: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
 
   const updateExerciseToSubmit = {
-    updateRecordId: useCreateExerciseStore.getState().updateRecordId,
+    // updateRecordId: useCreateExerciseStore.getState().updateRecordId,
     updateRecordName: useCreateExerciseStore.getState().updateRecordName,
     updateRecordLength: useCreateExerciseStore.getState().updateRecordLength,
     updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
@@ -100,7 +111,15 @@ const AcintDataSection: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getAllRecords();
+      //   const res = await getAllRecords();
+
+      const res = (await pRetry(
+        () => getFileByBucketName(BUCKETS_NAMES.RECORDS),
+        {
+          retries: 5,
+        }
+      )) as RecordType[];
+
       !!res ? setRecordsData(res) : null;
     };
     fetchData();
@@ -225,8 +244,7 @@ const AcintDataSection: React.FC = () => {
       id: record.id,
       metadata: {
         record_length: record.record_length,
-        sonograms_ids:
-          record.sonograms_ids,
+        sonograms_ids: record.sonograms_ids,
         difficulty_level: record.difficulty_level,
         targets_list: record.targets_list,
         operation: record.operation,
@@ -252,21 +270,54 @@ const AcintDataSection: React.FC = () => {
         submitRecordState.recordMetadata &&
         submitRecordState.sonogramsMetadata
       ) {
-        const sonolistResponse = await uploadFile(
-          'sonograms',
-          submitRecordState.sonograms,
-          submitRecordState.sonogramsMetadata
+        // const sonolistResponse = await uploadFile(
+        //   BUCKETS_NAMES.SONOGRAMS,
+        //   submitRecordState.sonograms,
+        //   submitRecordState.sonogramsMetadata
+        // );
+
+        const sonolistResponse = await pRetry(
+          () =>
+            !!submitRecordState.record &&
+            !!submitRecordState.sonograms &&
+            submitRecordState.recordMetadata &&
+            submitRecordState.sonogramsMetadata
+              ? uploadFile(
+                  BUCKETS_NAMES.SONOGRAMS,
+                  submitRecordState.sonograms,
+                  submitRecordState.sonogramsMetadata
+                )
+              : null,
+          {
+            retries: 5,
+          }
         );
+
         console.log('sonolistResponse', sonolistResponse);
         if (sonolistResponse) {
           submitRecordState.recordMetadata = {
             ...submitRecordState.recordMetadata,
             sonograms_ids: submitRecordState.sonograms.map((sono) => sono.name),
           };
-          const recordResponse = await uploadFile(
-            'records',
-            submitRecordState.record,
-            submitRecordState.recordMetadata
+
+          //   const recordResponse = await uploadFile(
+          //     BUCKETS_NAMES.RECORDS,
+          //     submitRecordState.record,
+          //     submitRecordState.recordMetadata
+          //   );
+
+          const recordResponse = await pRetry(
+            () =>
+              submitRecordState.record && submitRecordState.recordMetadata
+                ? uploadFile(
+                    BUCKETS_NAMES.RECORDS,
+                    submitRecordState.record,
+                    submitRecordState.recordMetadata
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
           if (recordResponse) {
             addAlert(
@@ -305,7 +356,7 @@ const AcintDataSection: React.FC = () => {
         .filter((target) => answersToSubmit.includes(target.name))
         .map((target) => target._id);
 
-      updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
+      //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
       updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(

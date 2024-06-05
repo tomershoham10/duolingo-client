@@ -6,6 +6,7 @@ import ExerciseDataSection from './_ExerciseData/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
+import pRetry from 'p-retry';
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 const NewExercise: React.FC = () => {
@@ -68,22 +69,38 @@ const NewExercise: React.FC = () => {
   const submitExercise = async () => {
     try {
       console.log('submit', exerciseToSubmit);
-      if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
-        const res = await createFSA({
-          relevant: exerciseToSubmit.relevant,
-          answersList: exerciseToSubmit.answersList,
-          //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
-          timeBuffers: exerciseToSubmit.timeBuffers,
-          description: exerciseToSubmit.description,
-          recordName: exerciseToSubmit.recordName,
-        });
-        if (res === 'created successfully') {
-          location.reload();
-        } else {
-          addAlert('propblem while creating the exercise', AlertSizes.small);
+      //   if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
+      const res = await pRetry(
+        () =>
+          exerciseToSubmit.recordName && exerciseToSubmit.description
+            ? createFSA({
+                relevant: exerciseToSubmit.relevant,
+                answersList: exerciseToSubmit.answersList,
+                timeBuffers: exerciseToSubmit.timeBuffers,
+                description: exerciseToSubmit.description,
+                recordName: exerciseToSubmit.recordName,
+              })
+            : null,
+        {
+          retries: 5,
         }
-        return;
+      );
+
+      // const res = await createFSA({
+      //   relevant: exerciseToSubmit.relevant,
+      //   answersList: exerciseToSubmit.answersList,
+      //   //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
+      //   timeBuffers: exerciseToSubmit.timeBuffers,
+      //   description: exerciseToSubmit.description,
+      //   recordName: exerciseToSubmit.recordName,
+      // });
+      if (res === 'created successfully') {
+        location.reload();
+      } else {
+        addAlert('propblem while creating the exercise', AlertSizes.small);
       }
+      return;
+      //   }
     } catch (err) {
       console.error(err);
     }

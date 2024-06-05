@@ -4,17 +4,24 @@ import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
 import { useKeyDown } from '../utils/hooks/useKeyDown';
 import { useCallback } from 'react';
+import pRetry from 'p-retry';
 
 const Login: React.FC = () => {
   const handleLogin = useCallback(async (formData: FormData) => {
     const userName = formData.get('userName')?.toString();
     const password = formData.get('password')?.toString();
-    if (userName && password) {
-      const res = await handleAuth(userName, password);
-      if (res === 200) {
-        location.reload();
+    // if (userName && password) {
+    //   const res = await handleAuth(userName, password);
+    const res = await pRetry(
+      () => (userName && password ? handleAuth(userName, password) : null),
+      {
+        retries: 5,
       }
+    );
+    if (res === 200) {
+      location.reload();
     }
+    // }
   }, []);
 
   const onSubmitCallback = useCallback(() => {

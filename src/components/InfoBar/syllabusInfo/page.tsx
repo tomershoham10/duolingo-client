@@ -22,6 +22,7 @@ import {
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import PlusButton from '@/components/PlusButton/page';
+import pRetry from 'p-retry';
 
 const SyllabusInfo: React.FC = () => {
   const courseName = useStore(useCourseStore, (state) => state.name);
@@ -41,21 +42,62 @@ const SyllabusInfo: React.FC = () => {
     if (!!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId) {
       switch (useInfoBarStoreObj.fieldToEdit) {
         case fieldToEditType.UNIT:
-          const unitStatus = await suspendUnit(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const unitStatus = await suspendUnit(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const unitStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? suspendUnit(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
+
           return unitStatus;
         case fieldToEditType.LEVEL:
-          const levelStatus = await suspendLevel(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const levelStatus = await suspendLevel(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const levelStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? suspendLevel(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
+
           return levelStatus;
         case fieldToEditType.LESSON:
-          const lessonStatus = await suspendLesson(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const lessonStatus = await suspendLesson(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const lessonStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? suspendLesson(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
           return lessonStatus;
       }
@@ -66,21 +108,61 @@ const SyllabusInfo: React.FC = () => {
     if (!!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId) {
       switch (useInfoBarStoreObj.fieldToEdit) {
         case fieldToEditType.UNIT:
-          const unitStatus = await unsuspendUnit(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const unitStatus = await unsuspendUnit(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const unitStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? unsuspendUnit(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
+
           return unitStatus;
         case fieldToEditType.LEVEL:
-          const levelStatus = await unsuspendLevel(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const levelStatus = await unsuspendLevel(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const levelStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? unsuspendUnit(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
           return levelStatus;
         case fieldToEditType.LESSON:
-          const lessonStatus = await unsuspendLesson(
-            useInfoBarStoreObj.fatherId,
-            useInfoBarStoreObj.fieldId
+          //   const lessonStatus = await unsuspendLesson(
+          //     useInfoBarStoreObj.fatherId,
+          //     useInfoBarStoreObj.fieldId
+          //   );
+
+          const lessonStatus = await pRetry(
+            () =>
+              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
+                ? unsuspendUnit(
+                    useInfoBarStoreObj.fatherId,
+                    useInfoBarStoreObj.fieldId
+                  )
+                : null,
+            {
+              retries: 5,
+            }
           );
           return lessonStatus;
       }

@@ -19,8 +19,12 @@ import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { useThemeStore, Themes } from '@/app/store/stores/useThemeStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { isFileExisted } from '@/app/API/files-service/functions';
+import {
+  BUCKETS_NAMES,
+  isFileExisted,
+} from '@/app/API/files-service/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import pRetry from 'p-retry';
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
@@ -60,7 +64,14 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     if (files) {
       if (props.filesTypes === '.wav') {
         const file = files[0];
-        const isExisted = await isFileExisted(file.name, 'records');
+        // const isExisted = await isFileExisted(file.name, 'records');
+
+        const isExisted = await pRetry(
+          () => isFileExisted(file.name, BUCKETS_NAMES.RECORDS),
+          {
+            retries: 5,
+          }
+        );
         console.log('isFileExisted', file.name, isExisted);
         if (isExisted) {
           addAlert('Record already existed!', AlertSizes.small);
@@ -97,7 +108,14 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         const filesArray: File[] = Array.from(files);
 
         const isValidFile = async (file: File) => {
-          const status = await isFileExisted(file.name, 'sonograms');
+          //   const status = await isFileExisted(file.name, BUCKETS_NAMES.SONOGRAMS);
+
+          const status = await pRetry(
+            () => isFileExisted(file.name, BUCKETS_NAMES.SONOGRAMS),
+            {
+              retries: 5,
+            }
+          );
           console.log('isFileExisted', file.name, status);
 
           status

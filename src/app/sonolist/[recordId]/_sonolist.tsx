@@ -6,6 +6,7 @@ import {
   getFileByName,
   getSonolistNamesByRecordId,
 } from '@/app/API/files-service/functions';
+import pRetry from 'p-retry';
 
 interface SonolistProps {
   recordId: string;
@@ -16,10 +17,24 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
 
   const fetchSonograms = useCallback(async () => {
     try {
-      const sonolistNames = await getSonolistNamesByRecordId(recordId);
+      //   const sonolistNames = await getSonolistNamesByRecordId(recordId);
+
+      const sonolistNames = await pRetry(
+        () => getSonolistNamesByRecordId(recordId),
+        {
+          retries: 5,
+        }
+      );
       const promises = sonolistNames.map(async (sonogram) => {
         try {
-          const blob = await getFileByName(BUCKETS_NAMES.SONOLIST, sonogram);
+          //   const blob = await getFileByName(BUCKETS_NAMES.SONOGRAMS, sonogram);
+
+          const blob = await pRetry(
+            () => getFileByName(BUCKETS_NAMES.SONOGRAMS, sonogram),
+            {
+              retries: 5,
+            }
+          );
           if (blob) {
             const reader = new FileReader();
             const promise = new Promise<string>((resolve, reject) => {
