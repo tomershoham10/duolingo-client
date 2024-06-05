@@ -1,4 +1,4 @@
-import { downloadFile } from "@/app/API/files-service/functions";
+// import { downloadFile } from "@/app/API/files-service/functions";
 
 export enum lessonAction {
     SET_EXERCISES_DATA = 'setExercisesData',
@@ -7,6 +7,7 @@ export enum lessonAction {
     ADD_EXERCISE_ID = 'addExerciseId',
     SET_NUM_OF_EXERCISES_MADE = 'setNumOfExercisesMade',
     SET_CURRENT_EXERCISE = "setCurrentExercise",
+    SET_ZIP_PASSWORD = "setZipPassword",
     SET_RELEVANT = "setRelevant",
     SET_CURRENT_ANSWERS = "setCurrentAnswers",
     SET_CURRENT_RESULT = "setCurrentResult",
@@ -46,6 +47,7 @@ export type LessonDispatchAction =
     | { type: lessonAction.ADD_EXERCISE_ID, payload: string }
     | { type: lessonAction.SET_NUM_OF_EXERCISES_MADE, payload: number }
     | { type: lessonAction.SET_CURRENT_EXERCISE, payload: FSAType | null }
+    | { type: lessonAction.SET_ZIP_PASSWORD, payload: number | null }
     | { type: lessonAction.SET_RELEVANT, payload: TargetType[] }
     | { type: lessonAction.SET_CURRENT_ANSWERS, payload: TargetType[] }
     | { type: lessonAction.SET_CURRENT_RESULT, payload: ResultType | null }
@@ -74,6 +76,7 @@ export interface lessonType {
     exercisesIds: string[],
     numOfExercisesMade: number, //0
     currentExercise: FSAType | null,
+    zipPassword: number | null;
     relevant: TargetType[],
     currentAnswers: TargetType[],
     currentResult: ResultType | null,
@@ -90,7 +93,7 @@ export interface lessonType {
     fadeEffect: boolean, //true
 }
 
-export const lessonReducer =  (
+export const lessonReducer = (
     state: lessonType,
     action: LessonDispatchAction
 ): lessonType => {
@@ -107,6 +110,8 @@ export const lessonReducer =  (
             return { ...state, numOfExercisesMade: action.payload };
         case lessonAction.SET_CURRENT_EXERCISE:
             return { ...state, currentExercise: action.payload };
+        case lessonAction.SET_ZIP_PASSWORD:
+            return { ...state, zipPassword: action.payload };
         case lessonAction.SET_RELEVANT:
             return { ...state, relevant: action.payload };
         case lessonAction.SET_CURRENT_ANSWERS:
@@ -155,6 +160,7 @@ export const lessonReducer =  (
                 isExerciseStarted: false,
                 isExerciseFinished: false,
                 isExerciseSubmitted: false,
+                zipPassword: null,
                 targetFromDropdown: null,
                 totalScore: -1,
                 targetsToSubmit: [],
@@ -165,9 +171,9 @@ export const lessonReducer =  (
     }
 };
 
-const downloadExerciseRecord = async (recordKey: string) => {
-    const res = await downloadFile('records', recordKey);
-}
+// const downloadExerciseRecord = async (recordKey: string) => {
+//     const res = await downloadFile('records', recordKey);
+// }
 
 export const calculateTimeRemaining = (pastDate: Date, totalMinutes: number) => {
     const exerciseStartDate = new Date(pastDate).getTime();

@@ -4,6 +4,8 @@
     and retrieving metadata for files stored in different buckets on the server.
 */
 
+import jwt from "jsonwebtoken";
+
 export enum SignatureTypes {
     PASSIVE = 'passive',
     ACTIVE = 'active',
@@ -16,7 +18,28 @@ export enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-export const uploadFile = async (bucketName: string, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
+const ROUT = 'http://localhost:4002';
+
+const FILES_SERVICE_ENDPOINTS = {
+    COURSES: `${ROUT}/api/files`,
+};
+
+const FILES_API = {
+    UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
+    IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
+    GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-metadata-by-etag`,
+    GET_FILES_BY_BUCKETNAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-files-by-bucket`,
+    GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
+    GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/downloadEncryptedZip`,
+    GET_SONOLIST_BT_RECORD_ID: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-sonolist-names-by-record-id`,
+};
+
+export enum BUCKETS_NAMES {
+    RECORDS = 'records',
+    SONOLIST = 'sonolist'
+}
+
+export const uploadFile = async (bucketName: BUCKETS_NAMES, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
 
         const formData = new FormData();
@@ -28,7 +51,7 @@ export const uploadFile = async (bucketName: string, files: File | File[], metad
             formData.append('metadata', JSON.stringify(metadata));
             console.log("formData", formData);
             const uploadRecordResponse = await fetch(
-                'http://localhost:4002/api/files/uploadFile/', {
+                FILES_API.UPLOAD_FILE, {
                 method: 'POST',
                 body: formData,
             })
@@ -73,10 +96,10 @@ export const uploadFile = async (bucketName: string, files: File | File[], metad
     }
 }
 
-export const isFileExisted = async (fileName: string, bucketName: string): Promise<boolean> => {
+export const isFileExisted = async (fileName: string, bucketName: BUCKETS_NAMES): Promise<boolean> => {
     try {
         const response = await fetch(
-            `http://localhost:4002/api/files/isFileExisted/${bucketName}/${fileName}`, {
+            `${FILES_API.IS_FILE_EXISTED}/${bucketName}/${fileName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -96,14 +119,14 @@ export const isFileExisted = async (fileName: string, bucketName: string): Promi
     }
 }
 
-export const getFileMetadataByETag = async (bucketName: string, etag: string): Promise<{
+export const getFileMetadataByETag = async (bucketName: BUCKETS_NAMES, etag: string): Promise<{
     name: string,
     id: string,
     metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>
 } | null> => {
     try {
         const response = await fetch(
-            `http://localhost:4002/api/files/get-metadata-by-etag/${bucketName}/${etag}`, {
+            `${FILES_API.GET_METADATA_BY_ETAG}/${bucketName}/${etag}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -123,10 +146,10 @@ export const getFileMetadataByETag = async (bucketName: string, etag: string): P
     }
 }
 
-export const getAllRecords = async (): Promise<RecordType[]> => {
+export const getFileByBucketName = async (bucketName: BUCKETS_NAMES): Promise<SonogramType[] | RecordType[]> => {
     try {
         const response = await fetch(
-            'http://localhost:4002/api/files/get-files-by-bucket/records', {
+            `${FILES_API.GET_FILES_BY_BUCKETNAME}/${bucketName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -146,33 +169,33 @@ export const getAllRecords = async (): Promise<RecordType[]> => {
     }
 }
 
-export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
+// export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
+//     try {
+//         const response = await fetch(
+//             'http://localhost:4002/api/files/get-files-by-bucket/sonograms', {
+//             method: 'GET',
+//             credentials: 'include',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             }
+//         })
+//         if (response.ok) {
+//             const data = await response.json();
+//             const files = data.files;
+//             return files;
+//         }
+//         return null;
+//     }
+//     catch (error) {
+//         throw new Error(`error getting all records - ${error}`);
+//     }
+
+// }
+
+export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<any> => {
     try {
         const response = await fetch(
-            'http://localhost:4002/api/files/get-files-by-bucket/sonograms', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        if (response.ok) {
-            const data = await response.json();
-            const files = data.files;
-            return files;
-        }
-        return null;
-    }
-    catch (error) {
-        throw new Error(`error getting all records - ${error}`);
-    }
-
-}
-
-export const getFileByName = async (bucketName: string, objectName: string): Promise<any> => {
-    try {
-        const response = await fetch(
-            `http://localhost:4002/api/files/getFileByName/${bucketName}/${objectName}`, {
+            `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${objectName}`, {
             method: 'GET',
             credentials: 'include',
         })
@@ -192,16 +215,31 @@ export const getFileByName = async (bucketName: string, objectName: string): Pro
     }
 }
 
-export const getEncryptedFileByName = async (bucketName: string, objectName: string): Promise<any> => {
+export const getEncryptedFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
-            `http://localhost:4002/api/files/downloadEncryptedZip/${bucketName}/${objectName}`, {
-            method: 'GET',
-            credentials: 'include',
-        })
+            `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${objectName}`
+            // , {
+            // method: 'GET',
+            // credentials: 'include',
+            // }
+        )
 
         console.log("downloadEncryptedZip response", response);
+        if (response.status === 200) {
+            // console.log("response", response);
+            const metadata = response.headers.get(
+                "metadata",
+            ) as string;
 
+            console.log('metadata', metadata);
+
+            const decodedToken = jwt.decode(
+                metadata || '',
+            );
+            console.log('decodedToken', decodedToken);
+
+        }
         const blob = await response.blob();
         // const blob = await response.blob();
         console.log('getEncryptedFileByName blob', blob);
@@ -219,7 +257,7 @@ export const getSonolistNamesByRecordId = async (recordId: string): Promise<stri
     try {
         console.log('getSonolistNamesByRecordId recordId', recordId);
         const response = await fetch(
-            `http://localhost:4002/api/files/get-sonolist-names-by-record-id/${recordId}`, {
+            `${FILES_API.GET_SONOLIST_BT_RECORD_ID}/${recordId}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -245,16 +283,16 @@ export const getSonolistNamesByRecordId = async (recordId: string): Promise<stri
     }
 }
 
-export const downloadFile = async (bucketName: string, objectName: string): Promise<boolean> => {
-    try {
-        const response = await fetch(
-            `http://localhost:4002/api/files/downloadFile/${bucketName}/${objectName}`, {
-            method: 'GET',
-            credentials: 'include',
-        })
-        return true;
-    } catch (error) {
-        console.error(`error downloadFile - ${error}`);
-        return false;
-    }
-}
+// export const downloadFile = async (bucketName: string, objectName: string): Promise<boolean> => {
+//     try {
+//         const response = await fetch(
+//             `http://localhost:4002/api/files/downloadFile/${bucketName}/${objectName}`, {
+//             method: 'GET',
+//             credentials: 'include',
+//         })
+//         return true;
+//     } catch (error) {
+//         console.error(`error downloadFile - ${error}`);
+//         return false;
+//     }
+// }
