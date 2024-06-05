@@ -3,9 +3,10 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { TbClockHour12 } from 'react-icons/tb';
-import { FaCheck } from 'react-icons/fa6';
-import { FaXmark } from 'react-icons/fa6';
+import { FaCheck, FaXmark, FaRegCopy } from 'react-icons/fa6';
 import { FiFlag } from 'react-icons/fi';
+// import { FaCopy } from "react-icons/fa";
+import { FaCopy } from 'react-icons/fa6';
 
 import Button, { ButtonColors } from '@/components/Button/page';
 import ProgressBar from '@/components/ProgressBar/page';
@@ -37,6 +38,12 @@ import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import submitCurrentExercise, {
   submitCurrentExerciseParams,
 } from '../utils/functions/lessonPage/submitCurrentExercise';
+import {
+  BUCKETS_NAMES,
+  getEncryptedFileByName,
+} from '../API/files-service/functions';
+import { getZipPassword } from '../API/auth-service/functions';
+import pRetry from 'p-retry';
 
 const Lesson: React.FC = () => {
   const router = useRouter();
@@ -57,6 +64,7 @@ const Lesson: React.FC = () => {
     exercisesIds: [],
     numOfExercisesMade: 0, //0
     currentExercise: null,
+    zipPassword: null,
     relevant: [],
     currentAnswers: [],
     currentResult: null,
@@ -91,7 +99,10 @@ const Lesson: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchTargets = useCallback(async () => {
-    await getTargetsList();
+    // await getTargetsList();
+    await pRetry(getTargetsList, {
+      retries: 5,
+    });
   }, []);
 
   useEffect(() => {
@@ -101,35 +112,52 @@ const Lesson: React.FC = () => {
   }, [fetchTargets, targetsList]);
 
   const fetchData = useCallback(async () => {
-    if (userStore.nextLessonId) {
-      const response = await getExercisesData(userStore.nextLessonId);
-      if (response && response.length > 0) {
-        console.log('SET_EXERCISES_DATA', response);
-        lessonDispatch({
-          type: lessonAction.SET_EXERCISES_DATA,
-          payload: response,
-        });
-        fetchRelevantData();
-        fetchAnswersData();
+    // if (userStore.nextLessonId) {
+    //   const response = await getExercisesData(userStore.nextLessonId);
+    const response = await pRetry(
+      () =>
+        userStore.nextLessonId
+          ? getExercisesData(userStore.nextLessonId)
+          : null,
+      {
+        retries: 5,
       }
+    );
+    if (response && response.length > 0) {
+      console.log('SET_EXERCISES_DATA', response);
+      lessonDispatch({
+        type: lessonAction.SET_EXERCISES_DATA,
+        payload: response,
+      });
+      fetchRelevantData();
+      fetchAnswersData();
     }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.nextLessonId]);
 
   const fetchResultsList = useCallback(async () => {
-    if (userStore.nextLessonId && userStore.userId) {
-      const response = await getResultsByLessonAndUser(
-        userStore.nextLessonId,
-        userStore.userId
-      );
-
-      response
-        ? lessonDispatch({
-            type: lessonAction.SET_LESSON_RESULTS,
-            payload: response,
-          })
-        : null;
-    }
+    // if (userStore.nextLessonId && userStore.userId) {
+    //   const response = await getResultsByLessonAndUser(
+    //     userStore.nextLessonId,
+    //     userStore.userId
+    //   );
+    const response = await pRetry(
+      () =>
+        userStore.nextLessonId && userStore.userId
+          ? getResultsByLessonAndUser(userStore.nextLessonId, userStore.userId)
+          : null,
+      {
+        retries: 5,
+      }
+    );
+    response
+      ? lessonDispatch({
+          type: lessonAction.SET_LESSON_RESULTS,
+          payload: response,
+        })
+      : null;
+    // }
   }, [userStore.nextLessonId, userStore.userId]);
   useEffect(() => {
     fetchData();
@@ -155,7 +183,34 @@ const Lesson: React.FC = () => {
       lessonState.exercisesData &&
       lessonState.exercisesData.length > 0
     ) {
+      const fetchZipPassword = async () => {
+        // if (lessonState.currentExercise) {
+        //   const password = await getZipPassword(
+        //     lessonState.currentExercise.recordName
+        //   );
+        const password = await pRetry(
+          () =>
+            lessonState.currentExercise
+              ? getZipPassword(lessonState.currentExercise.recordName)
+              : null,
+          {
+            retries: 5,
+          }
+        );
+        console.log('fetchZipPassword', password);
+        lessonDispatch({
+          type: lessonAction.SET_ZIP_PASSWORD,
+          payload: password,
+        });
+        // }
+      };
+      console.log('lessonState.lessonResults', lessonState.lessonResults);
+      fetchZipPassword();
       if (lessonState.lessonResults.length === 0) {
+        console.log(
+          'lessonState.exercisesData[0]',
+          lessonState.exercisesData[0]
+        );
         lessonDispatch({
           type: lessonAction.SET_CURRENT_EXERCISE,
           payload: lessonState.exercisesData[0],
@@ -193,7 +248,14 @@ const Lesson: React.FC = () => {
   const fetchRelevantData = useCallback(async () => {
     if (lessonState.currentExercise) {
       const currentExerciseId = lessonState.currentExercise._id;
-      const response = await getRelevantByFSAId(currentExerciseId);
+      //   const response = await getRelevantByFSAId(currentExerciseId);
+      const response = await pRetry(
+        () => getRelevantByFSAId(currentExerciseId),
+        {
+          retries: 5,
+        }
+      );
+
       response.length > 0
         ? lessonDispatch({
             type: lessonAction.SET_RELEVANT,
@@ -206,7 +268,13 @@ const Lesson: React.FC = () => {
   const fetchAnswersData = useCallback(async () => {
     if (lessonState.currentExercise) {
       const currentExerciseId = lessonState.currentExercise._id;
-      const response = await getAnswersByExerciseId(currentExerciseId);
+      //   const response = await getAnswersByExerciseId(currentExerciseId);
+      const response = await pRetry(
+        () => getAnswersByExerciseId(currentExerciseId),
+        {
+          retries: 5,
+        }
+      );
       response.length > 0
         ? lessonDispatch({
             type: lessonAction.SET_CURRENT_ANSWERS,
@@ -421,29 +489,66 @@ const Lesson: React.FC = () => {
     lessonState.isExerciseFinished,
   ]);
 
+  const downloadRecord = useCallback(async (recordName: string) => {
+    try {
+      //   const url = await getEncryptedFileByName(
+      //     BUCKETS_NAMES.RECORDS,
+      //     recordName
+      //   );
+      const url = await pRetry(
+        () => getEncryptedFileByName(BUCKETS_NAMES.RECORDS, recordName),
+        {
+          retries: 5,
+        }
+      );
+      if (url) {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.href = url;
+        a.download = 'output.zip';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        console.log('finished');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   const startCurrentExercise = useCallback(
     async (nextLessonId: string, exerciseId: string, userId: string) => {
       setIsLoading(true);
-      const response = await startExercise(nextLessonId, exerciseId, userId);
-      console.log('startCurrentExercise callback', response);
-      if (response) {
-        console.log('starting timer');
-        lessonDispatch({
-          type: lessonAction.START_TIMER,
-        });
-        lessonDispatch({
-          type: lessonAction.SET_CURRENT_RESULT,
-          payload: {
-            _id: response._id,
-            userId: response.userId,
-            date: response.date,
-            exerciseId: response.exerciseId,
-            answers: response.answers,
-            score: response.score,
-          },
-        });
+      console.log('check1', lessonState.currentExercise);
+      if (lessonState.currentExercise) {
+        // const response = await startExercise(nextLessonId, exerciseId, userId);
+        const response = await pRetry(
+          () => startExercise(nextLessonId, exerciseId, userId),
+          {
+            retries: 5,
+          }
+        );
+        console.log('startCurrentExercise callback', response);
+        if (response) {
+          console.log('starting timer');
+          lessonDispatch({
+            type: lessonAction.START_TIMER,
+          });
+          lessonDispatch({
+            type: lessonAction.SET_CURRENT_RESULT,
+            payload: {
+              _id: response._id,
+              userId: response.userId,
+              date: response.date,
+              exerciseId: response.exerciseId,
+              answers: response.answers,
+              score: response.score,
+            },
+          });
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
     },
     []
   );
@@ -539,7 +644,10 @@ const Lesson: React.FC = () => {
 
   const submitExercise = useCallback(
     async (params: submitCurrentExerciseParams) => {
-      const response = await submitCurrentExercise(params);
+      //   const response = await submitCurrentExercise(params);
+      const response = await pRetry(() => submitCurrentExercise(params), {
+        retries: 5,
+      });
       if (response && !!lessonState.currentExercise) {
         lessonDispatch({ type: lessonAction.STOP_TIMER });
         lessonDispatch({
@@ -552,6 +660,7 @@ const Lesson: React.FC = () => {
             lessonState.exercisesIds.indexOf(lessonState.currentExercise._id) +
             1,
         });
+
         // fetchRelevantData();
         // fetchAnswersData();
       }
@@ -560,7 +669,7 @@ const Lesson: React.FC = () => {
   );
 
   const continueLesson = useCallback(async () => {
-    if (lessonState.currentExercise && userStore.userId) {
+    if (lessonState.currentExercise) {
       const lengthOfLesson = lessonState.exercisesData.length;
       const indexOfCurrentExercise = lessonState.exercisesData.indexOf(
         lessonState.currentExercise
@@ -569,7 +678,16 @@ const Lesson: React.FC = () => {
       if (lengthOfLesson === indexOfCurrentExercise + 1) {
         //last exercise
         console.log('last exercise');
-        const response = await updateNextLessonIdForUser(userStore.userId);
+        // const response = await updateNextLessonIdForUser(userStore.userId);
+        const response = await pRetry(
+          () =>
+            userStore.userId
+              ? updateNextLessonIdForUser(userStore.userId)
+              : null,
+          {
+            retries: 5,
+          }
+        );
         console.log('last exercise- response', response);
         if (!!response) {
           router.push('/learn');
@@ -739,6 +857,12 @@ const Lesson: React.FC = () => {
               className='right-0 mx-auto flex flex-col items-center justify-start'
             >
               <div className='mb-3 mt-5 flex flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
+                {lessonState.zipPassword ? (
+                  <>
+                    <FaCopy />
+                    <p>{lessonState.zipPassword}</p>
+                  </>
+                ) : null}
                 <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12  3xl:text-4xl'>
                   Unit 1 - Level 1
                   <br className='3xl:text-4xl' />
@@ -926,23 +1050,19 @@ const Lesson: React.FC = () => {
                     />
                   </>
                 ) : (
-                  <>
+                  <section className='flex flex-row items-center gap-6'>
                     {lessonState.currentExercise &&
                     lessonState.currentExercise.recordName ? (
                       <Button
-                        label={lessonState.currentExercise.recordName}
+                        label={'DOWNLOAD REC'}
                         color={ButtonColors.PURPLE}
                         style={
                           'w-[20rem] 3xl:w-[30rem] text-2xl tracking-widest'
                         }
                         onClick={() => {
-                          !!userStore.nextLessonId &&
-                          !!userStore.userId &&
                           !!lessonState.currentExercise
-                            ? startCurrentExercise(
-                                userStore.nextLessonId,
-                                lessonState.currentExercise._id,
-                                userStore.userId
+                            ? downloadRecord(
+                                lessonState.currentExercise.recordName
                               )
                             : null;
                         }}
@@ -966,7 +1086,7 @@ const Lesson: React.FC = () => {
                       }}
                       isLoading={isLoading}
                     />
-                  </>
+                  </section>
                 )}
               </div>
             </div>
@@ -983,3 +1103,6 @@ const Lesson: React.FC = () => {
 };
 
 export default Lesson;
+function async() {
+  throw new Error('Function not implemented.');
+}
