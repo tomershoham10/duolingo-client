@@ -20,6 +20,33 @@ export const createCourse = async (name: string): Promise<number | null> => {
     }
 }
 
+export const getCourseById = async (courseId: string): Promise<CoursesType | null> => {
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/courses/${courseId}`,
+            {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            const courseData = data.course;
+            return courseData;
+        } else {
+            console.error("Failed to fetch course by id.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching course by id:", error);
+        return null;
+    }
+};
+
 export const getCourses = async (): Promise<CoursesType[] | null> => {
     try {
         const response = await fetch(COURSES_SERVICE_ENDPOINTS.COURSES, {
