@@ -1,9 +1,9 @@
 import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API } from "@/app/API/classes-service/apis";
 
-export const getAllFSAs = async (): Promise<FSAType[]> => {
+export const getAllExercises = async (): Promise<ExerciseType[]> => {
     try {
         const response = await fetch(
-            `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}`,
+            `${COURSES_SERVICE_ENDPOINTS.EXERCISES}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -14,24 +14,23 @@ export const getAllFSAs = async (): Promise<FSAType[]> => {
         );
         if (response.ok) {
             const data = await response.json();
-            const resFSAs = data.exercises;
-            console.log("leves api - getAllFSAs", resFSAs);
-            return resFSAs;
+            const resExercises = data.exercises;
+            console.log("leves api - getAllExercises", resExercises);
+            return resExercises;
         } else {
-            console.error("Failed to fetch getAllFSAs.");
+            console.error("Failed to fetch getAllExercises.");
             return [];
         }
     } catch (error) {
-        console.error("Error fetching getAllFSAs:", error);
+        console.error("Error fetching getAllExercises:", error);
         return [];
     }
 };
 
-export const getRelevantByFSAId = async (currentExerciseId: string): Promise<TargetType[]> => {
+export const getRelevantByExerciseId = async (currentExerciseId: string): Promise<TargetType[]> => {
     try {
-        // console.log(`http://localhost:8080/api/FSA/getRelevantByFSAId/${currentExerciseId}`);
         const response = await fetch(
-            `${EXERCISES_API.FSA.GET_RELEVANT_BY_ID}/${currentExerciseId}`,
+            `${EXERCISES_API.GET_RELEVANT_BY_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -62,7 +61,7 @@ export const getRelevantByFSAId = async (currentExerciseId: string): Promise<Tar
 export const getAnswersByExerciseId = async (currentExerciseId: string) => {
     try {
         const response = await fetch(
-            `${EXERCISES_API.FSA.GET_ANSWERS_BY_FSA_ID}/${currentExerciseId}`,
+            `${EXERCISES_API.GET_ANSWERS_BY_EXERCISE_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -89,10 +88,10 @@ export const getAnswersByExerciseId = async (currentExerciseId: string) => {
     }
 };
 
-export const getResultByUserAndFSAId = async (currentExerciseId: string, userId: string) => {
+export const getResultByUserAndExerciseId = async (currentExerciseId: string, userId: string) => {
     try {
         const response = await fetch(
-            `${EXERCISES_API.FSA.GET_RESULT_BY_USER_AND_FSA_ID}/${currentExerciseId}/${userId}`,
+            `${EXERCISES_API.GET_RESULT_BY_USER_AND_EXERCISE_ID}/${currentExerciseId}/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -116,14 +115,14 @@ export const getResultByUserAndFSAId = async (currentExerciseId: string, userId:
             return response.status;
         }
     } catch (error) {
-        console.error("Error fetching ResultByUserAndFSAId:", error);
+        console.error("Error fetching getResultByUserAndExerciseId:", error);
         return [];
     }
 };
 
-export const createFSA = async (newFSA: Partial<FSAType>): Promise<string> => {
+export const createExercise = async (newExercise: Partial<ExerciseType>): Promise<string> => {
     try {
-        console.log('create fsa')
+        console.log('create exercise');
         // let sonolistIds: string[] = []
         // if (newFSA.sonolist) {
         //     const uploadSonolistResponse = await uploadFile('sonograms', newFSA.sonolist) as UploadedObjectInfo[][];
@@ -133,28 +132,28 @@ export const createFSA = async (newFSA: Partial<FSAType>): Promise<string> => {
         // }
 
         const response = await fetch(
-            `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}`,
+            `${COURSES_SERVICE_ENDPOINTS.EXERCISES}`,
             {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(newFSA)
+                body: JSON.stringify(newExercise)
             },
         );
         if (response.ok) {
-            console.log("create fsa res", response);
-            const resJson = await response.json() as FSAType;
+            console.log("create exercise res", response);
+            const resJson = await response.json() as ExerciseType;
             if (response.status === 201) {
-                console.log("new fsa", resJson);
+                console.log("new exercise", resJson);
             }
             return 'created successfully';
         } else {
-            throw new Error('error creating FSA');
+            throw new Error('error creating exercise');
         }
     } catch (error) {
-        console.error("Error creating fsa:", error);
-        throw new Error(`error creating FSA ${error}`);
+        console.error("Error creating exercise:", error);
+        throw new Error(`error creating exercise ${error}`);
     }
 };

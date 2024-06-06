@@ -2,9 +2,7 @@ const ROUT = 'http://localhost:8080';
 
 export const COURSES_SERVICE_ENDPOINTS = {
     COURSES: `${ROUT}/api/courses`,
-    EXERCISES: {
-        FSA: `${ROUT}/api/FSA`
-    },
+    EXERCISES: `${ROUT}/api/exercises`,
     LESSONS: `${ROUT}/api/lessons`,
     LEVELS: `${ROUT}/api/levels`,
     RESULTS: `${ROUT}/api/results`,
@@ -22,11 +20,9 @@ export const COURSES_API = {
 };
 
 export const EXERCISES_API = {
-    FSA: {
-        GET_RELEVANT_BY_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}/getRelevantByFSAId`,
-        GET_ANSWERS_BY_FSA_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}/getAnswersByFSAId`,
-        GET_RESULT_BY_USER_AND_FSA_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES.FSA}/getResultByUserAndFSAId`,
-    }
+    GET_RELEVANT_BY_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/getRelevantByExerciseId`,
+    GET_ANSWERS_BY_EXERCISE_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/getAnswersByExerciseId`,
+    GET_RESULT_BY_USER_AND_EXERCISE_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/getResultByUserAndExerciseId`,
 };
 
 export const LESSONS_API = {

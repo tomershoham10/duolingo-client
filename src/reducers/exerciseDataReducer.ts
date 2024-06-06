@@ -1,3 +1,9 @@
+export enum ExercisesFieldsType {
+    DESCRIPTION = 'description',
+    RELEVANT = 'relevant',
+    TIMEBUFFERS = 'timeBuffers',
+}
+
 export enum exerciseDataAction {
     SET_DESCRIPTION = 'setDescription',
 
@@ -16,7 +22,7 @@ type Action =
     | { type: exerciseDataAction.SET_RELEVANT, payload: relevantList[] }
     | { type: exerciseDataAction.ADD_RELEVANT, payload: relevantList }
     | { type: exerciseDataAction.REMOVE_TARGET_FROM_RELEVANT; payload: relevantList }
-    | { type: exerciseDataAction.SET_UNFILLED_FIELDS, payload: FSAFieldsType[] }
+    | { type: exerciseDataAction.SET_UNFILLED_FIELDS, payload: ExercisesFieldsType[] }
     | { type: exerciseDataAction.SET_SHOW_PLACE_HOLDER, payload: boolean }
     | { type: exerciseDataAction.SET_TARGET_FROM_DROPDOWN, payload: TargetType | null }
 
@@ -28,7 +34,7 @@ interface relevantList {
 export interface exerciseDataType {
     description: string | undefined,
     relevant: relevantList[],
-    unfilledFields: FSAFieldsType[],
+    unfilledFields: ExercisesFieldsType[],
     showPlaceholder: boolean,
     targetFromDropdown: TargetType | null
 }

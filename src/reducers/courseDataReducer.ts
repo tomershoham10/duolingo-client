@@ -27,8 +27,8 @@ export type CourseDataActionTypes =
     | { type: courseDataAction.SET_UNSUSPENDED_LEVELS, payload: DataWithFatherId<LevelType>[] }
     | { type: courseDataAction.SET_LESSONS, payload: DataWithFatherId<LessonType>[] }
     | { type: courseDataAction.SET_UNSUSPENDED_LESSONS, payload: DataWithFatherId<LessonType>[] }
-    | { type: courseDataAction.SET_EXERCISES, payload: DataWithFatherId<FSAType>[] }
-    | { type: courseDataAction.SET_UNSUSPENDED_EXERCISES, payload: DataWithFatherId<FSAType>[] }
+    | { type: courseDataAction.SET_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
+    | { type: courseDataAction.SET_UNSUSPENDED_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
     | { type: courseDataAction.SET_RESULTS, payload: ResultsState[] }
 
 
@@ -40,8 +40,8 @@ export interface courseDataType {
     unsuspendedLevels: DataWithFatherId<LevelType>[];
     lessons: DataWithFatherId<LessonType>[];
     unsuspendedLessons: DataWithFatherId<LessonType>[];
-    exercises: DataWithFatherId<FSAType>[];
-    unsuspendedExercises: DataWithFatherId<FSAType>[];
+    exercises: DataWithFatherId<ExerciseType>[];
+    unsuspendedExercises: DataWithFatherId<ExerciseType>[];
     results: ResultsState[];
 }
 

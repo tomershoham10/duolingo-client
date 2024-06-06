@@ -63,15 +63,35 @@ interface TimeBuffersType {
     grade: number;
 }
 
-interface FSAType {
+enum ExercisesTypes {
+    FSA = "fsa",
+    SPOTRECC = "spotrecc"
+}
+
+// interface FSAType {
+//     _id: string;
+//     relevant?: string[];
+//     answersList: string[]; //may be 2 correct answers
+//     acceptableAnswers?: string[];
+//     timeBuffers: TimeBuffersType[];
+//     description?: string;
+//     dateCreated: Date;
+//     recordName: string;
+// }
+
+interface ExerciseType {
     _id: string;
-    relevant?: string[];
+    dateCreated: Date;
+    type: ExercisesTypes;
     answersList: string[]; //may be 2 correct answers
-    acceptableAnswers?: string[];
     timeBuffers: TimeBuffersType[];
     description?: string;
-    dateCreated: Date;
-    recordName: string;
+    fileName: string;
+
+    // fsa
+    relevant?: string[];
+    acceptableAnswers?: string[];
+
 }
 
 // ------ results ------- //
@@ -279,11 +299,11 @@ enum PermissionsTypes {
 // // --> new-exercise <-- // //
 // // // --> _ExerciseData <-- // // //
 
-enum FSAFieldsType {
-    DESCRIPTION = 'description',
-    RELEVANT = 'relevant',
-    TIMEBUFFERS = 'timeBuffers',
-}
+// enum FSAFieldsType {
+//     DESCRIPTION = 'description',
+//     RELEVANT = 'relevant',
+//     TIMEBUFFERS = 'timeBuffers',
+// }
 
 ////////////////////////////////
 

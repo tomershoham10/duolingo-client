@@ -3,7 +3,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { TbClockHour12 } from 'react-icons/tb';
-import { FaCheck, FaXmark, FaRegCopy } from 'react-icons/fa6';
+import { FaCheck, FaXmark } from 'react-icons/fa6';
 import { FiFlag } from 'react-icons/fi';
 // import { FaCopy } from "react-icons/fa";
 import { FaCopy } from 'react-icons/fa6';
@@ -20,8 +20,8 @@ import { AlertSizes, useAlertStore } from '../store/stores/useAlertStore';
 import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 import {
   getAnswersByExerciseId,
-  getRelevantByFSAId,
-} from '../API/classes-service/exercises/FSA/functions';
+  getRelevantByExerciseId,
+} from '../API/classes-service/exercises/functions';
 import {
   getResultsByLessonAndUser,
   startExercise,
@@ -193,7 +193,7 @@ const Lesson: React.FC = () => {
         const password = await pRetry(
           () =>
             lessonState.currentExercise
-              ? getZipPassword(lessonState.currentExercise.recordName)
+              ? getZipPassword(lessonState.currentExercise.fileName)
               : null,
           {
             retries: 5,
@@ -254,9 +254,9 @@ const Lesson: React.FC = () => {
   const fetchRelevantData = useCallback(async () => {
     if (lessonState.currentExercise) {
       const currentExerciseId = lessonState.currentExercise._id;
-      //   const response = await getRelevantByFSAId(currentExerciseId);
+      //   const response = await getRelevantByExerciseId(currentExerciseId);
       const response = await pRetry(
-        () => getRelevantByFSAId(currentExerciseId),
+        () => getRelevantByExerciseId(currentExerciseId),
         {
           retries: 5,
         }
@@ -1043,18 +1043,16 @@ const Lesson: React.FC = () => {
                   </div>
                 ) : lessonState.isExerciseStarted ? (
                   <>
-                   {lessonState.currentExercise &&
-                    lessonState.currentExercise.recordName ? (
+                    {lessonState.currentExercise &&
+                    lessonState.currentExercise.fileName ? (
                       <Button
                         color={ButtonColors.PURPLE}
                         icon={faFileArrowDown}
-                        style={
-                          'text-2xl tracking-widest'
-                        }
+                        style={'text-2xl tracking-widest'}
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.recordName
+                                lessonState.currentExercise.fileName
                               )
                             : null;
                         }}
@@ -1093,7 +1091,7 @@ const Lesson: React.FC = () => {
                 ) : (
                   <section className='flex flex-row items-center gap-6'>
                     {lessonState.currentExercise &&
-                    lessonState.currentExercise.recordName ? (
+                    lessonState.currentExercise.fileName ? (
                       <Button
                         label={'DOWNLOAD REC'}
                         color={ButtonColors.PURPLE}
@@ -1103,7 +1101,7 @@ const Lesson: React.FC = () => {
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.recordName
+                                lessonState.currentExercise.fileName
                               )
                             : null;
                         }}

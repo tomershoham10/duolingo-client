@@ -5,7 +5,7 @@ import AcintDataSection from './_AcintData/page';
 import ExerciseDataSection from './_ExerciseData/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import { createFSA } from '@/app/API/classes-service/exercises/FSA/functions';
+import { createExercise } from '@/app/API/classes-service/exercises/functions';
 import pRetry from 'p-retry';
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
@@ -14,7 +14,7 @@ const NewExercise: React.FC = () => {
 
   const exerciseToSubmit = {
     // recordName: useStore(useCreateExerciseStore, (state) => state.recordId),
-    recordName: useStore(useCreateExerciseStore, (state) => state.recordName),
+    fileName: useStore(useCreateExerciseStore, (state) => state.fileName),
     recordLength: useStore(
       useCreateExerciseStore,
       (state) => state.recordLength
@@ -39,14 +39,14 @@ const NewExercise: React.FC = () => {
     records: () => {
       console.log(
         'exerciseToSubmit - acint section',
-        exerciseToSubmit.recordName,
+        exerciseToSubmit.fileName,
         exerciseToSubmit.recordLength,
         exerciseToSubmit.sonolistFiles,
         exerciseToSubmit.answersList
       );
       return (
         // !!exerciseToSubmit.recordId &&
-        !!exerciseToSubmit.recordName &&
+        !!exerciseToSubmit.fileName &&
         !!exerciseToSubmit.recordLength &&
         !!exerciseToSubmit.sonolistFiles &&
         !!exerciseToSubmit.answersList
@@ -72,13 +72,13 @@ const NewExercise: React.FC = () => {
       //   if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
       const res = await pRetry(
         () =>
-          exerciseToSubmit.recordName && exerciseToSubmit.description
-            ? createFSA({
+          exerciseToSubmit.fileName && exerciseToSubmit.description
+            ? createExercise({
                 relevant: exerciseToSubmit.relevant,
                 answersList: exerciseToSubmit.answersList,
                 timeBuffers: exerciseToSubmit.timeBuffers,
                 description: exerciseToSubmit.description,
-                recordName: exerciseToSubmit.recordName,
+                fileName: exerciseToSubmit.fileName,
               })
             : null,
         {
@@ -86,7 +86,7 @@ const NewExercise: React.FC = () => {
         }
       );
 
-      // const res = await createFSA({
+      // const res = await createExercise({
       //   relevant: exerciseToSubmit.relevant,
       //   answersList: exerciseToSubmit.answersList,
       //   //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,

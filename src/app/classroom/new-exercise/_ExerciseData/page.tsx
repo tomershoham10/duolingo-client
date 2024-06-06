@@ -24,6 +24,7 @@ import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import {
+  ExercisesFieldsType,
   exerciseDataAction,
   exerciseDataReducer,
 } from '@/reducers/exerciseDataReducer';
@@ -38,12 +39,6 @@ import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import PlusButton from '@/components/PlusButton/page';
 
 library.add(faPlus);
-
-enum FSAFieldsType {
-  DESCRIPTION = 'description',
-  RELEVANT = 'relevant',
-  TIMEBUFFERS = 'timeBuffers',
-}
 
 const ExerciseDataSection: React.FC = () => {
   const updateExerciseToSubmit = {
@@ -108,7 +103,9 @@ const ExerciseDataSection: React.FC = () => {
     initialTimeBuffersState
   );
 
-  const [unfilledFields, setUnfilledFields] = useState<FSAFieldsType[]>([]);
+  const [unfilledFields, setUnfilledFields] = useState<ExercisesFieldsType[]>(
+    []
+  );
 
   const setRelevant = useCallback(() => {
     exerciseDataDispatch({
@@ -440,7 +437,7 @@ const ExerciseDataSection: React.FC = () => {
           <div className='my-3 flex w-fit flex-row items-center justify-between gap-3'>
             <span
               className={`my-3 text-2xl font-bold ${
-                unfilledFields.includes(FSAFieldsType.TIMEBUFFERS)
+                unfilledFields.includes(ExercisesFieldsType.TIMEBUFFERS)
                   ? 'text-duoRed-default'
                   : ''
               }`}

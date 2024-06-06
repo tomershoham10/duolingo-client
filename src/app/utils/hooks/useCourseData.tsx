@@ -260,7 +260,7 @@ const useCourseData = (
           );
           return { fatherId: lesson._id, data: exercisesData };
         } catch (error) {
-          console.error('Error fetching fsas for lesson:', lesson._id, error);
+          console.error('Error fetching exercises for lesson:', lesson._id, error);
           return { fatherId: lesson._id, data: [] };
         }
       });
@@ -271,7 +271,7 @@ const useCourseData = (
         payload: result.flat(),
       });
     } catch (error) {
-      console.error('Error fetching fsas', error);
+      console.error('Error fetching exercises', error);
       return [];
     }
   }, [courseDataDispatch, courseDataState.lessons]);
@@ -290,7 +290,7 @@ const useCourseData = (
           );
           return { fatherId: lesson._id, data: exercisesData };
         } catch (error) {
-          console.error('Error fetching fsas for lesson:', lesson._id, error);
+          console.error('Error fetching exercises for lesson:', lesson._id, error);
           return { fatherId: lesson._id, data: [] };
         }
       });
@@ -301,7 +301,7 @@ const useCourseData = (
         payload: result.flat(),
       });
     } catch (error) {
-      console.error('Error fetching Unsuspended fsas', error);
+      console.error('Error fetching Unsuspended exercises', error);
       return [];
     }
   }, [courseDataDispatch, courseDataState.lessons]);

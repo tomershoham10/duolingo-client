@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 type CreateExerciseState = {
     // recordId: string | undefined;
-    recordName: string | null;
+    fileName: string | null;
     recordLength: number | null;
     sonolistFiles: string[];
     description: string | null;
@@ -16,7 +16,7 @@ type CreateExerciseState = {
 
 type Action = {
     // updateRecordId: (recordId: CreateExerciseState['recordId']) => void;
-    updateRecordName: (recordName: CreateExerciseState['recordName']) => void;
+    updateFileName: (recordName: CreateExerciseState['fileName']) => void;
     updateRecordLength: (recordLength: CreateExerciseState['recordLength']) => void;
     updateSonolistFiles: (sonolistFiles: CreateExerciseState['sonolistFiles']) => void;
     updateDescription: (description: CreateExerciseState['description']) => void;
@@ -30,7 +30,7 @@ type Action = {
 export const useCreateExerciseStore = create<CreateExerciseState & Action>(
     (set) => ({
         // recordId: undefined,
-        recordName: null,
+        fileName: null,
         recordLength: null,
         sonolistFiles: [],
         description: null,
@@ -39,7 +39,7 @@ export const useCreateExerciseStore = create<CreateExerciseState & Action>(
         answersList: [],
         acceptableAnswers: [],
         // updateRecordId: (recordId) => set(() => ({ recordId: recordId })),
-        updateRecordName: (recordName) => set(() => ({ recordName: recordName })),
+        updateFileName: (fileName) => set(() => ({ fileName: fileName })),
         updateRecordLength: (recordLength) => set(() => ({ recordLength: recordLength })),
         updateSonolistFiles: (sonolistFiles) => set(() => ({ sonolistFiles: sonolistFiles })),
         updateDescription: (description) => set(() => ({ description: description })),

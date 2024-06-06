@@ -3,7 +3,7 @@ import { useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { getAllFSAs } from '@/app/API/classes-service/exercises/FSA/functions';
+import { getAllExercises } from '@/app/API/classes-service/exercises/functions';
 import {
   editLessonAction,
   editLessonReducer,
@@ -39,8 +39,8 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
   ];
 
   const initialEditLessonState: editLessonType = {
-    fsasList: [],
-    selectedFSA: undefined,
+    exercisesList: [],
+    selectedExercise: undefined,
     tableHeaders: headers,
     tableData: [],
   };
@@ -51,71 +51,77 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
   );
 
   useEffect(() => {
-    const fetchFSA = async () => {
-      //   const res = await getAllFSAs();
+    const fetchExercises = async () => {
+      //   const res = await getAllExercises();
 
-      const res = await pRetry(getAllFSAs, {
+      const res = await pRetry(getAllExercises, {
         retries: 5,
       });
-      console.log('fetch FSA', res);
-      editLessonDispatch({ type: editLessonAction.SET_FSAS, payload: res });
+      console.log('fetch exercises', res);
+      editLessonDispatch({
+        type: editLessonAction.SET_EXERCISES,
+        payload: res,
+      });
     };
-    fetchFSA();
+    fetchExercises();
   }, []);
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const fetchPromises = editLessonState.fsasList.map(async (fsa) => {
-        try {
-          const fsaRecName = fsa.recordName;
-          console.log('fsa loop - fsaRecName', fsaRecName);
+      const fetchPromises = editLessonState.exercisesList.map(
+        async (exercise) => {
+          try {
+            const exerciseRecName = exercise.fileName;
+            console.log('exercise loop - exerciseRecName', exerciseRecName);
 
-          const recData = (await pRetry(
-            () => getFileMetadataByETag(BUCKETS_NAMES.RECORDS, fsaRecName),
-            {
-              retries: 5,
+            const recData = (await pRetry(
+              () =>
+                getFileMetadataByETag(BUCKETS_NAMES.RECORDS, exerciseRecName),
+              {
+                retries: 5,
+              }
+            )) as {
+              name: string;
+              id: string;
+              metadata: Partial<RecordMetadataType>;
+            };
+            //   const recData = (await getFileMetadataByETag(
+            //     'records',
+            //     exerciseRecName
+            //   )) as {
+            //     name: string;
+            //     id: string;
+            //     metadata: Partial<RecordMetadataType>;
+            //   };
+
+            //   const recData = (await getFileMetadataByETag(
+            //     'records',
+            //     exerciseRecName
+            //   )) as {
+            //     name: string;
+            //     id: string;
+            //     metadata: Partial<RecordMetadataType>;
+            //   };
+            console.log('recData', recData);
+            if (!recData) {
+              return null;
             }
-          )) as {
-            name: string;
-            id: string;
-            metadata: Partial<RecordMetadataType>;
-          };
-          //   const recData = (await getFileMetadataByETag(
-          //     'records',
-          //     fsaRecName
-          //   )) as {
-          //     name: string;
-          //     id: string;
-          //     metadata: Partial<RecordMetadataType>;
-          //   };
-
-          //   const recData = (await getFileMetadataByETag(
-          //     'records',
-          //     fsaRecName
-          //   )) as {
-          //     name: string;
-          //     id: string;
-          //     metadata: Partial<RecordMetadataType>;
-          //   };
-          console.log('recData', recData);
-          if (!recData) {
+            const newRow = {
+              _id: exercise._id,
+              answersList: exercise.answersList,
+              difficultyLevel: recData.metadata.difficulty_level,
+              is_in_italy: recData.metadata.is_in_italy,
+              signature_type: recData.metadata.signature_type,
+              sonolist: recData.metadata.sonograms_ids,
+            };
+            console.log('newRow', newRow);
+            return newRow;
+          } catch (error) {
+            console.error('Error fetching record:', error);
             return null;
           }
-          const newRow = {
-            _id: fsa._id,
-            answersList: fsa.answersList,
-            difficultyLevel: recData.metadata.difficulty_level,
-            is_in_italy: recData.metadata.is_in_italy,
-            signature_type: recData.metadata.signature_type,
-            sonolist: recData.metadata.sonograms_ids,
-          };
-          console.log('newRow', newRow);
-          return newRow;
-        } catch (error) {
-          console.error('Error fetching record:', error);
-          return null;
         }
-      });
+      );
       const tableRows = await Promise.all(fetchPromises);
       const filteredRows = tableRows.filter(
         (row) => row !== null
@@ -125,22 +131,25 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
         payload: filteredRows,
       });
     };
-    if (editLessonState.fsasList.length > 0) {
+    if (editLessonState.exercisesList.length > 0) {
       fetchRecords();
     }
-  }, [editLessonState.fsasList]);
+  }, [editLessonState.exercisesList]);
 
   useEffect(() => {
     console.log('editLessonState.tableData', editLessonState.tableData);
   }, [editLessonState.tableData]);
 
-  const addFsaToLesson = async () => {
+  const addExerciseToLesson = async () => {
     // if (!!editLessonState.selectedFSA) {
     const status = await pRetry(
       () =>
-        !!editLessonState.selectedFSA
+        !!editLessonState.selectedExercise
           ? updateLesson(props.lessonId, {
-              exercises: [...props.exercisesList, editLessonState.selectedFSA],
+              exercises: [
+                ...props.exercisesList,
+                editLessonState.selectedExercise,
+              ],
             })
           : null,
       {
@@ -175,15 +184,15 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
           onSelect={(row) => {
             console.log(row._id);
             editLessonDispatch({
-              type: editLessonAction.SET_SELECTED_FSA,
+              type: editLessonAction.SET_SELECTED_EXERCISES,
               payload: row._id,
             });
           }}
           selectedRowIndex={
-            !!editLessonState.selectedFSA
-              ? editLessonState.fsasList
-                  .map((fsa) => fsa._id)
-                  .indexOf(editLessonState.selectedFSA)
+            !!editLessonState.selectedExercise
+              ? editLessonState.exercisesList
+                  .map((exercise) => exercise._id)
+                  .indexOf(editLessonState.selectedExercise)
               : undefined
           }
         />
@@ -192,7 +201,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
             label={'Add exercise'}
             buttonType={ButtonTypes.SUBMIT}
             color={ButtonColors.BLUE}
-            onClick={addFsaToLesson}
+            onClick={addExerciseToLesson}
           />
         </div>
       </div>

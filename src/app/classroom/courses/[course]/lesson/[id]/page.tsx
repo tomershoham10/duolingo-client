@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 export default function Page({ params }: { params: { id: string } }) {
   const lessonId = params.id.toString();
-  const [exercises, setExercises] = useState<FSAType[] | null>([]);
-  const [currentExercise, setCurrentExercise] = useState<FSAType>();
+  const [exercises, setExercises] = useState<ExerciseType[] | null>([]);
+  const [currentExercise, setCurrentExercise] = useState<ExerciseType>();
   const [totalNumOfExercises, setTotalNumOfExercises] = useState<number>(0);
   const [numOfExercisesMade, setNumOfExercisesMade] = useState<number>(0);
 

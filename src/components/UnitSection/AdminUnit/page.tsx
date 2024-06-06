@@ -110,7 +110,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
 
   const isIdInDataWithFatherIdObj = (
     id: string,
-    obj: DataWithFatherId<LevelType | LessonType | FSAType>[]
+    obj: DataWithFatherId<LevelType | LessonType | ExerciseType>[]
   ): boolean => {
     return obj.some((levelData) => {
       return levelData.data.some((doc) => doc._id === id);

@@ -41,12 +41,12 @@ type TargetToSubmitType = {
 }
 
 export type LessonDispatchAction =
-    | { type: lessonAction.SET_EXERCISES_DATA, payload: FSAType[] }
+    | { type: lessonAction.SET_EXERCISES_DATA, payload: ExerciseType[] }
     | { type: lessonAction.SET_LESSON_RESULTS, payload: ResultType[] }
     | { type: lessonAction.SET_EXERCISES_IDS, payload: string[] }
     | { type: lessonAction.ADD_EXERCISE_ID, payload: string }
     | { type: lessonAction.SET_NUM_OF_EXERCISES_MADE, payload: number }
-    | { type: lessonAction.SET_CURRENT_EXERCISE, payload: FSAType | null }
+    | { type: lessonAction.SET_CURRENT_EXERCISE, payload: ExerciseType | null }
     | { type: lessonAction.SET_ZIP_PASSWORD, payload: number | null }
     | { type: lessonAction.SET_RELEVANT, payload: TargetType[] }
     | { type: lessonAction.SET_CURRENT_ANSWERS, payload: TargetType[] }
@@ -71,11 +71,11 @@ export type LessonDispatchAction =
     | { type: lessonAction.UPDATE_NEXT_EXERCISE }
 
 export interface lessonType {
-    exercisesData: FSAType[],
+    exercisesData: ExerciseType[],
     lessonResults: ResultType[],
     exercisesIds: string[],
     numOfExercisesMade: number, //0
-    currentExercise: FSAType | null,
+    currentExercise: ExerciseType | null,
     zipPassword: number | null;
     relevant: TargetType[],
     currentAnswers: TargetType[],
