@@ -24,6 +24,7 @@ import {
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import handleLogout from '@/app/utils/functions/handleLogOut';
 import pRetry from 'p-retry';
+import Menu from '@/components/Menu/page';
 
 library.add(
   faHome,
@@ -174,8 +175,20 @@ const AdminSideBar: React.FC = () => {
         },
         {
           name: 'New Exercise',
-          popup: PopupsTypes.CLOSED,
-          href: '/classroom/new-exercise',
+          subItems: [
+            {
+              name: 'Create FSA',
+              popup: PopupsTypes.CLOSED,
+              href: '/classroom/new-exercise',
+            },
+            {
+              name: 'Create SpotRcc',
+              popup: PopupsTypes.CLOSED,
+              href: '/classroom/new-exercise',
+            },
+          ],
+          //   popup: PopupsTypes.CLOSED,
+          //   href: '/classroom/new-exercise',
         },
       ],
     },
@@ -237,7 +250,7 @@ const AdminSideBar: React.FC = () => {
       </div>
 
       <ul className='flex-grow'>
-        {sidebarItems.map((sideBaritem, index) => (
+        {sidebarItems.map((sideBaritem) => (
           <li
             key={sideBaritem.name}
             onMouseEnter={() =>
@@ -299,9 +312,18 @@ const AdminSideBar: React.FC = () => {
                 </span>
               )}
             </button>
-            {hoveredElement === sideBaritem.name && sideBaritem.subItems ? (
+
+            {!!sideBaritem.subItems ? (
+              <Menu
+                isHovered={
+                  hoveredElement === sideBaritem.name && !!sideBaritem.subItems
+                }
+                items={sideBaritem.subItems}
+              />
+            ) : null}
+            {/* {hoveredElement === sideBaritem.name && sideBaritem.subItems ? (
               <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
-                {sideBaritem.subItems.map((subItem, subItemIndex) => (
+                {sideBaritem.subItems.map((subItem) => (
                   <li
                     className='duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
                     key={subItem.name}
@@ -324,7 +346,7 @@ const AdminSideBar: React.FC = () => {
                   </li>
                 ))}
               </ul>
-            ) : null}
+            ) : null} */}
           </li>
         ))}
       </ul>
