@@ -74,6 +74,7 @@ const AcintDataSection: React.FC = () => {
     if (sourcesListDB.length === 0) {
       fetchSources();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addAlert = useAlertStore.getState().addAlert;

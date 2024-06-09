@@ -131,6 +131,7 @@ const ExerciseDataSection: React.FC = () => {
         grade: timeBuffersState.timeBuffersScores[timeValIndex],
       }))
     );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseDataState, timeBuffersState]);
 
   useEffect(() => {

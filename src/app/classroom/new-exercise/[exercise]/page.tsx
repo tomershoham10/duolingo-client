@@ -139,6 +139,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
 
   useEffect(() => {
     updateType();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.exercise]);
 
   console.log('exerciseToSubmit.type', exerciseToSubmit.type);

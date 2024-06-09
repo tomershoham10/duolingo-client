@@ -558,6 +558,7 @@ const Lesson: React.FC = () => {
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
