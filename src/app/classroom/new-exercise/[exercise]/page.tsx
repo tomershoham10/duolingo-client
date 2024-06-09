@@ -1,15 +1,23 @@
 'use client';
+import { lazy, useCallback, useEffect } from 'react';
+import pRetry from 'p-retry';
 import { useStore } from 'zustand';
 import Pagination from '@/components/Navigation/Pagination/page';
-import AcintDataSection from './_fsaPages/_AcintData/page';
-import ExerciseDataSection from './_fsaPages/_ExerciseData/page';
-import FilesDataSection from './_spotreccPages/_FilesDataSection/page';
-import SpotreccDataSection from './_spotreccPages/_SpotreccDataSection/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { createExercise } from '@/app/API/classes-service/exercises/functions';
-import pRetry from 'p-retry';
-import { useCallback, useEffect } from 'react';
+
+const AcintDataSection = lazy(() => import('./_fsaPages/_AcintData/page'));
+const ExerciseDataSection = lazy(
+  () => import('./_fsaPages/_ExerciseData/page')
+);
+const FilesDataSection = lazy(
+  () => import('./_spotreccPages/_FilesDataSection/page')
+);
+const SpotreccDataSection = lazy(
+  () => import('./_spotreccPages/_SpotreccDataSection/page')
+);
+
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 enum ExercisesTypes {
