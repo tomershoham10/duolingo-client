@@ -1,19 +1,32 @@
 'use client';
 import { useStore } from 'zustand';
 import Pagination from '@/components/Navigation/Pagination/page';
-import AcintDataSection from './_AcintData/page';
-import ExerciseDataSection from './_ExerciseData/page';
+import AcintDataSection from './_fsaPages/_AcintData/page';
+import ExerciseDataSection from './_fsaPages/_ExerciseData/page';
+import FilesDataSection from './_spotreccPages/_FilesDataSection/page';
+import SpotreccDataSection from './_spotreccPages/_SpotreccDataSection/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { createExercise } from '@/app/API/classes-service/exercises/functions';
 import pRetry from 'p-retry';
+import { useCallback, useEffect } from 'react';
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-const NewExercise: React.FC = () => {
+enum ExercisesTypes {
+  FSA = 'fsa',
+  SPOTRECC = 'spotrecc',
+}
+
+const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
+  console.log('params.exercise', params.exercise);
   const addAlert = useAlertStore.getState().addAlert;
+
+  const updateExerciseType =
+    useCreateExerciseStore.getState().updateExerciseType;
 
   const exerciseToSubmit = {
     // recordName: useStore(useCreateExerciseStore, (state) => state.recordId),
+    type: useStore(useCreateExerciseStore, (state) => state.type),
     fileName: useStore(useCreateExerciseStore, (state) => state.fileName),
     recordLength: useStore(
       useCreateExerciseStore,
@@ -31,8 +44,14 @@ const NewExercise: React.FC = () => {
   };
 
   const components = {
-    records: AcintDataSection, // Import your components
-    exercise: ExerciseDataSection,
+    [ExercisesTypes.FSA]: {
+      records: AcintDataSection, // Import your components
+      exercise: ExerciseDataSection,
+    },
+    [ExercisesTypes.SPOTRECC]: {
+      files: FilesDataSection,
+      exercise: SpotreccDataSection,
+    },
   };
 
   const onNextFuncs = {
@@ -105,11 +124,24 @@ const NewExercise: React.FC = () => {
       console.error(err);
     }
   };
+
+  const updateType = useCallback(() => {
+    updateExerciseType(params.exercise);
+  }, [params.exercise, updateExerciseType]);
+
+  useEffect(() => {
+    updateType();
+  }, [params.exercise]);
+
+  console.log('exerciseToSubmit.type', exerciseToSubmit.type);
+
   return (
     <div className='h-full w-full overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
       <Pagination
-        header={'create new exercise'}
-        components={components}
+        header={`create new exercise${
+          params.exercise ? ' - ' + params.exercise : null
+        }`}
+        components={components[params.exercise]}
         onNext={onNextFuncs}
         onSubmit={submitExercise}
       />

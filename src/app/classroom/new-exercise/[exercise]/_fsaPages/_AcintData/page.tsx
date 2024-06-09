@@ -80,7 +80,7 @@ const AcintDataSection: React.FC = () => {
 
   const updateExerciseToSubmit = {
     // updateRecordId: useCreateExerciseStore.getState().updateRecordId,
-    updateRecordName: useCreateExerciseStore.getState().updateRecordName,
+    updateFileName: useCreateExerciseStore.getState().updateFileName,
     updateRecordLength: useCreateExerciseStore.getState().updateRecordLength,
     updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
     updateAnswersList: useCreateExerciseStore.getState().updateAnswersList,
@@ -88,7 +88,7 @@ const AcintDataSection: React.FC = () => {
 
   const recordName = useStore(
     useCreateExerciseStore,
-    (state) => state.recordName
+    (state) => state.fileName
   );
 
   const initialsubmitRecordState: submitRecordDataType = {
@@ -357,7 +357,7 @@ const AcintDataSection: React.FC = () => {
         .map((target) => target._id);
 
       //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
-      updateExerciseToSubmit.updateRecordName(infoBarStore.selectedFile.name);
+      updateExerciseToSubmit.updateFileName(infoBarStore.selectedFile.name);
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(
         metadata.sonograms_ids && metadata.sonograms_ids.length > 0

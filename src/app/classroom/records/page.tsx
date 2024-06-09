@@ -1,6 +1,6 @@
 'use client';
 import { useStore } from 'zustand';
-import AcintDataSection from '../new-exercise/_AcintData/page';
+import AcintDataSection from '../new-exercise/[exercise]/_fsaPages/_AcintData/page';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 const Records: React.FC = () => {

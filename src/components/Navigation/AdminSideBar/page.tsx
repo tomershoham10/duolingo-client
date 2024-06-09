@@ -179,12 +179,12 @@ const AdminSideBar: React.FC = () => {
             {
               name: 'Create FSA',
               popup: PopupsTypes.CLOSED,
-              href: '/classroom/new-exercise',
+              href: '/classroom/new-exercise/fsa',
             },
             {
-              name: 'Create SpotRcc',
+              name: 'Create SpotRecc',
               popup: PopupsTypes.CLOSED,
-              href: '/classroom/new-exercise',
+              href: '/classroom/new-exercise/spotrecc',
             },
           ],
           //   popup: PopupsTypes.CLOSED,
@@ -321,32 +321,6 @@ const AdminSideBar: React.FC = () => {
                 items={sideBaritem.subItems}
               />
             ) : null}
-            {/* {hoveredElement === sideBaritem.name && sideBaritem.subItems ? (
-              <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
-                {sideBaritem.subItems.map((subItem) => (
-                  <li
-                    className='duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
-                    key={subItem.name}
-                  >
-                    <button
-                      onClick={() =>
-                        subItem.popup
-                          ? usePopupStoreObj.updateSelectedPopup(subItem.popup)
-                          : subItem.onClick
-                            ? subItem.onClick()
-                            : null
-                      }
-                    >
-                      {subItem.href ? (
-                        <Link href={subItem.href}>{subItem.name}</Link>
-                      ) : (
-                        <span>{subItem.name}</span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : null} */}
           </li>
         ))}
       </ul>
