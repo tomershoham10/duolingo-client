@@ -20,7 +20,7 @@ const SpotreccDataSection = lazy(
 
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-enum ExercisesTypes {
+export enum ExercisesTypes {
   FSA = 'fsa',
   SPOTRECC = 'spotrecc',
 }
@@ -139,7 +139,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
 
   useEffect(() => {
     updateType();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.exercise]);
 
   console.log('exerciseToSubmit.type', exerciseToSubmit.type);
@@ -147,9 +147,8 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
   return (
     <div className='h-full w-full overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
       <Pagination
-        header={`create new exercise${
-          params.exercise ? ' - ' + params.exercise : null
-        }`}
+        header={'create'}
+        subHeader={params.exercise ? params.exercise.toString() : undefined}
         components={components[params.exercise]}
         onNext={onNextFuncs}
         onSubmit={submitExercise}

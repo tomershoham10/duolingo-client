@@ -427,6 +427,7 @@ enum coursePages {
 
 interface PaginationProps {
     header?: string;
+    subHeader?: string;
     components: Record<string, React.FC<T>>;
     subProps?: T;
     onNext: Record<string, () => boolean>;

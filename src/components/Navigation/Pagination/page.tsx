@@ -62,8 +62,13 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     >
       <div className='relative flex-col overflow-auto'>
         <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
-          {!!props.header ? (
-            <div className='mb-10 mt-5 text-4xl font-extrabold uppercase'>
+          {!!props.header && !!props.subHeader ? (
+            <div className='mb-10 mt-5 flex gap-3 text-4xl font-extrabold uppercase'>
+              {props.header}
+              <p className='text-duoGrayDark-lighter'> {props.subHeader}</p>
+            </div>
+          ) : !!props.header ? (
+            <div className='mb-10 mt-5 flex gap-3 text-4xl font-extrabold uppercase'>
               {props.header}
             </div>
           ) : null}
@@ -112,7 +117,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
               color={ButtonColors.BLUE}
               onClick={handleSubmit}
               isLoading={isLoading}
-            //   loadingLabel={'...'}
+              //   loadingLabel={'...'}
             />
           </div>
         ) : (

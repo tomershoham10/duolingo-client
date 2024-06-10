@@ -25,6 +25,7 @@ import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import handleLogout from '@/app/utils/functions/handleLogOut';
 import pRetry from 'p-retry';
 import Menu from '@/components/Menu/page';
+import { ExercisesTypes } from '@/app/classroom/new-exercise/[exercise]/page';
 
 library.add(
   faHome,
@@ -179,12 +180,12 @@ const AdminSideBar: React.FC = () => {
             {
               name: 'Create FSA',
               popup: PopupsTypes.CLOSED,
-              href: '/classroom/new-exercise/fsa',
+              href: `/classroom/new-exercise/${ExercisesTypes.FSA}`,
             },
             {
               name: 'Create SpotRecc',
               popup: PopupsTypes.CLOSED,
-              href: '/classroom/new-exercise/spotrecc',
+              href: `/classroom/new-exercise/${ExercisesTypes.SPOTRECC}`,
             },
           ],
           //   popup: PopupsTypes.CLOSED,
