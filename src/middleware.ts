@@ -1,4 +1,5 @@
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+import { decode, JwtPayload } from "jsonwebtoken";
 import { NextResponse, type NextRequest } from "next/server";
 import { PermissionsTypes } from "./app/store/stores/useUserStore";
 
@@ -8,9 +9,9 @@ export async function middleware(request: NextRequest) {
     const jwtToken = request.cookies.get("jwtToken")?.value;
     // console.log('middleware', jwtToken);
 
-    const userData = jwt.decode(
+    const userData = decode(
         jwtToken || '',
-    ) as jwt.JwtPayload;
+    ) as JwtPayload;
     console.log(userData)
     // return NextResponse.redirect(new URL('/login', request.url));
 

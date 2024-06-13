@@ -4,7 +4,7 @@
     and retrieving metadata for files stored in different buckets on the server.
 */
 
-import jwt from "jsonwebtoken";
+import {decode} from "jsonwebtoken";
 
 export enum SignatureTypes {
     PASSIVE = 'passive',
@@ -235,7 +235,7 @@ export const getEncryptedFileByName = async (bucketName: BUCKETS_NAMES, objectNa
 
             console.log('metadata', metadata);
 
-            const decodedToken = jwt.decode(
+            const decodedToken = decode(
                 metadata || '',
             );
             console.log('decodedToken', decodedToken);
