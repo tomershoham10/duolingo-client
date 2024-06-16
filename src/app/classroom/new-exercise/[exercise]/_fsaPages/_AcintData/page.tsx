@@ -183,7 +183,6 @@ const AcintDataSection: React.FC = () => {
     console.log('tableData', tableData);
   }, [tableData]);
 
-  //   const handleFileChange = (files: File | FileList | null) => {
   const handleFileChange = (files: File | File[] | null) => {
     // if (files instanceof FileList) {
     if (Array.isArray(files)) {
@@ -437,7 +436,7 @@ const AcintDataSection: React.FC = () => {
         <div className='relative w-full 3xl:w-[45%]'>
           <Upload
             label={'Sonolist'}
-            filesTypes={'image/*'}
+            filesTypes={'images/*'}
             isMultiple={true}
             ref={uploadRef}
             files={
