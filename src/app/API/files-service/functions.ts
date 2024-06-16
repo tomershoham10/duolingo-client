@@ -193,7 +193,7 @@ export const getFileByBucketName = async (bucketName: BUCKETS_NAMES): Promise<So
 
 // }
 
-export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<any> => {
+export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${objectName}`, {
@@ -206,9 +206,10 @@ export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: strin
         const blob = await response.blob();
         // const blob = await response.blob();
         console.log('getFileByName blob', blob);
+        const url = window.URL.createObjectURL(blob);
 
 
-        return blob;
+        return url;
     }
     catch (error) {
         console.error(`error getFileByName - ${error}`);
