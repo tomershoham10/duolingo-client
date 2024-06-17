@@ -36,10 +36,10 @@ const Menu: React.FC<MenuProps> = (props) => {
   return (
     <>
       {!!items && items.length > 0 && isHovered ? (
-        <ul className='absolute -top-[1rem] left-[90%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
+        <ul className='absolute translate-x-1/2 translate-y-1/3 -right-[15%] z-30 w-fit rounded-xl border-2 bg-duoGray-lighter py-3 dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
           {items.map((subItem) => (
             <li
-              className='duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
+              className='relevant duration-50 min-w-[10rem] py-2 pl-4 transition hover:bg-duoGray-light dark:hover:bg-duoBlueDark-default 2xl:py-3 2xl:pl-5 2xl:text-xl'
               key={subItem.name}
             >
               <button
@@ -50,7 +50,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                       ? subItem.onClick()
                       : null
                 }
-                className='relative flex'
+                className='flex'
                 onMouseEnter={() =>
                   !!subItem.subItems && subItem.subItems.length > 0
                     ? setHoveredSubMenu(subItem.name)
@@ -61,7 +61,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                 subItem.subItems.length > 0 &&
                 hoveredSubMenu === subItem.name ? (
                   <section
-                    className='absolute left-[125%]'
+                    className='absolute -translate-y-4 translate-x-1/2 -right-[40%]'
                     onMouseEnter={() => setHoveredSubMenu(subItem.name)}
                     // onMouseLeave={() => setHoveredSubMenu(null)}
                   >
