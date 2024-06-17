@@ -55,7 +55,7 @@ const CircleGenerator: React.FC<CircleGeneratorProps> = (props) => {
           break;
       }
     }
-  }, [numberOfLessonsMade, numberOfTotalLessons]);
+  }, [isDarkMode, numberOfLessonsMade, numberOfTotalLessons]);
 
   return (
     <>
