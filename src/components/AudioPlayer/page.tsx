@@ -1,8 +1,8 @@
 'use client';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import audioIcon from '../../../public/svgs/audioPlayer/playing.svg';
-
+import playing from '../../../public/svgs/audioPlayer/playing.svg';
+import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
 const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
   const src = props.src;
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -42,20 +42,24 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
         // onLoadedMetadata={onLoadedMetadata}
       />
       <button
-        className={`flex h-full w-full items-center justify-center rounded-[25%] ${
+        className={`relative flex h-full w-full items-center justify-center rounded-[25%] ${
           isPlaying
             ? 'active:translate-y-[8px] dark:bg-duoBlueDark-text hover:dark:bg-duoBlueDark-textHover'
             : 'active:translate-y-[8px] dark:bg-duoGrayDark-lightestOpacity hover:dark:bg-[#7F8D96]'
         }`}
         onClick={togglePlayPause}
       >
-        <Image
-          priority
-          src={audioIcon}
-          alt='alt'
-          width={120}
-          className='w-1/2'
-        />
+        {!isPlaying ? (
+          <Image
+            priority
+            src={playing}
+            alt='alt'
+            width={120}
+            className='w-1/2'
+          />
+        ) : (
+          <AnimatedSVG />
+        )}
       </button>
     </section>
   );
