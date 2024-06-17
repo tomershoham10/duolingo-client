@@ -313,6 +313,8 @@ enum PermissionsTypes {
 
 interface AudioPlayerProps {
     src: string;
+    isDisabled?: boolean;
+    isPauseable?: boolean;
 }
 
 // // Button // //
