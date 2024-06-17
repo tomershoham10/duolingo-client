@@ -309,6 +309,12 @@ enum PermissionsTypes {
 
 // ~~~~~~~ COMPONENTS ~~~~~~~ //
 
+// // AudioPlayer // //
+
+interface AudioPlayerProps {
+    src: string;
+}
+
 // // Button // //
 
 enum ButtonColors {
