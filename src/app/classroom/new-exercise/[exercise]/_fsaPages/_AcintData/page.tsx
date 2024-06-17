@@ -156,7 +156,7 @@ const AcintDataSection: React.FC = () => {
         !!sourceId
           ? (sourceName = sourcesListDB.filter(
               (source) => source._id === sourceId
-            )[0].name)
+            )[0]?.name)
           : null;
 
         const { targets_ids_list, source_id, is_in_italy, ...newMeta } =
