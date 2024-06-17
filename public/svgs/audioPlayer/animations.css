@@ -1,0 +1,42 @@
+@keyframes smallWaveAnimation {
+  0% {
+    transform: scale(0);
+  }
+  7.5% {
+    transform: translateX(-5px) translateY(17.5px) scale(0.5);
+  }
+  75% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes largeWaveAnimation {
+  0% {
+    transform: scale(0);
+  }
+  12.5% {
+    transform: translateX(-5px) translateY(17.5px) scale(0.5);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+#large-wave {
+  animation: largeWaveAnimation 2s infinite ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+#small-wave {
+  animation: smallWaveAnimation 2s infinite ease-in-out;
+  animation-fill-mode: forwards;
+}
