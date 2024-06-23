@@ -123,13 +123,6 @@ export const getResultByUserAndExerciseId = async (currentExerciseId: string, us
 export const createExercise = async (newExercise: Partial<ExerciseType>): Promise<string> => {
     try {
         console.log('create exercise');
-        // let sonolistIds: string[] = []
-        // if (newFSA.sonolist) {
-        //     const uploadSonolistResponse = await uploadFile('sonograms', newFSA.sonolist) as UploadedObjectInfo[][];
-        //     console.log("uploadSonolistResponse", uploadSonolistResponse);
-        //     sonolistIds = Array(uploadSonolistResponse.map(array => array.map(item => item.etag)).join())
-        //     console.log("sonolistIds", sonolistIds)
-        // }
 
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.EXERCISES}`,
