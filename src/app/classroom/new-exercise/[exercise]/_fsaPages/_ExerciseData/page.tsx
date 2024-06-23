@@ -1,13 +1,7 @@
 'use client';
-import { useState, useRef, useReducer, useEffect, useCallback } from 'react';
+import { useState, useReducer, useEffect, useCallback, lazy } from 'react';
 
 import { useStore } from 'zustand';
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
-import {
-  SortableContext,
-  arrayMove,
-  horizontalListSortingStrategy,
-} from '@dnd-kit/sortable';
 
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
@@ -15,13 +9,8 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 
-import { TiPlus } from 'react-icons/ti';
-import { TbTargetArrow } from 'react-icons/tb';
-import SortableItem from '@/components/SortableItem/page';
-import { FaRegTrashAlt } from 'react-icons/fa';
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import {
   ExercisesFieldsType,
@@ -35,22 +24,25 @@ import {
   TimeBuffersAction,
   timeBuffersReducer,
 } from '@/reducers/timeBuffersReducer';
-import DraggbleList, { Diractions } from '@/components/DraggableList/page';
+
+const DraggbleList = lazy(() => import('@/components/DraggableList/page'));
+
 import PlusButton from '@/components/PlusButton/page';
+import { Diractions } from '@/components/DraggableList/page';
 
 library.add(faPlus);
 
 const ExerciseDataSection: React.FC = () => {
   const updateExerciseToSubmit = {
-    answersList: useStore(useCreateExerciseStore, (state) => state.answersList),
+    targetsList: useStore(useCreateExerciseStore, (state) => state.targetsList),
     updateDescription: useCreateExerciseStore.getState().updateDescription,
     updateRelevant: useCreateExerciseStore.getState().updateRelevant,
     updateTimeBuffers: useCreateExerciseStore.getState().updateTimeBuffers,
   };
 
   console.log(
-    'updateExerciseToSubmit.answersList',
-    updateExerciseToSubmit.answersList
+    'updateExerciseToSubmit.targetsList',
+    updateExerciseToSubmit.targetsList
   );
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
@@ -58,9 +50,9 @@ const ExerciseDataSection: React.FC = () => {
     useCreateExerciseStore,
     (state) => state.recordLength
   );
-  const answersList = useStore(
+  const targetsListToSubmit = useStore(
     useCreateExerciseStore,
-    (state) => state.answersList
+    (state) => state.targetsList
   );
   const contextMenuStore = {
     toggleMenuOpen: useContextMenuStore.getState().toggleMenuOpen,
@@ -131,7 +123,7 @@ const ExerciseDataSection: React.FC = () => {
         grade: timeBuffersState.timeBuffersScores[timeValIndex],
       }))
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseDataState, timeBuffersState]);
 
   useEffect(() => {
@@ -391,15 +383,15 @@ const ExerciseDataSection: React.FC = () => {
             <span className={`my-3 text-2xl font-bold ${'' ? '' : ''}`}>
               Answers:
             </span>
-            {!!answersList && answersList.length > 0 ? (
+            {!!targetsListToSubmit && targetsListToSubmit.length > 0 ? (
               <div className='flex h-fit w-full select-none flex-col items-start justify-between font-bold'>
                 <ul>
-                  {!!answersList &&
-                    answersList.map((answer) => (
+                  {!!targetsListToSubmit &&
+                    targetsListToSubmit.map((targetToSub) => (
                       <li
                         key={
                           targetsList.filter(
-                            (target) => target.name === answer
+                            (target) => target.name === targetToSub
                           )[0]._id
                         }
                         className='flex h-[5rem] min-w-fit flex-none items-center justify-start'
@@ -407,10 +399,10 @@ const ExerciseDataSection: React.FC = () => {
                         <div className='border-border-duoGray-regular w-full flex-none cursor-default rounded-xl border-2 border-b-4 px-5 py-4 text-lg font-bold active:translate-y-[1px] active:border-b-2 dark:border-duoGrayDark-light'>
                           <span className='relative flex items-center justify-center text-ellipsis text-center'>
                             {!!targetsList.filter(
-                              (target) => target.name === answer
+                              (target) => target.name === targetToSub
                             )[0] ? (
                               targetsList.filter(
-                                (target) => target.name === answer
+                                (target) => target.name === targetToSub
                               )[0].name
                             ) : (
                               <span className='font-semibold text-duoGray-dark opacity-70'>

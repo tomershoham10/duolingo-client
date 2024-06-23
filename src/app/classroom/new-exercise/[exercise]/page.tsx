@@ -35,7 +35,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
   const exerciseToSubmit = {
     // recordName: useStore(useCreateExerciseStore, (state) => state.recordId),
     type: useStore(useCreateExerciseStore, (state) => state.type),
-    fileName: useStore(useCreateExerciseStore, (state) => state.fileName),
+    files: useStore(useCreateExerciseStore, (state) => state.files),
     recordLength: useStore(
       useCreateExerciseStore,
       (state) => state.recordLength
@@ -44,7 +44,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
       useCreateExerciseStore,
       (state) => state.sonolistFiles
     ),
-    answersList: useStore(useCreateExerciseStore, (state) => state.answersList),
+    targetsList: useStore(useCreateExerciseStore, (state) => state.targetsList),
     description: useStore(useCreateExerciseStore, (state) => state.description),
     relevant: useStore(useCreateExerciseStore, (state) => state.relevant),
     timeBuffers: useStore(useCreateExerciseStore, (state) => state.timeBuffers),
@@ -66,17 +66,17 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
     records: () => {
       console.log(
         'exerciseToSubmit - acint section',
-        exerciseToSubmit.fileName,
+        exerciseToSubmit.files,
         exerciseToSubmit.recordLength,
         exerciseToSubmit.sonolistFiles,
-        exerciseToSubmit.answersList
+        exerciseToSubmit.targetsList
       );
       return (
         // !!exerciseToSubmit.recordId &&
-        !!exerciseToSubmit.fileName &&
+        !!exerciseToSubmit.files &&
         !!exerciseToSubmit.recordLength &&
         !!exerciseToSubmit.sonolistFiles &&
-        !!exerciseToSubmit.answersList
+        !!exerciseToSubmit.targetsList
       );
     },
     exercise: () => {
@@ -99,13 +99,13 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
       //   if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
       const res = await pRetry(
         () =>
-          exerciseToSubmit.fileName && exerciseToSubmit.description
+          exerciseToSubmit.targetsList && exerciseToSubmit.description
             ? createExercise({
                 relevant: exerciseToSubmit.relevant,
-                answersList: exerciseToSubmit.answersList,
+                targetsList: exerciseToSubmit.targetsList,
                 timeBuffers: exerciseToSubmit.timeBuffers,
                 description: exerciseToSubmit.description,
-                fileName: exerciseToSubmit.fileName,
+                files: exerciseToSubmit.files,
               })
             : null,
         {
@@ -113,21 +113,12 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
         }
       );
 
-      // const res = await createExercise({
-      //   relevant: exerciseToSubmit.relevant,
-      //   answersList: exerciseToSubmit.answersList,
-      //   //   acceptableAnswers: exerciseToSubmit.acceptableAnswers,
-      //   timeBuffers: exerciseToSubmit.timeBuffers,
-      //   description: exerciseToSubmit.description,
-      //   recordName: exerciseToSubmit.recordName,
-      // });
       if (res === 'created successfully') {
         location.reload();
       } else {
         addAlert('propblem while creating the exercise', AlertSizes.small);
       }
       return;
-      //   }
     } catch (err) {
       console.error(err);
     }

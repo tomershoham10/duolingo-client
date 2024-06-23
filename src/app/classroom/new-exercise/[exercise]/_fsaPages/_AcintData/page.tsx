@@ -74,23 +74,20 @@ const AcintDataSection: React.FC = () => {
     if (sourcesListDB.length === 0) {
       fetchSources();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addAlert = useAlertStore.getState().addAlert;
 
   const updateExerciseToSubmit = {
     // updateRecordId: useCreateExerciseStore.getState().updateRecordId,
-    updateFileName: useCreateExerciseStore.getState().updateFileName,
+    addFile: useCreateExerciseStore.getState().addFile,
     updateRecordLength: useCreateExerciseStore.getState().updateRecordLength,
     updateSonolistFiles: useCreateExerciseStore.getState().updateSonolistFiles,
-    updateAnswersList: useCreateExerciseStore.getState().updateAnswersList,
+    updateTargetsList: useCreateExerciseStore.getState().updateTargetsList,
   };
 
-  const recordName = useStore(
-    useCreateExerciseStore,
-    (state) => state.fileName
-  );
+  const filesList = useStore(useCreateExerciseStore, (state) => state.files);
 
   const initialsubmitRecordState: submitRecordDataType = {
     record: undefined,
@@ -177,7 +174,7 @@ const AcintDataSection: React.FC = () => {
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recordName, recordsData]);
+  }, [filesList, recordsData]);
 
   useEffect(() => {
     console.log('tableData', tableData);
@@ -357,14 +354,17 @@ const AcintDataSection: React.FC = () => {
         .map((target) => target._id);
 
       //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
-      updateExerciseToSubmit.updateFileName(infoBarStore.selectedFile.name);
+      updateExerciseToSubmit.addFile({
+        fileName: infoBarStore.selectedFile.name,
+        bucket: BUCKETS_NAMES.RECORDS,
+      });
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(
         metadata.sonograms_ids && metadata.sonograms_ids.length > 0
           ? metadata.sonograms_ids
           : []
       );
-      updateExerciseToSubmit.updateAnswersList(targetIdsToSubmit);
+      updateExerciseToSubmit.updateTargetsList(targetIdsToSubmit);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoBarStore.selectedFile]);
@@ -398,8 +398,10 @@ const AcintDataSection: React.FC = () => {
           rows={tableData}
           onSelect={handleSelectTableRow}
           selectedRowIndex={
-            recordName
-              ? recordsData.map((record) => record.name).indexOf(recordName)
+            filesList && filesList.length > 0
+              ? recordsData
+                  .map((record) => record.name)
+                  .indexOf(filesList[0].fileName)
               : undefined
           }
           //   isSelectable={
