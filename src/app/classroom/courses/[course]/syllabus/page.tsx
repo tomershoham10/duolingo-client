@@ -90,7 +90,7 @@ const Syllabus: React.FC = () => {
         console.error('Failed to fetch course by id.');
         return [];
       }
-      const unitsIdsList = response.units;
+      const unitsIdsList = response.unitsIds;
       // console.log("syllabus2", unitsIdsList);
       setUnitsIds(unitsIdsList);
     } catch (error) {

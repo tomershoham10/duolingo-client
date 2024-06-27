@@ -141,9 +141,9 @@ export const updateUnit = async (unit: Partial<UnitType>): Promise<boolean> => {
         let fieldsToUpdate: Partial<UnitType> = {};
 
         unit.description ? fieldsToUpdate.description = unit.description : null;
-        unit.levels ? fieldsToUpdate.levels = unit.levels : null;
-        unit.suspendedLevels ? fieldsToUpdate.suspendedLevels = unit.suspendedLevels : null;
-        unit.guidebook ? fieldsToUpdate.guidebook = unit.guidebook : null;
+        unit.levelsIds ? fieldsToUpdate.levelsIds = unit.levelsIds : null;
+        unit.suspendedLevelsIds ? fieldsToUpdate.suspendedLevelsIds = unit.suspendedLevelsIds : null;
+        unit.guidebookId ? fieldsToUpdate.guidebookId = unit.guidebookId : null;
 
         console.log('updateUnit', fieldsToUpdate)
 
