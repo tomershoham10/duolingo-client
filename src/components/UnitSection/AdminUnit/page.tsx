@@ -58,13 +58,13 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const initialCourseDataState = {
     courseId: propsCourseId,
     units: [],
-    unsuspendedUnits: [],
-    levels: [{ fatherId: undefined, data: [] }],
-    unsuspendedLevels: [{ fatherId: undefined, data: [] }],
-    lessons: [{ fatherId: undefined, data: [] }],
-    unsuspendedLessons: [{ fatherId: undefined, data: [] }],
-    exercises: [{ fatherId: undefined, data: [] }],
-    unsuspendedExercises: [{ fatherId: undefined, data: [] }],
+    suspendedUnitsIds: [],
+    levels: [{ fatherId: null, data: [] }],
+    // unsuspendedLevels: [{ fatherId: null, data: [] }],
+    lessons: [{ fatherId: null, data: [] }],
+    // unsuspendedLessons: [{ fatherId: null, data: [] }],
+    exercises: [{ fatherId: null, data: [] }],
+    // unsuspendedExercises: [{ fatherId: null, data: [] }],
     results: [],
   };
 
@@ -76,22 +76,6 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   useCourseData(undefined, courseDataState, courseDataDispatch);
 
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
-
-  useEffect(() => {
-    console.log('courseDataState.units', courseDataState.units);
-  }, [courseDataState.units]);
-
-  useEffect(() => {
-    console.log('courseDataState.levels', courseDataState.levels);
-  }, [courseDataState.levels]);
-
-  useEffect(() => {
-    console.log('courseDataState.lessons', courseDataState.lessons);
-  }, [courseDataState.lessons]);
-
-  useEffect(() => {
-    console.log('courseDataState.exercises', courseDataState.exercises);
-  }, [courseDataState.exercises]);
 
   useEffect(
     () => console.log('exerciseAccordion', exerciseAccordion),
@@ -139,9 +123,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
             <div
               key={unit._id}
               className={`flex-none py-[2rem] ${
-                !courseDataState.unsuspendedUnits
-                  .map((unit) => unit._id)
-                  .includes(unit._id)
+                courseDataState.suspendedUnitsIds.includes(unit._id)
                   ? 'opacity-60'
                   : ''
               } `}
@@ -151,9 +133,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                   <button
                     className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
                     onClick={() => {
-                      const isSuspended = !courseDataState.unsuspendedUnits
-                        .map((unit) => unit._id)
-                        .includes(unit._id);
+                      const isSuspended =
+                        courseDataState.suspendedUnitsIds.includes(unit._id);
                       updateInfobarData(
                         fieldToEditType.UNIT,
                         unit._id,
@@ -171,7 +152,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                     {unit.description}
                   </label>
                   <div className='row-span-2 mr-5 flex items-start justify-end'>
-                    {unit.guidebook ? (
+                    {unit.guidebookId ? (
                       <button className='flex w-40 cursor-pointer flex-row items-center justify-start rounded-2xl border-[2.5px] border-b-[4px] border-duoGreen-darker bg-duoGreen-button p-3 text-sm font-bold hover:border-duoGreen-dark hover:bg-duoGreen-default hover:text-duoGreen-textHover active:border-[2.5px]'>
                         <FontAwesomeIcon
                           className='ml-2 mr-2 h-6 w-6'
@@ -243,9 +224,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                       className='h-12 w-12 flex-none cursor-pointer rounded-full bg-duoGreen-default font-extrabold text-white'
                                                                       onClick={() => {
                                                                         const isSuspended =
-                                                                          !isIdInDataWithFatherIdObj(
-                                                                            level._id,
-                                                                            courseDataState.unsuspendedLevels
+                                                                          unit.suspendedLevelsIds.includes(
+                                                                            level._id
                                                                           );
                                                                         updateInfobarData(
                                                                           fieldToEditType.LEVEL,
@@ -279,9 +259,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                         className='text-conter flex w-full items-center justify-start font-extrabold text-duoGray-dark dark:text-duoGrayDark-lightest'
                                                                         onClick={() => {
                                                                           const isSuspended =
-                                                                            !isIdInDataWithFatherIdObj(
-                                                                              lesson._id,
-                                                                              courseDataState.unsuspendedLessons
+                                                                            level.suspendedLessonsIds.includes(
+                                                                              lesson._id
                                                                             );
                                                                           updateInfobarData(
                                                                             fieldToEditType.LESSON,

@@ -1,5 +1,21 @@
 import { COURSES_API, COURSES_SERVICE_ENDPOINTS } from "../apis";
 
+interface LessonData extends LessonType {
+    exercises: ExerciseType[];
+}
+
+interface LevelData extends LevelType {
+    lessons: LessonData[];
+}
+
+interface UnitData extends UnitType {
+    levels: LevelData[];
+}
+
+interface CourseData extends CoursesType {
+    units: UnitData[];
+}
+
 export const createCourse = async (name: string): Promise<number | null> => {
     try {
         console.log('createCourse', name);
@@ -107,11 +123,11 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
     }
 };
 
-export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
+export const getCourseDataById = async (courseId: string): Promise<CourseData | null> => {
     try {
-        // console.log("getUnitsData", courseId);
+        // console.log("getCourseDataById", courseId);
         const response = await fetch(
-            `${COURSES_API.GET_UNITS_BY_ID}/${courseId}`,
+            `${COURSES_API.GET_COURSE_DATA_BY_ID}/${courseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -122,11 +138,12 @@ export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
         );
         if (response.ok) {
             const data = await response.json();
-            const resUnits = data.units as UnitType[];
+            const resData = data.courseData[0] as CourseData;
             // console.log("resUnits", resUnits);
-            return resUnits;
+            return resData;
         } else {
-            throw new Error('error while fetching units');
+            console.error('error while fetching course');
+            return null;
         }
     } catch (error: any) {
         throw new Error(`error while fetching units: ${error.message}`);
@@ -135,7 +152,7 @@ export const getUnitsData = async (courseId: string): Promise<UnitType[]> => {
 
 export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitType[]> => {
     try {
-        // console.log("getUnitsData", courseId);
+        // console.log("getUnsuspendedUnitsData", courseId);
         const response = await fetch(
             `${COURSES_API.GET_UNSUSPENDED_UNITS_BY_ID}/${courseId}`,
             {
@@ -167,8 +184,8 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
         let fieldsToUpdate: Partial<CoursesType> = {};
 
         course.name ? fieldsToUpdate.name : null;
-        course.units ? fieldsToUpdate.units : null;
-        course.suspendedUnits ? fieldsToUpdate.suspendedUnits : null;
+        course.unitsIds ? fieldsToUpdate.unitsIds : null;
+        course.suspendedUnitsIds ? fieldsToUpdate.suspendedUnitsIds : null;
 
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.COURSES}/${course._id}`,

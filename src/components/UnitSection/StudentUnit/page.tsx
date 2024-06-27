@@ -18,7 +18,7 @@ import { courseDataReducer } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/utils/hooks/useCourseData';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:4002');
+// const socket = io('http://localhost:4002');
 library.add(faBook);
 
 const StudentUnitSection: React.FC = () => {
@@ -29,30 +29,30 @@ const StudentUnitSection: React.FC = () => {
   };
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-    });
+  //   useEffect(() => {
+  //     socket.on('connect', () => {
+  //       console.log('Connected to Socket.IO server');
+  //     });
 
-    socket.on('message', (message: string) => {
-      console.log('Received message:', message);
-    });
+  //     socket.on('message', (message: string) => {
+  //       console.log('Received message:', message);
+  //     });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //     return () => {
+  //       socket.disconnect();
+  //     };
+  //   }, []);
 
   const initialCourseDataState = {
     courseId: userStore.courseId,
     units: [],
-    unsuspendedUnits: [],
-    levels: [{ fatherId: undefined, data: [] }],
-    unsuspendedLevels: [{ fatherId: undefined, data: [] }],
-    lessons: [{ fatherId: undefined, data: [] }],
-    unsuspendedLessons: [{ fatherId: undefined, data: [] }],
-    exercises: [{ fatherId: undefined, data: [] }],
-    unsuspendedExercises: [{ fatherId: undefined, data: [] }],
+    suspendedUnitsIds: [],
+    levels: [{ fatherId: null, data: [] }],
+    // unsuspendedLevels: [{ fatherId: null, data: [] }],
+    lessons: [{ fatherId: null, data: [] }],
+    // unsuspendedLessons: [{ fatherId: null, data: [] }],
+    exercises: [{ fatherId: null, data: [] }],
+    // unsuspendedExercises: [{ fatherId: null, data: [] }],
     results: [],
   };
 
@@ -159,7 +159,7 @@ const StudentUnitSection: React.FC = () => {
     if (studentDashboardState.currentLevelId && courseDataState.units) {
       for (let i: number = 0; i < courseDataState.units.length; i++) {
         console.log('111111111111');
-        const levelsIds = courseDataState.units[i].levels;
+        const levelsIds = courseDataState.units[i].levelsIds;
         if (
           levelsIds &&
           levelsIds.includes(studentDashboardState.currentLevelId)
@@ -233,7 +233,7 @@ const StudentUnitSection: React.FC = () => {
         const finishedUnit = courseDataState.units.filter(
           (unit) => unit._id === finisedUnits[f]
         )[0];
-        const finishedLevels = finishedUnit.levels;
+        const finishedLevels = finishedUnit.levelsIds;
         if (finishedLevels) {
           for (let fl: number = 0; fl < finishedLevels.length; fl++) {
             const finishedLevel = finishedLevels[fl];
@@ -252,7 +252,7 @@ const StudentUnitSection: React.FC = () => {
         const lockedUnit = courseDataState.units.filter(
           (unit) => unit._id === lockedUnits[l]
         )[0];
-        const lockedLevels = lockedUnit.levels;
+        const lockedLevels = lockedUnit.levelsIds;
         if (lockedLevels) {
           for (let ll: number = 0; ll < lockedLevels.length; ll++) {
             const lockedLevel = lockedLevels[ll];
@@ -390,8 +390,8 @@ const StudentUnitSection: React.FC = () => {
                                           (level, levelIndex) => (
                                             <section key={level._id}>
                                               {level &&
-                                              level.lessons &&
-                                              level.lessons?.length > 0 ? (
+                                              level.lessonsIds &&
+                                              level.lessonsIds.length > 0 ? (
                                                 studentDashboardState.lockedLevelsIds.includes(
                                                   level._id
                                                 ) ? (
@@ -442,7 +442,8 @@ const StudentUnitSection: React.FC = () => {
                                                           studentDashboardState.numOfLessonsMade
                                                         }
                                                         numberOfTotalLessons={
-                                                          level.lessons.length
+                                                          level.lessonsIds
+                                                            .length
                                                         }
                                                         onClick={() =>
                                                           studentDashboardDispatch(
@@ -461,7 +462,8 @@ const StudentUnitSection: React.FC = () => {
                                                           1
                                                         }
                                                         numberOfTotalLessons={
-                                                          level.lessons.length
+                                                          level.lessonsIds
+                                                            .length
                                                         }
                                                         nextLessonId={
                                                           userStore.nextLessonId
