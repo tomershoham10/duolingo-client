@@ -3,15 +3,15 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import {
   getFileByName,
-  getSonolistNamesByRecordId,
+  getFileMetadataByName,
 } from '@/app/API/files-service/functions';
 import pRetry from 'p-retry';
 
 interface SonolistProps {
-  recordId: string;
+  recordName: string;
 }
 
-const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
+const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
   const [sonolist, setSonolist] = useState<string[]>([]);
 
   const fetchSonograms = useCallback(async () => {
@@ -19,7 +19,12 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
       //   const sonolistNames = await getSonolistNamesByRecordId(recordId);
 
       const sonolistNames = await pRetry(
-        () => getSonolistNamesByRecordId(recordId),
+        () =>
+          getFileMetadataByName(
+            BucketsNames.RECORDS,
+            ExercisesTypes.FSA,
+            recordName
+          ),
         {
           retries: 5,
         }
@@ -53,7 +58,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
     } catch (error) {
       console.error('Error fetching sonogram names:', error);
     }
-  }, [recordId]);
+  }, [recordName]);
 
   useEffect(() => {
     fetchSonograms(); // Trigger fetchSonograms when recordId changes

@@ -4,7 +4,7 @@
     and retrieving metadata for files stored in different buckets on the server.
 */
 
-import {decode} from "jsonwebtoken";
+import { decode } from "jsonwebtoken";
 
 export enum SignatureTypes {
     PASSIVE = 'passive',
@@ -30,6 +30,7 @@ const FILES_API = {
     GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-metadata-by-etag`,
     GET_FILES_BY_BUCKETNAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-files-by-bucket`,
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
+    GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileMetadataByName`,
     GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/downloadEncryptedZip`,
 };
 
@@ -165,29 +166,6 @@ export const getFileByBucketName = async (bucketName: BucketsNames): Promise<Son
     }
 }
 
-// export const getAllSonograms = async (): Promise<SonogramType[] | null> => {
-//     try {
-//         const response = await fetch(
-//             'http://localhost:4002/api/files/get-files-by-bucket/sonograms', {
-//             method: 'GET',
-//             credentials: 'include',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             }
-//         })
-//         if (response.ok) {
-//             const data = await response.json();
-//             const files = data.files;
-//             return files;
-//         }
-//         return null;
-//     }
-//     catch (error) {
-//         throw new Error(`error getting all records - ${error}`);
-//     }
-
-// }
-
 export const getFileByName = async (bucketName: BucketsNames, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
@@ -250,11 +228,11 @@ export const getEncryptedFileByName = async (bucketName: BucketsNames, objectNam
     }
 }
 
-export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
+export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string[]> => {
     try {
-        console.log('getSonolistNamesByRecordId recordId', recordId);
+        console.log('getFileMetadataByName recordId', objectName);
         const response = await fetch(
-            `${FILES_API.GET_SONOLIST_BT_RECORD_ID}/${recordId}`, {
+            `${FILES_API.GET_FILE_METADATA_MY_NAME}/${bucketName}/${exerciseType}/${objectName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -279,6 +257,36 @@ export const getSonolistNamesByRecordId = async (recordId: string): Promise<stri
         return [];
     }
 }
+
+// export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
+//     try {
+//         console.log('getSonolistNamesByRecordId recordId', recordId);
+//         const response = await fetch(
+//             `${FILES_API.GET_SONOLIST_BT_RECORD_ID}/${recordId}`, {
+//             method: 'GET',
+//             credentials: 'include',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             }
+//         })
+//         // if (response.status !== 200) {
+//         //     throw new Error('Failed to fetch images');
+//         // }
+
+//         // const data = await response.json();
+//         // const streams = data.filesStreams as string[];
+//         if (!response.ok) return [];
+
+//         const data = await response.json();
+//         const sonolist = data.sonograms;
+//         console.log('getSonolistNamesByRecordId sonolist: ', sonolist);
+//         return sonolist;
+//     }
+//     catch (error) {
+//         console.error(`error getSonolistByRecordId - ${error}`);
+//         return [];
+//     }
+// }
 
 // export const downloadFile = async (bucketName: string, objectName: string): Promise<boolean> => {
 //     try {
