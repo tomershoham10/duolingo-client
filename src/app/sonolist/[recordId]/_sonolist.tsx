@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import {
-  BUCKETS_NAMES,
   getFileByName,
   getSonolistNamesByRecordId,
 } from '@/app/API/files-service/functions';
@@ -27,31 +26,16 @@ const Sonograms: React.FC<SonolistProps> = ({ recordId }) => {
       );
       const promises = sonolistNames.map(async (sonogram) => {
         try {
-          //   const blob = await getFileByName(BUCKETS_NAMES.SONOGRAMS, sonogram);
+          //   const blob = await getFileByName(BucketsNames.SONOGRAMS, sonogram);
 
-          const blob = await pRetry(
-            () => getFileByName(BUCKETS_NAMES.SONOGRAMS, sonogram),
+          const url = await pRetry(
+            () => getFileByName(BucketsNames.IMAGES, sonogram),
             {
               retries: 5,
             }
           );
-          if (blob) {
-            const reader = new FileReader();
-            const promise = new Promise<string>((resolve, reject) => {
-              reader.onload = () => {
-                const result = reader.result;
-                console.log('url', result);
-                if (typeof result === 'string') {
-                  resolve(result);
-                } else {
-                  reject(new Error('Failed to read blob data'));
-                }
-              };
-              reader.onerror = reject;
-            });
-
-            reader.readAsDataURL(blob);
-            return promise;
+          if (url) {
+            return url;
           } else {
             return null;
           }

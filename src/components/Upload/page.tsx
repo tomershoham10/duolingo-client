@@ -19,10 +19,7 @@ import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { useThemeStore, Themes } from '@/app/store/stores/useThemeStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import {
-  BUCKETS_NAMES,
-  isFileExisted,
-} from '@/app/API/files-service/functions';
+import { isFileExisted } from '@/app/API/files-service/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import pRetry from 'p-retry';
 
@@ -67,7 +64,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         // const isExisted = await isFileExisted(file.name, 'records');
 
         const isExisted = await pRetry(
-          () => isFileExisted(file.name, BUCKETS_NAMES.RECORDS),
+          () => isFileExisted(file.name, BucketsNames.RECORDS),
           {
             retries: 5,
           }
@@ -108,10 +105,10 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         const filesArray: File[] = Array.from(files);
 
         const isValidFile = async (file: File) => {
-          //   const status = await isFileExisted(file.name, BUCKETS_NAMES.SONOGRAMS);
+          //   const status = await isFileExisted(file.name, BucketsNames.SONOGRAMS);
 
           const status = await pRetry(
-            () => isFileExisted(file.name, BUCKETS_NAMES.SONOGRAMS),
+            () => isFileExisted(file.name, BucketsNames.IMAGES),
             {
               retries: 5,
             }

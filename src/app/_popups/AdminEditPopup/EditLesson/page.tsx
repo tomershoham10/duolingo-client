@@ -10,10 +10,7 @@ import {
   editLessonType,
 } from '@/reducers/adminEditPopup/editLessonReducer';
 import Table, { TableRow } from '@/components/Table/page';
-import {
-  BUCKETS_NAMES,
-  getFileMetadataByETag,
-} from '@/app/API/files-service/functions';
+import { getFileMetadataByETag } from '@/app/API/files-service/functions';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
 import pRetry from 'p-retry';
@@ -71,12 +68,12 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
       const fetchPromises = editLessonState.exercisesList.map(
         async (exercise) => {
           try {
-            const exerciseRecName = exercise.fileName;
+            const exerciseRecName = exercise.files[0].fileName;
             console.log('exercise loop - exerciseRecName', exerciseRecName);
 
             const recData = (await pRetry(
               () =>
-                getFileMetadataByETag(BUCKETS_NAMES.RECORDS, exerciseRecName),
+                getFileMetadataByETag(BucketsNames.RECORDS, exerciseRecName),
               {
                 retries: 5,
               }
@@ -108,7 +105,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
             }
             const newRow = {
               _id: exercise._id,
-              answersList: exercise.answersList,
+              targetsList: exercise.targetsList,
               difficultyLevel: recData.metadata.difficulty_level,
               is_in_italy: recData.metadata.is_in_italy,
               signature_type: recData.metadata.signature_type,
@@ -146,7 +143,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
       () =>
         !!editLessonState.selectedExercise
           ? updateLesson(props.lessonId, {
-              exercises: [
+              exercisesIds: [
                 ...props.exercisesList,
                 editLessonState.selectedExercise,
               ],

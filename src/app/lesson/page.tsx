@@ -38,10 +38,7 @@ import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import submitCurrentExercise, {
   submitCurrentExerciseParams,
 } from '../utils/functions/lessonPage/submitCurrentExercise';
-import {
-  BUCKETS_NAMES,
-  getEncryptedFileByName,
-} from '../API/files-service/functions';
+import { getEncryptedFileByName } from '../API/files-service/functions';
 import { getZipPassword } from '../API/auth-service/functions';
 import pRetry from 'p-retry';
 import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
@@ -193,7 +190,7 @@ const Lesson: React.FC = () => {
         const password = await pRetry(
           () =>
             lessonState.currentExercise
-              ? getZipPassword(lessonState.currentExercise.fileName)
+              ? getZipPassword(lessonState.currentExercise.files[0].fileName)
               : null,
           {
             retries: 5,
@@ -498,12 +495,12 @@ const Lesson: React.FC = () => {
   const downloadRecord = useCallback(async (recordName: string) => {
     try {
       //   const url = await getEncryptedFileByName(
-      //     BUCKETS_NAMES.RECORDS,
+      //     BucketsNames.RECORDS,
       //     recordName
       //   );
       setDownloadingFile(true);
       const url = await pRetry(
-        () => getEncryptedFileByName(BUCKETS_NAMES.RECORDS, recordName),
+        () => getEncryptedFileByName(BucketsNames.RECORDS, recordName),
         {
           retries: 5,
         }
@@ -1045,7 +1042,8 @@ const Lesson: React.FC = () => {
                 ) : lessonState.isExerciseStarted ? (
                   <>
                     {lessonState.currentExercise &&
-                    lessonState.currentExercise.fileName ? (
+                    lessonState.currentExercise.files &&
+                    lessonState.currentExercise.files.length > 0 ? (
                       <Button
                         color={ButtonColors.PURPLE}
                         icon={faFileArrowDown}
@@ -1053,7 +1051,7 @@ const Lesson: React.FC = () => {
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.fileName
+                                lessonState.currentExercise.files[0].fileName
                               )
                             : null;
                         }}
@@ -1092,7 +1090,8 @@ const Lesson: React.FC = () => {
                 ) : (
                   <section className='flex flex-row items-center gap-6'>
                     {lessonState.currentExercise &&
-                    lessonState.currentExercise.fileName ? (
+                    lessonState.currentExercise.files &&
+                    lessonState.currentExercise.files.length > 0 ? (
                       <Button
                         label={'DOWNLOAD REC'}
                         color={ButtonColors.PURPLE}
@@ -1102,7 +1101,7 @@ const Lesson: React.FC = () => {
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.fileName
+                                lessonState.currentExercise.files[0].fileName
                               )
                             : null;
                         }}

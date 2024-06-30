@@ -77,6 +77,11 @@ interface FeatureObject {
     value: number | string
 }
 
+enum BucketsNames {
+    RECORDS = 'records',
+    IMAGES = 'images'
+}
+
 interface FileObject {
     fileName: string,
     bucket: BucketsNames

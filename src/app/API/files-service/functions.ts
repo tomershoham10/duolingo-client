@@ -31,16 +31,11 @@ const FILES_API = {
     GET_FILES_BY_BUCKETNAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-files-by-bucket`,
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
     GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/downloadEncryptedZip`,
-    GET_SONOLIST_BT_RECORD_ID: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-sonolist-names-by-record-id`,
 };
 
-export enum BUCKETS_NAMES {
-    RECORDS = 'records',
-    SONOGRAMS = 'sonograms',
-    SPOTRECC = 'spotrecc'
-}
 
-export const uploadFile = async (bucketName: BUCKETS_NAMES, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
+
+export const uploadFile = async (bucketName: BucketsNames, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
 
         const formData = new FormData();
@@ -97,7 +92,7 @@ export const uploadFile = async (bucketName: BUCKETS_NAMES, files: File | File[]
     }
 }
 
-export const isFileExisted = async (fileName: string, bucketName: BUCKETS_NAMES): Promise<boolean> => {
+export const isFileExisted = async (fileName: string, bucketName: BucketsNames): Promise<boolean> => {
     try {
         const response = await fetch(
             `${FILES_API.IS_FILE_EXISTED}/${bucketName}/${fileName}`, {
@@ -120,7 +115,7 @@ export const isFileExisted = async (fileName: string, bucketName: BUCKETS_NAMES)
     }
 }
 
-export const getFileMetadataByETag = async (bucketName: BUCKETS_NAMES, etag: string): Promise<{
+export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: string): Promise<{
     name: string,
     id: string,
     metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>
@@ -147,7 +142,7 @@ export const getFileMetadataByETag = async (bucketName: BUCKETS_NAMES, etag: str
     }
 }
 
-export const getFileByBucketName = async (bucketName: BUCKETS_NAMES): Promise<SonogramType[] | RecordType[]> => {
+export const getFileByBucketName = async (bucketName: BucketsNames): Promise<SonogramType[] | RecordType[]> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_FILES_BY_BUCKETNAME}/${bucketName}`, {
@@ -193,7 +188,7 @@ export const getFileByBucketName = async (bucketName: BUCKETS_NAMES): Promise<So
 
 // }
 
-export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<string | null> => {
+export const getFileByName = async (bucketName: BucketsNames, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${objectName}`, {
@@ -217,7 +212,7 @@ export const getFileByName = async (bucketName: BUCKETS_NAMES, objectName: strin
     }
 }
 
-export const getEncryptedFileByName = async (bucketName: BUCKETS_NAMES, objectName: string): Promise<string | null> => {
+export const getEncryptedFileByName = async (bucketName: BucketsNames, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${objectName}`

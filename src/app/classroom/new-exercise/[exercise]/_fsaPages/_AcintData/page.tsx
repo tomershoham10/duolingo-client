@@ -7,7 +7,6 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 import {
-  BUCKETS_NAMES,
   getFileByBucketName,
   uploadFile,
 } from '@/app/API/files-service/functions';
@@ -112,7 +111,7 @@ const AcintDataSection: React.FC = () => {
       //   const res = await getAllRecords();
 
       const res = (await pRetry(
-        () => getFileByBucketName(BUCKETS_NAMES.RECORDS),
+        () => getFileByBucketName(BucketsNames.RECORDS),
         {
           retries: 5,
         }
@@ -268,7 +267,7 @@ const AcintDataSection: React.FC = () => {
         submitRecordState.sonogramsMetadata
       ) {
         // const sonolistResponse = await uploadFile(
-        //   BUCKETS_NAMES.SONOGRAMS,
+        //   BucketsNames.SONOGRAMS,
         //   submitRecordState.sonograms,
         //   submitRecordState.sonogramsMetadata
         // );
@@ -280,7 +279,7 @@ const AcintDataSection: React.FC = () => {
             submitRecordState.recordMetadata &&
             submitRecordState.sonogramsMetadata
               ? uploadFile(
-                  BUCKETS_NAMES.SONOGRAMS,
+                  BucketsNames.IMAGES,
                   submitRecordState.sonograms,
                   submitRecordState.sonogramsMetadata
                 )
@@ -298,7 +297,7 @@ const AcintDataSection: React.FC = () => {
           };
 
           //   const recordResponse = await uploadFile(
-          //     BUCKETS_NAMES.RECORDS,
+          //     BucketsNames.RECORDS,
           //     submitRecordState.record,
           //     submitRecordState.recordMetadata
           //   );
@@ -307,7 +306,7 @@ const AcintDataSection: React.FC = () => {
             () =>
               submitRecordState.record && submitRecordState.recordMetadata
                 ? uploadFile(
-                    BUCKETS_NAMES.RECORDS,
+                    BucketsNames.RECORDS,
                     submitRecordState.record,
                     submitRecordState.recordMetadata
                   )
@@ -356,7 +355,7 @@ const AcintDataSection: React.FC = () => {
       //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
       updateExerciseToSubmit.addFile({
         fileName: infoBarStore.selectedFile.name,
-        bucket: BUCKETS_NAMES.RECORDS,
+        bucket: BucketsNames.RECORDS,
       });
       updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
       updateExerciseToSubmit.updateSonolistFiles(
