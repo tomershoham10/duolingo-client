@@ -7,25 +7,28 @@ import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
 import pRetry from 'p-retry';
 
 const Students: React.FC = () => {
-  const courseId = useStore(useCourseStore, (state) => state._id);
+  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
 
   const [users, setUsers] = useState<UserType[]>([]);
 
   useEffect(() => {
-    console.log('courseId sdfs', courseId);
+    console.log('selectedCourse sdfs', selectedCourse);
 
     const fetchData = async () => {
-      if (courseId) {
+      if (selectedCourse) {
         // const response = await getUsersByCourseId(courseId);
-        const response = await pRetry(() => getUsersByCourseId(courseId), {
-          retries: 5,
-        });
+        const response = await pRetry(
+          () => getUsersByCourseId(selectedCourse._id),
+          {
+            retries: 5,
+          }
+        );
         console.log('getUsersByCourseId', response);
         !!response ? setUsers(response) : null;
       }
     };
     fetchData();
-  }, [courseId]);
+  }, [selectedCourse]);
 
   const headers = [
     { key: 'userName', label: 'User name' },
@@ -38,7 +41,7 @@ const Students: React.FC = () => {
 
   return (
     <>
-      {courseId && users ? (
+      {selectedCourse && selectedCourse._id && users ? (
         <div className='ml-10 mt-6'>
           <p className='text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
             {Object.values(users).length} students

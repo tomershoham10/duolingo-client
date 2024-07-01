@@ -13,6 +13,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Link from 'next/link';
+import pRetry from 'p-retry';
+import Menu from '@/components/Menu/page';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
@@ -21,11 +23,9 @@ import {
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 
-import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import handleLogout from '@/app/utils/functions/handleLogOut';
-import pRetry from 'p-retry';
-import Menu from '@/components/Menu/page';
-import { ExercisesTypes } from '@/app/classroom/new-exercise/[exercise]/page';
+import { PopupsTypes } from '@/app/store/stores/usePopupStore';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 
 library.add(
   faHome,
@@ -50,13 +50,12 @@ const AdminSideBar: React.FC = () => {
 
   const sidebarItemRef = useRef<HTMLLIElement | null>(null);
 
-  const courseName = useStore(useCourseStore, (state) => state.name);
+  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
   const useCourseStoreObj = useMemo(() => {
     return {
       updateCoursesList: useCourseStore.getState().updateCoursesList,
-      updateCourseName: useCourseStore.getState().updateCourseName,
-      updateCourseId: useCourseStore.getState().updateCourseId,
+      updateSelectedCourse: useCourseStore.getState().updateSelectedCourse,
     };
   }, []);
 
@@ -77,52 +76,35 @@ const AdminSideBar: React.FC = () => {
       });
       //   console.log('checkIfCourseExists', !!res);
       setIsCourseExisted(!!res);
+      return res;
     };
 
-    if (pathname.includes('courses')) {
-      const pathArray = pathname.split('/').filter(Boolean);
-      const susName = pathArray[pathArray.indexOf('courses') + 1];
-      checkIfCourseExists(susName);
-
-      if (isCourseExisted) {
-        useCourseStoreObj.updateCourseName(susName);
-      } else {
-        useCourseStoreObj.updateCourseName(undefined);
+    const fetchCourseAndUpdateStore = async () => {
+      if (pathname.includes('courses')) {
+        const pathArray = pathname.split('/').filter(Boolean);
+        const susName = pathArray[pathArray.indexOf('courses') + 1];
+        const course = await checkIfCourseExists(susName); // Await the promise here
+        useCourseStoreObj.updateSelectedCourse(course);
       }
-    }
+    };
 
-    // if (coursesList && courseName) {
-    //   for (let i: number = 0; i < Object.values(coursesList).length; i++) {
-    //     if (
-    //       courseName.toLocaleLowerCase() ===
-    //       coursesList[i].name?.toLocaleLowerCase()
-    //     ) {
-    //       // console.log("nav bar course type", coursesList[i].courseId);
-    //       updateCourseId(coursesList[i]._id);
-    //     }
-    //   }
-    // }
-
-    // for (let i: number = 0; i < navItems.length; i++) {
-    //   pathname.includes(navItems[i].label.toLocaleLowerCase())
-    //     ? setSelected(navItems[i].label)
-    //     : '';
-    // }
+    fetchCourseAndUpdateStore();
   }, [pathname, isCourseExisted, useCourseStoreObj]);
 
   useEffect(() => {
-    if (!!coursesList && !!courseName) {
+    if (!!coursesList && !!selectedCourse && !!selectedCourse.name) {
       const course = coursesList.filter((course) =>
-        !!courseName
-          ? course.name?.toLocaleLowerCase() === courseName.toLocaleLowerCase()
+        !!selectedCourse.name
+          ? course.name?.toLocaleLowerCase() ===
+            selectedCourse.name.toLocaleLowerCase()
           : course
       )[0];
 
       if (course && course._id) {
-        useCourseStoreObj.updateCourseId(course._id);
+        useCourseStoreObj.updateSelectedCourse(course);
       }
     }
-  }, [useCourseStoreObj, courseName, coursesList]);
+  }, [useCourseStoreObj, selectedCourse, coursesList]);
 
   useEffect(() => {
     const fetchData = async () => {

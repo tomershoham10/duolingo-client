@@ -17,9 +17,7 @@ enum coursePages {
 const NavBar: React.FC = () => {
   const [selected, setSelected] = useState<coursePages>();
 
-  const courseName = useStore(useCourseStore, (state) => state.name);
-
-  const updateCourseId = useCourseStore.getState().updateCourseId;
+  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
 
   const pathname = usePathname();
 
@@ -38,30 +36,50 @@ const NavBar: React.FC = () => {
       : null;
   }, [pathname]);
 
-  const navItems: navItems[] = [
-    {
-      label: coursePages.STUDENTS,
-      href: `/classroom/courses/${courseName}/${coursePages.STUDENTS}`,
-    },
-    {
-      label: coursePages.ASSIGNMENTS,
-      href: `/classroom/courses/${courseName}/${coursePages.ASSIGNMENTS}`,
-    },
-    {
-      label: coursePages.SYLLABUS,
-      href: `/classroom/courses/${courseName}/${coursePages.SYLLABUS}`,
-    },
-    {
-      label: coursePages.SETTINGS,
-      href: `/classroom/courses/${courseName}/${coursePages.SETTINGS}`,
-    },
-  ];
+  const navItems: navItems[] =
+    !!selectedCourse && !!selectedCourse.name
+      ? [
+          {
+            label: coursePages.STUDENTS,
+            href: `/classroom/courses/${selectedCourse.name}/${coursePages.STUDENTS}`,
+          },
+          {
+            label: coursePages.ASSIGNMENTS,
+            href: `/classroom/courses/${selectedCourse.name}/${coursePages.ASSIGNMENTS}`,
+          },
+          {
+            label: coursePages.SYLLABUS,
+            href: `/classroom/courses/${selectedCourse.name}/${coursePages.SYLLABUS}`,
+          },
+          {
+            label: coursePages.SETTINGS,
+            href: `/classroom/courses/${selectedCourse.name}/${coursePages.SETTINGS}`,
+          },
+        ]
+      : [
+          {
+            label: coursePages.STUDENTS,
+            href: '/',
+          },
+          {
+            label: coursePages.ASSIGNMENTS,
+            href: '/',
+          },
+          {
+            label: coursePages.SYLLABUS,
+            href: '/',
+          },
+          {
+            label: coursePages.SETTINGS,
+            href: '/',
+          },
+        ];
 
   return (
     <>
       <div className='block w-full border-b-2 pt-4 dark:border-duoGrayDark-light'>
         <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest 3xl:pb-10 3xl:pt-5 3xl:text-5xl'>
-          {!!courseName ? courseName : null} course
+          {!!selectedCourse && selectedCourse.name ? selectedCourse.name : null} course
         </p>
         <ul
           className='bt-2 relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center text-sm 

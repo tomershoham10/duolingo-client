@@ -25,7 +25,7 @@ import PlusButton from '@/components/PlusButton/page';
 import pRetry from 'p-retry';
 
 const SyllabusInfo: React.FC = () => {
-  const courseName = useStore(useCourseStore, (state) => state.name);
+  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const useInfoBarStoreObj = {
     fieldToEdit: useStore(useInfoBarStore, (state) => state.syllabusFieldType),
@@ -220,7 +220,7 @@ const SyllabusInfo: React.FC = () => {
           </section>
         </div>
       ) : (
-        <div className='text-center'>{courseName}</div>
+        <div className='text-center'>{selectedCourse?.name}</div>
       )}
     </section>
   );
