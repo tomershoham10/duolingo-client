@@ -71,29 +71,30 @@ const AdminSideBar: React.FC = () => {
   const [isCourseExisted, setIsCourseExisted] = useState<boolean>(false);
 
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
-  useEffect(() => {
-    const checkIfCourseExists = async (name: string) => {
-      //   const res = await getCourseByName(name);
 
+  const checkIfCourseExists = useCallback(
+    async (name: string) => {
       const res = await pRetry(() => getCourseByName(name), {
         retries: 5,
       });
-      //   console.log('checkIfCourseExists', !!res);
       setIsCourseExisted(!!res);
       return res;
-    };
+    },
+    []
+  );
 
-    const fetchCourseAndUpdateStore = async () => {
-      if (pathname.includes('courses')) {
-        const pathArray = pathname.split('/').filter(Boolean);
-        const susName = pathArray[pathArray.indexOf('courses') + 1];
-        const course = await checkIfCourseExists(susName); // Await the promise here
-        useCourseStoreObj.updateSelectedCourse(course);
-      }
-    };
+  const fetchCourseAndUpdateStore = useCallback(async () => {
+    if (pathname.includes('courses')) {
+      const pathArray = pathname.split('/').filter(Boolean);
+      const susName = pathArray[pathArray.indexOf('courses') + 1];
+      const course = await checkIfCourseExists(susName); // Await the promise here
+      useCourseStoreObj.updateSelectedCourse(course);
+    }
+  }, [pathname, checkIfCourseExists, useCourseStoreObj]);
 
+  useEffect(() => {
     fetchCourseAndUpdateStore();
-  }, [pathname, isCourseExisted, useCourseStoreObj]);
+  }, [pathname, isCourseExisted, useCourseStoreObj, fetchCourseAndUpdateStore]);
 
   useEffect(() => {
     if (!!coursesList && !!selectedCourse && !!selectedCourse.name) {
