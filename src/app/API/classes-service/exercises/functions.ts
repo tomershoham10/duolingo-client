@@ -1,5 +1,10 @@
 import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API } from "@/app/API/classes-service/apis";
 
+export enum ExercisesTypes {
+    FSA = "fsa",
+    SPOTRECC = "spotrecc"
+}
+
 export const getAllExercises = async (): Promise<ExerciseType[]> => {
     try {
         const response = await fetch(

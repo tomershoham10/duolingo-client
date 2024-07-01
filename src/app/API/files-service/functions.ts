@@ -6,6 +6,11 @@
 
 import { decode } from "jsonwebtoken";
 
+export enum BucketsNames {
+    RECORDS = 'records',
+    IMAGES = 'images'
+}
+
 export enum SignatureTypes {
     PASSIVE = 'passive',
     ACTIVE = 'active',

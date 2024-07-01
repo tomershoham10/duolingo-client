@@ -20,11 +20,6 @@ const SpotreccDataSection = lazy(
 
 // import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
-export enum ExercisesTypes {
-  FSA = 'fsa',
-  SPOTRECC = 'spotrecc',
-}
-
 const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
   console.log('params.exercise', params.exercise);
   const addAlert = useAlertStore.getState().addAlert;
