@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { IconDefinition, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -50,8 +50,12 @@ const AdminSideBar: React.FC = () => {
 
   const sidebarItemRef = useRef<HTMLLIElement | null>(null);
 
-  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
+  const selectedCourse = useStore(
+    useCourseStore,
+    (state) => state.selectedCourse
+  );
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
+  console.log('coursesList', coursesList);
   const useCourseStoreObj = useMemo(() => {
     return {
       updateCoursesList: useCourseStore.getState().updateCoursesList,
@@ -106,22 +110,24 @@ const AdminSideBar: React.FC = () => {
     }
   }, [useCourseStoreObj, selectedCourse, coursesList]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (coursesList && coursesList.length > 0 && !!!coursesList[0]._id) {
-        try {
-          //   const coursesList = await getCourses();
-          const coursesList = await pRetry(getCourses, {
-            retries: 5,
-          });
+  const fetchCoursesList = useCallback(async () => {
+    if (coursesList === undefined || coursesList.length === 0) {
+      try {
+        console.log('fetching courses list');
+        //   const coursesList = await getCourses();
+        const coursesList = await pRetry(getCourses, {
+          retries: 5,
+        });
 
-          coursesList ? useCourseStoreObj.updateCoursesList(coursesList) : null;
-        } catch (error) {
-          console.error('Error fetching courses:', error);
-        }
+        coursesList ? useCourseStoreObj.updateCoursesList(coursesList) : null;
+      } catch (error) {
+        console.error('Error fetching courses:', error);
       }
-    };
-    fetchData();
+    }
+  }, [coursesList]);
+
+  useEffect(() => {
+    fetchCoursesList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coursesList]);
 
