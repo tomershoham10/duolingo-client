@@ -10,10 +10,11 @@ import {
   editLessonType,
 } from '@/reducers/adminEditPopup/editLessonReducer';
 import Table, { TableRow } from '@/components/Table/page';
-import { getFileMetadataByETag } from '@/app/API/files-service/functions';
+import { getFileMetadataByName } from '@/app/API/files-service/functions';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
 import pRetry from 'p-retry';
+import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
 
 library.add(faXmark);
 
@@ -71,48 +72,33 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
             const exerciseRecName = exercise.files[0].fileName;
             console.log('exercise loop - exerciseRecName', exerciseRecName);
 
-            const recData = (await pRetry(
+            const recData = await pRetry(
               () =>
-                getFileMetadataByETag(BucketsNames.RECORDS, exerciseRecName),
+                getFileMetadataByName(
+                  BucketsNames.RECORDS,
+                  ExercisesTypes.FSA,
+                  exerciseRecName
+                ),
               {
                 retries: 5,
               }
-            )) as {
-              name: string;
-              id: string;
-              metadata: Partial<RecordMetadataType>;
-            };
-            //   const recData = (await getFileMetadataByETag(
-            //     'records',
-            //     exerciseRecName
-            //   )) as {
-            //     name: string;
-            //     id: string;
-            //     metadata: Partial<RecordMetadataType>;
-            //   };
-
-            //   const recData = (await getFileMetadataByETag(
-            //     'records',
-            //     exerciseRecName
-            //   )) as {
-            //     name: string;
-            //     id: string;
-            //     metadata: Partial<RecordMetadataType>;
-            //   };
+            );
             console.log('recData', recData);
             if (!recData) {
               return null;
             }
-            const newRow = {
-              _id: exercise._id,
-              targetsList: exercise.targetsList,
-              difficultyLevel: recData.metadata.difficulty_level,
-              is_in_italy: recData.metadata.is_in_italy,
-              signature_type: recData.metadata.signature_type,
-              sonolist: recData.metadata.sonograms_ids,
-            };
-            console.log('newRow', newRow);
-            return newRow;
+            if (isFSAMetadata(recData.metadata)) {
+              const newRow = {
+                _id: exercise._id,
+                targetsList: exercise.targetsList,
+                difficultyLevel: recData.metadata.difficulty_level,
+                is_in_italy: recData.metadata.is_in_italy,
+                signature_type: recData.metadata.signature_type,
+                sonolist: recData.metadata.sonograms_names,
+              };
+              console.log('newRow', newRow);
+              return newRow;
+            }
           } catch (error) {
             console.error('Error fetching record:', error);
             return null;
