@@ -21,17 +21,18 @@ import Slider from '@/components/Slider/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { FilesTypes } from '../page';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
 
 library.add(faXmark);
 
 interface RecordMetaEditProps {
-  onSave: (type: FilesTypes, data: Partial<RecordMetadataType>) => void;
+  onSave: (type: FilesTypes, data: Partial<Metadata>) => void;
 }
 
 const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
   const infoBarStore = {
     selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile) as
-      | RecordType
+      | FileType
       | undefined,
   };
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
@@ -44,48 +45,58 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
   );
 
   const selectedFileMeta = infoBarStore?.selectedFile?.metadata;
-  const initialRecordMetaState: RecordMetadataType = selectedFileMeta
-    ? {
-        record_length:
-          selectedFileMeta.record_length !== undefined
-            ? selectedFileMeta.record_length
-            : 0,
-        sonograms_ids: selectedFileMeta.sonograms_ids
-          ? selectedFileMeta.sonograms_ids
-          : [],
-        difficulty_level: selectedFileMeta.difficulty_level
-          ? selectedFileMeta.difficulty_level
-          : 0,
-        targets_ids_list: selectedFileMeta.targets_ids_list
-          ? selectedFileMeta.targets_ids_list
-          : [],
-        operation: selectedFileMeta.operation,
-        source_id: selectedFileMeta.source_id,
-        is_in_italy:
-          selectedFileMeta.is_in_italy !== undefined
-            ? selectedFileMeta.is_in_italy
+  const initialRecordMetaState: Metadata = selectedFileMeta
+    ? isFSAMetadata(selectedFileMeta)
+      ? {
+          record_length: selectedFileMeta.record_length || 0,
+          difficulty_level: selectedFileMeta.difficulty_level || 0,
+          exercise_type: selectedFileMeta.exercise_type || ExercisesTypes.FSA,
+          sonograms_names: selectedFileMeta.sonograms_names || [],
+          targets_ids_list: selectedFileMeta.targets_ids_list || [],
+          operation: selectedFileMeta.operation || 'operation',
+          source_id: selectedFileMeta.source_id || 'source_id',
+          is_in_italy:
+            selectedFileMeta.is_in_italy !== undefined
+              ? selectedFileMeta.is_in_italy
+              : false,
+          signature_type:
+            selectedFileMeta.signature_type || SignatureTypes.PASSIVE,
+          channels_number:
+            selectedFileMeta.channels_number !== undefined
+              ? selectedFileMeta.channels_number
+              : 1,
+          sonar_system: selectedFileMeta.sonar_system
+            ? selectedFileMeta.sonar_system
+            : SonarSystem.DEMON,
+          is_backround_vessels: selectedFileMeta.is_backround_vessels
+            ? selectedFileMeta.is_backround_vessels
             : false,
-        signature_type: selectedFileMeta.signature_type
-          ? selectedFileMeta.signature_type
-          : SignatureTypes.PASSIVE,
-        channels_number: selectedFileMeta.channels_number
-          ? selectedFileMeta.channels_number
-          : 1,
-        sonar_system: selectedFileMeta.sonar_system
-          ? selectedFileMeta.sonar_system
-          : SonarSystem.DEMON,
-        is_backround_vessels: selectedFileMeta.is_backround_vessels
-          ? selectedFileMeta.is_backround_vessels
-          : false,
-        aux: selectedFileMeta.aux ? selectedFileMeta.aux : false,
-      }
+          aux:
+            selectedFileMeta.aux !== undefined ? selectedFileMeta.aux : false,
+        }
+      : {
+          record_length: 0,
+          difficulty_level: 0,
+          exercise_type: ExercisesTypes.FSA,
+          sonograms_names: [],
+          targets_ids_list: [],
+          operation: null,
+          source_id: null,
+          is_in_italy: false,
+          signature_type: SignatureTypes.PASSIVE,
+          channels_number: 1,
+          sonar_system: SonarSystem.DEMON,
+          is_backround_vessels: false,
+          aux: false,
+        }
     : {
         record_length: 0,
-        sonograms_ids: [],
         difficulty_level: 0,
+        exercise_type: ExercisesTypes.FSA,
+        sonograms_names: [],
         targets_ids_list: [],
-        operation: undefined,
-        source_id: undefined,
+        operation: null,
+        source_id: null,
         is_in_italy: false,
         signature_type: SignatureTypes.PASSIVE,
         channels_number: 1,

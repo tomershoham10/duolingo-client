@@ -26,7 +26,7 @@ const FILES_SERVICE_ENDPOINTS = {
 
 const FILES_API = {
     UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
-    IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
+    IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.COURSES}/isFileExisted`,
     GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-metadata-by-etag`,
     GET_FILES_BY_BUCKETNAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-files-by-bucket`,
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
@@ -36,7 +36,7 @@ const FILES_API = {
 
 
 
-export const uploadFile = async (bucketName: BucketsNames, files: File | File[], metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
+export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File | File[], metadata: Partial<Metadata>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
 
         const formData = new FormData();
@@ -45,6 +45,7 @@ export const uploadFile = async (bucketName: BucketsNames, files: File | File[],
 
             formData.append('file', files);
             formData.append('bucketName', bucketName);
+            formData.append('exerciseType', exerciseType);
             formData.append('metadata', JSON.stringify(metadata));
             console.log("formData", formData);
             const uploadRecordResponse = await fetch(
@@ -70,9 +71,10 @@ export const uploadFile = async (bucketName: BucketsNames, files: File | File[],
             }
             formData.append('bucketName', bucketName);
             formData.append('metadata', JSON.stringify(metadata));
+            formData.append('exerciseType', exerciseType);
             console.log("formData", formData);
             const uploadSonolistResponse = await fetch(
-                'http://localhost:4002/api/files/uploadFilesArray/', {
+                `${FILES_API.UPLOAD_FILE}`, {
                 method: 'POST',
                 body: formData,
             })
@@ -93,10 +95,10 @@ export const uploadFile = async (bucketName: BucketsNames, files: File | File[],
     }
 }
 
-export const isFileExisted = async (fileName: string, bucketName: BucketsNames): Promise<boolean> => {
+export const isFileExisted = async (fileName: string, exerciseType: ExercisesTypes, bucketName: BucketsNames): Promise<boolean> => {
     try {
         const response = await fetch(
-            `${FILES_API.IS_FILE_EXISTED}/${bucketName}/${fileName}`, {
+            `${FILES_API.IS_FILE_EXISTED}/${bucketName}/${exerciseType}/${fileName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -119,7 +121,7 @@ export const isFileExisted = async (fileName: string, bucketName: BucketsNames):
 export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: string): Promise<{
     name: string,
     id: string,
-    metadata: Partial<RecordMetadataType> | Partial<SonogramMetadataType>
+    metadata: Partial<Metadata>
 } | null> => {
     try {
         const response = await fetch(
@@ -143,7 +145,7 @@ export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: stri
     }
 }
 
-export const getFileByBucketName = async (bucketName: BucketsNames): Promise<SonogramType[] | RecordType[]> => {
+export const getFileByBucketName = async (bucketName: BucketsNames): Promise<FileType[]> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_FILES_BY_BUCKETNAME}/${bucketName}`, {
@@ -166,10 +168,10 @@ export const getFileByBucketName = async (bucketName: BucketsNames): Promise<Son
     }
 }
 
-export const getFileByName = async (bucketName: BucketsNames, objectName: string): Promise<string | null> => {
+export const getFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
-            `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${objectName}`, {
+            `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${exerciseType}/${objectName}`, {
             method: 'GET',
             credentials: 'include',
         })
@@ -190,14 +192,10 @@ export const getFileByName = async (bucketName: BucketsNames, objectName: string
     }
 }
 
-export const getEncryptedFileByName = async (bucketName: BucketsNames, objectName: string): Promise<string | null> => {
+export const getEncryptedFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
-            `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${objectName}`
-            // , {
-            // method: 'GET',
-            // credentials: 'include',
-            // }
+            `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${exerciseType}/${objectName}`
         )
 
         console.log("downloadEncryptedZip response", response);
@@ -228,7 +226,11 @@ export const getEncryptedFileByName = async (bucketName: BucketsNames, objectNam
     }
 }
 
-export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string[]> => {
+export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<{
+    name: string,
+    id: string,
+    metadata: Partial<Metadata>
+} | null> => {
     try {
         console.log('getFileMetadataByName recordId', objectName);
         const response = await fetch(
@@ -239,13 +241,8 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
                 'Content-Type': 'application/json',
             }
         })
-        // if (response.status !== 200) {
-        //     throw new Error('Failed to fetch images');
-        // }
 
-        // const data = await response.json();
-        // const streams = data.filesStreams as string[];
-        if (!response.ok) return [];
+        if (!response.ok) return null;
 
         const data = await response.json();
         const sonolist = data.sonograms;
@@ -254,50 +251,6 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
     }
     catch (error) {
         console.error(`error getSonolistByRecordId - ${error}`);
-        return [];
+        return null;
     }
 }
-
-// export const getSonolistNamesByRecordId = async (recordId: string): Promise<string[]> => {
-//     try {
-//         console.log('getSonolistNamesByRecordId recordId', recordId);
-//         const response = await fetch(
-//             `${FILES_API.GET_SONOLIST_BT_RECORD_ID}/${recordId}`, {
-//             method: 'GET',
-//             credentials: 'include',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             }
-//         })
-//         // if (response.status !== 200) {
-//         //     throw new Error('Failed to fetch images');
-//         // }
-
-//         // const data = await response.json();
-//         // const streams = data.filesStreams as string[];
-//         if (!response.ok) return [];
-
-//         const data = await response.json();
-//         const sonolist = data.sonograms;
-//         console.log('getSonolistNamesByRecordId sonolist: ', sonolist);
-//         return sonolist;
-//     }
-//     catch (error) {
-//         console.error(`error getSonolistByRecordId - ${error}`);
-//         return [];
-//     }
-// }
-
-// export const downloadFile = async (bucketName: string, objectName: string): Promise<boolean> => {
-//     try {
-//         const response = await fetch(
-//             `http://localhost:4002/api/files/downloadFile/${bucketName}/${objectName}`, {
-//             method: 'GET',
-//             credentials: 'include',
-//         })
-//         return true;
-//     } catch (error) {
-//         console.error(`error downloadFile - ${error}`);
-//         return false;
-//     }
-// }

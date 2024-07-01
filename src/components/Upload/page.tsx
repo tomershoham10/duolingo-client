@@ -38,7 +38,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);
 
   const [uploadedFiles, setUploadedFiles] = useState<
-    RecordType | SonogramType[] | undefined
+    FileType | FileType[] | undefined
   >(props.files);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
         // const isExisted = await isFileExisted(file.name, 'records');
 
         const isExisted = await pRetry(
-          () => isFileExisted(file.name, BucketsNames.RECORDS),
+          () => isFileExisted(file.name, props.exerciseType, props.bucketName),
           {
             retries: 5,
           }
@@ -108,7 +108,8 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           //   const status = await isFileExisted(file.name, BucketsNames.SONOGRAMS);
 
           const status = await pRetry(
-            () => isFileExisted(file.name, BucketsNames.IMAGES),
+            () =>
+              isFileExisted(file.name, props.exerciseType, props.bucketName),
             {
               retries: 5,
             }

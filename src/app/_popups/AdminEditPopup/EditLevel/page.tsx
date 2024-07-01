@@ -49,8 +49,8 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
       //   setLevelData(response);
       lessonsDraggingDispatch({
         type: draggingAction.SET_ITEMS_LIST,
-        payload: response.lessons.map((lesson, levelIndex) => ({
-          id: lesson,
+        payload: response.lessonsIds.map((lessonId, levelIndex) => ({
+          id: lessonId,
           name: `lesson ${levelIndex + 1}`,
         })),
       });

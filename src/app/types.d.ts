@@ -181,39 +181,64 @@ enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-interface RecordMetadataType {
+type Metadata = FSAMetadata | SonogramMetadata | SpotreccRecordMetadata | SpotreccImageMetadata;
+
+interface RecordMetadata {
     record_length: number;
-    sonograms_ids: string[];
     difficulty_level: number;
-    targets_ids_list?: string[];
-    targets_list?: string[];
-    operation: string | undefined;
-    source_id: string | undefined;
-    is_in_italy: boolean;
-    signature_type: SignatureTypes;
-    channels_number: number;
-    sonar_system: SonarSystem;
-    is_backround_vessels: boolean;
-    aux: boolean;
+    exercise_type: ExerciseTypes;
 }
 
-interface SonogramMetadataType {
+interface ImageMetadata {
+    exercise_type: ExerciseTypes;
+}
+
+interface FSAMetadata extends RecordMetadata {
+    channels_number: number;
+    sonograms_names: string[];
+    targets_ids_list: string[];
+    operation: string | null;
+    source_id: string | null;
+    is_in_italy: boolean; //
+    aux: boolean;
+    is_backround_vessels: boolean;
+    signature_type: SignatureTypes; //
+    sonar_system: SonarSystem;
+}
+
+interface SonogramMetadata extends ImageMetadata {
     sonogram_type: SonarSystem;
     fft: number;
     bw: number;
 }
 
-interface RecordType {
-    name: string;
-    id?: string;
-    metadata: Partial<RecordMetadataType>;
+interface SpotreccRecordMetadata extends RecordMetadata {
+    targets_ids?: string[];
+    notable_features: FeaturesList[];
 }
 
-interface SonogramType {
+interface SpotreccImageMetadata extends ImageMetadata {
+    targets_ids?: string[];
+    notable_features: FeaturesList[];
+}
+
+interface FileType {
     name: string;
     id?: string;
-    metadata: Partial<SonogramMetadataType>;
+    metadata: Partial<Metadata>;
 }
+
+// interface RecordType {
+//     name: string;
+//     id?: string;
+//     metadata: Partial<RecordMetadataType>;
+// }
+
+// interface SonogramType {
+//     name: string;
+//     id?: string;
+//     metadata: Partial<SonogramMetadataType>;
+// }
 
 // // users service // //
 
@@ -569,7 +594,9 @@ interface UploadProps {
     isMultiple: boolean;
     errorMode?: boolean;
     filesTypes: string;
-    files: RecordType | SonogramType[] | undefined;
+    bucketName: BucketsNames;
+    exerciseType: ExercisesTypes;
+    files: FileType | FileType[] | undefined;
     // onFileChange: (files: File | FileList | null) => void;
     onFileChange: (files: File | File[] | null) => void;
     onFileRemoved: (fileIndex: number | undefined) => void;
