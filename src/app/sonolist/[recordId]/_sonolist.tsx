@@ -6,6 +6,7 @@ import {
   getFileMetadataByName,
 } from '@/app/API/files-service/functions';
 import pRetry from 'p-retry';
+import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
 
 interface SonolistProps {
   recordName: string;
@@ -18,7 +19,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
     try {
       //   const sonolistNames = await getSonolistNamesByRecordId(recordId);
 
-      const sonolistNames = await pRetry(
+      const fileMetadata = await pRetry(
         () =>
           getFileMetadataByName(
             BucketsNames.RECORDS,
@@ -29,32 +30,42 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
           retries: 5,
         }
       );
-      const promises = sonolistNames.map(async (sonogram) => {
-        try {
-          //   const blob = await getFileByName(BucketsNames.SONOGRAMS, sonogram);
+      if (fileMetadata) {
+        const metadata = fileMetadata.metadata;
+        if (isFSAMetadata(metadata) && metadata.sonograms_names) {
+          const promises = metadata.sonograms_names.map(async (sonogram) => {
+            try {
+              //   const blob = await getFileByName(BucketsNames.SONOGRAMS, sonogram);
 
-          const url = await pRetry(
-            () => getFileByName(BucketsNames.IMAGES, sonogram),
-            {
-              retries: 5,
+              const url = await pRetry(
+                () =>
+                  getFileByName(
+                    BucketsNames.IMAGES,
+                    ExercisesTypes.FSA,
+                    sonogram
+                  ),
+                {
+                  retries: 5,
+                }
+              );
+              if (url) {
+                return url;
+              } else {
+                return null;
+              }
+            } catch (error) {
+              console.error('Error reading file:', error);
+              return null;
             }
-          );
-          if (url) {
-            return url;
-          } else {
-            return null;
-          }
-        } catch (error) {
-          console.error('Error reading file:', error);
-          return null;
-        }
-      });
+          });
 
-      const results = await Promise.all(promises);
-      const filteredResults = results.filter(
-        (result): result is string => typeof result === 'string'
-      );
-      setSonolist(filteredResults); // Set filtered results directly
+          const results = await Promise.all(promises);
+          const filteredResults = results.filter(
+            (result): result is string => typeof result === 'string'
+          );
+          setSonolist(filteredResults); // Set filtered results directly
+        }
+      }
     } catch (error) {
       console.error('Error fetching sonogram names:', error);
     }

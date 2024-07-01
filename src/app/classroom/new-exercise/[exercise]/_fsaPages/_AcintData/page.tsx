@@ -28,6 +28,7 @@ import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 import pRetry from 'p-retry';
+import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
 
 const MetadataPopup = lazy(() => import('@/app/_popups/MetadataPopup/page'));
 
@@ -100,7 +101,7 @@ const AcintDataSection: React.FC = () => {
     initialsubmitRecordState
   );
 
-  const [recordsData, setRecordsData] = useState<RecordType[]>([]);
+  const [recordsData, setRecordsData] = useState<FileType[]>([]);
   const [recordLength, setRecordLength] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
 
@@ -115,7 +116,7 @@ const AcintDataSection: React.FC = () => {
         {
           retries: 5,
         }
-      )) as RecordType[];
+      )) as FileType[];
 
       !!res ? setRecordsData(res) : null;
     };
@@ -133,43 +134,45 @@ const AcintDataSection: React.FC = () => {
     setTableData(
       recordsData.map(({ name, id, metadata }) => {
         const ogMetadata = metadata;
+        if (isFSAMetadata(ogMetadata)) {
+          const targetsIds = ogMetadata.targets_ids_list;
+          const sourceId = ogMetadata.source_id;
 
-        const targetsIds = ogMetadata.targets_ids_list;
-        const sourceId = ogMetadata.source_id;
+          const targetsNames: string[] = [];
+          let sourceName: string = '';
 
-        const targetsNames: string[] = [];
-        let sourceName: string = '';
-
-        if (!!targetsIds) {
-          for (let i: number = 0; i < targetsIds.length; i++) {
-            targetsNames.push(
-              targetsListDB.filter((target) => target._id === targetsIds[i])[0]
-                .name
-            );
+          if (!!targetsIds) {
+            for (let i: number = 0; i < targetsIds.length; i++) {
+              targetsNames.push(
+                targetsListDB.filter(
+                  (target) => target._id === targetsIds[i]
+                )[0].name
+              );
+            }
           }
-        }
 
-        !!sourceId
-          ? (sourceName = sourcesListDB.filter(
-              (source) => source._id === sourceId
-            )[0]?.name)
-          : null;
+          !!sourceId
+            ? (sourceName = sourcesListDB.filter(
+                (source) => source._id === sourceId
+              )[0]?.name)
+            : null;
 
-        const { targets_ids_list, source_id, is_in_italy, ...newMeta } =
-          ogMetadata;
+          const { targets_ids_list, source_id, is_in_italy, ...newMeta } =
+            ogMetadata;
 
-        const updatedMeta = {
-          ...newMeta,
-          targets_list: targetsNames,
-          is_in_italy: String(is_in_italy),
-          source_name: sourceName,
-        };
+          const updatedMeta = {
+            ...newMeta,
+            targets_list: targetsNames,
+            is_in_italy: String(is_in_italy),
+            source_name: sourceName,
+          };
 
-        return {
-          name,
-          id,
-          ...updatedMeta,
-        };
+          return {
+            name,
+            id,
+            ...updatedMeta,
+          };
+        } else return {};
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -280,6 +283,7 @@ const AcintDataSection: React.FC = () => {
             submitRecordState.sonogramsMetadata
               ? uploadFile(
                   BucketsNames.IMAGES,
+                  ExercisesTypes.FSA,
                   submitRecordState.sonograms,
                   submitRecordState.sonogramsMetadata
                 )
@@ -307,6 +311,7 @@ const AcintDataSection: React.FC = () => {
               submitRecordState.record && submitRecordState.recordMetadata
                 ? uploadFile(
                     BucketsNames.RECORDS,
+                    ExercisesTypes.FSA,
                     submitRecordState.record,
                     submitRecordState.recordMetadata
                   )
@@ -340,30 +345,33 @@ const AcintDataSection: React.FC = () => {
       infoBarStore.selectedFile &&
       infoBarStore.selectedFile.name.endsWith('wav')
     ) {
-      const metadata = infoBarStore.selectedFile
-        .metadata as Partial<RecordMetadataType>;
+      const metadata = infoBarStore.selectedFile.metadata as Partial<Metadata>;
 
-      const answersToSubmit = Array.isArray(metadata.targets_list)
-        ? metadata.targets_list
-        : !!metadata.targets_list
-          ? [metadata.targets_list]
-          : [];
-      const targetIdsToSubmit = targetsListDB
-        .filter((target) => answersToSubmit.includes(target.name))
-        .map((target) => target._id);
+      if (isFSAMetadata(metadata)) {
+        const answersToSubmit = Array.isArray(metadata.targets_ids_list)
+          ? metadata.targets_ids_list
+          : !!metadata.targets_ids_list
+            ? [metadata.targets_ids_list]
+            : [];
+        const targetIdsToSubmit = targetsListDB
+          .filter((target) => answersToSubmit.includes(target.name))
+          .map((target) => target._id);
 
-      //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
-      updateExerciseToSubmit.addFile({
-        fileName: infoBarStore.selectedFile.name,
-        bucket: BucketsNames.RECORDS,
-      });
-      updateExerciseToSubmit.updateRecordLength(Number(metadata.record_length));
-      updateExerciseToSubmit.updateSonolistFiles(
-        metadata.sonograms_ids && metadata.sonograms_ids.length > 0
-          ? metadata.sonograms_ids
-          : []
-      );
-      updateExerciseToSubmit.updateTargetsList(targetIdsToSubmit);
+        //   updateExerciseToSubmit.updateRecordId(infoBarStore.selectedFile.id);
+        updateExerciseToSubmit.addFile({
+          fileName: infoBarStore.selectedFile.name,
+          bucket: BucketsNames.RECORDS,
+        });
+        updateExerciseToSubmit.updateRecordLength(
+          Number(metadata.record_length)
+        );
+        updateExerciseToSubmit.updateSonolistFiles(
+          metadata.sonograms_names && metadata.sonograms_names.length > 0
+            ? metadata.sonograms_names
+            : []
+        );
+        updateExerciseToSubmit.updateTargetsList(targetIdsToSubmit);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoBarStore.selectedFile]);
@@ -420,12 +428,14 @@ const AcintDataSection: React.FC = () => {
             filesTypes={'.wav'}
             isMultiple={false}
             ref={uploadRef}
+            bucketName={BucketsNames.RECORDS}
+            exerciseType={ExercisesTypes.FSA}
             files={
               submitRecordState.record
                 ? ({
                     name: submitRecordState.record.name,
                     metadata: submitRecordState.recordMetadata,
-                  } as RecordType)
+                  } as FileType)
                 : undefined
             }
             onFileChange={handleFileChange}
@@ -440,6 +450,8 @@ const AcintDataSection: React.FC = () => {
             filesTypes={'images/*'}
             isMultiple={true}
             ref={uploadRef}
+            bucketName={BucketsNames.IMAGES}
+            exerciseType={ExercisesTypes.FSA}
             files={
               submitRecordState.sonograms
                 ? Array.from(submitRecordState.sonograms).map(
