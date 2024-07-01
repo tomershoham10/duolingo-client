@@ -125,12 +125,11 @@ const AdminSideBar: React.FC = () => {
         console.error('Error fetching courses:', error);
       }
     }
-  }, [coursesList]);
+  }, [coursesList, useCourseStoreObj]);
 
   useEffect(() => {
     fetchCoursesList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coursesList]);
+  }, [coursesList, fetchCoursesList]);
 
   useEffect(() => {
     usePopupStoreObj.selectedPopup === PopupsTypes.CLOSED
