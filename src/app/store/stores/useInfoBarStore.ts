@@ -25,7 +25,7 @@ type useInfoBarState = {
     syllabusSubIdsListField: string[];
     syllabusIsFieldSuspended: boolean;
 
-    selectedFile: RecordType | SonogramType | undefined;
+    selectedFile: FileType | undefined;
 }
 type Action = {
     updatesyllabusFieldType: (syllabusFieldType: useInfoBarState['syllabusFieldType']) => void;
