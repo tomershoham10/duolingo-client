@@ -1,10 +1,10 @@
 // 'use client';
 import { lazy } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+// import { usePathname, useRouter } from 'next/navigation';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
 import InfoBar from '@/components/InfoBar/page';
-import useStore from '../store/useStore';
-import { useUserStore, PermissionsTypes } from '../store/stores/useUserStore';
+// import useStore from '../store/useStore';
+// import { useUserStore, PermissionsTypes } from '../store/stores/useUserStore';
 const AdminEditPopup = lazy(() => import('../_popups/AdminEditPopup/page'));
 const CreateNewUser = lazy(() => import('../_popups/CreateNewUser/page'));
 const CreateNewCourse = lazy(() => import('../_popups/CreateNewCourse/page'));
