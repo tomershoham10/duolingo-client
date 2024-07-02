@@ -72,16 +72,13 @@ const AdminSideBar: React.FC = () => {
 
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
 
-  const checkIfCourseExists = useCallback(
-    async (name: string) => {
-      const res = await pRetry(() => getCourseByName(name), {
-        retries: 5,
-      });
-      setIsCourseExisted(!!res);
-      return res;
-    },
-    []
-  );
+  const checkIfCourseExists = useCallback(async (name: string) => {
+    const res = await pRetry(() => getCourseByName(name), {
+      retries: 5,
+    });
+    setIsCourseExisted(!!res);
+    return res;
+  }, []);
 
   const fetchCourseAndUpdateStore = useCallback(async () => {
     if (pathname.includes('courses')) {
@@ -112,7 +109,7 @@ const AdminSideBar: React.FC = () => {
   }, [useCourseStoreObj, selectedCourse, coursesList]);
 
   const fetchCoursesList = useCallback(async () => {
-    if (coursesList === undefined || coursesList.length === 0) {
+    if (coursesList !== undefined && coursesList.length === 0) {
       try {
         console.log('fetching courses list');
         //   const coursesList = await getCourses();
