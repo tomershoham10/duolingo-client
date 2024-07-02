@@ -86,7 +86,7 @@ export const getCourses = async (): Promise<CoursesType[] | null> => {
 
             const updatedData = JSON.stringify(courseData);
 
-            localStorage.setItem('courseData', updatedData);
+            localStorage.setItem('coursesData', updatedData);
             return coursesList;
         } else {
             console.error("Failed to fetch courses.");
@@ -121,7 +121,7 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
             const updatedData = JSON.stringify(courseData);
 
             localStorage.setItem(
-                "courseData",
+                "coursesData",
                 JSON.stringify(updatedData),
             );
             // console.log("getCourseByType", course);
