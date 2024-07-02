@@ -7,6 +7,7 @@ import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 import {
+  BucketsNames,
   getFileByBucketName,
   uploadFile,
 } from '@/app/API/files-service/functions';
@@ -29,6 +30,7 @@ import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 import pRetry from 'p-retry';
 import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 
 const MetadataPopup = lazy(() => import('@/app/_popups/MetadataPopup/page'));
 
@@ -131,6 +133,7 @@ const AcintDataSection: React.FC = () => {
     //     ]
     //   );
     // }
+    console.log('recordsData', recordsData);
     setTableData(
       recordsData.map(({ name, id, metadata }) => {
         const ogMetadata = metadata;
@@ -239,8 +242,9 @@ const AcintDataSection: React.FC = () => {
     console.log('handleSelectTableRow', record);
 
     const modifiedRecord = {
-      name: record.name,
       id: record.id,
+      name: record.name,
+      exerciseType: record.exerciseType,
       metadata: {
         record_length: record.record_length,
         sonograms_ids: record.sonograms_ids,
@@ -458,6 +462,7 @@ const AcintDataSection: React.FC = () => {
                     (sonogram, sonoIndex) => {
                       return {
                         name: sonogram.name,
+                        exerciseType: ExercisesTypes.SPOTRECC,
                         metadata:
                           submitRecordState.sonogramsMetadata[sonoIndex],
                       };
