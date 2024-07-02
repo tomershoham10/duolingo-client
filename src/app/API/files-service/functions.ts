@@ -32,8 +32,8 @@ const FILES_SERVICE_ENDPOINTS = {
 const FILES_API = {
     UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
     IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.COURSES}/isFileExisted`,
-    GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-metadata-by-etag`,
-    GET_FILES_BY_BUCKETNAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/get-files-by-bucket`,
+    GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/getMetadataByEtag`,
+    GET_FILES_BY_BUCKET_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFilesByBucket`,
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
     GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileMetadataByName`,
     GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/downloadEncryptedZip`,
@@ -153,15 +153,17 @@ export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: stri
 export const getFileByBucketName = async (bucketName: BucketsNames): Promise<FileType[]> => {
     try {
         const response = await fetch(
-            `${FILES_API.GET_FILES_BY_BUCKETNAME}/${bucketName}`, {
+            `${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             }
         })
+        console.log('getFileByBucketName', response);
         if (response.ok) {
             const data = await response.json();
+            console.log('getFileByBucketName', data);
             const files = data.files;
             return files;
         }
