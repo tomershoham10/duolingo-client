@@ -1,8 +1,8 @@
 'use client';
-import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
-import ProgressBar from '@/components/ProgressBar/page';
-import pRetry from 'p-retry';
 import { useEffect, useState } from 'react';
+import pRetry from 'p-retry';
+import ProgressBar from '@/components/ProgressBar/page';
+import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 
 export default function Page({ params }: { params: { id: string } }) {
   const lessonId = params.id.toString();
