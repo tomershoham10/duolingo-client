@@ -25,7 +25,7 @@ type useInfoBarState = {
     syllabusSubIdsListField: string[];
     syllabusIsFieldSuspended: boolean;
 
-    selectedFile: FileType | undefined;
+    selectedFile: Partial<FileType> | undefined;
 }
 type Action = {
     updatesyllabusFieldType: (syllabusFieldType: useInfoBarState['syllabusFieldType']) => void;
@@ -35,7 +35,7 @@ type Action = {
     updateSyllabusSubIdsListField: (syllabusSubIdsListField: useInfoBarState['syllabusSubIdsListField']) => void;
     updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended: useInfoBarState['syllabusIsFieldSuspended']) => void;
 
-    updateSelectedFile: (selectedRecord: useInfoBarState['selectedFile']) => void;
+    updateSelectedFile: (selectedFile: useInfoBarState['selectedFile']) => void;
     resetStore: () => void;
 }
 
