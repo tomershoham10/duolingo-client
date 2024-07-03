@@ -1,22 +1,25 @@
 'use client';
 import { useState } from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { library } from '@fortawesome/fontawesome-svg-core';
+// import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import useStore from '@/app/store/useStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+// import useStore from '@/app/store/useStore';
+import {
+  PopupsTypes,
+  //  usePopupStore
+} from '@/app/store/stores/usePopupStore';
 import PopupHeader from '../PopupHeader/page';
 
-library.add(faXmark);
+// library.add(faXmark);
 
 const CreateNewUnit: React.FC = () => {
-  const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
+  //   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
   const addAlert = useAlertStore.getState().addAlert;
-  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+  //   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');

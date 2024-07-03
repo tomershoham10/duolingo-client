@@ -9,7 +9,7 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/Button/page';
-import useStore from '@/app/store/useStore';
+// import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   createCourse,
@@ -22,7 +22,7 @@ import PopupHeader from '../PopupHeader/page';
 // library.add(faXmark);
 
 const CreateNewCourse: React.FC = () => {
-  const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
+//   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
   const addAlert = useAlertStore.getState().addAlert;
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const updateCoursesList = useCourseStore.getState().updateCoursesList;
