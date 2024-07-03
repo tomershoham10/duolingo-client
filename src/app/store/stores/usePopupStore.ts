@@ -9,6 +9,7 @@ export enum PopupsTypes {
     NEWUNIT = "newUnit",
     STARTLESSON = "startLesson",
     ADMINEDIT = "adminEdit",
+    UPLOAD_RECORD = "uploadRecord",
     RECORDMETADATA = 'recordMetadata',
     SONOLISTMETADATA = 'sonolistMetadata'
 }

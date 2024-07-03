@@ -14,21 +14,21 @@ export enum submitRecordAction {
 type Action =
     | { type: submitRecordAction.SET_RECORD_FILE, payload: File }
     | { type: submitRecordAction.REMOVE_RECORD_FILE }
-    | { type: submitRecordAction.SET_RECORD_METADATA, payload: Partial<RecordMetadataType> }
-    | { type: submitRecordAction.REMOVE_RECORD_METADATA, payload: Partial<RecordMetadataType> }
+    | { type: submitRecordAction.SET_RECORD_METADATA, payload: Partial<Metadata> }
+    | { type: submitRecordAction.REMOVE_RECORD_METADATA, payload: Partial<Metadata> }
 
     // | { type: submitRecordAction.SET_SONOLIST; payload: FileList }
     | { type: submitRecordAction.SET_SONOLIST; payload: File[] }
     | { type: submitRecordAction.REMOVE_SONOGRAM; payload: number }
-    | { type: submitRecordAction.SET_SONOGRAM_META; payload: Partial<SonogramMetadataType> }
+    | { type: submitRecordAction.SET_SONOGRAM_META; payload: Partial<Metadata> }
     | { type: submitRecordAction.REMOVE_SONOGRAM_META; payload: number }
 
 export interface submitRecordDataType {
     record: File | undefined,
-    recordMetadata: Partial<RecordMetadataType> | undefined,
+    recordMetadata: Partial<Metadata> | undefined,
     // sonograms: FileList | undefined,
     sonograms: File[] | undefined,
-    sonogramsMetadata: Partial<SonogramMetadataType>[],
+    sonogramsMetadata: Partial<Metadata>[],
 }
 
 export const submitRecordReducer = (
@@ -77,7 +77,7 @@ function removeFileFromList(fileList: File[] | undefined, indexToRemove: number)
     }
 }
 
-function removeMetadataObj(sonolistMetas: Partial<SonogramMetadataType>[], indexToRemove: number): Partial<SonogramMetadataType>[] {
+function removeMetadataObj(sonolistMetas: Partial<Metadata>[], indexToRemove: number): Partial<Metadata>[] {
     const filteredMetas = sonolistMetas.filter((_, index) => index !== indexToRemove);
     return filteredMetas;
 }

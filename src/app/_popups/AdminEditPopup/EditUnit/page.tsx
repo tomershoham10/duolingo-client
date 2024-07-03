@@ -76,17 +76,17 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
 
           editUnitDispatch({
             type: editUnitAction.SET_LEVELS,
-            payload: response.levels,
+            payload: response.levelsIds,
           });
           editUnitDispatch({
             type: editUnitAction.SET_SUSPENDED_LEVELS,
-            payload: response.suspendedLevels,
+            payload: response.suspendedLevelsIds,
           });
 
           levelsDraggingDispatch({
             type: draggingAction.SET_ITEMS_LIST,
-            payload: response.levels.map((level, levelIndex) => ({
-              id: level,
+            payload: response.levelsIds.map((levelId, levelIndex) => ({
+              id: levelId,
               name: `level ${levelIndex + 1}`,
             })),
           });
