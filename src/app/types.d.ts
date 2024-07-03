@@ -296,16 +296,16 @@ enum fieldToEditType {
 
 // // usePopupStore // //
 
-enum PopupsTypes {
-    CLOSED = "closed",
-    NEWUSER = "newUser",
-    NEWCOURSE = "newCourse",
-    NEWUNIT = "newUnit",
-    STARTLESSON = "startLesson",
-    ADMINEDIT = "adminEdit",
-    RECORDMETADATA = 'recordMetadata',
-    SONOLISTMETADATA = 'sonolistMetadata'
-}
+// enum PopupsTypes {
+//     CLOSED = "closed",
+//     NEWUSER = "newUser",
+//     NEWCOURSE = "newCourse",
+//     NEWUNIT = "newUnit",
+//     STARTLESSON = "startLesson",
+//     ADMINEDIT = "adminEdit",
+//     RECORDMETADATA = 'recordMetadata',
+//     SONOLISTMETADATA = 'sonolistMetadata'
+// }
 
 // // useThemeStore // //
 
@@ -450,6 +450,7 @@ interface SidebarItem {
     popup?: PopupsTypes;
     icon?: IconDefinition;
     href?: string;
+    onClick?: () => void;
     subItems?: SidebarItem[];
 }
 
@@ -592,6 +593,7 @@ interface tooltipProps {
 interface UploadProps {
     label: string;
     inputName?: string;
+    isDisabled?: boolean;
     isMultiple: boolean;
     errorMode?: boolean;
     filesTypes: string;

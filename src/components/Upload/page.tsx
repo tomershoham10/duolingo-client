@@ -49,7 +49,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
   useEffect(() => {
     if (selectedFile) {
       const selectedFileName = selectedFile.name;
-      !uploadedFilesNames.includes(selectedFileName)
+      selectedFileName && !uploadedFilesNames.includes(selectedFileName)
         ? setSelectedFileIndex(-1)
         : null;
     }
@@ -208,7 +208,10 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                 : ButtonColors.WHITE
           }
           onClick={() => inputRef.current?.click()}
-          isDisabled={!props.isMultiple && uploadedFilesNames.length > 0}
+          isDisabled={
+            props.isDisabled ||
+            (!props.isMultiple && uploadedFilesNames.length > 0)
+          }
           buttonType={ButtonTypes.BUTTON}
         />
         {uploadedFilesNames.length > 0 ? (
