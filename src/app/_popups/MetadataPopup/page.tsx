@@ -6,16 +6,12 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 import RecordMetadata from './RecordMetadata/page';
 import SonoramMetadata from './SonogramMetadata/page';
+import { BucketsNames } from '@/app/API/files-service/functions';
 
 library.add(faXmark);
 
-export enum FilesTypes {
-  RECORD = 'record',
-  SONOGRAM = 'sonogram',
-}
-
 interface MetadataProps {
-  onSave: (type: FilesTypes, data: Partial<RecordMetadataType>) => void;
+  onSave: (type: BucketsNames, data: Partial<Metadata>) => void;
 }
 
 const MetadataPopup: React.FC<MetadataProps> = (props) => {
