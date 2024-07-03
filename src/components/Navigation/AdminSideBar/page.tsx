@@ -36,14 +36,14 @@ library.add(
   faHeadphones
 );
 
-interface SidebarItem {
-  name: string;
-  popup?: PopupsTypes;
-  icon?: IconDefinition;
-  href?: string;
-  onClick?: () => void;
-  subItems?: SidebarItem[];
-}
+// interface SidebarItem {
+//   name: string;
+//   popup?: PopupsTypes;
+//   icon?: IconDefinition;
+//   href?: string;
+//   onClick?: () => void;
+//   subItems?: SidebarItem[];
+// }
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();
@@ -137,7 +137,7 @@ const AdminSideBar: React.FC = () => {
   const sidebarItems: SidebarItem[] = [
     {
       name: 'Dashboard',
-      popup: PopupsTypes.CLOSED,
+      popup: PopupsTypes,
       icon: faHome,
       href: '/classroom/',
     },

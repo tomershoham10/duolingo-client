@@ -492,35 +492,43 @@ const Lesson: React.FC = () => {
     lessonState.isExerciseFinished,
   ]);
 
-  const downloadRecord = useCallback(async (recordName: string) => {
-    try {
-      //   const url = await getEncryptedFileByName(
-      //     BucketsNames.RECORDS,
-      //     recordName
-      //   );
-      setDownloadingFile(true);
-      const url = await pRetry(
-        () => getEncryptedFileByName(BucketsNames.RECORDS, recordName),
-        {
-          retries: 5,
+  const downloadRecord = useCallback(
+    async (recordName: string, exerciseType: ExercisesTypes) => {
+      try {
+        //   const url = await getEncryptedFileByName(
+        //     BucketsNames.RECORDS,
+        //     recordName
+        //   );
+        setDownloadingFile(true);
+        const url = await pRetry(
+          () =>
+            getEncryptedFileByName(
+              BucketsNames.RECORDS,
+              exerciseType,
+              recordName
+            ),
+          {
+            retries: 5,
+          }
+        );
+        if (url) {
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.href = url;
+          a.download = 'output.zip';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          console.log('finished');
         }
-      );
-      if (url) {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.href = url;
-        a.download = 'output.zip';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        console.log('finished');
+        setDownloadingFile(false);
+      } catch (err) {
+        console.error(err);
       }
-      setDownloadingFile(false);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+    },
+    []
+  );
 
   const startCurrentExercise = useCallback(
     async (nextLessonId: string, exerciseId: string, userId: string) => {
@@ -1051,7 +1059,8 @@ const Lesson: React.FC = () => {
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.files[0].fileName
+                                lessonState.currentExercise.files[0].fileName,
+                                lessonState.currentExercise.type
                               )
                             : null;
                         }}
@@ -1101,7 +1110,8 @@ const Lesson: React.FC = () => {
                         onClick={() => {
                           !!lessonState.currentExercise
                             ? downloadRecord(
-                                lessonState.currentExercise.files[0].fileName
+                                lessonState.currentExercise.files[0].fileName,
+                                lessonState.currentExercise.type
                               )
                             : null;
                         }}

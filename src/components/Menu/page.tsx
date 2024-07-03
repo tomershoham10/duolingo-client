@@ -6,18 +6,18 @@ import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 interface MenuProps {
-  items: Item[];
+  items: SidebarItem[];
   isHovered: boolean;
 }
 
-interface Item {
-  name: string;
-  popup?: PopupsTypes;
-  icon?: IconDefinition;
-  href?: string;
-  onClick?: () => void;
-  subItems?: SidebarItem[];
-}
+// interface Item {
+//   name: string;
+//   popup?: PopupsTypes;
+//   icon?: IconDefinition;
+//   href?: string;
+//   onClick?: () => void;
+//   subItems?: SidebarItem[];
+// }
 
 const Menu: React.FC<MenuProps> = (props) => {
   const { items, isHovered } = props;
