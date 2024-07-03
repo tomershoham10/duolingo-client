@@ -15,6 +15,7 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { registerUser } from '@/app/API/users-service/users/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import pRetry from 'p-retry';
+import PopupHeader from '../PopupHeader/page';
 
 library.add(faXmark);
 
@@ -120,131 +121,102 @@ const CreateNewUser: React.FC = () => {
   };
 
   return (
-    <div
-      className={
-        selectedPopup === PopupsTypes.NEWUSER
-          ? 'fixed z-20 flex h-full w-full items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-          : 'z-0 opacity-0 transition duration-200 ease-in'
-      }
-    >
-      {selectedPopup === PopupsTypes.NEWUSER ? (
-        <div
-          className='flex h-[33rem] w-fit
-         rounded-md bg-white p-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
+    <PopupHeader popupType={PopupsTypes.NEWUSER} header='Create new user'>
+      <div className='grid-rows-7 ml-[5.5rem] mr-24 grid w-[30rem] flex-none grid-cols-4 flex-col items-center justify-center'>
+        {/* <p className='col-span-4 mx-auto text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          CREATE NEW USER
+        </p> */}
+
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          User Name:
+        </p>
+
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
+          <Input
+            type={InputTypes.text}
+            placeholder={'User Name'}
+            value={userName}
+            onChange={handleUserName}
+            failed={failedFeilds.includes('userName') ? true : false}
+          />
+        </div>
+
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          T-ID:
+        </p>
+
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
+          <Input
+            type={InputTypes.text}
+            placeholder={'T-ID (optional)'}
+            value={tId}
+            onChange={handleTId}
+            failed={failedFeilds.includes('tId') ? true : false}
+          />
+        </div>
+
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Password:
+        </p>
+
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          <Input
+            type={InputTypes.password}
+            placeholder={'Password'}
+            value={password}
+            onChange={handlePassword}
+            failed={failedFeilds.includes('password') ? true : false}
+          />
+        </div>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Role:
+        </p>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          <Dropdown
+            isSearchable={false}
+            items={['admin', 'teacher', 'crew', 'student']}
+            placeholder='role'
+            value={role}
+            onChange={handleRole}
+            isFailed={failedFeilds.includes('role') ? true : false}
+            size={DropdownSizes.DEFAULT}
+          />
+        </div>
+        <p
+          className={`col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest ${
+            role !== 'student' ? 'opacity-50' : ''
+          }`}
         >
-          <button
-            onClick={() => {
-              updateSelectedPopup(PopupsTypes.CLOSED);
-            }}
-            className='h-fit w-fit flex-none rounded-md text-duoGray-dark dark:text-duoBlueDark-text'
-          >
-            <FontAwesomeIcon
-              className='fa-lg fa-solid flex-none'
-              icon={faXmark}
+          Course:
+        </p>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          <Dropdown
+            isSearchable={false}
+            isDisabled={role !== 'student'}
+            items={
+              coursesList
+                ? coursesList.map((course) => (course.name ? course.name : ''))
+                : ['']
+            }
+            placeholder='Course'
+            // value={}
+            onChange={(e) => handleCourseId(e)}
+            isFailed={failedFeilds.includes('course') ? true : false}
+            size={DropdownSizes.DEFAULT}
+          />
+        </div>
+
+        <div className='relative col-span-2 col-start-2 mt-2 flex h-full w-full flex-none items-center justify-center py-5'>
+          <div className='absolute inset-x-0'>
+            <Button
+              label={'CREATE'}
+              color={ButtonColors.BLUE}
+              onClick={() => createUser(userName, tId, password, role)}
             />
-          </button>
-          <div
-            className='grid-rows-7 ml-[5.5rem] mr-24 grid
-          w-[30rem] flex-none grid-cols-4 flex-col items-center justify-center'
-          >
-            <p className='col-span-4 mx-auto text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              CREATE NEW USER
-            </p>
-
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              User Name:
-            </p>
-
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
-              <Input
-                type={InputTypes.text}
-                placeholder={'User Name'}
-                value={userName}
-                onChange={handleUserName}
-                failed={failedFeilds.includes('userName') ? true : false}
-              />
-            </div>
-
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              T-ID:
-            </p>
-
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
-              <Input
-                type={InputTypes.text}
-                placeholder={'T-ID (optional)'}
-                value={tId}
-                onChange={handleTId}
-                failed={failedFeilds.includes('tId') ? true : false}
-              />
-            </div>
-
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              Password:
-            </p>
-
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              <Input
-                type={InputTypes.password}
-                placeholder={'Password'}
-                value={password}
-                onChange={handlePassword}
-                failed={failedFeilds.includes('password') ? true : false}
-              />
-            </div>
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              Role:
-            </p>
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              <Dropdown
-                isSearchable={false}
-                items={['admin', 'teacher', 'crew', 'student']}
-                placeholder='role'
-                value={role}
-                onChange={handleRole}
-                isFailed={failedFeilds.includes('role') ? true : false}
-                size={DropdownSizes.DEFAULT}
-              />
-            </div>
-            <p
-              className={`col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest ${
-                role !== 'student' ? 'opacity-50' : ''
-              }`}
-            >
-              Course:
-            </p>
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              <Dropdown
-                isSearchable={false}
-                isDisabled={role !== 'student'}
-                items={
-                  coursesList
-                    ? coursesList.map((course) =>
-                        course.name ? course.name : ''
-                      )
-                    : ['']
-                }
-                placeholder='Course'
-                // value={}
-                onChange={(e) => handleCourseId(e)}
-                isFailed={failedFeilds.includes('course') ? true : false}
-                size={DropdownSizes.DEFAULT}
-              />
-            </div>
-
-            <div className='relative col-span-2 col-start-2 mt-2 flex h-full w-full flex-none items-center justify-center py-5'>
-              <div className='absolute inset-x-0'>
-                <Button
-                  label={'CREATE'}
-                  color={ButtonColors.BLUE}
-                  onClick={() => createUser(userName, tId, password, role)}
-                />
-              </div>
-            </div>
           </div>
         </div>
-      ) : null}
-    </div>
+      </div>
+    </PopupHeader>
   );
 };
 

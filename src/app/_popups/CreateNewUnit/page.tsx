@@ -9,6 +9,7 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import PopupHeader from '../PopupHeader/page';
 
 library.add(faXmark);
 
@@ -28,75 +29,50 @@ const CreateNewUnit: React.FC = () => {
   };
 
   return (
-    <div
-      className={
-        selectedPopup === PopupsTypes.NEWUNIT
-          ? 'fixed z-20 flex h-full w-full items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-          : 'z-0 opacity-0 transition duration-200 ease-in'
-      }
-    >
-      {selectedPopup === PopupsTypes.NEWUNIT ? (
-        <div className='m-5 flex h-[30rem] w-[40rem]
-         rounded-md bg-white p-5'>
-          <button
-            onClick={() => {
-              updateSelectedPopup(PopupsTypes.CLOSED);
-            }}
-            className='h-fit w-fit flex-none rounded-md text-duoGray-dark'
-          >
-            <FontAwesomeIcon
-              className='fa-lg fa-solid flex-none'
-              icon={faXmark}
-            />
-          </button>
-          <div
-            className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 
-                    flex-col items-center justify-center'
-          >
-            <p
-              className=' col-span-4 flex flex-none items-center justify-center text-2xl 
+    <PopupHeader popupType={PopupsTypes.NEWUNIT} header='Create new user'>
+      <div className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 flex-col items-center justify-center'>
+        {/* <p
+          className=' col-span-4 flex flex-none items-center justify-center text-2xl 
                         font-extrabold text-duoGray-darkest'
-            >
-              CREATE NEW USER
-            </p>
+        >
+          CREATE NEW USER
+        </p> */}
 
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
-              User Name:
-            </p>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+          User Name:
+        </p>
 
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
-              a
-            </div>
-
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
-              T-ID:
-            </p>
-
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              a
-            </div>
-
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
-              Password:
-            </p>
-
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              a
-            </div>
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
-              Role:
-            </p>
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              a
-            </div>
-
-            <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
-              a
-            </div>
-          </div>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
+          a
         </div>
-      ) : null}
-    </div>
+
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+          T-ID:
+        </p>
+
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          a
+        </div>
+
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+          Password:
+        </p>
+
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          a
+        </div>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest'>
+          Role:
+        </p>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          a
+        </div>
+
+        <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
+          a
+        </div>
+      </div>
+    </PopupHeader>
   );
 };
 

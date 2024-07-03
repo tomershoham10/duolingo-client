@@ -1,10 +1,9 @@
 'use client';
-// 'use server';
 import { useEffect, useState } from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { library } from '@fortawesome/fontawesome-svg-core';
+// import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
@@ -18,8 +17,9 @@ import {
 } from '@/app/API/classes-service/courses/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import pRetry from 'p-retry';
+import PopupHeader from '../PopupHeader/page';
 
-library.add(faXmark);
+// library.add(faXmark);
 
 const CreateNewCourse: React.FC = () => {
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
@@ -90,64 +90,39 @@ const CreateNewCourse: React.FC = () => {
   };
 
   return (
-    <div
-      className={
-        selectedPopup === PopupsTypes.NEWCOURSE
-          ? 'fixed z-20 flex h-full w-full items-center justify-center overflow-auto bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'
-          : 'z-0 opacity-0 transition duration-200 ease-in'
-      }
-    >
-      <form action={createCourseHandle}></form>
-      {selectedPopup === PopupsTypes.NEWCOURSE ? (
-        <div
-          className='flex h-[18rem] w-fit 
-         rounded-md bg-white px-5 py-5 dark:border-2 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest'
-        >
-          <button
-            onClick={() => {
-              updateSelectedPopup(PopupsTypes.CLOSED);
-            }}
-            className='h-fit w-fit flex-none rounded-md text-duoGray-dark dark:text-duoBlueDark-text'
-          >
-            <FontAwesomeIcon
-              className='fa-lg fa-solid flex-none'
-              icon={faXmark}
-            />
-          </button>
-          <form
-            className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center'
-            action={createCourseHandle}
-          >
-            <p className=' col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              CREATE NEW COURSE
-            </p>
+    <PopupHeader popupType={PopupsTypes.NEWCOURSE} header='Create new course'>
+      <form
+        className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center'
+        action={createCourseHandle}
+      >
+        {/* <p className=' col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          CREATE NEW COURSE
+        </p> */}
 
-            <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-              Course Name:
-            </p>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Course Name:
+        </p>
 
-            <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-              <Input
-                type={InputTypes.text}
-                placeholder={'Course Name'}
-                name={'courseName'}
-                value={courseName}
-                // onChange={(value: string) => setCourseName(value)}
-                // failed={isFailed ? true : false}
-              />
-            </div>
-
-            <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
-              <Button
-                label={'CREATE'}
-                color={ButtonColors.BLUE}
-                // onClick={async () => await createCourseHandle(courseName)}
-              />
-            </div>
-          </form>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          <Input
+            type={InputTypes.text}
+            placeholder={'Course Name'}
+            name={'courseName'}
+            value={courseName}
+            // onChange={(value: string) => setCourseName(value)}
+            // failed={isFailed ? true : false}
+          />
         </div>
-      ) : null}
-    </div>
+
+        <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
+          <Button
+            label={'CREATE'}
+            color={ButtonColors.BLUE}
+            // onClick={async () => await createCourseHandle(courseName)}
+          />
+        </div>
+      </form>
+    </PopupHeader>
   );
 };
 
