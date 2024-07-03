@@ -122,10 +122,9 @@ const CreateNewUser: React.FC = () => {
 
   return (
     <PopupHeader popupType={PopupsTypes.NEWUSER} header='Create new user'>
-      <div className='grid-rows-7 ml-[5.5rem] mr-24 grid w-[30rem] flex-none grid-cols-4 flex-col items-center justify-center'>
-        {/* <p className='col-span-4 mx-auto text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-          CREATE NEW USER
-        </p> */}
+      {/* <div className='grid-rows-7 ml-[5.5rem] mr-24 grid w-[30rem] px-4 py-4 flex-none grid-cols-4 flex-col items-center justify-center'> */}
+      <div className='grid-rows-6 mt-12 grid w-full grid-cols-4 gap-y-4 px-4 py-4 3xl:gap-y-12'>
+   
 
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
           User Name:

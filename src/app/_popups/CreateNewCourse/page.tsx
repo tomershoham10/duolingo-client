@@ -91,8 +91,10 @@ const CreateNewCourse: React.FC = () => {
 
   return (
     <PopupHeader popupType={PopupsTypes.NEWCOURSE} header='Create new course'>
+      {/* <div className='grid-rows-6 mt-12 grid w-full grid-cols-4 gap-y-4 px-4 py-4 3xl:gap-y-12'> */}
       <form
-        className='ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center'
+        // ml-[0.5rem] mr-6 grid w-[30rem] flex-none grid-cols-4 grid-rows-3 flex-col items-center justify-center
+        className='grid-rows-3 mt-12 grid w-full grid-cols-4 gap-y-4 px-4 py-4 3xl:gap-y-12'
         action={createCourseHandle}
       >
         {/* <p className=' col-span-4 flex flex-none items-center justify-center text-2xl font-extrabold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
