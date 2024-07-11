@@ -42,16 +42,9 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
   const [inFsaSelectSonogram, setInFsaSelectSonogram] =
     useState<boolean>(false);
 
-  //   const [rangeVal, setRangeVal] = useState<number>(0);
-
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateMetadata({ difficulty_level: Number(event.target.value) });
 
-    // recordMetaDispatch({
-    //   type: recordMetaAction.SET_DIFFICULTY_LEVEL,
-    //   payload: Number(event.target.value),
-    // });
-    // setRangeVal(Number(event.target.value));
     console.log(Number(event.target.value));
   };
 
@@ -100,7 +93,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
               ) : null}
             </div>
           </section>
-          {/* <div className='mt-12 grid w-full grid-cols-2 grid-rows-5 gap-x-12 gap-y-2 px-4 py-4 3xl:gap-y-12'> */}
           <div className='col-span-1 flex items-center justify-between'>
             <span className='text-lg font-bold opacity-80 3xl:text-xl'>
               Does the record included in Italkia?
@@ -109,10 +101,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
             <SwitchButton
               onSwitch={(isChecked) => {
                 updateMetadata({ is_in_italy: isChecked });
-                //   recordMetaDispatch({
-                //     type: recordMetaAction.SET_ITALY_STATUS,
-                //     payload: isChecked,
-                //   })
 
                 console.log(isChecked);
               }}
@@ -141,10 +129,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 items={Object.values(SignatureTypes)}
                 onChange={(trans) => {
                   updateMetadata({ signature_type: trans });
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_SIGNATURE_TYPE,
-                  //   payload: trans as SignatureTypes,
-                  // })
+
                   console.log(trans);
                 }}
                 size={DropdownSizes.SMALL}
@@ -164,10 +149,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 onChange={(sonarSys) => {
                   updateMetadata({ sonar_system: sonarSys });
 
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_SONAR_SYSTEM,
-                  //   payload: sonarSys as SonarSystem,
-                  // })
                   console.log(sonarSys);
                 }}
                 size={DropdownSizes.SMALL}
@@ -186,11 +167,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 items={['Mono', 'Stereo']}
                 onChange={(channel) => {
                   updateMetadata({ channels_number: channel });
-
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_NUMBER_OF_CHANNELS,
-                  //   payload: channel === 'Stereo' ? 2 : 1,
-                  // })
                   console.log(channel);
                 }}
                 size={DropdownSizes.SMALL}
@@ -210,16 +186,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                   targetsList ? targetsList.map((target) => target.name) : []
                 }
                 onChange={(targetName) => {
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_TARGETS_IDS,
-                  //   payload: [
-                  //     targetsList
-                  //       ? targetsList.filter(
-                  //           (target) => target.name === targetName
-                  //         )[0]._id
-                  //       : '',
-                  //   ],
-                  // })
                   updateMetadata({
                     targets_ids_list: targetsList
                       ? targetsList.filter(
@@ -252,11 +218,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                     )[0]._id;
                     console.log(sourceId);
                     updateMetadata({ source_id: sourceId });
-
-                    //   recordMetaDispatch({
-                    //     type: recordMetaAction.SET_SOURCE_ID,
-                    //     payload: sourceId,
-                    //   });
                   }
                 }}
                 size={DropdownSizes.SMALL}
@@ -270,18 +231,12 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
             <div className='w-[12rem]'>
               <Input
                 type={InputTypes.text}
-                //   value={recordMetaState.operation}
-                onChange={
-                  (text: string) => {
-                    updateMetadata({ operation: text });
+                value={file.metadata.operation || ''}
+                onChange={(text: string) => {
+                  updateMetadata({ operation: text });
 
-                    console.log(text);
-                  }
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_OPERATION_NAME,
-                  //   payload: text,
-                  // })
-                }
+                  console.log(text);
+                }}
               />
             </div>
           </div>
