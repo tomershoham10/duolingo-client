@@ -27,7 +27,12 @@ const MetadataPopup: React.FC<MetadataProps> = (props) => {
       }
     >
       {selectedPopup === PopupsTypes.RECORDMETADATA ? (
-        <RecordMetadata onSave={props.onSave} />
+        <RecordMetadata
+          onSave={props.onSave}
+          recordLength={0}
+          recordName={''}
+          file={undefined}
+        />
       ) : selectedPopup === PopupsTypes.SONOLISTMETADATA ? (
         <SonoramMetadata />
       ) : null}

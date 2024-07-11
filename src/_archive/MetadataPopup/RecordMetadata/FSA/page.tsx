@@ -9,102 +9,94 @@ import {
   recordMetaAction,
   recordMetadataReducer,
 } from '@/reducers/recordMetadataReducer';
-import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
 import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import { useStore } from 'zustand';
-import { SignatureTypes, SonarSystem } from '@/app/API/files-service/functions';
+import {
+  BucketsNames,
+  SignatureTypes,
+  SonarSystem,
+} from '@/app/API/files-service/functions';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { FilesTypes } from '../page';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+import { RecordMetaEditProps } from '../page';
 
 library.add(faXmark);
 
-interface RecordMetaEditProps {
-  onSave: (type: FilesTypes, data: Partial<Metadata>) => void;
-}
-
-const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
-  const infoBarStore = {
-    selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile) as
-      | FileType
-      | undefined,
-  };
+const FSARecMetaPopup: React.FC<RecordMetaEditProps> = (props) => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+  //   let selectedFile = props.file;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const sourcesList = useStore(useSourceStore, (state) => state.sources);
+  //   const selectedFileMeta = selectedFile?.metadata as FSAMetadata;
 
-  const recordLength = useStore(
-    useCreateExerciseStore,
-    (state) => state.recordLength
-  );
-
-  const selectedFileMeta = infoBarStore?.selectedFile?.metadata;
-  const initialRecordMetaState: Metadata = selectedFileMeta
-    ? isFSAMetadata(selectedFileMeta)
-      ? {
-          record_length: selectedFileMeta.record_length || 0,
-          difficulty_level: selectedFileMeta.difficulty_level || 0,
-          exercise_type: selectedFileMeta.exercise_type || ExercisesTypes.FSA,
-          sonograms_names: selectedFileMeta.sonograms_names || [],
-          targets_ids_list: selectedFileMeta.targets_ids_list || [],
-          operation: selectedFileMeta.operation || 'operation',
-          source_id: selectedFileMeta.source_id || 'source_id',
-          is_in_italy:
-            selectedFileMeta.is_in_italy !== undefined
-              ? selectedFileMeta.is_in_italy
-              : false,
-          signature_type:
-            selectedFileMeta.signature_type || SignatureTypes.PASSIVE,
-          channels_number:
-            selectedFileMeta.channels_number !== undefined
-              ? selectedFileMeta.channels_number
-              : 1,
-          sonar_system: selectedFileMeta.sonar_system
-            ? selectedFileMeta.sonar_system
-            : SonarSystem.DEMON,
-          is_backround_vessels: selectedFileMeta.is_backround_vessels
-            ? selectedFileMeta.is_backround_vessels
-            : false,
-          aux:
-            selectedFileMeta.aux !== undefined ? selectedFileMeta.aux : false,
-        }
-      : {
-          record_length: 0,
-          difficulty_level: 0,
-          exercise_type: ExercisesTypes.FSA,
-          sonograms_names: [],
-          targets_ids_list: [],
-          operation: null,
-          source_id: null,
-          is_in_italy: false,
-          signature_type: SignatureTypes.PASSIVE,
-          channels_number: 1,
-          sonar_system: SonarSystem.DEMON,
-          is_backround_vessels: false,
-          aux: false,
-        }
-    : {
-        record_length: 0,
-        difficulty_level: 0,
-        exercise_type: ExercisesTypes.FSA,
-        sonograms_names: [],
-        targets_ids_list: [],
-        operation: null,
-        source_id: null,
-        is_in_italy: false,
-        signature_type: SignatureTypes.PASSIVE,
-        channels_number: 1,
-        sonar_system: SonarSystem.DEMON,
-        is_backround_vessels: false,
-        aux: false,
-      };
-
+  const initialRecordMetaState: Metadata =
+    //  selectedFileMeta
+    //     ? isFSAMetadata(selectedFileMeta)
+    //       ? {
+    //           record_length: selectedFileMeta.record_length || 0,
+    //           difficulty_level: selectedFileMeta.difficulty_level || 0,
+    //         //   exercise_type: selectedFileMeta. || ExercisesTypes.FSA,
+    //           sonograms_names: selectedFileMeta.sonograms_names || [],
+    //           targets_ids_list: selectedFileMeta.targets_ids_list || [],
+    //           operation: selectedFileMeta.operation || 'operation',
+    //           source_id: selectedFileMeta.source_id || 'source_id',
+    //           is_in_italy:
+    //             selectedFileMeta.is_in_italy !== undefined
+    //               ? selectedFileMeta.is_in_italy
+    //               : false,
+    //           signature_type:
+    //             selectedFileMeta.signature_type || SignatureTypes.PASSIVE,
+    //           channels_number:
+    //             selectedFileMeta.channels_number !== undefined
+    //               ? selectedFileMeta.channels_number
+    //               : 1,
+    //           sonar_system: selectedFileMeta.sonar_system
+    //             ? selectedFileMeta.sonar_system
+    //             : SonarSystem.DEMON,
+    //           is_backround_vessels: selectedFileMeta.is_backround_vessels
+    //             ? selectedFileMeta.is_backround_vessels
+    //             : false,
+    //           aux:
+    //             selectedFileMeta.aux !== undefined ? selectedFileMeta.aux : false,
+    //         }
+    //       : {
+    //           record_length: 0,
+    //           difficulty_level: 0,
+    //         //   exercise_type: ExercisesTypes.FSA,
+    //           sonograms_names: [],
+    //           targets_ids_list: [],
+    //           operation: null,
+    //           source_id: null,
+    //           is_in_italy: false,
+    //           signature_type: SignatureTypes.PASSIVE,
+    //           channels_number: 1,
+    //           sonar_system: SonarSystem.DEMON,
+    //           is_backround_vessels: false,
+    //           aux: false,
+    //         }
+    //     :
+    {
+      record_length: 0,
+      difficulty_level: 0,
+      // exercise_type: ExercisesTypes.FSA,
+      sonograms_names: [],
+      targets_ids_list: [],
+      operation: null,
+      source_id: null,
+      is_in_italy: false,
+      signature_type: SignatureTypes.PASSIVE,
+      channels_number: 1,
+      sonar_system: SonarSystem.DEMON,
+      is_backround_vessels: false,
+      aux: false,
+    };
   const [recordMetaState, recordMetaDispatch] = useReducer(
     recordMetadataReducer,
     initialRecordMetaState
@@ -116,20 +108,30 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
       payload: Number(event.target.value),
     });
   };
+
   return (
-    <div className='relative m-5 flex h-[35rem] w-[40rem] justify-center rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest md:h-[35rem] xl:h-[35rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[70rem]'>
-      <button
+    <>
+      {props.file.metadata?.record_length}
+      {/* <button
         onClick={() => {
           updateSelectedPopup(PopupsTypes.CLOSED);
         }}
         className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
       >
         <FontAwesomeIcon className='fa-lg fa-solid flex-none' icon={faXmark} />
-      </button>
+      </button> */}
+      {/* <button
+        onClick={() => {
+          updateSelectedPopup(PopupsTypes.CLOSED);
+        }}
+        className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
+      >
+        <FontAwesomeIcon className='fa-lg fa-solid flex-none' icon={faXmark} />
+      </button> */}
       <div className='w-full items-start justify-start'>
-        <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
-          Add Metadata
-        </div>
+        {/* <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
+          Add Metadata - {ExercisesTypes.FSA.toLocaleUpperCase()}
+        </div> */}
         <div className='mt-12 grid w-full grid-cols-2 grid-rows-5 gap-x-12 gap-y-2 px-4 py-4 3xl:gap-y-12'>
           <div className='col-span-1 flex items-center justify-between'>
             <span className='text-lg font-bold opacity-80 3xl:text-xl'>
@@ -151,9 +153,11 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
               Record length:
             </span>
             <span className='text-xl font-bold tracking-wide 3xl:text-2xl'>
-              {!!recordLength
-                ? formatNumberToMinutes(recordLength)
-                : '00:00:00'}
+              {/* {!!selectedFileMeta.record_length */}
+              {/* ? formatNumberToMinutes(selectedFileMeta.record_length) */}
+              {/* : */}
+              00:00:00
+              {/* } */}
             </span>
           </div>
 
@@ -165,12 +169,7 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
               <Dropdown
                 isSearchable={false}
                 placeholder={'Signature'}
-                items={[
-                  SignatureTypes.ACTIVE,
-                  SignatureTypes.PASSIVE,
-                  SignatureTypes.PASSIVEACTIVE,
-                  SignatureTypes.TORPEDO,
-                ]}
+                items={Object.values(SignatureTypes)}
                 onChange={(trans) =>
                   recordMetaDispatch({
                     type: recordMetaAction.SET_SIGNATURE_TYPE,
@@ -317,13 +316,13 @@ const RecordMetadata: React.FC<RecordMetaEditProps> = (props) => {
           label={'Save'}
           color={ButtonColors.BLUE}
           onClick={() => {
-            props.onSave(FilesTypes.RECORD, recordMetaState);
+            props.onSave(BucketsNames.RECORDS, recordMetaState);
             updateSelectedPopup(PopupsTypes.CLOSED);
           }}
         />
       </div>
-    </div>
+    </>
   );
 };
 
-export default RecordMetadata;
+export default FSARecMetaPopup;
