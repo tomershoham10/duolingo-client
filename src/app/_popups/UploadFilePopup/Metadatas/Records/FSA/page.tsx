@@ -25,6 +25,7 @@ interface FSAMetaProps {
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
   handleFileLength: (time: number | null) => void;
+  updateMetadata: (val: any) => void;
 }
 const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
   const {
@@ -33,6 +34,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
     handleFileChange,
     handleFileRemoved,
     handleFileLength,
+    updateMetadata,
   } = props;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const sourcesList = useStore(useSourceStore, (state) => state.sources);
@@ -40,14 +42,16 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
   const [inFsaSelectSonogram, setInFsaSelectSonogram] =
     useState<boolean>(false);
 
-  const [rangeVal, setRangeVal] = useState<number>(0);
+  //   const [rangeVal, setRangeVal] = useState<number>(0);
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateMetadata({ difficulty_level: Number(event.target.value) });
+
     // recordMetaDispatch({
     //   type: recordMetaAction.SET_DIFFICULTY_LEVEL,
     //   payload: Number(event.target.value),
     // });
-    setRangeVal(Number(event.target.value));
+    // setRangeVal(Number(event.target.value));
     console.log(Number(event.target.value));
   };
 
@@ -103,14 +107,15 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
             </span>
 
             <SwitchButton
-              onSwitch={(isChecked) =>
+              onSwitch={(isChecked) => {
+                updateMetadata({ is_in_italy: isChecked });
                 //   recordMetaDispatch({
                 //     type: recordMetaAction.SET_ITALY_STATUS,
                 //     payload: isChecked,
                 //   })
 
-                console.log(isChecked)
-              }
+                console.log(isChecked);
+              }}
             />
           </div>
 
@@ -134,13 +139,14 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 isSearchable={false}
                 placeholder={'Signature'}
                 items={Object.values(SignatureTypes)}
-                onChange={(trans) =>
+                onChange={(trans) => {
+                  updateMetadata({ signature_type: trans });
                   // recordMetaDispatch({
                   //   type: recordMetaAction.SET_SIGNATURE_TYPE,
                   //   payload: trans as SignatureTypes,
                   // })
-                  console.log(trans)
-                }
+                  console.log(trans);
+                }}
                 size={DropdownSizes.SMALL}
               />
             </div>
@@ -155,13 +161,15 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 isSearchable={false}
                 placeholder={'S. system'}
                 items={Object.values(SonarSystem)}
-                onChange={(sonarSys) =>
+                onChange={(sonarSys) => {
+                  updateMetadata({ sonar_system: sonarSys });
+
                   // recordMetaDispatch({
                   //   type: recordMetaAction.SET_SONAR_SYSTEM,
                   //   payload: sonarSys as SonarSystem,
                   // })
-                  console.log(sonarSys)
-                }
+                  console.log(sonarSys);
+                }}
                 size={DropdownSizes.SMALL}
               />
             </div>
@@ -176,13 +184,15 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 isSearchable={false}
                 placeholder={'channels'}
                 items={['Mono', 'Stereo']}
-                onChange={(channel) =>
+                onChange={(channel) => {
+                  updateMetadata({ channels_number: channel });
+
                   // recordMetaDispatch({
                   //   type: recordMetaAction.SET_NUMBER_OF_CHANNELS,
                   //   payload: channel === 'Stereo' ? 2 : 1,
                   // })
-                  console.log(channel)
-                }
+                  console.log(channel);
+                }}
                 size={DropdownSizes.SMALL}
               />
             </div>
@@ -199,7 +209,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 items={
                   targetsList ? targetsList.map((target) => target.name) : []
                 }
-                onChange={(targetName) =>
+                onChange={(targetName) => {
                   // recordMetaDispatch({
                   //   type: recordMetaAction.SET_TARGETS_IDS,
                   //   payload: [
@@ -210,8 +220,16 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                   //       : '',
                   //   ],
                   // })
-                  console.log(targetName)
-                }
+                  updateMetadata({
+                    targets_ids_list: targetsList
+                      ? targetsList.filter(
+                          (target) => target.name === targetName
+                        )[0]._id
+                      : '',
+                  });
+
+                  console.log(targetName);
+                }}
                 size={DropdownSizes.SMALL}
               />
             </div>
@@ -233,6 +251,8 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                       (source) => source.name === sourceName
                     )[0]._id;
                     console.log(sourceId);
+                    updateMetadata({ source_id: sourceId });
+
                     //   recordMetaDispatch({
                     //     type: recordMetaAction.SET_SOURCE_ID,
                     //     payload: sourceId,
@@ -252,7 +272,11 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 type={InputTypes.text}
                 //   value={recordMetaState.operation}
                 onChange={
-                  (text: string) => console.log(text)
+                  (text: string) => {
+                    updateMetadata({ operation: text });
+
+                    console.log(text);
+                  }
                   // recordMetaDispatch({
                   //   type: recordMetaAction.SET_OPERATION_NAME,
                   //   payload: text,
@@ -272,8 +296,8 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                 min={0}
                 max={10}
                 step={0.5}
-                //   value={recordMetaState.difficulty_level}
-                value={rangeVal}
+                value={file.metadata.difficulty_level || 0}
+                // value={rangeVal}
                 onChange={handleRangeChange}
               />
             </div>

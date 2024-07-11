@@ -1,5 +1,4 @@
-'use client';
-import { useState } from 'react';
+// 'use client';
 import { useStore } from 'zustand';
 import Upload from '@/components/Upload/page';
 import Slider from '@/components/Slider/page';
@@ -17,6 +16,7 @@ interface SoptreccRecordMetaProps {
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
   handleFileLength: (time: number | null) => void;
+  updateMetadata: (val: any) => void;
 }
 const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
   const {
@@ -25,17 +25,12 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
     handleFileChange,
     handleFileRemoved,
     handleFileLength,
+    updateMetadata,
   } = props;
   const targetsList = useStore(useTargetStore, (state) => state.targets);
 
-  const [rangeVal, setRangeVal] = useState<number>(0);
-
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // recordMetaDispatch({
-    //   type: recordMetaAction.SET_DIFFICULTY_LEVEL,
-    //   payload: Number(event.target.value),
-    // });
-    setRangeVal(Number(event.target.value));
+    updateMetadata({ difficulty_level: Number(event.target.value) });
     console.log(Number(event.target.value));
   };
 
@@ -74,21 +69,16 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
               ) : null}
             </section>
           </section>
-          {/* <div className='mt-12 grid w-full grid-cols-2 grid-rows-5 gap-x-12 gap-y-2 px-4 py-4 3xl:gap-y-12'> */}
           <div className='col-span-1 flex items-center justify-between'>
             <span className='text-lg font-bold opacity-80 3xl:text-xl'>
               Does the record included in Italkia?
             </span>
 
             <SwitchButton
-              onSwitch={(isChecked) =>
-                //   recordMetaDispatch({
-                //     type: recordMetaAction.SET_ITALY_STATUS,
-                //     payload: isChecked,
-                //   })
-
-                console.log(isChecked)
-              }
+              onSwitch={(isChecked) => {
+                updateMetadata({ is_in_italy: isChecked });
+                console.log(isChecked);
+              }}
             />
           </div>
 
@@ -114,19 +104,16 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
                 items={
                   targetsList ? targetsList.map((target) => target.name) : []
                 }
-                onChange={(targetName) =>
-                  // recordMetaDispatch({
-                  //   type: recordMetaAction.SET_TARGETS_IDS,
-                  //   payload: [
-                  //     targetsList
-                  //       ? targetsList.filter(
-                  //           (target) => target.name === targetName
-                  //         )[0]._id
-                  //       : '',
-                  //   ],
-                  // })
-                  console.log(targetName)
-                }
+                onChange={(targetName) => {
+                  updateMetadata({
+                    targets_ids_list: targetsList
+                      ? targetsList.filter(
+                          (target) => target.name === targetName
+                        )[0]._id
+                      : '',
+                  });
+                  console.log(targetName);
+                }}
                 size={DropdownSizes.SMALL}
               />
             </div>
@@ -142,15 +129,13 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
                 min={0}
                 max={10}
                 step={0.5}
-                //   value={recordMetaState.difficulty_level}
-                value={rangeVal}
+                value={file.metadata.difficulty_level || 0}
                 onChange={handleRangeChange}
               />
             </div>
           </div>
         </div>
-      ) : // </div>
-      null}
+      ) : null}
     </>
   );
 };
