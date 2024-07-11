@@ -214,7 +214,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           }
           buttonType={ButtonTypes.BUTTON}
         />
-        {uploadedFilesNames.length > 0 ? (
+        {props.showMode && uploadedFilesNames.length > 0 ? (
           <button
             className='right-0 flex h-8 w-8 items-center justify-center rounded-full
             bg-duoGray-lighter text-lg
@@ -225,7 +225,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           </button>
         ) : null}
       </div>
-      {isFilesListOpen && uploadedFilesNames.length > 0 ? (
+      {props.showMode && isFilesListOpen && uploadedFilesNames.length > 0 ? (
         <div className='w-full rounded-md border-2 dark:border-duoGrayDark-light'>
           <ul
             className='flex flex-col font-bold'
