@@ -195,7 +195,7 @@ const Slider: React.FC<SliderProps> = (props) => {
       ) : (
         <>
           {_.isNumber(propsValue) ? (
-            <section>
+            <section className='group'>
               <input
                 type='range'
                 min={propsMin}
@@ -213,15 +213,16 @@ const Slider: React.FC<SliderProps> = (props) => {
                 }}
               />
               <div
-                className={`absolute flex items-center justify-center text-center `}
+                className=' absolute flex items-center justify-center text-center'
                 style={{
                   left: `calc(${(100 * propsValue) / propsMax}% + ${
                     16 - ((100 * propsValue) / propsMax) * 0.32
                   }px)`,
-                  top: '-1rem',
+                  top: '-1.5rem',
                 }}
               >
                 <Tooltip
+                  className='hidden group-hover:block transition-all duration-300'
                   placeholder={propsValue === 0 ? '0' : propsValue}
                   isFloating={false}
                   color={TooltipColors.WHITE}
