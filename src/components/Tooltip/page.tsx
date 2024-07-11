@@ -16,16 +16,29 @@ export enum TooltipColors {
 }
 
 const Tooltip: React.FC<tooltipProps> = (props) => {
-  const placeholder = props.placeholder;
-  const isInEditMode = props.editMode;
-  const isFloating = isInEditMode ? false : props.isFloating;
-  const propsColor = props.color;
-  const deletable = props.deletable;
-  const newVal = props.value;
+  //   const placeholder = props.placeholder;
+  //   const isInEditMode = props.editMode;
+  //   const isFloating = isInEditMode ? false : props.isFloating;
+  //   const propsColor = props.color;
+  //   const deletable = props.deletable;
+  //   const newVal = props.value;
 
-  const onDelete = props.onDelete;
-  const onEdit = props.onEdit;
-  const onSave = props.onSave;
+  //   const onDelete = props.onDelete;
+  //   const onEdit = props.onEdit;
+  //   const onSave = props.onSave;
+
+  const {
+    className,
+    placeholder,
+    isFloating,
+    deletable,
+    editMode,
+    color,
+    onDelete,
+    value,
+    onEdit,
+    onSave,
+  } = props;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
 
   const initialTooltipState: TooltipType = {
@@ -49,7 +62,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
   );
 
   useEffect(() => {
-    switch (propsColor) {
+    switch (color) {
       case TooltipColors.GREEN:
         tooltipDispatch({
           type: tooltipAction.SET_BACKGROUND_COLOR,
@@ -77,7 +90,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
           type: tooltipAction.SET_BACKGROUND_COLOR,
           payload: !!tooltipState.isInDeletingMode
             ? 'bg-duoRed-light'
-            : isInEditMode
+            : editMode
               ? 'bg-white dark:bg-[#1C2536]'
               : 'bg-white dark:bg-duoBlueDark-darkest',
         });
@@ -95,7 +108,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         });
         break;
     }
-  }, [tooltipState.isInDeletingMode, propsColor]);
+  }, [tooltipState.isInDeletingMode, color]);
 
   useEffect(() => {
     // console.log('tooltip', selectedPopup);
@@ -129,13 +142,13 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         payload: false,
       });
     }
-    if (event.key === 'Enter' && onSave && isInEditMode) {
-      newVal ? onSave(Number(newVal)) : null;
+    if (event.key === 'Enter' && onSave && editMode) {
+      value ? onSave(Number(value)) : null;
     }
   };
 
   return (
-    <>
+    <section className={className}>
       {selectedPopup !== PopupsTypes.STARTLESSON ? (
         <div
           id='tooltip-main-div'
@@ -147,7 +160,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
               : null
           }
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-            tooltipState.isInDeletingMode || isInEditMode
+            tooltipState.isInDeletingMode || editMode
               ? handleDeleteKeyPress(e)
               : null
           }
@@ -167,12 +180,12 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
                ${tooltipState.textColor}`}
               >
                 <div className='min-w-[1.5rem]'>
-                  {isInEditMode ? (
+                  {editMode ? (
                     <input
                       className='w-[2rem] bg-transparent text-center outline-none'
                       type='number'
                       autoFocus
-                      value={typeof newVal === 'number' ? newVal : ''}
+                      value={typeof value === 'number' ? value : ''}
                       onChange={(e) => {
                         const val = e.target.value;
                         onEdit ? onEdit(Number(val)) : null;
@@ -194,7 +207,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
           </div>
         </div>
       ) : null}
-    </>
+    </section>
   );
 };
 
