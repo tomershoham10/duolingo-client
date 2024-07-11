@@ -23,20 +23,26 @@ export enum SonarSystem {
     LOFAR = 'lofar'
 }
 
+export enum FeaturesList {
+    NUMBER_OF_BLADES = "numberOfBlades",
+}
+
+
 const ROUT = 'http://localhost:4002';
 
 const FILES_SERVICE_ENDPOINTS = {
-    COURSES: `${ROUT}/api/files`,
+    FILES: `${ROUT}/api/files`,
 };
 
 const FILES_API = {
-    UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.COURSES}/uploadFile`,
-    IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.COURSES}/isFileExisted`,
-    GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.COURSES}/getMetadataByEtag`,
-    GET_FILES_BY_BUCKET_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFilesByBucket`,
-    GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileByName`,
-    GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/getFileMetadataByName`,
-    GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.COURSES}/downloadEncryptedZip`,
+    UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.FILES}/uploadFile`,
+    IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.FILES}/isFileExisted`,
+    GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.FILES}/getMetadataByEtag`,
+    GET_FILES_BY_BUCKET_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucket`,
+    GET_FILES_BY_BUCKET_AND_TYPE: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucketAndType`,
+    GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileByName`,
+    GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileMetadataByName`,
+    GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/downloadEncryptedZip`,
 };
 
 
@@ -174,6 +180,33 @@ export const getFileByBucketName = async (bucketName: BucketsNames): Promise<Fil
         return [];
     }
 }
+
+export const getFileByBucketAndType = async (bucketName: BucketsNames, exerciseType: ExercisesTypes): Promise<FileType[]> => {
+    try {
+        const response = await fetch(
+            `${FILES_API.GET_FILES_BY_BUCKET_AND_TYPE}/${bucketName}/${exerciseType}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        console.log('getFileByBucketName', response);
+        if (response.ok) {
+            const data = await response.json();
+            console.log('getFileByBucketName', data);
+            const files = data.files;
+            return files;
+        }
+        return [];
+    }
+    catch (error) {
+        console.error(`error getting all records - ${error}`);
+        return [];
+    }
+}
+
+
 
 export const getFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
     try {
