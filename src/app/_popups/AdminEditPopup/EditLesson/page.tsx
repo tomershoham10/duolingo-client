@@ -8,7 +8,7 @@ import {
   editLessonAction,
   editLessonReducer,
   editLessonType,
-} from '@/reducers/adminEditPopup/editLessonReducer';
+} from '@/reducers/adminPopups/editLessonReducer';
 import Table, { TableRow } from '@/components/Table/page';
 import { getFileMetadataByName } from '@/app/API/files-service/functions';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';

@@ -12,7 +12,7 @@ import {
   submitFileAction,
   submitFileDataType,
   submitFileReducer,
-} from '@/reducers/adminEditPopup/submitFileReducer';
+} from '@/reducers/adminPopups/submitFileReducer';
 import { isRecordMetadata } from '@/app/utils/functions/filesMetadata/functions';
 
 const UploadFileSection = lazy(() => import('./UploadFileSection/page'));
