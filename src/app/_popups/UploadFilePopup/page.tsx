@@ -131,7 +131,27 @@ const UploadFilePopup: React.FC = () => {
       console.error(error);
       addAlert(`error while uploading file: ${error}`, AlertSizes.small);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitFileState.file, submitFileState.fileType]);
+
+  const metadataComponents = {
+    [ExercisesTypes.FSA]: {
+      [BucketsNames.RECORDS]: FSAMetadata,
+      [BucketsNames.IMAGES]: FSASonogramMetadata,
+    },
+    [ExercisesTypes.SPOTRECC]: {
+      [BucketsNames.RECORDS]: SoptreccRecordMetadata,
+      [BucketsNames.IMAGES]: SpotreccImageMetadata,
+    },
+  };
+  const MetadataComponent =
+    inMetadataPage &&
+    submitFileState.file.exerciseType &&
+    submitFileState.fileType
+      ? metadataComponents[submitFileState.file.exerciseType]?.[
+          submitFileState.fileType
+        ]
+      : null;
 
   return (
     <PopupHeader popupType={PopupsTypes.UPLOAD_RECORD} header='Upload file'>
@@ -140,38 +160,22 @@ const UploadFilePopup: React.FC = () => {
           handleExerciseType={handleExerciseType}
           handleFileType={handleFileType}
         />
-      ) : submitFileState.file.exerciseType === ExercisesTypes.FSA ? (
-        submitFileState.fileType === BucketsNames.RECORDS ? (
-          <FSAMetadata
-            file={submitFileState.file}
-            fileType={submitFileState.fileType || BucketsNames.RECORDS}
-            handleFileChange={handleFileChange}
-            handleFileRemoved={handleFileRemoved}
-            handleFileLength={handleFileLength}
-          />
-        ) : (
-          <FSASonogramMetadata
-            file={submitFileState.file}
-            exerciseType={ExercisesTypes.FSA}
-            handleFileChange={handleFileChange}
-            handleFileRemoved={handleFileRemoved}
-          />
-        )
-      ) : submitFileState.fileType === BucketsNames.RECORDS ? (
-        <SoptreccRecordMetadata
+      ) : MetadataComponent && submitFileState.file.exerciseType ? (
+        <MetadataComponent
           file={submitFileState.file}
           fileType={submitFileState.fileType || BucketsNames.RECORDS}
           handleFileChange={handleFileChange}
           handleFileRemoved={handleFileRemoved}
           handleFileLength={handleFileLength}
+          exerciseType={submitFileState.file.exerciseType}
+          updateMetadata={(val) => {
+            submitFileDispatch({
+              type: submitFileAction.UPDATE_METADATA,
+              payload: val,
+            });
+          }}
         />
-      ) : (
-        <SpotreccImageMetadata
-          file={submitFileState.file}
-          handleFileChange={handleFileChange}
-          handleFileRemoved={handleFileRemoved}
-        />
-      )}
+      ) : null}
       <section className='flex w-full flex-row justify-between'>
         <Button
           label={'Back'}
