@@ -186,11 +186,11 @@ type Metadata = FSAMetadata | SonogramMetadata | SpotreccRecordMetadata | Spotre
 interface RecordMetadata {
     record_length: number;
     difficulty_level: number;
-    exercise_type: ExerciseTypes;
+    // exercise_type: ExerciseTypes;
 }
 
 interface ImageMetadata {
-    exercise_type: ExerciseTypes;
+    // exercise_type: ExerciseTypes;
 }
 
 interface FSAMetadata extends RecordMetadata {
@@ -577,6 +577,7 @@ enum TooltipColors {
 }
 
 interface tooltipProps {
+    className?: string;
     placeholder?: string | number;
     isFloating: boolean;
     deletable?: boolean;
@@ -596,6 +597,7 @@ interface UploadProps {
     isDisabled?: boolean;
     isMultiple: boolean;
     errorMode?: boolean;
+    showMode: boolean;
     filesTypes: string;
     bucketName: BucketsNames;
     exerciseType: ExercisesTypes;
