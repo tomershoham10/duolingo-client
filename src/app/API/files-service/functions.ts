@@ -43,13 +43,13 @@ const FILES_API = {
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileByName`,
     GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileMetadataByName`,
     GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/downloadEncryptedZip`,
+    DELETE_FILE: `${FILES_SERVICE_ENDPOINTS.FILES}/delete`,
 };
 
 
 
 export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File | File[], metadata: Partial<Metadata>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
     try {
-
         const formData = new FormData();
         if (files instanceof File) {
             // Handle a single File
@@ -102,6 +102,7 @@ export const uploadFile = async (bucketName: BucketsNames, exerciseType: Exercis
         }
 
     } catch (error: any) {
+        console.log(error);
         return null;
     }
 }
@@ -206,8 +207,6 @@ export const getFileByBucketAndType = async (bucketName: BucketsNames, exerciseT
     }
 }
 
-
-
 export const getFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
     try {
         const response = await fetch(
@@ -292,5 +291,22 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
     catch (error) {
         console.error(`error getSonolistByRecordId - ${error}`);
         return null;
+    }
+}
+
+export const deleteFile = async (fileName: string, exerciseType: ExercisesTypes, bucketName: BucketsNames): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `${FILES_API.DELETE_FILE}/${bucketName}/${exerciseType}/${fileName}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        return response.status === 200;
+    } catch (error: any) {
+        console.log(error);
+        return false;
     }
 }
