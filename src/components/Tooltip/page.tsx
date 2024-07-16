@@ -108,7 +108,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
         });
         break;
     }
-  }, [tooltipState.isInDeletingMode, color]);
+  }, [tooltipState.isInDeletingMode, color, editMode]);
 
   useEffect(() => {
     // console.log('tooltip', selectedPopup);
