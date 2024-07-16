@@ -3,8 +3,8 @@ import { lazy } from 'react';
 import useStore from '@/app/store/useStore';
 import { useUserStore } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
-import CreateExerciseInfo from '@/components/InfoBar/CreateExerciseInfo/page';
-const SyllabusInfo = lazy(() => import('./syllabusInfo/page'));
+import CreateExerciseInfo from './CreateExerciseInfo/page';
+const SyllabusInfo = lazy(() => import('./SyllabusInfo/page'));
 // const CreateExerciseInfo = lazy(() => import('./CreateExerciseInfo/page'));
 const RecordsInfo = lazy(() => import('./RecordsInfo/page'));
 
