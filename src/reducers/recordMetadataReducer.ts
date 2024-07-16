@@ -26,9 +26,9 @@ type Action =
     | { type: recordMetaAction.TOGGLE_AUX };
 
 export const recordMetadataReducer = (
-    state: RecordMetadataType,
+    state: FSAMetadata,
     action: Action
-): RecordMetadataType => {
+): FSAMetadata => {
     switch (action.type) {
         case recordMetaAction.SET_RECORD_LENGTH:
             return { ...state, record_length: action.payload };

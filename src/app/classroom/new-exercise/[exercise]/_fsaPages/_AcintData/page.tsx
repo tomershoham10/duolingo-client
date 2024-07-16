@@ -120,7 +120,7 @@ const AcintDataSection: React.FC = () => {
       exerciseType: record.exerciseType,
       metadata: {
         record_length: record.record_length,
-        sonograms_ids: record.sonograms_ids,
+        sonograms_names: record.sonograms_names,
         difficulty_level: record.difficulty_level,
         targets_list: record.targets_list,
         operation: record.operation,

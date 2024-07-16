@@ -36,10 +36,10 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
 
     const resultId = lessonState.currentResult._id;
 
-    const answersIds = lessonState.currentExercise.answersList;
-    console.log('answersIds', answersIds, answersIds.length);
+    const answersIds = lessonState.currentExercise.targetsList;
+    console.log('answersIds', answersIds, answersIds?.length);
     const correctAnswers = lessonState.targetsToSubmit.filter((target) =>
-        answersIds.includes(target.id)
+        answersIds?.includes(target.id)
     );
     console.log('correctAnswers', correctAnswers);
     if (correctAnswers.length === 0) {
@@ -47,12 +47,12 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
         totalScoreToSubmit = 0;
         scoreByTargets = 0;
     } else if (
-        correctAnswers.length === answersIds.length &&
+        answersIds && correctAnswers.length === answersIds.length &&
         lessonState.targetsToSubmit.length === answersIds.length
     ) {
         scoreByTargets = 100;
         console.log('scoreByTargets', scoreByTargets);
-    } else if (lessonState.targetsToSubmit.length > answersIds.length) {
+    } else if (answersIds && lessonState.targetsToSubmit.length > answersIds.length) {
         const firstAnswer: string = correctAnswers[0].id;
         if (answersIds.indexOf(firstAnswer) === 0) {
             scoreByTargets = 90;
@@ -62,7 +62,7 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
             scoreByTargets = 80;
             console.log('scoreByTargets', scoreByTargets);
         }
-    } else if (correctAnswers.length < answersIds.length) {
+    } else if (answersIds && correctAnswers.length < answersIds.length) {
         scoreByTargets = 85;
         console.log('scoreByTargets', scoreByTargets);
     }

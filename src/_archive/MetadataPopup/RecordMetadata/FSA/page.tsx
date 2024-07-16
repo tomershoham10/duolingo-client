@@ -282,7 +282,7 @@ const FSARecMetaPopup: React.FC<RecordMetaEditProps> = (props) => {
             <div className='w-[12rem]'>
               <Input
                 type={InputTypes.text}
-                value={recordMetaState.operation}
+                value={recordMetaState.operation || ''}
                 onChange={(text: string) =>
                   recordMetaDispatch({
                     type: recordMetaAction.SET_OPERATION_NAME,
