@@ -5,7 +5,7 @@ import pRetry from 'p-retry';
 import PopupHeader from '../PopupHeader/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { BucketsNames } from '@/app/API/files-service/functions';
+import { BucketsNames, uploadFile } from '@/app/API/files-service/functions';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import {
@@ -31,8 +31,13 @@ const UploadFilePopup: React.FC = () => {
   const [inMetadataPage, setInMetadataPage] = useState<boolean>(false);
 
   const initialsubmitFileState: submitFileDataType = {
-    file: { metadata: {} },
+    file: null,
     fileType: null,
+    exerciseType: null,
+    metadata: {},
+
+    // file: { metadata: {} },
+    // fileType: null,
   };
 
   const [submitFileState, submitFileDispatch] = useReducer(
@@ -61,10 +66,10 @@ const UploadFilePopup: React.FC = () => {
       payload: Array.isArray(files)
         ? files[0] !== null
           ? files[0]
-          : {}
+          : null
         : files !== null
           ? files
-          : {},
+          : null,
     });
   }, []);
 
@@ -98,29 +103,28 @@ const UploadFilePopup: React.FC = () => {
   const uploadRecord = useCallback(async () => {
     try {
       if (
-        submitFileState.file &&
-        submitFileState.fileType === BucketsNames.RECORDS &&
-        submitFileState.file.metadata &&
-        isRecordMetadata(submitFileState.file.metadata)
+        submitFileState.fileType &&
+        submitFileState.exerciseType &&
+        submitFileState.file
       ) {
-        const response = await pRetry(
+        const status = await pRetry(
           () =>
-            !!submitFileState.file?.exerciseType &&
-            !!submitFileState.fileType &&
-            !!submitFileState.file &&
-            submitFileState.fileType === BucketsNames.RECORDS &&
-            submitFileState.file.metadata &&
-            isRecordMetadata(submitFileState.file.metadata) &&
-            submitFileState.file.metadata.record_length &&
-            submitFileState.file.metadata.record_length > 0
-              ? null
+            submitFileState.fileType &&
+            submitFileState.exerciseType &&
+            submitFileState.file
+              ? uploadFile(
+                  submitFileState.fileType,
+                  submitFileState.exerciseType,
+                  submitFileState.file,
+                  submitFileState.metadata
+                )
               : null,
           {
             retries: 5,
           }
         );
 
-        if (response) {
+        if (status) {
           addAlert(
             'uploaded record and sonolist successfully',
             AlertSizes.small
@@ -145,10 +149,8 @@ const UploadFilePopup: React.FC = () => {
     },
   };
   const MetadataComponent =
-    inMetadataPage &&
-    submitFileState.file.exerciseType &&
-    submitFileState.fileType
-      ? metadataComponents[submitFileState.file.exerciseType]?.[
+    inMetadataPage && submitFileState.exerciseType && submitFileState.fileType
+      ? metadataComponents[submitFileState.exerciseType]?.[
           submitFileState.fileType
         ]
       : null;
@@ -160,14 +162,16 @@ const UploadFilePopup: React.FC = () => {
           handleExerciseType={handleExerciseType}
           handleFileType={handleFileType}
         />
-      ) : MetadataComponent && submitFileState.file.exerciseType ? (
+      ) : MetadataComponent &&
+        submitFileState.exerciseType &&
+        submitFileState.file ? (
         <MetadataComponent
           file={submitFileState.file}
           fileType={submitFileState.fileType || BucketsNames.RECORDS}
           handleFileChange={handleFileChange}
           handleFileRemoved={handleFileRemoved}
           handleFileLength={handleFileLength}
-          exerciseType={submitFileState.file.exerciseType}
+          exerciseType={submitFileState.exerciseType}
           updateMetadata={(val) => {
             submitFileDispatch({
               type: submitFileAction.UPDATE_METADATA,
@@ -187,14 +191,16 @@ const UploadFilePopup: React.FC = () => {
           label={inMetadataPage ? 'Upload' : 'Add metadata'}
           buttonType={ButtonTypes.SUBMIT}
           color={
-            inMetadataPage
+            inMetadataPage && submitFileState.file
               ? submitFileState.file.name
                 ? ButtonColors.BLUE
                 : ButtonColors.GRAY
               : ButtonColors.BLUE
           }
           loadingLabel={'Uploading...'}
-          onClick={nextPage}
+          onClick={() => {
+            inMetadataPage ? nextPage() : uploadRecord();
+          }}
         />
       </section>
     </PopupHeader>

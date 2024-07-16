@@ -13,22 +13,28 @@ const FileData: React.FC = () => {
   return (
     <>
       {!!infoBarStore.selectedFile ? (
-        <div className='flex w-[90%] flex-col mx-auto'>
+        <div className='mx-auto flex w-[90%] flex-col'>
           <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
             <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
               INFORMATION
             </li>
             <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
-              {infoBarStore.selectedFile.name
-                .toLocaleLowerCase()
-                .replace(regexFilesEnding, '')}
+              {infoBarStore &&
+              infoBarStore.selectedFile &&
+              infoBarStore.selectedFile.name
+                ? infoBarStore.selectedFile.name
+                    .toLocaleLowerCase()
+                    .replace(regexFilesEnding, '')
+                : null}
             </li>
 
             {!!infoBarStore.selectedFile.metadata &&
               Object.values(infoBarStore.selectedFile.metadata).map(
                 (meta, metaIndex) => (
                   <section key={metaIndex}>
-                    {meta !== undefined && !!infoBarStore.selectedFile ? (
+                    {meta !== undefined &&
+                    !!infoBarStore.selectedFile &&
+                    infoBarStore.selectedFile.metadata ? (
                       <li key={metaIndex} className='my-1'>
                         <span className=''>
                           {Object.keys(infoBarStore.selectedFile.metadata)[
@@ -36,7 +42,7 @@ const FileData: React.FC = () => {
                           ] !== 'content-type' &&
                           Object.keys(infoBarStore.selectedFile.metadata)[
                             metaIndex
-                          ] !== 'sonograms_ids'
+                          ] !== 'sonograms_names'
                             ? `${
                                 Object.keys(infoBarStore.selectedFile.metadata)[
                                   metaIndex
@@ -53,7 +59,7 @@ const FileData: React.FC = () => {
                               ] !== 'content-type' &&
                               Object.keys(infoBarStore.selectedFile.metadata)[
                                 metaIndex
-                              ] !== 'sonograms_ids'
+                              ] !== 'sonograms_names'
                             ? String(meta)
                             : null}
                       </li>
@@ -62,11 +68,13 @@ const FileData: React.FC = () => {
                 )
               )}
             <li>
-              {infoBarStore.selectedFile.name.endsWith('.wav') ? (
+              {infoBarStore.selectedFile &&
+              infoBarStore.selectedFile.name &&
+              infoBarStore.selectedFile.name.endsWith('.wav') ? (
                 !!infoBarStore.selectedFile.metadata &&
-                'sonograms_ids' in infoBarStore.selectedFile.metadata &&
-                infoBarStore.selectedFile.metadata.sonograms_ids &&
-                infoBarStore.selectedFile.metadata.sonograms_ids.length > 0 ? (
+                'sonograms_names' in infoBarStore.selectedFile.metadata &&
+                infoBarStore.selectedFile.metadata.sonograms_names &&
+                infoBarStore.selectedFile.metadata.sonograms_names.length > 0 ? (
                   <Link
                     className='flex w-fit cursor-pointer flex-row items-center justify-start gap-2 text-duoBlue-default hover:text-duoBlue-default dark:text-duoPurpleDark-default dark:hover:opacity-90'
                     href={`${`/sonolist/${infoBarStore.selectedFile.name}`}`}
