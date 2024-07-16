@@ -59,7 +59,7 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
 
   useEffect(() => {
     fetchLevel();
-  }, [props.levelId]);
+  }, [fetchLevel, props.levelId]);
 
   const sumbitUpdate = async () => {
     try {

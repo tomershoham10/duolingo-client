@@ -95,12 +95,12 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
         console.error(err);
       }
     },
-    [editUnitState.unitId]
+    []
   );
 
   useEffect(() => {
     fetchUnit(editUnitState.unitId);
-  }, [editUnitState.unitId]);
+  }, [editUnitState.unitId, fetchUnit]);
 
   useEffect(() => {
     console.log('editUnitState', editUnitState);

@@ -48,62 +48,83 @@ const FILES_API = {
 
 
 
-export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File | File[], metadata: Partial<Metadata>[]): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
+// export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File | File[], metadata: Partial<Metadata>): Promise<UploadedObjectInfo[] | UploadedObjectInfo[][] | null> => {
+//     try {
+//         const formData = new FormData();
+//         if (files instanceof File) {
+//             // Handle a single File
+
+//             formData.append('file', files);
+//             formData.append('bucketName', bucketName);
+//             formData.append('exerciseType', exerciseType);
+//             formData.append('metadata', JSON.stringify(metadata));
+//             console.log("formData", formData);
+//             const uploadRecordResponse = await fetch(
+//                 FILES_API.UPLOAD_FILE, {
+//                 method: 'POST',
+//                 body: formData,
+//             })
+//             if (uploadRecordResponse.ok) {
+//                 const data = await uploadRecordResponse.json();
+//                 const uploadedData = data.uploadedData;
+//                 console.log("uploadRecordResponse", uploadedData);
+//                 return uploadedData;
+//             } else {
+//                 throw new Error('record - server error');
+//             }
+//             // } else if (files instanceof FileList) {
+//         } else if (Array.isArray(files)) {
+
+//             // Handle a FileList
+//             for (let i = 0; i < files.length; i++) {
+//                 console.log(files[i])
+//                 formData.append('file', files[i]);
+//             }
+//             formData.append('bucketName', bucketName);
+//             formData.append('metadata', JSON.stringify(metadata));
+//             formData.append('exerciseType', exerciseType);
+//             console.log("formData", formData);
+//             const uploadSonolistResponse = await fetch(
+//                 `${FILES_API.UPLOAD_FILE}`, {
+//                 method: 'POST',
+//                 body: formData,
+//             })
+//             if (uploadSonolistResponse.ok) {
+//                 const data = await uploadSonolistResponse.json();
+//                 const uploadedData = data.uploadedData;
+//                 console.log("uploadSonolistResponse", uploadedData);
+//                 return uploadedData;
+//             } else {
+//                 throw new Error('sonolist - server error');
+//             }
+//         } else {
+//             throw new Error('Invalid file type');
+//         }
+
+//     } catch (error: any) {
+//         console.log(error);
+//         return null;
+//     }
+// }
+
+
+export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
         const formData = new FormData();
-        if (files instanceof File) {
-            // Handle a single File
-
-            formData.append('file', files);
-            formData.append('bucketName', bucketName);
-            formData.append('exerciseType', exerciseType);
-            formData.append('metadata', JSON.stringify(metadata));
-            console.log("formData", formData);
-            const uploadRecordResponse = await fetch(
-                FILES_API.UPLOAD_FILE, {
-                method: 'POST',
-                body: formData,
-            })
-            if (uploadRecordResponse.ok) {
-                const data = await uploadRecordResponse.json();
-                const uploadedData = data.uploadedData;
-                console.log("uploadRecordResponse", uploadedData);
-                return uploadedData;
-            } else {
-                throw new Error('record - server error');
-            }
-            // } else if (files instanceof FileList) {
-        } else if (Array.isArray(files)) {
-
-            // Handle a FileList
-            for (let i = 0; i < files.length; i++) {
-                console.log(files[i])
-                formData.append('file', files[i]);
-            }
-            formData.append('bucketName', bucketName);
-            formData.append('metadata', JSON.stringify(metadata));
-            formData.append('exerciseType', exerciseType);
-            console.log("formData", formData);
-            const uploadSonolistResponse = await fetch(
-                `${FILES_API.UPLOAD_FILE}`, {
-                method: 'POST',
-                body: formData,
-            })
-            if (uploadSonolistResponse.ok) {
-                const data = await uploadSonolistResponse.json();
-                const uploadedData = data.uploadedData;
-                console.log("uploadSonolistResponse", uploadedData);
-                return uploadedData;
-            } else {
-                throw new Error('sonolist - server error');
-            }
-        } else {
-            throw new Error('Invalid file type');
-        }
-
+        formData.append('file', files);
+        formData.append('bucketName', bucketName);
+        formData.append('exerciseType', exerciseType);
+        formData.append('metadata', JSON.stringify(metadata));
+        console.log("formData", formData);
+        const uploadRecordResponse = await fetch(
+            FILES_API.UPLOAD_FILE, {
+            method: 'POST',
+            body: formData,
+        })
+        return uploadRecordResponse.status === 200;
     } catch (error: any) {
         console.log(error);
-        return null;
+        return false;
     }
 }
 
