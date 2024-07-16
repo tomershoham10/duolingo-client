@@ -2,9 +2,9 @@
 import { useEffect } from 'react';
 import useStore from '@/app/store/useStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { FaRegImages } from 'react-icons/fa';
-import Link from 'next/link';
-import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
+// import { FaRegImages } from 'react-icons/fa';
+// import Link from 'next/link';
+// import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
 import FileData from '../FileData/page';
 
 const CreateExerciseInfo: React.FC = () => {
