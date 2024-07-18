@@ -16,7 +16,7 @@ import {
 } from '@/reducers/studentView/studentDashboardReducer';
 import { courseDataReducer } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/utils/hooks/useCourseData';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
 // const socket = io('http://localhost:4002');
 library.add(faBook);
