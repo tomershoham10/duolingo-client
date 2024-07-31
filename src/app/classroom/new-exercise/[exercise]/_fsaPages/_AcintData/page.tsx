@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, lazy, useCallback } from 'react';
+import { useState, useEffect, lazy, useCallback, useMemo } from 'react';
 import pRetry from 'p-retry';
 import { useStore } from 'zustand';
 
@@ -10,6 +10,7 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 import {
   BucketsNames,
+  getFileByBucketAndType,
   getFileByBucketName,
 } from '@/app/API/files-service/functions';
 import Table, { TableHead, TableRow } from '@/components/Table/page';
@@ -21,18 +22,31 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
-import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
+import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 const UploadFilePopup = lazy(
-  () => import('@/app/_popups/UploadFilePopup/page')
+  () => import('@/app/(popups)/UploadFilePopup/page')
 );
 
 library.add(faArrowUpFromBracket);
 
-const AcintDataSection: React.FC = () => {
+export interface AcintDataSectionProps {
+  exerciseType?: ExercisesTypes;
+}
+
+const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
+  const { exerciseType } = props;
+
   const infoBarStore = {
     selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile),
     updateSelectedFile: useInfoBarStore.getState().updateSelectedFile,
   };
+
+  const memoizedUpdateSelectedFile = useCallback(
+    infoBarStore.updateSelectedFile,
+    []
+  );
+
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
   //   console.log('targetsListDB', targetsListDB);
   const sourcesListDB = useStore(useSourceStore, (state) => state.sources);
@@ -87,97 +101,108 @@ const AcintDataSection: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = (await pRetry(
-        () => getFileByBucketName(BucketsNames.RECORDS),
-        {
-          retries: 5,
-        }
-      )) as FileType[];
-
-      !!res ? setRecordsData(res) : null;
+      try {
+        const res = (await pRetry(
+          () =>
+            exerciseType
+              ? getFileByBucketAndType(BucketsNames.RECORDS, exerciseType)
+              : getFileByBucketName(BucketsNames.RECORDS),
+          { retries: 5 }
+        )) as FileType[];
+        setRecordsData(res || []);
+      } catch (error) {
+        console.error('Failed to fetch records:', error);
+      }
     };
+
     fetchData();
-  }, []);
+  }, [exerciseType]);
 
   useEffect(() => {
-    console.log('recordsData', recordsData);
-    setTableData(recordsData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filesList, recordsData]);
+    console.log('recordsData triggered', recordsData);
+    setTableData(
+      recordsData.map((data) => {
+        return {
+          ...data,
+          fileType: data.name.endsWith('wav')
+            ? BucketsNames.RECORDS
+            : BucketsNames.IMAGES,
+        };
+      })
+    );
+  }, [recordsData]);
 
   useEffect(() => {
     console.log('tableData', tableData);
   }, [tableData]);
 
-  const handleSelectTableRow = (item: any) => {
-    console.log('item', item);
-    const record = tableData.filter((record) => record.name === item.name)[0];
-    console.log('handleSelectTableRow', record);
+  const handleSelectTableRow = useCallback(
+    (item: any) => {
+      console.log('item', item);
 
-    const modifiedRecord = {
-      id: record.id,
-      name: record.name,
-      exerciseType: record.exerciseType,
-      metadata: {
-        record_length: record.record_length,
-        sonograms_names: record.sonograms_names,
-        difficulty_level: record.difficulty_level,
-        targets_list: record.targets_list,
-        operation: record.operation,
-        source_name: record.source_name,
-        is_in_italy: record.is_in_italy,
-        signature_type: record.signature_type,
-        channels_number: record.channels_number,
-        sonogram_type: record.sonogram_type,
-        is_backround_vessels: record.is_backround_vessels,
-        aux: record.aux,
-      },
-    };
+      const modifiedRecord = {
+        id: item.id,
+        name: item.name,
+        exerciseType: item.exerciseType,
+        metadata: { ...item.metadata },
+      };
 
-    console.log('modifiedRecord', modifiedRecord);
-    infoBarStore.updateSelectedFile(modifiedRecord);
-  };
+      console.log('modifiedRecord', modifiedRecord);
+      memoizedUpdateSelectedFile(modifiedRecord);
+    },
+    [memoizedUpdateSelectedFile]
+  );
 
-  useEffect(() => {
-    if (
-      infoBarStore.selectedFile &&
-      infoBarStore.selectedFile.name &&
-      infoBarStore.selectedFile.name.endsWith('wav')
-    ) {
-      const metadata = infoBarStore.selectedFile.metadata as Partial<Metadata>;
-
-      if (isFSAMetadata(metadata)) {
-        const answersToSubmit = Array.isArray(metadata.targets_ids_list)
-          ? metadata.targets_ids_list
-          : !!metadata.targets_ids_list
-            ? [metadata.targets_ids_list]
-            : [];
-        const targetIdsToSubmit = targetsListDB
-          .filter((target) => answersToSubmit.includes(target.name))
-          .map((target) => target._id);
-
-        updateExerciseToSubmit.addFile({
-          fileName: infoBarStore.selectedFile.name,
-          bucket: BucketsNames.RECORDS,
-        });
-        updateExerciseToSubmit.updateRecordLength(
-          Number(metadata.record_length)
-        );
-        updateExerciseToSubmit.updateSonolistFiles(
-          metadata.sonograms_names && metadata.sonograms_names.length > 0
-            ? metadata.sonograms_names
-            : []
-        );
-        updateExerciseToSubmit.updateTargetsList(targetIdsToSubmit);
-      }
+  const selectedRowIndex = useMemo(() => {
+    if (filesList && filesList.length > 0) {
+      const index = recordsData
+        .map((record) => record.name)
+        .indexOf(filesList[0].fileName);
+      return index;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [infoBarStore.selectedFile]);
+    return undefined;
+  }, [filesList, recordsData]);
+
+  //   useEffect(() => {
+  //     if (
+  //       infoBarStore.selectedFile &&
+  //       infoBarStore.selectedFile.name &&
+  //       infoBarStore.selectedFile.name.endsWith('wav')
+  //     ) {
+  //       const metadata = infoBarStore.selectedFile.metadata as Partial<Metadata>;
+
+  //       if (isFSAMetadata(metadata)) {
+  //         const answersToSubmit = Array.isArray(metadata.targets_ids_list)
+  //           ? metadata.targets_ids_list
+  //           : !!metadata.targets_ids_list
+  //             ? [metadata.targets_ids_list]
+  //             : [];
+  //         const targetIdsToSubmit = targetsListDB
+  //           .filter((target) => answersToSubmit.includes(target.name))
+  //           .map((target) => target._id);
+
+  //         updateExerciseToSubmit.addFile({
+  //           fileName: infoBarStore.selectedFile.name,
+  //           bucket: BucketsNames.RECORDS,
+  //         });
+  //         updateExerciseToSubmit.updateRecordLength(
+  //           Number(metadata.record_length)
+  //         );
+  //         updateExerciseToSubmit.updateSonolistFiles(
+  //           metadata.sonograms_names && metadata.sonograms_names.length > 0
+  //             ? metadata.sonograms_names
+  //             : []
+  //         );
+  //         updateExerciseToSubmit.updateTargetsList(targetIdsToSubmit);
+  //       }
+  //     }
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [infoBarStore.selectedFile]);
 
   const TABLE_HEAD: TableHead[] = [
     { key: 'name', label: 'Name' },
     { key: 'exerciseType', label: 'Exercise Type' },
-    { key: 'recordLength', label: 'Record Length' },
+    { key: 'fileType', label: 'File Type' },
   ];
 
   return (
@@ -189,13 +214,7 @@ const AcintDataSection: React.FC = () => {
           headers={TABLE_HEAD}
           rows={tableData}
           onSelect={handleSelectTableRow}
-          selectedRowIndex={
-            filesList && filesList.length > 0
-              ? recordsData
-                  .map((record) => record.name)
-                  .indexOf(filesList[0].fileName)
-              : undefined
-          }
+          selectedRowIndex={selectedRowIndex}
         />
       </section>
 
