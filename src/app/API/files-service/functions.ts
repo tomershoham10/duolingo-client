@@ -108,14 +108,16 @@ const FILES_API = {
 // }
 
 
-export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, files: File, metadata: Partial<Metadata>): Promise<boolean> => {
+export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, file: File, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
+        console.log("uploadFile", bucketName, exerciseType, file, metadata);
         const formData = new FormData();
-        formData.append('file', files);
+        formData.append('file', file);
         formData.append('bucketName', bucketName);
         formData.append('exerciseType', exerciseType);
         formData.append('metadata', JSON.stringify(metadata));
         console.log("formData", formData);
+
         const uploadRecordResponse = await fetch(
             FILES_API.UPLOAD_FILE, {
             method: 'POST',
