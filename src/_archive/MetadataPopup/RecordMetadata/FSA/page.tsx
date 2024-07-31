@@ -1,6 +1,5 @@
 'use client';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import SwitchButton from '@/components/SwitchButton/page';
@@ -8,8 +7,8 @@ import { useReducer } from 'react';
 import {
   recordMetaAction,
   recordMetadataReducer,
-} from '@/reducers/recordMetadataReducer';
-import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
+} from '@/_archive/reducers/recordMetadataReducer';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
 import { useStore } from 'zustand';
 import {
@@ -22,9 +21,7 @@ import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
 import Button, { ButtonColors } from '@/components/Button/page';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
-import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { RecordMetaEditProps } from '../page';
 
 library.add(faXmark);
