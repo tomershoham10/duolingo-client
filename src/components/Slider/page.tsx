@@ -1,4 +1,4 @@
-+'use client';
+'use client';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
