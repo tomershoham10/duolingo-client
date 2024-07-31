@@ -2,7 +2,7 @@
 import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
-import { useKeyDown } from '../utils/hooks/useKeyDown';
+import { useKeyDown } from '../_utils/hooks/useKeyDown';
 import { useCallback } from 'react';
 import pRetry from 'p-retry';
 

@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { IconDefinition, library } from '@fortawesome/fontawesome-svg-core';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHome,
@@ -23,7 +23,7 @@ import {
   getCourses,
 } from '@/app/API/classes-service/courses/functions';
 
-import handleLogout from '@/app/utils/functions/handleLogOut';
+import handleLogout from '@/app/_utils/functions/handleLogOut';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 
@@ -35,15 +35,6 @@ library.add(
   faSquarePlus,
   faHeadphones
 );
-
-// interface SidebarItem {
-//   name: string;
-//   popup?: PopupsTypes;
-//   icon?: IconDefinition;
-//   href?: string;
-//   onClick?: () => void;
-//   subItems?: SidebarItem[];
-// }
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();

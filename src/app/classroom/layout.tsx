@@ -1,14 +1,16 @@
-// 'use client';
 import { lazy } from 'react';
-// import { usePathname, useRouter } from 'next/navigation';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
 import InfoBar from '@/components/InfoBar/page';
-// import useStore from '../store/useStore';
-// import { useUserStore, PermissionsTypes } from '../store/stores/useUserStore';
-const AdminEditPopup = lazy(() => import('../_popups/AdminEditPopup/page'));
-const CreateNewUser = lazy(() => import('../_popups/CreateNewUser/page'));
-const CreateNewCourse = lazy(() => import('../_popups/CreateNewCourse/page'));
-const CreateNewUnit = lazy(() => import('@/app/_popups/CreateNewUnit/page'));
+const AdminEditPopup = lazy(() => import('../(popups)/AdminEditPopup/page'));
+const CreateNewUser = lazy(
+  () => import('../(popups)/(create)/CreateNewUser/page')
+);
+const CreateNewCourse = lazy(
+  () => import('../(popups)/(create)/CreateNewCourse/page')
+);
+const CreateNewUnit = lazy(
+  () => import('@/app/(popups)/(create)/CreateNewUnit/page')
+);
 
 // import { notFound } from 'next/navigation';
 

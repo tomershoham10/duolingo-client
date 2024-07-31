@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import { FaRegImages } from 'react-icons/fa';
 
 const FileData: React.FC = () => {
@@ -12,7 +12,7 @@ const FileData: React.FC = () => {
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
   return (
     <>
-      {!!infoBarStore.selectedFile ? (
+      {!!infoBarStore.selectedFile && (
         <div className='mx-auto flex w-[90%] flex-col'>
           <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
             <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
@@ -93,7 +93,7 @@ const FileData: React.FC = () => {
             </li>
           </ul>
         </div>
-      ) : null}
+      ) }
     </>
   );
 };

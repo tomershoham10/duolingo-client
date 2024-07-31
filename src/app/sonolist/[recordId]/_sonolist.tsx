@@ -6,7 +6,7 @@ import {
   getFileMetadataByName,
 } from '@/app/API/files-service/functions';
 import pRetry from 'p-retry';
-import { isFSAMetadata } from '@/app/utils/functions/filesMetadata/functions';
+import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 
 interface SonolistProps {
   recordName: string;

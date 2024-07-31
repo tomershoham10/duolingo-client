@@ -2,9 +2,9 @@
 import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import Tooltip, { TooltipColors } from '@/components/Tooltip/page';
-import useClickOutside from '@/app/utils/hooks/useClickOutside';
+import useClickOutside from '@/app/_utils/hooks/useClickOutside';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import { formatNumberToMinutes } from '@/app/utils/functions/formatNumberToMinutes';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 
 const Slider: React.FC<SliderProps> = (props) => {
   const isMultiple = props.isMultiple;

@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useReducer } from 'react';
 import useStore from '@/app/store/useStore';
 import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
-import useClickOutside from '@/app/utils/hooks/useClickOutside';
+import useClickOutside from '@/app/_utils/hooks/useClickOutside';
 import {
   TooltipType,
   tooltipAction,

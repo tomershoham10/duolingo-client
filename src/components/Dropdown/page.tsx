@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import useClickOutside from '@/app/utils/hooks/useClickOutside';
+import useClickOutside from '@/app/_utils/hooks/useClickOutside';
 
 export enum DropdownSizes {
   SMALL = 'small',

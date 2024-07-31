@@ -6,16 +6,16 @@ import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '@/app/store/stores/useUserStore';
 import { useStore } from 'zustand';
 import LessonButton, { Status } from '../../LessonButton/page';
-import { possitionByModularAddition } from '@/app/utils/functions/possitionByModularAddition';
+import { possitionByModularAddition } from '@/app/_utils/functions/possitionByModularAddition';
 import Tooltip, { TooltipColors } from '../../Tooltip/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import StartLessonPopup from '@/app/_popups/StartLessonPopup/page';
+import StartLessonPopup from '@/app/(popups)/StartLessonPopup/page';
 import {
   studentDashboardAction,
   studentDashboardReducer,
 } from '@/reducers/studentView/studentDashboardReducer';
 import { courseDataReducer } from '@/reducers/courseDataReducer';
-import useCourseData from '@/app/utils/hooks/useCourseData';
+import useCourseData from '@/app/_utils/hooks/useCourseData';
 // import io from 'socket.io-client';
 
 // const socket = io('http://localhost:4002');

@@ -37,7 +37,7 @@ import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import submitCurrentExercise, {
   submitCurrentExerciseParams,
-} from '../utils/functions/lessonPage/submitCurrentExercise';
+} from '../_utils/functions/lessonPage/submitCurrentExercise';
 import { getEncryptedFileByName } from '../API/files-service/functions';
 import { getZipPassword } from '../API/auth-service/functions';
 import pRetry from 'p-retry';

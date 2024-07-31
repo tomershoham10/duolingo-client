@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 import playing from '../../../public/svgs/audioPlayer/playing.svg';
 import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
-import { useKeyDown } from '@/app/utils/hooks/useKeyDown';
+import { useKeyDown } from '@/app/_utils/hooks/useKeyDown';
 const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
   const src = props.src;
   const isDisabled = props.isDisabled || false;

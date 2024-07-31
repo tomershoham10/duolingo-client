@@ -21,7 +21,7 @@ import {
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import useCourseData from '@/app/utils/hooks/useCourseData';
+import useCourseData from '@/app/_utils/hooks/useCourseData';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import LodingAdminSection from './LodingAdminSection/page';
 
