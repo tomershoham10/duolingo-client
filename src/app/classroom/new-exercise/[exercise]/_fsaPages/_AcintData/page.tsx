@@ -4,7 +4,6 @@ import pRetry from 'p-retry';
 import { useStore } from 'zustand';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
@@ -24,6 +23,7 @@ import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 const UploadFilePopup = lazy(
   () => import('@/app/(popups)/UploadFilePopup/page')
 );
@@ -41,11 +41,6 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
     selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile),
     updateSelectedFile: useInfoBarStore.getState().updateSelectedFile,
   };
-
-  const memoizedUpdateSelectedFile = useCallback(
-    infoBarStore.updateSelectedFile,
-    []
-  );
 
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
   //   console.log('targetsListDB', targetsListDB);
@@ -136,22 +131,19 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
     console.log('tableData', tableData);
   }, [tableData]);
 
-  const handleSelectTableRow = useCallback(
-    (item: any) => {
-      console.log('item', item);
+  const handleSelectTableRow = useCallback((item: any) => {
+    console.log('item', item);
 
-      const modifiedRecord = {
-        id: item.id,
-        name: item.name,
-        exerciseType: item.exerciseType,
-        metadata: { ...item.metadata },
-      };
+    const modifiedRecord = {
+      id: item.id,
+      name: item.name,
+      exerciseType: item.exerciseType,
+      metadata: { ...item.metadata },
+    };
 
-      console.log('modifiedRecord', modifiedRecord);
-      memoizedUpdateSelectedFile(modifiedRecord);
-    },
-    [memoizedUpdateSelectedFile]
-  );
+    console.log('modifiedRecord', modifiedRecord);
+    infoBarStore.updateSelectedFile(modifiedRecord);
+  }, []);
 
   const selectedRowIndex = useMemo(() => {
     if (filesList && filesList.length > 0) {
