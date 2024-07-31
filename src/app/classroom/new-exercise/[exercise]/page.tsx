@@ -5,15 +5,17 @@ import { useStore } from 'zustand';
 import Pagination from '@/components/Navigation/Pagination/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import { createExercise } from '@/app/API/classes-service/exercises/functions';
+import {
+  createExercise,
+  ExercisesTypes,
+} from '@/app/API/classes-service/exercises/functions';
+import Spotrecc from './_Spotrecc/page';
 
 const AcintDataSection = lazy(() => import('./_fsaPages/_AcintData/page'));
 const ExerciseDataSection = lazy(
   () => import('./_fsaPages/_ExerciseData/page')
 );
-const FilesDataSection = lazy(
-  () => import('./_spotreccPages/_FilesDataSection/page')
-);
+
 const SpotreccDataSection = lazy(
   () => import('./_spotreccPages/_SpotreccDataSection/page')
 );
@@ -48,11 +50,11 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
 
   const components = {
     [ExercisesTypes.FSA]: {
-      records: AcintDataSection, // Import your components
+      records: () => <AcintDataSection exerciseType={params.exercise} />,
       exercise: ExerciseDataSection,
     },
     [ExercisesTypes.SPOTRECC]: {
-      files: FilesDataSection,
+      records: () => <AcintDataSection exerciseType={params.exercise} />,
       exercise: SpotreccDataSection,
     },
   };
@@ -61,17 +63,16 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
     records: () => {
       console.log(
         'exerciseToSubmit - acint section',
-        exerciseToSubmit.files,
-        exerciseToSubmit.recordLength,
-        exerciseToSubmit.sonolistFiles,
-        exerciseToSubmit.targetsList
+        params.exercise === ExercisesTypes.FSA
       );
       return (
         // !!exerciseToSubmit.recordId &&
-        !!exerciseToSubmit.files &&
-        !!exerciseToSubmit.recordLength &&
-        !!exerciseToSubmit.sonolistFiles &&
-        !!exerciseToSubmit.targetsList
+        params.exercise === ExercisesTypes.FSA
+          ? !!exerciseToSubmit.files &&
+              !!exerciseToSubmit.recordLength &&
+              !!exerciseToSubmit.sonolistFiles &&
+              !!exerciseToSubmit.targetsList
+          : true
       );
     },
     exercise: () => {
@@ -132,13 +133,17 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
 
   return (
     <div className='h-full w-full overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
-      <Pagination
-        header={'create'}
-        subHeader={params.exercise ? params.exercise.toString() : undefined}
-        components={components[params.exercise]}
-        onNext={onNextFuncs}
-        onSubmit={submitExercise}
-      />
+      {params.exercise === ExercisesTypes.SPOTRECC ? (
+        <Spotrecc />
+      ) : (
+        <Pagination
+          header={'create'}
+          subHeader={params.exercise ? params.exercise.toString() : undefined}
+          components={components[params.exercise]}
+          onNext={onNextFuncs}
+          onSubmit={submitExercise}
+        />
+      )}
     </div>
   );
 };
