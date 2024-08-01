@@ -1,6 +1,7 @@
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+'use client';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames } from '@/app/API/files-service/functions';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 
 interface UploadProps {
   handleExerciseType: (value: string) => void;
@@ -27,13 +28,13 @@ const UploadFileSection: React.FC<UploadProps> = (props) => {
         <p className='mb-1 font-bold text-duoGrayDark-lighter'>
           Please select file type
         </p>
-        <Dropdown
+        {/* <Dropdown
           isSearchable={false}
           placeholder={'File Type'}
           items={Object.values(BucketsNames)}
           size={DropdownSizes.SMALL}
           onChange={handleFileType}
-        />
+        /> */}
       </div>
     </div>
   );

@@ -8,9 +8,12 @@ import {
   BucketsNames,
   getFileByBucketAndType,
 } from '@/app/API/files-service/functions';
+import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
 
 const SpotreccFiles = () => {
   const [recordsData, setRecordsData] = useState<FileType[]>([]);
+  const addSubExercise = useCreateSpotreccStore.getState().addSubExercise;
+
   useEffect(() => {
     console.log('abcde');
     const fetchData = async () => {
@@ -63,29 +66,42 @@ const SpotreccFiles = () => {
       </ul>
 
       {selectedFile && (
-        <div className='mx-auto flex w-full flex-col'>
-          <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
-            <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
-              INFORMATION
-            </li>
-            <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
-              {selectedFile.name}
-            </li>
-
-            {Object.keys(selectedFile.metadata).map((metaKey, metaIndex) => (
-              <li className='my-1' key={metaKey}>
-                {Object.keys(selectedFile.metadata)[metaIndex]}
-
-                {Object.values(selectedFile.metadata)[metaIndex] || 'false'}
+        <section>
+          <div className='mx-auto flex w-full flex-col'>
+            <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
+              <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
+                INFORMATION
               </li>
-            ))}
-            <li>
-              <Link href='' target='_blank'>
-                preview
-              </Link>
-            </li>
-          </ul>
-        </div>
+              <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
+                {selectedFile.name}
+              </li>
+
+              {Object.keys(selectedFile.metadata).map((metaKey, metaIndex) => (
+                <li className='my-1' key={metaKey}>
+                  {Object.keys(selectedFile.metadata)[metaIndex]}
+
+                  {Object.values(selectedFile.metadata)[metaIndex] || 'false'}
+                </li>
+              ))}
+              <li>
+                <Link href='' target='_blank'>
+                  preview
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <button
+            onClick={() =>
+              addSubExercise({
+                fileName: selectedFile.name,
+                description: null,
+                time: 0,
+              })
+            }
+          >
+            addSubExercise
+          </button>
+        </section>
       )}
     </div>
   );
