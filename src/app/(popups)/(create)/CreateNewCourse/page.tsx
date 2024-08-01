@@ -41,16 +41,22 @@ const CreateNewCourse: React.FC = () => {
       const courseName = formData.get('courseName');
       console.log('create course:', courseName);
 
-      if (!!!courseName || courseName.length < 3) {
+      if (
+        typeof courseName === 'string' &&
+        (!!!courseName || courseName.length < 3)
+      ) {
         addAlert('Please enter a valid course name.', AlertSizes.small);
         setIsFailed(true);
         return;
       }
 
       //   const response = await createCourse(courseName.toString());
-      const response = await pRetry(() => createCourse(courseName.toString()), {
-        retries: 5,
-      });
+      const response = await pRetry(
+        () => (courseName ? createCourse(courseName.toString()) : null),
+        {
+          retries: 5,
+        }
+      );
       console.log('create course - response:', response);
       if (response === 201) {
         addAlert('Course created successfully.', AlertSizes.small);
