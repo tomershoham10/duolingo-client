@@ -37,10 +37,8 @@ export interface AcintDataSectionProps {
 const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
   const { exerciseType } = props;
 
-  const infoBarStore = {
-    selectedFile: useStore(useInfoBarStore, (state) => state.selectedFile),
-    updateSelectedFile: useInfoBarStore.getState().updateSelectedFile,
-  };
+  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
+  const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
 
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
   //   console.log('targetsListDB', targetsListDB);
@@ -131,19 +129,22 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
     console.log('tableData', tableData);
   }, [tableData]);
 
-  const handleSelectTableRow = useCallback((item: any) => {
-    console.log('item', item);
+  const handleSelectTableRow = useCallback(
+    (item: any) => {
+      console.log('item', item);
 
-    const modifiedRecord = {
-      id: item.id,
-      name: item.name,
-      exerciseType: item.exerciseType,
-      metadata: { ...item.metadata },
-    };
+      const modifiedRecord = {
+        id: item.id,
+        name: item.name,
+        exerciseType: item.exerciseType,
+        metadata: { ...item.metadata },
+      };
 
-    console.log('modifiedRecord', modifiedRecord);
-    infoBarStore.updateSelectedFile(modifiedRecord);
-  }, []);
+      console.log('modifiedRecord', modifiedRecord);
+      updateSelectedFile(modifiedRecord);
+    },
+    [updateSelectedFile]
+  );
 
   const selectedRowIndex = useMemo(() => {
     if (filesList && filesList.length > 0) {

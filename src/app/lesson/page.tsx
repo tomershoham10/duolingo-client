@@ -10,7 +10,7 @@ import { FaCopy } from 'react-icons/fa6';
 
 import Button, { ButtonColors } from '@/components/Button/page';
 import ProgressBar from '@/components/ProgressBar/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 
 import useStore from '../store/useStore';
 import { useUserStore } from '../store/stores/useUserStore';

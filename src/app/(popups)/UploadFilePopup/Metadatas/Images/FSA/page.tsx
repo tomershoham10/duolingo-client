@@ -1,5 +1,5 @@
 import Upload from '@/components/Upload/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import Input, { InputTypes } from '@/components/Input/page';
 import { BucketsNames, SonarSystem } from '@/app/API/files-service/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';

@@ -1,9 +1,9 @@
-// 'use client';
+'use client';
 import { useStore } from 'zustand';
 import Upload from '@/components/Upload/page';
 import Slider from '@/components/Slider/page';
 import SwitchButton from '@/components/SwitchButton/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames } from '@/app/API/files-service/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';

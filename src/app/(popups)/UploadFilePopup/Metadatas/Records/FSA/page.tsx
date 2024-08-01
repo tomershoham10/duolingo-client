@@ -11,7 +11,7 @@ import {
 import SwitchButton from '@/components/SwitchButton/page';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useStore } from 'zustand';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';

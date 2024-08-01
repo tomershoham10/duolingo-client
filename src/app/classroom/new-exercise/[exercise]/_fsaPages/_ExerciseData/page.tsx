@@ -7,7 +7,7 @@ import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Textbox, { FontSizes } from '@/components/Textbox/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';

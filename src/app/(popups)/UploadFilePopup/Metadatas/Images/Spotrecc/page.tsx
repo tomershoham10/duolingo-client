@@ -1,9 +1,11 @@
+'use client';
 import { useStore } from 'zustand';
 import Upload from '@/components/Upload/page';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
-import { BucketsNames, FeaturesList } from '@/app/API/files-service/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
+import { BucketsNames, FeaturesList } from '@/app/API/files-service/functions';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
+// const Dropdown = dynamic(() => import('@/components/Dropdown'), { ssr: false });
 
 interface SpotreccImageMetaProps {
   file: File | null;

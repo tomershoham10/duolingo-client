@@ -9,7 +9,7 @@ import {
   recordMetadataReducer,
 } from '@/_archive/reducers/recordMetadataReducer';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
-import Dropdown, { DropdownSizes } from '@/components/Dropdown/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useStore } from 'zustand';
 import {
   BucketsNames,
