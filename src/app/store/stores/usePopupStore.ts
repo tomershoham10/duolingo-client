@@ -10,8 +10,9 @@ export enum PopupsTypes {
     STARTLESSON = "startLesson",
     ADMINEDIT = "adminEdit",
     UPLOAD_RECORD = "uploadRecord",
-    RECORDMETADATA = 'recordMetadata',
-    SONOLISTMETADATA = 'sonolistMetadata'
+    RECORDMETADATA = "recordMetadata",
+    SONOLISTMETADATA = "sonolistMetadata",
+    SPOTRECC_DATA = "spotreccData"
 }
 
 type PopupState = {

@@ -95,7 +95,7 @@ const SpotreccFiles = () => {
               addSubExercise({
                 fileName: selectedFile.name,
                 description: null,
-                time: 0,
+                time: 15, //secs
               })
             }
           >
