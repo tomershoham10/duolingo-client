@@ -79,7 +79,7 @@ const FSASonogramMetadata: React.FC<FSASonogramMetaProps> = (props) => {
             </span>
             <div className='w-[12rem]'>
               <Input
-                type={InputTypes.text}
+                type={InputTypes.TEXT}
                 //   value={recordMetaState.operation}
                 onChange={
                   (text: string) => {
@@ -102,7 +102,7 @@ const FSASonogramMetadata: React.FC<FSASonogramMetaProps> = (props) => {
             </span>
             <div className='w-[12rem]'>
               <Input
-                type={InputTypes.text}
+                type={InputTypes.TEXT}
                 value={String(metadata.bw) || ''}
                 onChange={(text: string) => {
                   updateMetadata('bw', Number(text));

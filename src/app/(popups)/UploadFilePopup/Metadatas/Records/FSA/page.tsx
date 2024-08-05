@@ -234,7 +234,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
             </span>
             <div className='w-[12rem]'>
               <Input
-                type={InputTypes.text}
+                type={InputTypes.TEXT}
                 value={metadata.operation || ''}
                 onChange={(text: string) => {
                   updateMetadata('operation', text);

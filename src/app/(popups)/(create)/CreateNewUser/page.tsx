@@ -133,7 +133,7 @@ const CreateNewUser: React.FC = () => {
 
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
           <Input
-            type={InputTypes.text}
+            type={InputTypes.TEXT}
             placeholder={'User Name'}
             value={userName}
             onChange={handleUserName}
@@ -147,7 +147,7 @@ const CreateNewUser: React.FC = () => {
 
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
           <Input
-            type={InputTypes.text}
+            type={InputTypes.TEXT}
             placeholder={'T-ID (optional)'}
             value={tId}
             onChange={handleTId}
@@ -161,7 +161,7 @@ const CreateNewUser: React.FC = () => {
 
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
-            type={InputTypes.password}
+            type={InputTypes.PASSWORD}
             placeholder={'Password'}
             value={password}
             onChange={handlePassword}
