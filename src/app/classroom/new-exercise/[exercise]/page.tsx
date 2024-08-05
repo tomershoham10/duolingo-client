@@ -63,7 +63,8 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
     records: () => {
       console.log(
         'exerciseToSubmit - acint section',
-        params.exercise === ExercisesTypes.FSA
+        ExercisesTypes.FSA,
+        exerciseToSubmit
       );
       return (
         // !!exerciseToSubmit.recordId &&
