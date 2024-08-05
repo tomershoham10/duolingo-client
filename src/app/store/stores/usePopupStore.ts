@@ -12,7 +12,8 @@ export enum PopupsTypes {
     UPLOAD_RECORD = "uploadRecord",
     RECORDMETADATA = "recordMetadata",
     SONOLISTMETADATA = "sonolistMetadata",
-    SPOTRECC_DATA = "spotreccData"
+    SPOTRECC_DATA = "spotreccData",
+    PREVIEW = "preview",
 }
 
 type PopupState = {
