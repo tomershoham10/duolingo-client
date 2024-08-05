@@ -7,13 +7,22 @@ export enum FontSizes {
 }
 
 const Textbox: React.FC<TextboxProps> = (props) => {
-  const prevData = props.prevData;
-  const isEditMode = props.isEditMode;
-  const fontSizeProps = props.fontSizeProps;
-  const placeHolder = props.placeHolder;
-  const propsVal = props.value;
-  const onChange = props.onChange;
-  const errorMode = props.errorMode;
+  const {
+    prevData,
+    isEditMode,
+    fontSizeProps,
+    placeHolder,
+    value,
+    onChange,
+    errorMode,
+  } = props;
+  //   const prevData = props.prevData;
+  //   const isEditMode = props.isEditMode;
+  //   const fontSizeProps = props.fontSizeProps;
+  //   const placeHolder = props.placeHolder;
+  //   const propsVal = props.value;
+  //   const onChange = props.onChange;
+  //   const errorMode = props.errorMode;
 
   const [fontSize, setFontSize] = useState<string>();
 
@@ -36,21 +45,19 @@ const Textbox: React.FC<TextboxProps> = (props) => {
 
   return (
     <form className={`${fontSize} h-full`}>
-      <div className='relative overflow-hidden h-full'>
+      <div className='relative h-full overflow-hidden'>
         <textarea
           style={isEditMode ? {} : { resize: 'none' }}
-          value={propsVal}
+          value={value}
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
             onChange(event.target.value);
           }}
-          className={`h-full w-full rounded-md border-2 px-3 py-2 focus:outline-none
-          ${
+          className={`h-full w-full rounded-md border-2 px-3 py-2 focus:outline-none ${
             errorMode
               ? 'border-duoRed-default bg-duoRed-lighter text-duoRed-darker'
               : 'textarea-dark-placeholder bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
             // : 'bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-          }
-          `}
+          } `}
           //   ${
           //     isEditMode
           //       ? prevData !== propsVal
