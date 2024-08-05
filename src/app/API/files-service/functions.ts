@@ -183,6 +183,7 @@ export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: stri
 
 export const getFileByBucketName = async (bucketName: BucketsNames): Promise<FileType[]> => {
     try {
+        console.log(`${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`);
         const response = await fetch(
             `${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`, {
             method: 'GET',
