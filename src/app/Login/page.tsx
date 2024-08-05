@@ -42,12 +42,12 @@ const Login: React.FC = () => {
     >
       <label className='text-2xl font-extrabold'>Log in</label>
       <Input
-        type={InputTypes.text}
+        type={InputTypes.TEXT}
         placeholder={'Username'}
         name={'userName'}
       />
       <Input
-        type={InputTypes.password}
+        type={InputTypes.PASSWORD}
         placeholder={'Password'}
         name={'password'}
       />
