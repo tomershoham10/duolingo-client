@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
@@ -16,10 +16,13 @@ export interface EditSpotreccProps {
 const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
   const { subExercise, onSave } = props;
 
-  const [description, setDescription] = useState<string>(
-    subExercise.description || ''
-  );
-  const [time, setTime] = useState<number>(subExercise.time);
+  const [description, setDescription] = useState<string>('');
+  const [time, setTime] = useState<number>(0);
+
+  useEffect(() => {
+    setDescription(subExercise.description || '');
+    setTime(subExercise.time);
+  }, [subExercise]);
 
   const handleDescriptionChange = useCallback((text: string) => {
     setDescription(text);
@@ -53,7 +56,6 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
           <section className='w-full'>
             <Textbox
               isEditMode={false}
-              prevData={subExercise.description || ''}
               fontSizeProps={FontSizes.MEDIUM}
               placeHolder={'Add desription...'}
               value={description}
