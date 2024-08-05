@@ -347,10 +347,17 @@ enum PermissionsTypes {
 
 // // AudioPlayer // //
 
+enum AudioPlayerSizes {
+    SMALL = 'small',
+    MEDIUM = 'medium',
+    LARGE = 'large',
+}
+
 interface AudioPlayerProps {
     src: string;
     isDisabled?: boolean;
     isPauseable?: boolean;
+    size?: AudioPlayerSizes;
 }
 
 // // Button // //
@@ -412,7 +419,7 @@ interface InputProps {
     type: InputTypes;
     name?: string;
     placeholder?: string;
-    value?: string | undefined;
+    value?: string | nubmer | undefined;
     onChange?: (value: string) => void;
     className?: string;
     failed?: boolean;
