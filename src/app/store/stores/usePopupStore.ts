@@ -12,7 +12,7 @@ export enum PopupsTypes {
     UPLOAD_RECORD = "uploadRecord",
     RECORDMETADATA = "recordMetadata",
     SONOLISTMETADATA = "sonolistMetadata",
-    SPOTRECC_DATA = "spotreccData",
+    EDIT_SPOTRECC = "editSpotrecc",
     PREVIEW = "preview",
 }
 
