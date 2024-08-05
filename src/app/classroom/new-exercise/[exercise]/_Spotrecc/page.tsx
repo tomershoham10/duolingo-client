@@ -4,7 +4,10 @@ import { lazy, useCallback, useState } from 'react';
 import { useStore } from 'zustand';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
-import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
+import {
+  SpotreccSubExercise,
+  useCreateSpotreccStore,
+} from '@/app/store/stores/useCreateSpotreccStore';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { BucketsNames } from '@/app/API/files-service/functions';
@@ -18,6 +21,7 @@ const Spotrecc: React.FC = () => {
     useCreateSpotreccStore,
     (state) => state.subExercises
   );
+  const updateSubExercise = useCreateSpotreccStore.getState().updateSubExercise;
   const removeSubExercise = useCreateSpotreccStore.getState().removeSubExercise;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
@@ -30,6 +34,14 @@ const Spotrecc: React.FC = () => {
       removeSubExercise(fileName);
     },
     [removeSubExercise]
+  );
+
+  const subExericseUpdate = useCallback(
+    (updatedExercise: SpotreccSubExercise) => {
+      updateSubExercise(updatedExercise);
+      updateSelectedPopup(PopupsTypes.CLOSED);
+    },
+    []
   );
 
   return (
@@ -90,9 +102,7 @@ const Spotrecc: React.FC = () => {
                   </button>
                   <EditSpotrecc
                     subExercise={exercise}
-                    onSave={(updatedExercise) =>
-                      console.log('updated', updatedExercise)
-                    }
+                    onSave={subExericseUpdate}
                   />
                 </section>
               )}

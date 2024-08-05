@@ -13,7 +13,8 @@ type CreateSpotreccState = {
 }
 
 type Action = {
-    addSubExercise: (file: SpotreccSubExercise) => void;
+    addSubExercise: (exercise: SpotreccSubExercise) => void;
+    updateSubExercise: (updartedExercise: SpotreccSubExercise) => void;
     removeSubExercise: (fileName: string) => void;
     resetStore: () => void;
 }
@@ -30,6 +31,11 @@ export const useCreateSpotreccStore = create<CreateSpotreccState & Action>(
             }
             return state;
         }),
+        updateSubExercise: (updatedExercise) => set((state) => ({
+            subExercises: state.subExercises.map((subExercise) =>
+                subExercise.fileName === updatedExercise.fileName ? updatedExercise : subExercise
+            )
+        })),
         removeSubExercise: (fileName) => set((state) => ({
             subExercises: state.subExercises.filter((subExercise) => subExercise.fileName !== fileName)
         })),
