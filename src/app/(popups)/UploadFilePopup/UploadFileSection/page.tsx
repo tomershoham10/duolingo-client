@@ -28,13 +28,13 @@ const UploadFileSection: React.FC<UploadProps> = (props) => {
         <p className='mb-1 font-bold text-duoGrayDark-lighter'>
           Please select file type
         </p>
-        {/* <Dropdown
+        <Dropdown
           isSearchable={false}
           placeholder={'File Type'}
           items={Object.values(BucketsNames)}
           size={DropdownSizes.SMALL}
           onChange={handleFileType}
-        /> */}
+        />
       </div>
     </div>
   );
