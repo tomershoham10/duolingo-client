@@ -12,10 +12,9 @@ import {
   getFileByBucketAndType,
   getFileByBucketName,
 } from '@/app/API/files-service/functions';
-import Table, { TableHead, TableRow } from '@/components/Table/page';
-import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
+import { TableRow } from '@/components/Table/page';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
@@ -24,9 +23,7 @@ import { getSourcesList } from '@/app/API/classes-service/sources/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
-const UploadFilePopup = lazy(
-  () => import('@/app/(popups)/UploadFilePopup/page')
-);
+import FilesTable from '@/app/classroom/records/_FilesTable';
 
 library.add(faArrowUpFromBracket);
 
@@ -41,7 +38,6 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
 
   const targetsListDB = useStore(useTargetStore, (state) => state.targets);
-  //   console.log('targetsListDB', targetsListDB);
   const sourcesListDB = useStore(useSourceStore, (state) => state.sources);
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const addAlert = useAlertStore.getState().addAlert;
@@ -158,11 +154,12 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
 
   //   useEffect(() => {
   //     if (
-  //       infoBarStore.selectedFile &&
-  //       infoBarStore.selectedFile.name &&
-  //       infoBarStore.selectedFile.name.endsWith('wav')
+  //       exerciseType === ExercisesTypes.FSA &&
+  //       selectedFile &&
+  //       selectedFile.name &&
+  //       selectedFile.name.endsWith('wav')
   //     ) {
-  //       const metadata = infoBarStore.selectedFile.metadata as Partial<Metadata>;
+  //       const metadata = selectedFile.metadata as Partial<Metadata>;
 
   //       if (isFSAMetadata(metadata)) {
   //         const answersToSubmit = Array.isArray(metadata.targets_ids_list)
@@ -175,7 +172,7 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
   //           .map((target) => target._id);
 
   //         updateExerciseToSubmit.addFile({
-  //           fileName: infoBarStore.selectedFile.name,
+  //           fileName: selectedFile.name,
   //           bucket: BucketsNames.RECORDS,
   //         });
   //         updateExerciseToSubmit.updateRecordLength(
@@ -190,38 +187,15 @@ const AcintDataSection: React.FC<AcintDataSectionProps> = (props) => {
   //       }
   //     }
   //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [infoBarStore.selectedFile]);
-
-  const TABLE_HEAD: TableHead[] = [
-    { key: 'name', label: 'Name' },
-    { key: 'exerciseType', label: 'Exercise Type' },
-    { key: 'fileType', label: 'File Type' },
-  ];
+  //   }, [selectedFile]);
 
   return (
-    <section className='h-full  text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      <UploadFilePopup />
-      <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
-      <section className='my-5 flex justify-start'>
-        <Table
-          headers={TABLE_HEAD}
-          rows={tableData}
-          onSelect={handleSelectTableRow}
-          selectedRowIndex={selectedRowIndex}
-        />
-      </section>
-
-      <div className='relative flex items-center justify-center py-8'>
-        <Button
-          label={'UPLOAD'}
-          buttonType={ButtonTypes.SUBMIT}
-          color={ButtonColors.BLUE}
-          icon={faArrowUpFromBracket}
-          //   loadingLabel={'Uploading...'}
-          onClick={() => updateSelectedPopup(PopupsTypes.UPLOAD_RECORD)}
-        />
-        {/* </form> */}
-      </div>
+    <section className='h-full text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+      <FilesTable
+        tableData={tableData}
+        onSelect={handleSelectTableRow}
+        selectedRowIndex={selectedRowIndex}
+      />
     </section>
   );
 };
