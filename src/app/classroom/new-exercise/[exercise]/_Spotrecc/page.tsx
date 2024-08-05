@@ -1,22 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { lazy, useCallback, useState } from 'react';
 import { useStore } from 'zustand';
-import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
+import { FaTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
+import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import SpotreccData from '@/app/(popups)/SpotreccData/page';
+import { BucketsNames } from '@/app/API/files-service/functions';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+
+const EditSpotrecc = lazy(() => import('@/app/(popups)/EditSpotrecc/page'));
+const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
 
 const Spotrecc: React.FC = () => {
   const subExercises = useStore(
     useCreateSpotreccStore,
     (state) => state.subExercises
   );
+  const removeSubExercise = useCreateSpotreccStore.getState().removeSubExercise;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [openedFileIndex, setOpenedFileIndex] = useState<number | null>(null);
+
+  const removeFile = useCallback(
+    (fileName: string) => {
+      setOpenedFileIndex(null);
+      removeSubExercise(fileName);
+    },
+    [removeSubExercise]
+  );
 
   return (
     <div className='flex h-full w-full flex-col overflow-hidden'>
@@ -36,33 +50,52 @@ const Spotrecc: React.FC = () => {
             }`}
           >
             <p className={`font-extrabold`}>{exercise.fileName}</p>
-            {index === openedFileIndex && (
-              <section>
-                <button
-                  onClick={() => updateSelectedPopup(PopupsTypes.SPOTRECC_DATA)}
-                  className='absolute right-3 top-2'
-                >
-                  <MdEdit />
-                </button>
+            {openedFileIndex !== null &&
+              openedFileIndex < subExercises.length && (
+                <section>
+                  <button
+                    onClick={() =>
+                      updateSelectedPopup(PopupsTypes.EDIT_SPOTRECC)
+                    }
+                    className='absolute right-3 top-2'
+                  >
+                    <MdEdit />
+                  </button>
 
-                <span className='flex flex-row gap-2'>
-                  <p className='font-bold text-duoGrayDark-lightestOpacity'>
-                    Description
-                  </p>
-                  {exercise.description || 'none'}
-                </span>
-                <span className='flex flex-row gap-2'>
-                  <p className='font-bold text-duoGrayDark-lightestOpacity'>
-                    Time
-                  </p>
-                  {exercise.time} seconds
-                </span>
+                  <button
+                    onClick={() => removeFile(exercise.fileName)}
+                    className='absolute right-10 top-2'
+                  >
+                    <FaTrashAlt />
+                  </button>
 
-                <button className='font-bold text-duoBlueDark-default'>
-                  preview
-                </button>
-              </section>
-            )}
+                  <span className='flex flex-row gap-2'>
+                    <p className='font-bold text-duoGrayDark-lightestOpacity'>
+                      Description
+                    </p>
+                    {exercise.description || 'none'}
+                  </span>
+                  <span className='flex flex-row gap-2'>
+                    <p className='font-bold text-duoGrayDark-lightestOpacity'>
+                      Time
+                    </p>
+                    {exercise.time} seconds
+                  </span>
+
+                  <button
+                    className='font-bold text-duoBlueDark-default'
+                    onClick={() => updateSelectedPopup(PopupsTypes.PREVIEW)}
+                  >
+                    preview
+                  </button>
+                  <EditSpotrecc
+                    subExercise={exercise}
+                    onSave={(updatedExercise) =>
+                      console.log('updated', updatedExercise)
+                    }
+                  />
+                </section>
+              )}
           </div>
         ))}
       </section>
@@ -73,8 +106,14 @@ const Spotrecc: React.FC = () => {
           onClick={() => {}}
           isLoading={false}
         />
-        <SpotreccData />
       </section>
+      {openedFileIndex !== null && openedFileIndex < subExercises.length && (
+        <Preview
+          bucketName={BucketsNames.RECORDS}
+          exerciseType={ExercisesTypes.SPOTRECC}
+          objectName={subExercises[openedFileIndex].fileName}
+        />
+      )}
     </div>
   );
 };
