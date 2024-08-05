@@ -2,8 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 export enum InputTypes {
-  text = 'text',
-  password = 'password',
+  TEXT = 'text',
+  NUMBER = 'number',
+  PASSWORD = 'password',
 }
 
 const Input: React.FC<InputProps> = (props: InputProps) => {
