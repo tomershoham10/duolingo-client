@@ -9,6 +9,7 @@ import {
   getFileByBucketAndType,
 } from '@/app/API/files-service/functions';
 import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 
 const SpotreccFiles = () => {
   const [recordsData, setRecordsData] = useState<FileType[]>([]);
@@ -78,9 +79,21 @@ const SpotreccFiles = () => {
 
               {Object.keys(selectedFile.metadata).map((metaKey, metaIndex) => (
                 <li className='my-1' key={metaKey}>
-                  {Object.keys(selectedFile.metadata)[metaIndex]}
-
-                  {Object.values(selectedFile.metadata)[metaIndex] || 'false'}
+                  {Object.keys(selectedFile.metadata)[metaIndex] !==
+                    'content-type' && (
+                    <>
+                      {`${Object.keys(selectedFile.metadata)[metaIndex]}: `}
+                      {Object.keys(selectedFile.metadata)[metaIndex] ===
+                      'record_length'
+                        ? formatNumberToMinutes(
+                            Number(
+                              Object.values(selectedFile.metadata)[metaIndex]
+                            )
+                          )
+                        : Object.values(selectedFile.metadata)[metaIndex] ||
+                          'false'}
+                    </>
+                  )}
                 </li>
               ))}
               <li>
