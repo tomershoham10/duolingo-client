@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     const userData = decode(
         jwtToken || '',
     ) as JwtPayload;
-    console.log(userData)
+    // console.log(userData)
     // return NextResponse.redirect(new URL('/login', request.url));
 
     const Redirect = () => {
@@ -41,7 +41,6 @@ export async function middleware(request: NextRequest) {
             (pathname.startsWith("/learn") || pathname.startsWith("/lesson")) &&
             userData.role !== PermissionsTypes.STUDENT)
     ) {
-        console.log('redirect1')
         return Redirect();
     }
 
@@ -51,7 +50,6 @@ export async function middleware(request: NextRequest) {
             pathname.includes("/learn") ||
             pathname.includes("/lesson")
         ) {
-            console.log('redirect2')
             return NextResponse.redirect(
                 new URL(
                     "/login",
@@ -69,9 +67,6 @@ export async function middleware(request: NextRequest) {
                 (pathname.startsWith("/learn") || pathname.startsWith("/lesson")) &&
                 userData.role !== PermissionsTypes.STUDENT)
         ) {
-            // console.log(pathname, userData.role);
-
-            console.log('redirect3')
             return Response.json(
                 { success: false, message: "authentication failed" },
                 { status: 401 }
