@@ -110,7 +110,7 @@ export const getUnsuspendedExercisesData = async (lessonId: string): Promise<Exe
 export const getResultsData = async (lessonId: string, userId: string) => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/lessons/getResultsByLessonAndUser/${lessonId}/results/${userId}`,
+            `${LESSONS_API.GET_RESULTS_BY_LESSON_AND_USER}/${lessonId}/results/${userId}`,
             {
                 method: "GET",
                 credentials: "include",

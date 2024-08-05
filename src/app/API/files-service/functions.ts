@@ -27,8 +27,9 @@ export enum FeaturesList {
     NUMBER_OF_BLADES = "numberOfBlades",
 }
 
+const host = process.env.NEXT_PUBLIC_HOST;
 
-const ROUT = 'http://localhost:4002';
+const ROUT = `http://${host}:4002`;
 
 const FILES_SERVICE_ENDPOINTS = {
     FILES: `${ROUT}/api/files`,

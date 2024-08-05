@@ -15,9 +15,21 @@ const useUserStoreObj = {
 
 const addAlert = useAlertStore.getState().addAlert;
 
+const host = process.env.NEXT_PUBLIC_HOST;
+
+const ROUT = `http://${host}:4001`;
+
+const USERS_SERVICE_ENDPOINT = `${ROUT}/api/users`;
+
+export const USERS_API = {
+    GET_USERS_BY_COURSE_ID: `${USERS_SERVICE_ENDPOINT}/getUsersByCourseId`,
+    LOGIN: `${USERS_SERVICE_ENDPOINT}/login`,
+    UPDATE_NEXT_LESSON_ID: `${USERS_SERVICE_ENDPOINT}/updateNextLessonId`,
+}
+
 export const registerUser = async (userName: string, tId: string, password: string, permission: string, courseId: string | undefined): Promise<number | undefined> => {
     try {
-        const response = await fetch(`http://localhost:4001/api/users/`, {
+        const response = await fetch(`${USERS_SERVICE_ENDPOINT}`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -43,7 +55,7 @@ export const registerUser = async (userName: string, tId: string, password: stri
 
 export const getUsersByCourseId = async (courseId: string): Promise<UserType[] | null> => {
     try {
-        const response = await fetch(`http://localhost:4001/api/users/getUsersByCourseId/${courseId}`, {
+        const response = await fetch(`${USERS_API.GET_USERS_BY_COURSE_ID}/${courseId}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -65,7 +77,7 @@ export const getUsersByCourseId = async (courseId: string): Promise<UserType[] |
 export const handleAuth = async (userName: string, password: string) => {
     try {
         const response = await fetch(
-            "http://localhost:4001/api/users/login/",
+            `${USERS_API.LOGIN}`,
             {
                 method: "POST",
                 credentials: "include",
@@ -157,7 +169,7 @@ export const handleAuth = async (userName: string, password: string) => {
 export const updateNextLessonIdForUser = async (userId: string): Promise<any | null> => {
     try {
         const response = await fetch(
-            `http://localhost:4001/api/users/updateNextLessonId/${userId}`,
+            `${USERS_API.UPDATE_NEXT_LESSON_ID}/${userId}`,
             {
                 method: "PUT",
                 credentials: "include",

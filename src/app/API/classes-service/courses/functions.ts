@@ -39,7 +39,7 @@ export const createCourse = async (name: string): Promise<number | null> => {
 export const getCourseById = async (courseId: string): Promise<CoursesType | null> => {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/courses/${courseId}`,
+            `${COURSES_SERVICE_ENDPOINTS.COURSES}/${courseId}`,
             {
                 method: 'GET',
                 credentials: 'include',

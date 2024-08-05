@@ -32,7 +32,7 @@ export const getUnits = async (): Promise<UnitType[] | null> => {
 export const createByCourse = async (courseId: string): Promise<number> => {
     try {
         const response = await fetch(
-            'http://localhost:8080/api/units/createByCourse',
+            `${UNITS_API.CREATE_BY_COURSE}`,
             {
                 method: 'POST',
                 credentials: 'include',
