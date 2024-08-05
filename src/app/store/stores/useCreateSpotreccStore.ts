@@ -2,7 +2,7 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { create } from 'zustand';
 
-interface SpotreccSubExercise {
+export interface SpotreccSubExercise {
     fileName: string;
     description: string | null;
     time: number;
@@ -21,7 +21,15 @@ type Action = {
 export const useCreateSpotreccStore = create<CreateSpotreccState & Action>(
     (set) => ({
         subExercises: [],
-        addSubExercise: (subExercise) => set((state) => ({ subExercises: [...state.subExercises, subExercise] })),
+        addSubExercise: (subExercise) => set((state) => {
+            const exists = state.subExercises.some(exercise => exercise.fileName === subExercise.fileName);
+            if (!exists) {
+                return {
+                    subExercises: [...state.subExercises, subExercise]
+                };
+            }
+            return state;
+        }),
         removeSubExercise: (fileName) => set((state) => ({
             subExercises: state.subExercises.filter((subExercise) => subExercise.fileName !== fileName)
         })),
