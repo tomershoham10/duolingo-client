@@ -4,20 +4,44 @@ import { useRef, useState } from 'react';
 import playing from '../../../public/svgs/audioPlayer/playing.svg';
 import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
 import { useKeyDown } from '@/app/_utils/hooks/useKeyDown';
+
+export enum AudioPlayerSizes {
+  SMALL = 'small',
+  MEDIUM = 'medium',
+  LARGE = 'large',
+}
+
 const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
   const src = props.src;
   const isDisabled = props.isDisabled || false;
   const isPauseable = props.isPauseable || false;
+  const size = props.size || AudioPlayerSizes.MEDIUM;
+
+  let width = '';
+  let hight = '';
+
+  switch (size) {
+    case AudioPlayerSizes.SMALL:
+      width = 'w-[7.5rem]';
+      hight = 'h-[7.5rem]';
+      break;
+    case AudioPlayerSizes.MEDIUM:
+      width = 'w-[10rem]';
+      hight = 'h-[10rem]';
+      break;
+    case AudioPlayerSizes.LARGE:
+      width = 'w-[12.5rem]';
+      hight = 'h-[12.5rem]';
+      break;
+    default:
+      width = 'w-[10rem]';
+      hight = 'h-[10rem]';
+      break;
+  }
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
-
-  //   const onLoadedMetadata = () => {
-  //     if (audioRef.current) {
-  //       setDuration(audioRef.current.duration);
-  //     }
-  //   };
 
   const togglePlayPause = () => {
     if (audioRef.current) {
@@ -41,19 +65,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
 
   return (
     <section
-      className={`flex h-[12.5rem] w-[12.5rem] cursor-pointer flex-col justify-end rounded-[25%] border-b-[8px] active:dark:bg-transparent  lg:h-[20rem] lg:w-[20rem] 2xl:h-[30rem] 2xl:w-[30rem] 3xl:h-[35rem] 3xl:w-[35rem] ${
+      className={`flex ${width} ${hight} cursor-pointer flex-col justify-end rounded-[25%] border-b-[8px] active:dark:bg-transparent lg:h-[20rem] lg:w-[20rem] 2xl:h-[30rem] 2xl:w-[30rem] 3xl:h-[35rem] 3xl:w-[35rem] ${
         !isDisabled
           ? 'hover:dark:border[#2E75A0] border-[#3383B1] dark:bg-duoBlueDark-text hover:dark:bg-duoBlueDark-textHover'
           : 'border-[#5F666F] dark:bg-duoGrayDark-lightestOpacity hover:dark:border-[#565D65] hover:dark:bg-[#7F8D96]'
       }`}
     >
-      <audio
-        ref={audioRef}
-        className='hidden'
-        src={src}
-        // onTimeUpdate={onTimeUpdate}
-        // onLoadedMetadata={onLoadedMetadata}
-      />
+      <audio ref={audioRef} className='hidden' src={src} />
       <button
         className={`relative flex h-full w-full items-center justify-center rounded-[25%] ${
           !isDisabled
