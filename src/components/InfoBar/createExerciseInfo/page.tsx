@@ -31,11 +31,11 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
 
   return (
     <>
-      {props.exerciseType === ExercisesTypes.SPOTRECC ? (
-        <SpotreccFiles />
-      ) : !!selectedFile ? (
-        <FileData />
-      ) : null}
+      {/* {props.exerciseType === ExercisesTypes.SPOTRECC ? ( */}
+      <SpotreccFiles exerciseType={props.exerciseType} />
+      {/* //   ) : !!selectedFile ? ( */}
+      {/* // <FileData /> */}
+      {/* ) : null} */}
     </>
   );
 };
