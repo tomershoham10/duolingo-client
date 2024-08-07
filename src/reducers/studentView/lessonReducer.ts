@@ -83,7 +83,7 @@ export interface lessonType {
     grabbedTargetId: string | null,
     totalScore: number, //-1
     isExerciseStarted: boolean, //false
-    isExerciseFinished: boolean,//false
+    isExerciseFinished: boolean, //false
     isExerciseSubmitted: boolean, //false
     timeRemaining: TimeType, //{ minutes: 0, seconds: 0 }
     selectedTargetIndex: number //-1,
