@@ -1,0 +1,17 @@
+FROM node:20.6.1
+
+WORKDIR /app
+
+COPY package*.json .
+
+COPY . .
+
+RUN npm install
+
+#RUN find $PWD/public/Nunito/ -name '*.ttf' -exec install -m644 {} /usr/share/fonts/truetype/google-fonts/
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
