@@ -11,7 +11,12 @@ import {
 import { useCreateSpotreccStore } from '@/app/store/stores/useCreateSpotreccStore';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 
-const SpotreccFiles = () => {
+interface Props {
+  exerciseType: ExercisesTypes;
+}
+
+const SpotreccFiles: React.FC<Props> = (props) => {
+  const { exerciseType } = props;
   const [recordsData, setRecordsData] = useState<FileType[]>([]);
   const addSubExercise = useCreateSpotreccStore.getState().addSubExercise;
 
@@ -20,11 +25,7 @@ const SpotreccFiles = () => {
     const fetchData = async () => {
       try {
         const res = (await pRetry(
-          () =>
-            getFileByBucketAndType(
-              BucketsNames.RECORDS,
-              ExercisesTypes.SPOTRECC
-            ),
+          () => getFileByBucketAndType(BucketsNames.RECORDS, exerciseType),
           { retries: 5 }
         )) as FileType[];
         console.log('SpotreccFiles', res);
@@ -40,7 +41,7 @@ const SpotreccFiles = () => {
   const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
   return (
     <div className='flex h-full w-[90%] flex-col gap-3 px-6 py-4'>
-      <h1>SpotreccFiles</h1>
+      <h1>{exerciseType} Files</h1>
       <ul className='max-h-[33%] w-full cursor-pointer overflow-hidden rounded-md border-2 border-duoGrayDark-light px-2 py-2 hover:overflow-y-auto'>
         {recordsData.map((file, index) => (
           <li

@@ -49,14 +49,17 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
   };
 
   const components = {
-    [ExercisesTypes.FSA]: {
-      records: () => <AcintDataSection exerciseType={params.exercise} />,
-      exercise: ExerciseDataSection,
-    },
-    [ExercisesTypes.SPOTRECC]: {
-      records: () => <AcintDataSection exerciseType={params.exercise} />,
-      exercise: SpotreccDataSection,
-    },
+    [ExercisesTypes.FSA]: <ExerciseDataSection />,
+    //  {
+
+    //   records: () => <AcintDataSection exerciseType={params.exercise} />,
+    //   exercise: ExerciseDataSection,
+    // }
+    [ExercisesTypes.SPOTRECC]: <Spotrecc />,
+    // {
+    //   records: () => <AcintDataSection exerciseType={params.exercise} />,
+    //   exercise: SpotreccDataSection,
+    // }
   };
 
   const onNextFuncs = {
@@ -134,7 +137,8 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
 
   return (
     <div className='h-full w-full overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
-      {params.exercise === ExercisesTypes.SPOTRECC ? (
+      {components[params.exercise]}
+      {/* {params.exercise === ExercisesTypes.SPOTRECC ? (
         <Spotrecc />
       ) : (
         <Pagination
@@ -144,7 +148,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
           onNext={onNextFuncs}
           onSubmit={submitExercise}
         />
-      )}
+      )} */}
     </div>
   );
 };
