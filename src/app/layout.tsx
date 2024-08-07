@@ -1,10 +1,10 @@
 import Alert from '@/components/Alert/page';
 import './globals.css';
 import type { Metadata } from 'next';
-import { Nunito } from 'next/font/google';
+// import { Nunito } from 'next/font/google';
 import ContextMenu from '@/components/ContextMenu/page';
 
-const nunito = Nunito({ subsets: ['latin'] });
+// const nunito = Nunito({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Train App',
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      className={`${nunito.className} dark`}
+      className={`dark`}
       suppressHydrationWarning
     >
       <body
