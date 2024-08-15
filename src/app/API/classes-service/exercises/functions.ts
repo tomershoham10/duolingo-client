@@ -1,4 +1,4 @@
-import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API } from "@/app/API/classes-service/apis";
+import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API, FSA_API } from "@/app/API/classes-service/apis";
 
 export enum ExercisesTypes {
     FSA = "fsa",
@@ -35,7 +35,7 @@ export const getAllExercises = async (): Promise<ExerciseType[]> => {
 export const getRelevantByExerciseId = async (currentExerciseId: string): Promise<TargetType[]> => {
     try {
         const response = await fetch(
-            `${EXERCISES_API.GET_RELEVANT_BY_ID}/${currentExerciseId}`,
+            `${FSA_API.GET_RELEVANT_BY_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -66,7 +66,7 @@ export const getRelevantByExerciseId = async (currentExerciseId: string): Promis
 export const getAnswersByExerciseId = async (currentExerciseId: string) => {
     try {
         const response = await fetch(
-            `${EXERCISES_API.GET_ANSWERS_BY_EXERCISE_ID}/${currentExerciseId}`,
+            `${FSA_API.GET_ANSWERS_BY_EXERCISE_ID}/${currentExerciseId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -96,7 +96,7 @@ export const getAnswersByExerciseId = async (currentExerciseId: string) => {
 export const getResultByUserAndExerciseId = async (currentExerciseId: string, userId: string) => {
     try {
         const response = await fetch(
-            `${EXERCISES_API.GET_RESULT_BY_USER_AND_EXERCISE_ID}/${currentExerciseId}/${userId}`,
+            `${FSA_API.GET_RESULT_BY_USER_AND_EXERCISE_ID}/${currentExerciseId}/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
