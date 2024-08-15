@@ -136,8 +136,12 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
   console.log('exerciseToSubmit.type', exerciseToSubmit.type);
 
   return (
-    <div className='h-full w-full overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
-      {components[params.exercise]}
+    <section className='flex h-full w-full flex-col overflow-x-hidden px-10 2xl:px-16 3xl:pt-4'>
+      <section className='flex basis-[12.5%] items-center gap-3 text-4xl font-extrabold uppercase'>
+        <p> create</p>
+        <p className='text-duoGrayDark-lighter'> {params.exercise}</p>
+      </section>
+      <section className='basis-[87.5%]'>{components[params.exercise]}</section>
       {/* {params.exercise === ExercisesTypes.SPOTRECC ? (
         <Spotrecc />
       ) : (
@@ -149,7 +153,7 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
           onSubmit={submitExercise}
         />
       )} */}
-    </div>
+    </section>
   );
 };
 export default NewExercise;

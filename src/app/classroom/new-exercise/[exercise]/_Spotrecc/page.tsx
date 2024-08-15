@@ -44,13 +44,17 @@ const Spotrecc: React.FC = () => {
     []
   );
 
+  const createExercise = useCallback(() => {
+    console.log(subExercises);
+  }, [subExercises]);
+
   return (
     <div className='flex h-full w-full flex-col overflow-hidden'>
-      <div className='flex basis-[12.5%] items-center gap-3 text-4xl font-extrabold uppercase'>
+      {/* <div className='flex basis-[12.5%] items-center gap-3 text-4xl font-extrabold uppercase'>
         <p> create</p>
         <p className='text-duoGrayDark-lighter'> spotrecc</p>
-      </div>
-      <section className='flex max-h-[80%] basis-[75%] flex-col gap-4 overflow-auto pr-3'>
+      </div> */}
+      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
         {subExercises.map((exercise, index) => (
           <div
             key={index}
@@ -109,11 +113,11 @@ const Spotrecc: React.FC = () => {
           </div>
         ))}
       </section>
-      <section className='flex basis-[12.5%] items-center'>
+      <section className='flex basis-[15%] items-center'>
         <Button
           label='CREATE'
           color={ButtonColors.BLUE}
-          onClick={() => {}}
+          onClick={createExercise}
           isLoading={false}
         />
       </section>
