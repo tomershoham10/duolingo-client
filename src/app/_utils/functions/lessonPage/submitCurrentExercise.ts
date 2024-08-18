@@ -22,7 +22,8 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
     } = params
     let scoreByTargets: number = -1;
     let scoreByTime: number = -1;
-    let totalScoreToSubmit: number = -1;
+    // let totalScoreToSubmit: number = -1;
+    let totalScoreToSubmit: number = 100;
 
     if (lessonState.targetsToSubmit.length === 0) {
         addAlert('Please select a target.', AlertSizes.small);
@@ -93,29 +94,29 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
     //     scoreByTime = 60;
     //   }
 
-    scoreByTime = 100;
+    // scoreByTime = 100;
 
-    totalScoreToSubmit !== 0
-        ? (totalScoreToSubmit = 0.6 * scoreByTargets + 0.4 * scoreByTime)
-        : null;
-    lessonDispatch({
-        type: lessonAction.SET_TOTAL_SCORE,
-        payload: totalScoreToSubmit,
-    });
-    if (
-        totalScoreToSubmit === -1 ||
-        scoreByTime === -1 ||
-        scoreByTargets === -1
-    ) {
-        console.log(
-            'error',
-            totalScoreToSubmit === -1,
-            scoreByTime === -1,
-            scoreByTargets === -1
-        );
-        addAlert('error', AlertSizes.small);
-        return null;
-    }
+    // totalScoreToSubmit !== 0
+    //     ? (totalScoreToSubmit = 0.6 * scoreByTargets + 0.4 * scoreByTime)
+    //     : null;
+    // lessonDispatch({
+    //     type: lessonAction.SET_TOTAL_SCORE,
+    //     payload: totalScoreToSubmit,
+    // });
+    // if (
+    //     totalScoreToSubmit === -1 ||
+    //     scoreByTime === -1 ||
+    //     scoreByTargets === -1
+    // ) {
+    //     console.log(
+    //         'error',
+    //         totalScoreToSubmit === -1,
+    //         scoreByTime === -1,
+    //         scoreByTargets === -1
+    //     );
+    //     addAlert('error', AlertSizes.small);
+    //     return null;
+    // }
 
     const resultToSubmit = {
         _id: resultId,
