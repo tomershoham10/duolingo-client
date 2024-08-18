@@ -11,7 +11,11 @@ import {
 import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { BucketsNames } from '@/app/API/files-service/functions';
-import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+import {
+  createExercise,
+  ExercisesTypes,
+} from '@/app/API/classes-service/exercises/functions';
+import pRetry from 'p-retry';
 
 const EditSpotrecc = lazy(() => import('@/app/(popups)/EditSpotrecc/page'));
 const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
@@ -38,14 +42,28 @@ const Spotrecc: React.FC = () => {
 
   const subExericseUpdate = useCallback(
     (updatedExercise: SpotreccSubExercise) => {
+      console.log(updatedExercise);
       updateSubExercise(updatedExercise);
       updateSelectedPopup(PopupsTypes.CLOSED);
     },
-    []
+    [updateSelectedPopup, updateSubExercise]
   );
 
-  const createExercise = useCallback(() => {
+  const submit = useCallback(async () => {
     console.log(subExercises);
+    if (subExercises.length > 0) {
+      const response = await pRetry(
+        () =>
+          createExercise({
+            type: ExercisesTypes.SPOTRECC,
+            subExercises: subExercises,
+          }),
+        {
+          retries: 5,
+        }
+      );
+      console.log('submit response', response);
+    }
   }, [subExercises]);
 
   return (
@@ -66,50 +84,47 @@ const Spotrecc: React.FC = () => {
             }`}
           >
             <p className={`font-extrabold`}>{exercise.fileName}</p>
-            {openedFileIndex !== null &&
-              openedFileIndex < subExercises.length && (
-                <section>
-                  <button
-                    onClick={() =>
-                      updateSelectedPopup(PopupsTypes.EDIT_SPOTRECC)
-                    }
-                    className='absolute right-3 top-2'
-                  >
-                    <MdEdit />
-                  </button>
+            {openedFileIndex !== null && openedFileIndex === index && (
+              <section>
+                <button
+                  onClick={() => updateSelectedPopup(PopupsTypes.EDIT_SPOTRECC)}
+                  className='absolute right-3 top-2'
+                >
+                  <MdEdit />
+                </button>
 
-                  <button
-                    onClick={() => removeFile(exercise.fileName)}
-                    className='absolute right-10 top-2'
-                  >
-                    <FaTrashAlt />
-                  </button>
+                <button
+                  onClick={() => removeFile(exercise.fileName)}
+                  className='absolute right-10 top-2'
+                >
+                  <FaTrashAlt />
+                </button>
 
-                  <span className='flex flex-row gap-2'>
-                    <p className='font-bold text-duoGrayDark-lightestOpacity'>
-                      Description
-                    </p>
-                    {exercise.description || 'none'}
-                  </span>
-                  <span className='flex flex-row gap-2'>
-                    <p className='font-bold text-duoGrayDark-lightestOpacity'>
-                      Time
-                    </p>
-                    {exercise.time} seconds
-                  </span>
+                <span className='flex flex-row gap-2'>
+                  <p className='font-bold text-duoGrayDark-lightestOpacity'>
+                    Description
+                  </p>
+                  {exercise.description || 'none'}
+                </span>
+                <span className='flex flex-row gap-2'>
+                  <p className='font-bold text-duoGrayDark-lightestOpacity'>
+                    Time
+                  </p>
+                  {exercise.time} seconds
+                </span>
 
-                  <button
-                    className='font-bold text-duoBlueDark-default'
-                    onClick={() => updateSelectedPopup(PopupsTypes.PREVIEW)}
-                  >
-                    preview
-                  </button>
-                  <EditSpotrecc
-                    subExercise={exercise}
-                    onSave={subExericseUpdate}
-                  />
-                </section>
-              )}
+                <button
+                  className='font-bold text-duoBlueDark-default'
+                  onClick={() => updateSelectedPopup(PopupsTypes.PREVIEW)}
+                >
+                  preview
+                </button>
+                <EditSpotrecc
+                  subExercise={subExercises[openedFileIndex]}
+                  onSave={subExericseUpdate}
+                />
+              </section>
+            )}
           </div>
         ))}
       </section>
@@ -117,16 +132,18 @@ const Spotrecc: React.FC = () => {
         <Button
           label='CREATE'
           color={ButtonColors.BLUE}
-          onClick={createExercise}
+          onClick={submit}
           isLoading={false}
         />
       </section>
       {openedFileIndex !== null && openedFileIndex < subExercises.length && (
-        <Preview
-          bucketName={BucketsNames.RECORDS}
-          exerciseType={ExercisesTypes.SPOTRECC}
-          objectName={subExercises[openedFileIndex].fileName}
-        />
+        <>
+          <Preview
+            bucketName={BucketsNames.RECORDS}
+            exerciseType={ExercisesTypes.SPOTRECC}
+            objectName={subExercises[openedFileIndex].fileName}
+          />
+        </>
       )}
     </div>
   );
