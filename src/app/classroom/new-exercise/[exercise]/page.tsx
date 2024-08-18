@@ -93,36 +93,36 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
     },
   };
 
-  const submitExercise = async () => {
-    try {
-      console.log('submit', exerciseToSubmit);
-      //   if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
-      const res = await pRetry(
-        () =>
-          exerciseToSubmit.targetsList && exerciseToSubmit.description
-            ? createExercise({
-                relevant: exerciseToSubmit.relevant,
-                targetsList: exerciseToSubmit.targetsList,
-                timeBuffers: exerciseToSubmit.timeBuffers,
-                description: exerciseToSubmit.description,
-                files: exerciseToSubmit.files,
-              })
-            : null,
-        {
-          retries: 5,
-        }
-      );
+  // const submitExercise = async () => {
+  //   try {
+  //     console.log('submit', exerciseToSubmit);
+  //     //   if (exerciseToSubmit.recordName && exerciseToSubmit.description) {
+  //     const res = await pRetry(
+  //       () =>
+  //         exerciseToSubmit.targetsList && exerciseToSubmit.description
+  //           ? createExercise({
+  //               relevant: exerciseToSubmit.relevant,
+  //               targetsList: exerciseToSubmit.targetsList,
+  //               timeBuffers: exerciseToSubmit.timeBuffers,
+  //               description: exerciseToSubmit.description,
+  //               files: exerciseToSubmit.files,
+  //             })
+  //           : null,
+  //       {
+  //         retries: 5,
+  //       }
+  //     );
 
-      if (res === 'created successfully') {
-        location.reload();
-      } else {
-        addAlert('propblem while creating the exercise', AlertSizes.small);
-      }
-      return;
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     if (res === 'created successfully') {
+  //       location.reload();
+  //     } else {
+  //       addAlert('propblem while creating the exercise', AlertSizes.small);
+  //     }
+  //     return;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const updateType = useCallback(() => {
     updateExerciseType(params.exercise);
