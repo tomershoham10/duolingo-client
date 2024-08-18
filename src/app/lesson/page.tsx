@@ -19,10 +19,6 @@ import { AlertSizes, useAlertStore } from '../store/stores/useAlertStore';
 
 import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 import {
-  getAnswersByExerciseId,
-  getRelevantByExerciseId,
-} from '../API/classes-service/exercises/functions';
-import {
   getResultsByLessonAndUser,
   startExercise,
 } from '../API/classes-service/results/functions';
@@ -42,6 +38,7 @@ import { getEncryptedFileByName } from '../API/files-service/functions';
 import { getZipPassword } from '../API/auth-service/functions';
 import pRetry from 'p-retry';
 import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { getAnswersByExerciseId, getRelevantByExerciseId } from '../API/classes-service/exercises/fsa/functions';
 
 const Lesson: React.FC = () => {
   const router = useRouter();
@@ -729,8 +726,7 @@ const Lesson: React.FC = () => {
       userStore.userId ? (
         <div className='absolute inset-x-0 inset-y-0'>
           <div
-            className='absolute left-0 top-0 h-screen
-                     w-full gap-0 overflow-hidden p-0'
+            className='absolute left-0 top-0 h-screen w-full gap-0 overflow-hidden p-0'
             id='lesson-grid'
           >
             <div className='h-full w-full' id='exrcise-grid'>
@@ -760,7 +756,7 @@ const Lesson: React.FC = () => {
                               key={relevantTarget._id}
                               className='mr-5 flex flex-row items-end self-end'
                             >
-                              <div className='relative '>
+                              <div className='relative'>
                                 <div
                                   className={`border-border-duoGray-regular border-border-duoGray-regular group flex flex-row items-center justify-center rounded-xl border-2 border-b-4 py-4 pl-[45px] pr-[30px] text-lg font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest dark:text-duoGrayDark-lightest sm:min-w-[7rem] lg:min-w-[10rem] ${
                                     lessonState.isExerciseStarted
@@ -768,19 +764,17 @@ const Lesson: React.FC = () => {
                                         ? 'cursor-pointer active:translate-y-[1px] active:border-b-2'
                                         : 'cursor-default'
                                       : 'cursor-default'
-                                  }
-                                                               ${
-                                                                 !lessonState.isExerciseStarted &&
-                                                                 !lessonState.isExerciseSubmitted
-                                                                   ? ''
-                                                                   : lessonState.isExerciseStarted &&
-                                                                       !lessonState.isExerciseSubmitted &&
-                                                                       relevantTargetIndex ===
-                                                                         lessonState.selectedTargetIndex
-                                                                     ? 'cursor-pointer border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text dark:border-duoGrayDark-lighter dark:bg-duoGrayDark-midDark'
-                                                                     : ' cursor-pointer hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText hover:dark:border-duoGrayDark-lighter hover:dark:bg-duoGrayDark-midDark'
-                                                               }
-                                                                `}
+                                  } ${
+                                    !lessonState.isExerciseStarted &&
+                                    !lessonState.isExerciseSubmitted
+                                      ? ''
+                                      : lessonState.isExerciseStarted &&
+                                          !lessonState.isExerciseSubmitted &&
+                                          relevantTargetIndex ===
+                                            lessonState.selectedTargetIndex
+                                        ? 'cursor-pointer border-duoBlue-dark bg-duoBlue-lightest text-duoBlue-text dark:border-duoGrayDark-lighter dark:bg-duoGrayDark-midDark'
+                                        : 'cursor-pointer hover:border-duoGray-buttonBorderHover hover:bg-duoGray-lighter group-hover:text-duoGray-darkText hover:dark:border-duoGrayDark-lighter hover:dark:bg-duoGrayDark-midDark'
+                                  } `}
                                   onClick={() => {
                                     if (
                                       !lessonState.isExerciseSubmitted &&
@@ -798,8 +792,7 @@ const Lesson: React.FC = () => {
                                   }}
                                 >
                                   <span
-                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl
-                                    ${
+                                    className={`absolute left-3 inline-flex shrink-0 items-center justify-center rounded-lg border-2 font-bold text-duoGray-dark dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:h-[25px] sm:w-[25px] sm:text-sm lg:h-[30px] lg:w-[30px] xl:text-xl ${
                                       !lessonState.isExerciseStarted &&
                                       !lessonState.isExerciseSubmitted
                                         ? ''
@@ -871,7 +864,7 @@ const Lesson: React.FC = () => {
               className='right-0 mx-auto flex flex-col items-center justify-start'
             >
               <div className='mb-3 mt-5 flex flex-col rounded-2xl border-2 text-center text-duoGray-darker dark:border-duoGrayDark-light dark:text-duoGrayDark-lightest sm:px-1 sm:py-2 xl:px-4 xl:py-6 3xl:mb-5'>
-                <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12  3xl:text-4xl'>
+                <span className='font-extrabold sm:hidden md:text-xl lg:block xl:mb-6 xl:text-2xl 3xl:mb-12 3xl:text-4xl'>
                   Unit 1 - Level 1
                   <br className='3xl:text-4xl' />
                   Lesson 1
@@ -909,7 +902,7 @@ const Lesson: React.FC = () => {
                     Password:
                   </p>
                   <button
-                    className='flex flex-row items-center gap-1 leading-5  opacity-75 hover:opacity-95'
+                    className='flex flex-row items-center gap-1 leading-5 opacity-75 hover:opacity-95'
                     onClick={() => {
                       lessonState.zipPassword
                         ? navigator.clipboard.writeText(
@@ -939,17 +932,16 @@ const Lesson: React.FC = () => {
 
             <div
               // ref={buttonsBarRef} //buttons bar
-              className={`
-                                ${
-                                  lessonState.isExerciseFinished &&
-                                  lessonState.isExerciseSubmitted
-                                    ? lessonState.totalScore === 100
-                                      ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-                                      : lessonState.totalScore === 0
-                                        ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
-                                        : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light dark:border-duoGrayDark-light  dark:bg-duoGrayDark-dark'
-                                    : 'relative col-span-2 flex items-center justify-center border-t-2 dark:border-duoGrayDark-light'
-                                }`}
+              className={` ${
+                lessonState.isExerciseFinished &&
+                lessonState.isExerciseSubmitted
+                  ? lessonState.totalScore === 100
+                    ? 'relative col-span-2 flex w-full items-center justify-center bg-duoGreen-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+                    : lessonState.totalScore === 0
+                      ? 'relative col-span-2 flex items-center justify-center bg-duoRed-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+                      : 'relative col-span-2 flex items-center justify-center bg-duoYellow-light dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
+                  : 'relative col-span-2 flex items-center justify-center border-t-2 dark:border-duoGrayDark-light'
+              }`}
             >
               <div
                 className={
@@ -964,7 +956,7 @@ const Lesson: React.FC = () => {
                 {lessonState.isExerciseFinished &&
                 lessonState.isExerciseSubmitted ? (
                   <div className='absolute flex h-full w-full items-center justify-between'>
-                    <div className='flex h-full flex-none flex-row items-center '>
+                    <div className='flex h-full flex-none flex-row items-center'>
                       {lessonState.totalScore === 100 ? (
                         <FaCheck className='pop-animation mr-4 rounded-full bg-white p-3 text-6xl text-duoGreen-darkText' />
                       ) : (

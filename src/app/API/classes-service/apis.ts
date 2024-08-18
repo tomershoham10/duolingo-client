@@ -45,12 +45,13 @@ export const LESSONS_API = {
 export const EXERCISES_API = {
     FSA: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/fsa`,
     SPOTRECC: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/spotrecc`,
+    
+    GET_RESULT_BY_USER_AND_EXERCISE_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/getResultByUserAndExerciseId`,
 };
 
 export const FSA_API = {
     GET_RELEVANT_BY_ID: `${EXERCISES_API.FSA}/getRelevantByExerciseId`,
     GET_ANSWERS_BY_EXERCISE_ID: `${EXERCISES_API.FSA}/getAnswersByExerciseId`,
-    GET_RESULT_BY_USER_AND_EXERCISE_ID: `${EXERCISES_API.FSA}/getResultByUserAndExerciseId`,
 }
 
 export const SPOTRECC_API = {
