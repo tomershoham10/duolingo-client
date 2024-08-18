@@ -5,7 +5,7 @@ export enum ExercisesTypes {
     SPOTRECC = "spotrecc"
 }
 
-export const createExercise = async (newExercise: Partial<ExerciseType>): Promise<string> => {
+export const createExercise = async (newExercise: Partial<FsaType> | Partial<SpotreccType>): Promise<string> => {
     try {
         console.log('create exercise');
 

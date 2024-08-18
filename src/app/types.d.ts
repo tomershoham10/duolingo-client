@@ -91,17 +91,60 @@ interface ExerciseType {
     _id: string;
     dateCreated: Date;
     type: ExercisesTypes;
+}
+
+//~~~~~~~~~~~ FSA ~~~~~~~~~~~//
+
+interface TimeBuffersType {
+    timeBuffer: number;
+    grade: number;
+}
+
+enum ExercisesTypes {
+    FSA = 'fsa',
+    SPOTRECC = 'spotrecc',
+}
+
+enum FeaturesList {
+    NUMBER_OF_BLADES = 'numberOfBlades',
+}
+
+enum BucketsNames {
+    RECORDS = 'records',
+    IMAGES = 'images',
+}
+
+interface FeatureObject {
+    type: FeaturesList;
+    value: number | string;
+}
+
+interface FileObject {
+    fileName: string;
+    bucket: BucketsNames;
+}
+
+interface FsaType extends ExerciseType {
     targetsList?: string[]; //may be 2 correct answers
     timeBuffers: TimeBuffersType[];
     description?: string;
-    files: FileObject[]; // if fsa - length === 1
+    file: string;
 
-    // fsa
     relevant?: string[];
     acceptableTargets?: string[];
 
-    // spotrecc
-    notableFeatures: FeatureObject[];
+    subExercises?: any[];
+}
+
+//~~~~~~~~~~~ SPOTRECC ~~~~~~~~~~~//
+interface SpotreccSubExercise {
+    description?: string;
+    file: string;
+    time: number; // in seconds
+}
+
+interface SpotreccType extends ExerciseType {
+    subExercises: SpotreccSubExercise[];
 }
 
 // ------ results ------- //
