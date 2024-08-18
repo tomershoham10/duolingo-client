@@ -30,12 +30,12 @@ export enum lessonAction {
     UPDATE_NEXT_EXERCISE = "updateNextExercise",
 }
 
-type TimeType = {
+export type TimeType = {
     minutes: number,
     seconds: number,
 }
 
-type TargetToSubmitType = {
+export type TargetToSubmitType = {
     id: string,
     name: string,
 }
