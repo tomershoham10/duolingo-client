@@ -46,7 +46,7 @@ export default function Page({ params }: { params: { id: string } }) {
         totalNumOfExercises={totalNumOfExercises}
         numOfExercisesMade={numOfExercisesMade}
       />
-      {currentExercise ? <div>{currentExercise.description}</div> : null}
+      {/* {currentExercise && <div>{currentExercise.description}</div>} */}
     </div>
   );
 }
