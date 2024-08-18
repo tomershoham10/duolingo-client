@@ -33,9 +33,10 @@ export const useCourseStore = create<CourseState & Action>(
 
 if (typeof window !== 'undefined' && localStorage) {
     const coursesData = localStorage.getItem("coursesData");
+    console.log("useCourseStore coursesData", coursesData);
     if (coursesData) {
         const parsedData = JSON.parse(coursesData);
-        console.log("useCourseStore parsedData", parsedData)
+        console.log("useCourseStore parsedData", parsedData);
         // useCourseStore.getState().updateCourseId(parsedData._id);
         // useCourseStore.getState().updateCourseName(parsedData.name);
         // useCourseStore.getState().updateUnitsList(parsedData.units);

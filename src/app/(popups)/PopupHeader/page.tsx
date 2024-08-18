@@ -22,7 +22,7 @@ interface PopupHeaderProps {
 const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
   const { children, popupType, header, size } = props;
   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
-  console.log('PopupHeader selectedPopup', selectedPopup);
+  //   console.log('PopupHeader selectedPopup', selectedPopup);
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   let widthClass: string;

@@ -15,6 +15,7 @@ export interface EditSpotreccProps {
 
 const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
   const { subExercise, onSave } = props;
+  console.log('EditSpotrecc popup', subExercise);
 
   const [description, setDescription] = useState<string>('');
   const [time, setTime] = useState<number>(0);
