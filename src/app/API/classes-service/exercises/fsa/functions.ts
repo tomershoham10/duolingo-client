@@ -1,10 +1,5 @@
 import { FSA_API } from "../../apis";
 
-export enum ExercisesTypes {
-    FSA = "fsa",
-    SPOTRECC = "spotrecc"
-}
-
 export const getRelevantByExerciseId = async (currentExerciseId: string): Promise<TargetType[]> => {
     try {
         const response = await fetch(
