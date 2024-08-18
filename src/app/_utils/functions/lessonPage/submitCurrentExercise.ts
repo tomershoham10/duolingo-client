@@ -1,3 +1,4 @@
+import { ExercisesTypes } from "@/app/API/classes-service/exercises/functions";
 import { submitExercise } from "@/app/API/classes-service/results/functions";
 import { AlertSizes } from "@/app/store/stores/useAlertStore";
 import { LessonDispatchAction, lessonAction, lessonType } from "@/reducers/studentView/lessonReducer";
@@ -30,50 +31,52 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
 
     if (!!!lessonState.currentResult || !!!lessonState.currentExercise) {
         return null;
-
     }
 
 
     const resultId = lessonState.currentResult._id;
-
-    const answersIds = lessonState.currentExercise.targetsList;
-    console.log('answersIds', answersIds, answersIds?.length);
-    const correctAnswers = lessonState.targetsToSubmit.filter((target) =>
-        answersIds?.includes(target.id)
-    );
-    console.log('correctAnswers', correctAnswers);
-    if (correctAnswers.length === 0) {
-        //all tragets was guessed wrong
-        totalScoreToSubmit = 0;
-        scoreByTargets = 0;
-    } else if (
-        answersIds && correctAnswers.length === answersIds.length &&
-        lessonState.targetsToSubmit.length === answersIds.length
-    ) {
-        scoreByTargets = 100;
-        console.log('scoreByTargets', scoreByTargets);
-    } else if (answersIds && lessonState.targetsToSubmit.length > answersIds.length) {
-        const firstAnswer: string = correctAnswers[0].id;
-        if (answersIds.indexOf(firstAnswer) === 0) {
-            scoreByTargets = 90;
-
-            console.log('scoreByTargets', scoreByTargets);
-        } else {
-            scoreByTargets = 80;
-            console.log('scoreByTargets', scoreByTargets);
-        }
-    } else if (answersIds && correctAnswers.length < answersIds.length) {
-        scoreByTargets = 85;
-        console.log('scoreByTargets', scoreByTargets);
+    let answersIds: string[] = []
+    if (lessonState.currentExercise.type === ExercisesTypes.FSA) {
+        const currentExercise = lessonState.currentExercise as FsaType;
+        answersIds = currentExercise.targetsList || [];
     }
-    const timeBuffersMinutes = lessonState.currentExercise.timeBuffers.map(
-        (timeBuffer) => timeBuffer.timeBuffer
-    );
+    // console.log('answersIds', answersIds, answersIds?.length);
+    // const correctAnswers = lessonState.targetsToSubmit.filter((target) =>
+    //     answersIds?.includes(target.id)
+    // );
+    // console.log('correctAnswers', correctAnswers);
+    // if (correctAnswers.length === 0) {
+    //     //all tragets was guessed wrong
+    //     totalScoreToSubmit = 0;
+    //     scoreByTargets = 0;
+    // } else if (
+    //     answersIds && correctAnswers.length === answersIds.length &&
+    //     lessonState.targetsToSubmit.length === answersIds.length
+    // ) {
+    //     scoreByTargets = 100;
+    //     console.log('scoreByTargets', scoreByTargets);
+    // } else if (answersIds && lessonState.targetsToSubmit.length > answersIds.length) {
+    //     const firstAnswer: string = correctAnswers[0].id;
+    //     if (answersIds.indexOf(firstAnswer) === 0) {
+    //         scoreByTargets = 90;
 
-    const totalMinutesForExercise = timeBuffersMinutes.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0
-    );
+    //         console.log('scoreByTargets', scoreByTargets);
+    //     } else {
+    //         scoreByTargets = 80;
+    //         console.log('scoreByTargets', scoreByTargets);
+    //     }
+    // } else if (answersIds && correctAnswers.length < answersIds.length) {
+    //     scoreByTargets = 85;
+    //     console.log('scoreByTargets', scoreByTargets);
+    // }
+    // const timeBuffersMinutes = lessonState.currentExercise.timeBuffers.map(
+    //     (timeBuffer) => timeBuffer.timeBuffer
+    // );
+
+    // const totalMinutesForExercise = timeBuffersMinutes.reduce(
+    //     (accumulator, currentValue) => accumulator + currentValue,
+    //     0
+    // );
 
     //   if (
     //     totalMinutesForExercise > timeRemaining.minutes &&
