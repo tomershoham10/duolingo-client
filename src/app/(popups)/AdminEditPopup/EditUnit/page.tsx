@@ -10,7 +10,7 @@ import {
 import {
   editUnitAction,
   editUnitReducer,
-} from '@/reducers/adminPopups/editUnitReducer';
+} from '@/reducers/adminView/popups/editUnitReducer';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';

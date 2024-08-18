@@ -12,11 +12,7 @@ import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import Slider from '@/components/Slider/page';
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import { useCreateExerciseStore } from '@/app/store/stores/useCreateExerciseStore';
-import {
-  ExercisesFieldsType,
-  exerciseDataAction,
-  exerciseDataReducer,
-} from '@/reducers/exerciseDataReducer';
+
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -29,6 +25,7 @@ const DraggbleList = lazy(() => import('@/components/DraggableList/page'));
 
 import PlusButton from '@/components/PlusButton/page';
 import { Diractions } from '@/components/DraggableList/page';
+import { exerciseDataAction, exerciseDataReducer, ExercisesFieldsType } from '@/reducers/adminView/create/exerciseDataReducer';
 
 library.add(faPlus);
 

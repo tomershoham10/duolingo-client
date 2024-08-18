@@ -12,7 +12,7 @@ import {
   submitFileAction,
   submitFileDataType,
   submitFileReducer,
-} from '@/reducers/adminPopups/submitFileReducer';
+} from '@/reducers/adminView/popups/submitFileReducer';
 
 const UploadFileSection = lazy(() => import('./UploadFileSection/page'));
 const FSAMetadata = lazy(() => import('./Metadatas/Records/FSA/page'));
