@@ -28,12 +28,14 @@ interface EditLessonProps {
 
 const EditLesson: React.FC<EditLessonProps> = (props) => {
   const headers = [
-    { key: 'answersList', label: 'target name' },
-    { key: 'difficultyLevel', label: 'difficulty level' },
-    { key: 'isInItalkia', label: 'is in italkia' },
-    { key: 'signature_type', label: 'signature type' },
-    { key: 'isInLessons', label: 'is in other lessons' },
-    { key: 'sonolist', label: 'sonolist' },
+    // { key: 'answersList', label: 'target name' },
+    // { key: 'difficultyLevel', label: 'difficulty level' },
+    // { key: 'isInItalkia', label: 'is in italkia' },
+    // { key: 'signature_type', label: 'signature type' },
+    // { key: 'isInLessons', label: 'is in other lessons' },
+    // { key: 'sonolist', label: 'sonolist' },
+    { key: 'type', label: 'exercise type' },
+    { key: 'dateCreated', label: 'date created' },
   ];
 
   const initialEditLessonState: editLessonType = {
@@ -57,6 +59,10 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
       });
       console.log('fetch exercises', res);
       editLessonDispatch({
+        type: editLessonAction.SET_TABLE_DATA,
+        payload: res,
+      });
+      editLessonDispatch({
         type: editLessonAction.SET_EXERCISES,
         payload: res,
       });
@@ -64,60 +70,62 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
     fetchExercises();
   }, []);
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      const fetchPromises = editLessonState.exercisesList.map(
-        async (exercise) => {
-          try {
-            const exerciseRecName = exercise.files[0].fileName;
-            console.log('exercise loop - exerciseRecName', exerciseRecName);
+  //   useEffect(() => {
+  //     const fetchRecords = async () => {
+  //       const fetchPromises = editLessonState.exercisesList.map(
+  //         async (exercise) => {
+  //           try {
+  //             if(exercise.type===ExercisesTypes.FSA){
 
-            const recData = await pRetry(
-              () =>
-                getFileMetadataByName(
-                  BucketsNames.RECORDS,
-                  ExercisesTypes.FSA,
-                  exerciseRecName
-                ),
-              {
-                retries: 5,
-              }
-            );
-            console.log('recData', recData);
-            if (!recData) {
-              return null;
-            }
-            if (isFSAMetadata(recData.metadata)) {
-              const newRow = {
-                _id: exercise._id,
-                targetsList: exercise.targetsList,
-                difficultyLevel: recData.metadata.difficulty_level,
-                is_in_italy: recData.metadata.is_in_italy,
-                signature_type: recData.metadata.signature_type,
-                sonolist: recData.metadata.sonograms_names,
-              };
-              console.log('newRow', newRow);
-              return newRow;
-            }
-          } catch (error) {
-            console.error('Error fetching record:', error);
-            return null;
-          }
-        }
-      );
-      const tableRows = await Promise.all(fetchPromises);
-      const filteredRows = tableRows.filter(
-        (row) => row !== null
-      ) as TableRow[];
-      editLessonDispatch({
-        type: editLessonAction.SET_TABLE_DATA,
-        payload: filteredRows,
-      });
-    };
-    if (editLessonState.exercisesList.length > 0) {
-      fetchRecords();
-    }
-  }, [editLessonState.exercisesList]);
+  //             const exerciseRecName = exercise.files[0].fileName;
+  //             console.log('exercise loop - exerciseRecName', exerciseRecName);
+
+  //             const recData = await pRetry(
+  //               () =>
+  //                 getFileMetadataByName(
+  //                   BucketsNames.RECORDS,
+  //                   ExercisesTypes.FSA,
+  //                   exerciseRecName
+  //                 ),
+  //               {
+  //                 retries: 5,
+  //               }
+  //             );
+  //             console.log('recData', recData);
+  //             if (!recData) {
+  //               return null;
+  //             }
+  //             if (isFSAMetadata(recData.metadata)) {
+  //               const newRow = {
+  //                 _id: exercise._id,
+  //                 targetsList: exercise.targetsList,
+  //                 difficultyLevel: recData.metadata.difficulty_level,
+  //                 is_in_italy: recData.metadata.is_in_italy,
+  //                 signature_type: recData.metadata.signature_type,
+  //                 sonolist: recData.metadata.sonograms_names,
+  //               };
+  //               console.log('newRow', newRow);
+  //               return newRow;
+  //             }
+  //           } catch (error) {
+  //             console.error('Error fetching record:', error);
+  //             return null;
+  //           }
+  //         }
+  //       );
+  //       const tableRows = await Promise.all(fetchPromises);
+  //       const filteredRows = tableRows.filter(
+  //         (row) => row !== null
+  //       ) as TableRow[];
+  //       editLessonDispatch({
+  //         type: editLessonAction.SET_TABLE_DATA,
+  //         payload: filteredRows,
+  //       });
+  //     };
+  //     if (editLessonState.exercisesList.length > 0) {
+  //       fetchRecords();
+  //     }
+  //   }, [editLessonState.exercisesList]);
 
   useEffect(() => {
     console.log('editLessonState.tableData', editLessonState.tableData);
