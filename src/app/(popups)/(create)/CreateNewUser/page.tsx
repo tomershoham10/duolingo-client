@@ -1,9 +1,5 @@
 'use client';
-import { useState } from 'react';
-
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { library } from '@fortawesome/fontawesome-svg-core';
-// import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useCallback, useState } from 'react';
 
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
@@ -11,28 +7,21 @@ import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/Button/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import useStore from '@/app/store/useStore';
-import {
-  PopupsTypes,
-  //  usePopupStore
-} from '@/app/store/stores/usePopupStore';
+import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { registerUser } from '@/app/API/users-service/users/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import pRetry from 'p-retry';
 import PopupHeader from '../../PopupHeader/page';
 
-// library.add(faXmark);
-
 const CreateNewUser: React.FC = () => {
-  //   const selectedPopup = useStore(usePopupStore, (state) => state.selectedPopup);
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
   const addAlert = useAlertStore.getState().addAlert;
-  //   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [tId, setTId] = useState<string>('');
   const [role, setRole] = useState<string>('');
-  const [courseId, setCourseId] = useState<string>();
+  const [courseId, setCourseId] = useState<string | null>(null);
   const [failedFeilds, setFailedFeilds] = useState<string[]>([]);
 
   const handleUserName = (value: string) => {
@@ -51,77 +40,83 @@ const CreateNewUser: React.FC = () => {
     setRole(value);
   };
 
-  const handleCourseId = (value: string) => {
-    console.log('handleCourseId', value);
+  const handleCourseId = (courseName: string) => {
+    if (coursesList && coursesList.length > 0) {
+      const selectedCourse = coursesList.find(
+        (course) => course.name === courseName
+      );
+      console.log('handleCourseId', selectedCourse);
+      selectedCourse && setCourseId(selectedCourse._id);
+    }
   };
 
   const addFailedFields = (value: string) => {
     setFailedFeilds((pervFeilds: string[]) => [...pervFeilds, value]);
   };
 
-  const createUser = async (
-    userName: string,
-    tId: string,
-    password: string,
-    role: string
-  ) => {
-    console.log('create user:', userName, tId, password, role);
-    setFailedFeilds([]);
-    if (
-      userName.length < 3 ||
-      (0 < tId.length && tId.length < 9) ||
-      (!tId.includes('t') && tId.length === 9) ||
-      password.length < 8 ||
-      role === ''
-    ) {
-      if (userName.length < 3) {
-        addAlert('Please enter a valid user name.', AlertSizes.small);
-        addFailedFields('userName');
-      }
-
+  const createUser = useCallback(
+    async (
+      userName: string,
+      tId: string,
+      password: string,
+      role: string,
+      courseId?: string
+    ) => {
+      console.log('create user:', userName, tId, password, role, courseId);
+      setFailedFeilds([]);
       if (
+        userName.length < 3 ||
         (0 < tId.length && tId.length < 9) ||
-        (!tId.includes('t') && tId.length === 9)
+        (!tId.includes('t') && tId.length === 9) ||
+        password.length < 8 ||
+        role === ''
       ) {
-        addAlert('Please enter a valid T-Id.', AlertSizes.small);
-        addFailedFields('tId');
-      }
+        if (userName.length < 3) {
+          addAlert('Please enter a valid user name.', AlertSizes.small);
+          addFailedFields('userName');
+        }
 
-      if (password.length < 8) {
-        addAlert('Password too short.', AlertSizes.small);
-        addFailedFields('password');
-      }
+        if (
+          (0 < tId.length && tId.length < 9) ||
+          (!tId.includes('t') && tId.length === 9)
+        ) {
+          addAlert('Please enter a valid T-Id.', AlertSizes.small);
+          addFailedFields('tId');
+        }
 
-      if (role === '') {
-        addAlert('Please select a role.', AlertSizes.small);
-        addFailedFields('role');
+        if (password.length < 8) {
+          addAlert('Password too short.', AlertSizes.small);
+          addFailedFields('password');
+        }
+
+        if (role === '') {
+          addAlert('Please select a role.', AlertSizes.small);
+          addFailedFields('role');
+        }
+        return;
       }
-      return;
-    }
-    // const response = await registerUser(
-    //   userName,
-    //   tId,
-    //   password,
-    //   role,
-    //   courseId
-    // );
-    const response = await pRetry(
-      () => registerUser(userName, tId, password, role, courseId),
-      {
-        retries: 5,
+      const response = await pRetry(
+        () => registerUser(userName, tId, password, role, courseId),
+        {
+          retries: 5,
+        }
+      );
+      console.log(response);
+      if (response === 201) {
+        addAlert('User created successfully.', AlertSizes.small);
       }
-    );
-    console.log(response);
-    if (response === 201) {
-      addAlert('User created successfully.', AlertSizes.small);
-    }
-    if (response === 500 || response === 404 || response === 400) {
-      addAlert('Error while creating user! please try again', AlertSizes.small);
-    }
-    if (response === 403) {
-      addAlert('User already existed!', AlertSizes.small);
-    }
-  };
+      if (response === 500 || response === 404 || response === 400) {
+        addAlert(
+          'Error while creating user! please try again',
+          AlertSizes.small
+        );
+      }
+      if (response === 403) {
+        addAlert('User already existed!', AlertSizes.small);
+      }
+    },
+    [addAlert]
+  );
 
   return (
     <PopupHeader popupType={PopupsTypes.NEWUSER} header='Create new user'>
@@ -131,7 +126,7 @@ const CreateNewUser: React.FC = () => {
           User Name:
         </p>
 
-        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center '>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.TEXT}
             placeholder={'User Name'}
@@ -211,7 +206,13 @@ const CreateNewUser: React.FC = () => {
             <Button
               label={'CREATE'}
               color={ButtonColors.BLUE}
-              onClick={() => createUser(userName, tId, password, role)}
+              onClick={() =>
+                role === 'student'
+                  ? courseId !== null
+                    ? createUser(userName, tId, password, role, courseId)
+                    : addAlert('Please select a course.', AlertSizes.small)
+                  : createUser(userName, tId, password, role)
+              }
             />
           </div>
         </div>
