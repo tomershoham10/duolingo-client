@@ -1,4 +1,5 @@
 export enum courseDataAction {
+    SET_COURSE_ID = 'setCourseId',
     SET_UNITS = 'setUnits',
     SET_SUSPENDED_UNITS_IDS = 'setSuspendedUnitsIds',
     SET_LEVELS = 'setLevels',
@@ -21,6 +22,7 @@ export interface ResultsState {
 }[];
 
 export type CourseDataActionTypes =
+    | { type: courseDataAction.SET_COURSE_ID, payload: string | null }
     | { type: courseDataAction.SET_UNITS, payload: UnitType[] }
     | { type: courseDataAction.SET_SUSPENDED_UNITS_IDS, payload: string[] }
     | { type: courseDataAction.SET_LEVELS, payload: DataWithFatherId<LevelType>[] }
@@ -33,7 +35,7 @@ export type CourseDataActionTypes =
 
 
 export interface courseDataType {
-    courseId: string | undefined,
+    courseId: string | null,
     units: UnitType[];
     suspendedUnitsIds: string[];
     levels: DataWithFatherId<LevelType>[];
@@ -50,6 +52,8 @@ export const courseDataReducer = (
     action: CourseDataActionTypes
 ): courseDataType => {
     switch (action.type) {
+        case courseDataAction.SET_COURSE_ID:
+            return { ...state, courseId: action.payload };
         case courseDataAction.SET_UNITS:
             return { ...state, units: action.payload };
         case courseDataAction.SET_SUSPENDED_UNITS_IDS:
