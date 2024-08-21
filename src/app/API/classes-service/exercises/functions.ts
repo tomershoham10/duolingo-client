@@ -5,10 +5,10 @@ export enum ExercisesTypes {
     SPOTRECC = "spotrecc"
 }
 
-export const createExercise = async (newExercise: Partial<FsaType> | Partial<SpotreccType>): Promise<string> => {
+export const createExercise = async (newExercise: Partial<FsaType> | Partial<SpotreccType>): Promise<boolean> => {
     try {
-        console.log('create exercise');
-
+        console.log('create exercise', newExercise);
+        // return 'a';
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.EXERCISES}`,
             {
@@ -25,8 +25,10 @@ export const createExercise = async (newExercise: Partial<FsaType> | Partial<Spo
             const resJson = await response.json() as ExerciseType;
             if (response.status === 201) {
                 console.log("new exercise", resJson);
+                return true;
             }
-            return 'created successfully';
+            return false;
+
         } else {
             throw new Error('error creating exercise');
         }
