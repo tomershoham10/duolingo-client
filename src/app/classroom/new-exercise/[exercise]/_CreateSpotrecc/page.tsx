@@ -7,7 +7,7 @@ import { MdEdit } from 'react-icons/md';
 import {
   SpotreccSubExercise,
   useCreateSpotreccStore,
-} from '@/app/store/stores/useCreateSpotreccStore';
+} from '@/app/store/stores/(createExercises)/useCreateSpotreccStore';
 import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { BucketsNames } from '@/app/API/files-service/functions';
@@ -20,7 +20,7 @@ import pRetry from 'p-retry';
 const EditSpotrecc = lazy(() => import('@/app/(popups)/EditSpotrecc/page'));
 const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
 
-const Spotrecc: React.FC = () => {
+const CreateSpotrecc: React.FC = () => {
   const subExercises = useStore(
     useCreateSpotreccStore,
     (state) => state.subExercises
@@ -42,7 +42,7 @@ const Spotrecc: React.FC = () => {
 
   const subExericseUpdate = useCallback(
     (updatedExercise: SpotreccSubExercise) => {
-      console.log(updatedExercise);
+      console.log('updatedExercise', updatedExercise);
       updateSubExercise(updatedExercise);
       updateSelectedPopup(PopupsTypes.CLOSED);
     },
@@ -50,28 +50,23 @@ const Spotrecc: React.FC = () => {
   );
 
   const submit = useCallback(async () => {
-    console.log(subExercises);
+    console.log('submit spotrecc', subExercises);
     if (subExercises.length > 0) {
-      const response = await pRetry(
-        () =>
-          createExercise({
-            type: ExercisesTypes.SPOTRECC,
-            subExercises: subExercises,
-          }),
-        {
-          retries: 5,
-        }
-      );
+      const exerciseObject = {
+        type: ExercisesTypes.SPOTRECC,
+        subExercises: subExercises,
+      };
+      console.log('submit spotrecc exerciseObject', exerciseObject);
+
+      const response = await pRetry(() => createExercise(exerciseObject), {
+        retries: 5,
+      });
       console.log('submit response', response);
     }
   }, [subExercises]);
 
   return (
     <div className='flex h-full w-full flex-col overflow-hidden'>
-      {/* <div className='flex basis-[12.5%] items-center gap-3 text-4xl font-extrabold uppercase'>
-        <p> create</p>
-        <p className='text-duoGrayDark-lighter'> spotrecc</p>
-      </div> */}
       <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
         {subExercises.map((exercise, index) => (
           <div
@@ -149,4 +144,4 @@ const Spotrecc: React.FC = () => {
   );
 };
 
-export default Spotrecc;
+export default CreateSpotrecc;
