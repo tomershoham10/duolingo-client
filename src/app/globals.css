@@ -59,8 +59,23 @@ body {
 
 #lesson-grid {
   display: grid;
+  grid-template-areas:
+    'exercise info-bar'
+    'footer footer';
   grid-template-columns: 80% 20%;
   grid-template-rows: 1fr 140px;
+}
+
+#exercise-section {
+  grid-area: exercise;
+}
+
+#info-bar-section {
+  grid-area: info-bar;
+}
+
+#footer-section {
+  grid-area: footer;
 }
 
 .pop-animation {
