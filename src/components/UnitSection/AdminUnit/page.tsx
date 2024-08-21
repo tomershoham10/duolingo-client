@@ -22,10 +22,10 @@ import {
 } from '@/reducers/courseDataReducer';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import LodingAdminSection from './LodingAdminSection/page';
 import AdminUnitHeader from './AdminUnitHeader/page';
 import AdminUnitAccourdion from './AdminUnitAccourdion/page';
+import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
@@ -37,7 +37,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const propsCourseId = props.courseId;
 
   const addAlert = useAlertStore.getState().addAlert;
-  const targetsList = useStore(useTargetStore, (state) => state.targets);
+  const targetsList = useFetchTargets();
 
   const infoBarStore = {
     fieldId: useInfoBarStore.getState().syllabusFieldId,
