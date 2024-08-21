@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,13 +46,8 @@ const AdminSideBar: React.FC = () => {
     (state) => state.selectedCourse
   );
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
-  console.log('coursesList', coursesList);
-  const useCourseStoreObj = useMemo(() => {
-    return {
-      updateCoursesList: useCourseStore.getState().updateCoursesList,
-      updateSelectedCourse: useCourseStore.getState().updateSelectedCourse,
-    };
-  }, []);
+  const updateCoursesList = useCourseStore.getState().updateCoursesList;
+  const updateSelectedCourse = useCourseStore.getState().updateSelectedCourse;
 
   const usePopupStoreObj = {
     selectedPopup: useStore(usePopupStore, (state) => state.selectedPopup),
@@ -73,16 +68,26 @@ const AdminSideBar: React.FC = () => {
 
   const fetchCourseAndUpdateStore = useCallback(async () => {
     if (pathname.includes('courses')) {
-      const pathArray = pathname.split('/').filter(Boolean);
+      const pathArray = decodeURI(pathname).split('/').filter(Boolean);
       const susName = pathArray[pathArray.indexOf('courses') + 1];
-      const course = await checkIfCourseExists(susName); // Await the promise here
-      useCourseStoreObj.updateSelectedCourse(course);
+      console.log('fetchCourseAndUpdateStore', susName, coursesList);
+      if (coursesList && coursesList.length > 0) {
+        const selectedCourse = coursesList.find(
+          (course) =>
+            course.name.toLocaleLowerCase() === susName.toLocaleLowerCase()
+        );
+        // console.log('fetchCourseAndUpdateStore selectedCourse', selectedCourse);
+        updateSelectedCourse(selectedCourse || null);
+      } else {
+        const course = await checkIfCourseExists(susName);
+        updateSelectedCourse(course);
+      }
     }
-  }, [pathname, checkIfCourseExists, useCourseStoreObj]);
+  }, [pathname, coursesList, updateSelectedCourse, checkIfCourseExists]);
 
   useEffect(() => {
     fetchCourseAndUpdateStore();
-  }, [pathname, isCourseExisted, useCourseStoreObj, fetchCourseAndUpdateStore]);
+  }, [pathname, isCourseExisted, fetchCourseAndUpdateStore]);
 
   useEffect(() => {
     if (!!coursesList && !!selectedCourse && !!selectedCourse.name) {
@@ -94,26 +99,25 @@ const AdminSideBar: React.FC = () => {
       )[0];
 
       if (course && course._id) {
-        useCourseStoreObj.updateSelectedCourse(course);
+        updateSelectedCourse(course);
       }
     }
-  }, [useCourseStoreObj, selectedCourse, coursesList]);
+  }, [selectedCourse, coursesList, updateSelectedCourse]);
 
   const fetchCoursesList = useCallback(async () => {
     if (coursesList !== undefined && coursesList.length === 0) {
       try {
-        console.log('fetching courses list');
-        //   const coursesList = await getCourses();
-        const coursesList = await pRetry(getCourses, {
+        console.log('fetching courses list', coursesList);
+        const fetchedCoursesList = await pRetry(getCourses, {
           retries: 5,
         });
 
-        coursesList ? useCourseStoreObj.updateCoursesList(coursesList) : null;
+        fetchedCoursesList && updateCoursesList(fetchedCoursesList);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     }
-  }, [coursesList, useCourseStoreObj]);
+  }, [coursesList, updateCoursesList]);
 
   useEffect(() => {
     fetchCoursesList();
@@ -178,10 +182,7 @@ const AdminSideBar: React.FC = () => {
 
   return (
     <div className='flex h-screen w-full flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest'>
-      <label
-        className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6
-           text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'
-      >
+      <label className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6 text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'>
         duolingo
       </label>
 
@@ -193,14 +194,13 @@ const AdminSideBar: React.FC = () => {
               coursesList.map((item, index) => (
                 <li
                   key={item._id}
-                  className={`p-3
-                       ${
-                         item.name
-                           ? pathname.includes(item.name.toLocaleLowerCase())
-                             ? 'dark:text-duoBlueDark-texst bg-duoBlue-lightest  text-duoBlue-light dark:bg-sky-800'
-                             : ' text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
-                           : ' text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
-                       }`}
+                  className={`p-3 ${
+                    item.name
+                      ? pathname.includes(item.name.toLocaleLowerCase())
+                        ? 'dark:text-duoBlueDark-texst bg-duoBlue-lightest text-duoBlue-light dark:bg-sky-800'
+                        : 'text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                      : 'text-duoGray-darkest hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:text-duoGrayDark-lightest dark:hover:bg-sky-800 dark:hover:text-duoBlue-light'
+                  }`}
                 >
                   <Link
                     href={`${
