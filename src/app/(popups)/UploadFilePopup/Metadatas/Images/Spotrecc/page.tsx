@@ -1,10 +1,9 @@
 'use client';
-import { useStore } from 'zustand';
 import Upload from '@/components/Upload/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { BucketsNames, FeaturesList } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
+import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
 // const Dropdown = dynamic(() => import('@/components/Dropdown'), { ssr: false });
 
 interface SpotreccImageMetaProps {
@@ -16,7 +15,7 @@ interface SpotreccImageMetaProps {
 }
 const SpotreccImageMetadata: React.FC<SpotreccImageMetaProps> = (props) => {
   const { file, handleFileChange, handleFileRemoved, updateMetadata } = props;
-  const targetsList = useStore(useTargetStore, (state) => state.targets);
+  const targetsList = useFetchTargets();
   return (
     <div className='mt-8 grid w-full grid-cols-1 gap-x-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
       <section className='flex flex-row items-center justify-start gap-4 border-b-2 border-duoGrayDark-light'>
@@ -72,7 +71,7 @@ const SpotreccImageMetadata: React.FC<SpotreccImageMetaProps> = (props) => {
         <span className='text-lg font-bold opacity-80 3xl:text-xl'>
           Notable features:
         </span>
-        <div className=' w-[12rem]'>
+        <div className='w-[12rem]'>
           <Dropdown
             isSearchable={false}
             placeholder={'Signature'}

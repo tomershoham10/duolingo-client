@@ -13,10 +13,10 @@ import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useStore } from 'zustand';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
+import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
 const Sonograms = lazy(() => import('./Sonograms/page'));
 
 interface FSAMetaProps {
@@ -38,8 +38,8 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
     handleFileLength,
     updateMetadata,
   } = props;
-  const targetsList = useStore(useTargetStore, (state) => state.targets);
   const sourcesList = useStore(useSourceStore, (state) => state.sources);
+  const targetsList = useFetchTargets();
 
   const [inFsaSelectSonogram, setInFsaSelectSonogram] =
     useState<boolean>(false);
@@ -124,7 +124,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
             <span className='text-lg font-bold opacity-80 3xl:text-xl'>
               Signature type:
             </span>
-            <div className=' w-[12rem]'>
+            <div className='w-[12rem]'>
               <Dropdown
                 isSearchable={false}
                 placeholder={'Signature'}

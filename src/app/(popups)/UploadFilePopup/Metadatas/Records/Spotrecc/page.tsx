@@ -8,7 +8,7 @@ import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames } from '@/app/API/files-service/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
+import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
 
 interface SoptreccRecordMetaProps {
   file: File | null;
@@ -32,7 +32,7 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
 
   console.log('SoptreccRecordMetadata', metadata, isFSAMetadata(metadata));
 
-  const targetsList = useStore(useTargetStore, (state) => state.targets);
+  const targetsList = useFetchTargets();
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateMetadata('difficulty_level', Number(event.target.value));
