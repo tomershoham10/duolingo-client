@@ -1,46 +1,46 @@
-import { ExercisesTypes } from "@/app/API/classes-service/exercises/functions";
-import { submitExercise } from "@/app/API/classes-service/results/functions";
-import { AlertSizes } from "@/app/store/stores/useAlertStore";
-import { LessonDispatchAction, lessonAction, lessonType } from "@/reducers/studentView/lessonReducer";
-import pRetry from "p-retry";
-import { Dispatch } from "react";
+// import { ExercisesTypes } from "@/app/API/classes-service/exercises/functions";
+// import { submitExercise } from "@/app/API/classes-service/results/functions";
+// import { AlertSizes } from "@/app/store/stores/useAlertStore";
+// import { LessonDispatchAction, lessonAction, lessonType } from "@/reducers/studentView/lessonReducer";
+// import pRetry from "p-retry";
+// import { Dispatch } from "react";
 
-export interface submitCurrentExerciseParams {
-    lessonState: lessonType,
-    lessonDispatch: Dispatch<LessonDispatchAction>,
-    addAlert: (message: string, size: AlertSizes, actionLabel?: string | undefined, action?: (() => Promise<void>) | undefined) => void,
-    userId: string,
-    nextLessonId: string
-}
+// export interface submitCurrentExerciseParams {
+//     lessonState: lessonType,
+//     lessonDispatch: Dispatch<LessonDispatchAction>,
+//     addAlert: (message: string, size: AlertSizes, actionLabel?: string | undefined, action?: (() => Promise<void>) | undefined) => void,
+//     userId: string,
+//     nextLessonId: string
+// }
 
-const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promise<ResultType | null> => {
-    const { lessonState,
-        lessonDispatch,
-        addAlert,
-        userId,
-        nextLessonId
-    } = params
-    let scoreByTargets: number = -1;
-    let scoreByTime: number = -1;
-    // let totalScoreToSubmit: number = -1;
-    let totalScoreToSubmit: number = 100;
+// const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promise<ResultType | null> => {
+//     const { lessonState,
+//         lessonDispatch,
+//         addAlert,
+//         userId,
+//         nextLessonId
+//     } = params
+//     let scoreByTargets: number = -1;
+//     let scoreByTime: number = -1;
+//     // let totalScoreToSubmit: number = -1;
+//     let totalScoreToSubmit: number = 100;
 
-    if (lessonState.targetsToSubmit.length === 0) {
-        addAlert('Please select a target.', AlertSizes.small);
-        return null;
-    }
+//     if (lessonState.targetsToSubmit.length === 0) {
+//         addAlert('Please select a target.', AlertSizes.small);
+//         return null;
+//     }
 
-    if (!!!lessonState.currentResult || !!!lessonState.currentExercise) {
-        return null;
-    }
+//     if (!!!lessonState.currentResult || !!!lessonState.currentExercise) {
+//         return null;
+//     }
 
 
-    const resultId = lessonState.currentResult._id;
-    let answersIds: string[] = []
-    if (lessonState.currentExercise.type === ExercisesTypes.FSA) {
-        const currentExercise = lessonState.currentExercise as FsaType;
-        answersIds = currentExercise.targetsList || [];
-    }
+//     const resultId = lessonState.currentResult._id;
+//     let answersIds: string[] = []
+//     if (lessonState.currentExercise.type === ExercisesTypes.FSA) {
+//         const currentExercise = lessonState.currentExercise as FsaType;
+//         answersIds = currentExercise.targetsList || [];
+//     }
     // console.log('answersIds', answersIds, answersIds?.length);
     // const correctAnswers = lessonState.targetsToSubmit.filter((target) =>
     //     answersIds?.includes(target.id)
@@ -118,26 +118,26 @@ const submitCurrentExercise = async (params: submitCurrentExerciseParams): Promi
     //     return null;
     // }
 
-    const resultToSubmit = {
-        _id: resultId,
-        userId: userId,
-        lessonId: nextLessonId,
-        exerciseId: lessonState.currentExercise._id,
-        answers: answersIds,
-        score: totalScoreToSubmit,
-    };
+    // const resultToSubmit = {
+    //     _id: resultId,
+    //     userId: userId,
+    //     lessonId: nextLessonId,
+    //     exerciseId: lessonState.currentExercise._id,
+    //     answers: answersIds,
+    //     score: totalScoreToSubmit,
+    // };
 
     // const response = await submitExercise(resultToSubmit);
-    const response = await pRetry(
-        () => submitExercise(resultToSubmit),
-        {
-            retries: 5,
-        }
-    );
-    return response;
+    // const response = await pRetry(
+    //     () => submitExercise(resultToSubmit),
+    //     {
+    //         retries: 5,
+    //     }
+    // );
+    // return response;
     // if (response) {
     //     lessonDispatch({ type: lessonAction.STOP_TIMER });
     // }
-};
+// };
 
-export default submitCurrentExercise;
+// export default submitCurrentExercise;
