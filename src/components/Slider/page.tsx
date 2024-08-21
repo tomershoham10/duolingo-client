@@ -74,7 +74,7 @@ const Slider: React.FC<SliderProps> = (props) => {
   };
 
   const handleNewValSaved = (newScore: number, perc: number) => {
-    alert(perc);
+    // alert(perc);
     const newTimeVal = (perc / 100) * propsMax;
     propsOnSave ? propsOnSave(newScore, newTimeVal) : null;
     // console.log(
