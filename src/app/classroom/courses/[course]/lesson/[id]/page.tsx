@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import pRetry from 'p-retry';
-import ProgressBar from '@/components/ProgressBar/page';
+import ProgressBar from '@/components/(lessonComponents)/ProgressBar/page';
 import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
 
 export default function Page({ params }: { params: { id: string } }) {
@@ -18,7 +18,7 @@ export default function Page({ params }: { params: { id: string } }) {
         const results = await pRetry(() => getExercisesData(lessonId), {
           retries: 5,
         });
-        setExercises(results);
+        setExercises(results?.exercises || null);
       }
     };
     fetchData();
