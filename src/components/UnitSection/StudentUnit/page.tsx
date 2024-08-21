@@ -14,45 +14,27 @@ import {
   studentDashboardAction,
   studentDashboardReducer,
 } from '@/reducers/studentView/studentDashboardReducer';
-import { courseDataReducer } from '@/reducers/courseDataReducer';
+import {
+  courseDataAction,
+  courseDataReducer,
+} from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
-// import io from 'socket.io-client';
 
-// const socket = io('http://localhost:4002');
 library.add(faBook);
 
 const StudentUnitSection: React.FC = () => {
-  const userStore = {
-    userId: useStore(useUserStore, (state) => state.userId),
-    nextLessonId: useStore(useUserStore, (state) => state.nextLessonId),
-    courseId: useStore(useUserStore, (state) => state.courseId),
-  };
+  const userId = useStore(useUserStore, (state) => state.userId);
+  const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
+  const courseId = useStore(useUserStore, (state) => state.courseId);
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
-  //   useEffect(() => {
-  //     socket.on('connect', () => {
-  //       console.log('Connected to Socket.IO server');
-  //     });
-
-  //     socket.on('message', (message: string) => {
-  //       console.log('Received message:', message);
-  //     });
-
-  //     return () => {
-  //       socket.disconnect();
-  //     };
-  //   }, []);
-
   const initialCourseDataState = {
-    courseId: userStore.courseId,
+    courseId: null,
     units: [],
     suspendedUnitsIds: [],
     levels: [{ fatherId: null, data: [] }],
-    // unsuspendedLevels: [{ fatherId: null, data: [] }],
     lessons: [{ fatherId: null, data: [] }],
-    // unsuspendedLessons: [{ fatherId: null, data: [] }],
     exercises: [{ fatherId: null, data: [] }],
-    // unsuspendedExercises: [{ fatherId: null, data: [] }],
     results: [],
   };
 
@@ -61,7 +43,16 @@ const StudentUnitSection: React.FC = () => {
     initialCourseDataState
   );
 
-  useCourseData(userStore.userId, courseDataState, courseDataDispatch);
+  useEffect(() => {
+    if (courseId) {
+      courseDataDispatch({
+        type: courseDataAction.SET_COURSE_ID,
+        payload: courseId,
+      });
+    }
+  }, [courseId]);
+
+  useCourseData(userId, courseDataState, courseDataDispatch);
 
   useEffect(() => {
     console.log('courseDataState', courseDataState);
@@ -112,7 +103,7 @@ const StudentUnitSection: React.FC = () => {
           }
         }
         if (
-          userStore.nextLessonId !== courseDataState.results[r].lessonId &&
+          nextLessonId !== courseDataState.results[r].lessonId &&
           numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson &&
           !studentDashboardState.lockedLessons.includes(
             courseDataState.results[r].lessonId
@@ -130,8 +121,8 @@ const StudentUnitSection: React.FC = () => {
   }, [courseDataState.results]);
 
   useEffect(() => {
-    if (userStore.nextLessonId && courseDataState.lessons) {
-      console.log('current level id 1');
+    if (nextLessonId && courseDataState.lessons) {
+      console.log('current level id 1', nextLessonId, courseDataState);
       for (let i: number = 0; i < courseDataState.lessons.length; i++) {
         const lessonsIds = courseDataState.lessons[i].data.map(
           (lesson) => lesson._id
@@ -140,9 +131,9 @@ const StudentUnitSection: React.FC = () => {
           'current level id 2',
           courseDataState.lessons,
           lessonsIds,
-          userStore.nextLessonId
+          nextLessonId
         );
-        if (lessonsIds.includes(userStore.nextLessonId)) {
+        if (lessonsIds.includes(nextLessonId)) {
           console.log('current level id 3');
           studentDashboardDispatch({
             type: studentDashboardAction.SET_CURRENT_LEVEL_ID,
@@ -152,7 +143,7 @@ const StudentUnitSection: React.FC = () => {
         }
       }
     }
-  }, [userStore.nextLessonId, courseDataState.lessons]);
+  }, [nextLessonId, courseDataState.lessons]);
 
   useEffect(() => {
     console.log('0000000', studentDashboardState);
@@ -270,26 +261,24 @@ const StudentUnitSection: React.FC = () => {
   }, [studentDashboardState.currentUnitId, courseDataState.units]);
 
   useEffect(() => {
-    if (studentDashboardState.currentLevelId && userStore.nextLessonId) {
-      //   const currentLevel = courseDataState.lessons.filter(
-      //     (lessonObject) =>
-      //       lessonObject.fatherId === studentDashboardState.currentLevelId
-      //   )[0];
-
+    if (studentDashboardState.currentLevelId && nextLessonId) {
       const currentLevelLessons = courseDataState.lessons.find(
         (lessons) => lessons.fatherId === studentDashboardState.currentLevelId
       );
       if (currentLevelLessons !== undefined) {
         const lessonsIds = currentLevelLessons.data.map((lesson) => lesson._id);
-        console.log('index', lessonsIds, userStore.nextLessonId);
+        console.log('index', lessonsIds, nextLessonId);
         studentDashboardDispatch({
           type: studentDashboardAction.SET_NUM_OF_LESSONS_MADE,
-          payload: lessonsIds.indexOf(userStore.nextLessonId),
+          payload: lessonsIds.indexOf(nextLessonId),
         });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentDashboardState.currentLevelId, userStore.nextLessonId]);
+  }, [
+    studentDashboardState.currentLevelId,
+    nextLessonId,
+    courseDataState.lessons,
+  ]);
 
   useEffect(() => {
     console.log(
@@ -303,8 +292,8 @@ const StudentUnitSection: React.FC = () => {
   }, [studentDashboardState.finisedLevelsIds]);
 
   useEffect(() => {
-    console.log('nextLessonId', userStore.nextLessonId);
-  }, [userStore.nextLessonId]);
+    console.log('nextLessonId', nextLessonId);
+  }, [nextLessonId]);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -341,7 +330,7 @@ const StudentUnitSection: React.FC = () => {
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-center px-3 py-6'>
-      <div className='relative mx-auto  flex h-full w-[40rem] flex-wrap 2xl:w-[50rem]'>
+      <div className='relative mx-auto flex h-full w-[40rem] flex-wrap 2xl:w-[50rem]'>
         {courseDataState.units
           ? courseDataState.units.length > 0
             ? courseDataState.units.map((unit, unitIndex) => (
@@ -351,7 +340,7 @@ const StudentUnitSection: React.FC = () => {
                 >
                   <section
                     key={unit._id}
-                    className='absolute inset-x-0  top-0 h-full'
+                    className='absolute inset-x-0 top-0 h-full'
                   >
                     <div className='grid-col-3 mx-auto grid h-[7rem] w-[38rem] grid-flow-col grid-rows-2 rounded-xl bg-duoGreen-default text-white'>
                       <label className='col-span-2 flex items-center justify-start pl-4 pt-4 text-2xl font-extrabold'>
@@ -416,7 +405,7 @@ const StudentUnitSection: React.FC = () => {
                                                       status={Status.DONE}
                                                     />
                                                   </div>
-                                                ) : userStore.nextLessonId !==
+                                                ) : nextLessonId !==
                                                   undefined ? (
                                                   <div
                                                     className={`relative flex ${possitionByModularAddition(
@@ -466,7 +455,7 @@ const StudentUnitSection: React.FC = () => {
                                                             .length
                                                         }
                                                         nextLessonId={
-                                                          userStore.nextLessonId
+                                                          nextLessonId
                                                         }
                                                         startLessonRef={
                                                           startLessonRef
