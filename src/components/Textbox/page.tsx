@@ -44,7 +44,7 @@ const Textbox: React.FC<TextboxProps> = (props) => {
   }, [fontSizeProps]);
 
   return (
-    <form className={`${fontSize} h-full`}>
+    <section className={`${fontSize} h-full`}>
       <div className='relative h-full overflow-hidden'>
         <textarea
           style={isEditMode ? {} : { resize: 'none' }}
@@ -68,7 +68,7 @@ const Textbox: React.FC<TextboxProps> = (props) => {
           placeholder={placeHolder}
         />
       </div>
-    </form>
+    </section>
   );
 };
 
