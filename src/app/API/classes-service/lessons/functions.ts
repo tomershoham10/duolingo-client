@@ -50,7 +50,6 @@ export const updateLesson = async (lessonId: string, newFields: Partial<LessonTy
 
 interface LessonWithExericesType extends LessonType {
     exercises: (FsaType | SpotreccType)[]
-
 }
 
 export const getExercisesData = async (lessonId: string): Promise<LessonWithExericesType | null> => {
