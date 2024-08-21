@@ -6,7 +6,7 @@ import Button, { ButtonColors } from '@/components/Button/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import PopupHeader, { PopupSizes } from '../PopupHeader/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
-import { SpotreccSubExercise } from '@/app/store/stores/useCreateSpotreccStore';
+import { SpotreccSubExercise } from '@/app/store/stores/(createExercises)/useCreateSpotreccStore';
 
 export interface EditSpotreccProps {
   subExercise: SpotreccSubExercise;
@@ -37,7 +37,7 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
     <PopupHeader
       popupType={PopupsTypes.EDIT_SPOTRECC}
       size={PopupSizes.MEDIUM}
-      header='Edit sub-exercise'
+      header={`Edit sub-exercise - ${subExercise.fileName}`}
     >
       <form
         className='mt-12 grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
