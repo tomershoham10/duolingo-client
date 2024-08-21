@@ -48,8 +48,12 @@ export const updateLesson = async (lessonId: string, newFields: Partial<LessonTy
     }
 };
 
+interface LessonWithExericesType extends LessonType {
+    exercises: (FsaType | SpotreccType)[]
 
-export const getExercisesData = async (lessonId: string): Promise<ExerciseType[]> => {
+}
+
+export const getExercisesData = async (lessonId: string): Promise<LessonWithExericesType | null> => {
     try {
         const response = await fetch(
             `${LESSONS_API.GET_EXERCISES_BY_ID}/${lessonId}`,
@@ -64,10 +68,11 @@ export const getExercisesData = async (lessonId: string): Promise<ExerciseType[]
 
         if (response.ok) {
             const data = await response.json();
-            const resExercises = data.exercises;
+            console.log(data);
+            const resExercises = data.data[0];
             return resExercises;
         } else if (response.status === 404) {
-            return [];
+            return null;
         } else {
             throw new Error('error while fetching Exercises');
         }
