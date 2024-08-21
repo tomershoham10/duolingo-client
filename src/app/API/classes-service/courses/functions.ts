@@ -138,7 +138,7 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
 
 export const getCourseDataById = async (courseId: string): Promise<CourseData | null> => {
     try {
-        // console.log("getCourseDataById", courseId);
+        console.log("getCourseDataById", courseId);
         const response = await fetch(
             `${COURSES_API.GET_COURSE_DATA_BY_ID}/${courseId}`,
             {
@@ -151,6 +151,7 @@ export const getCourseDataById = async (courseId: string): Promise<CourseData | 
         );
         if (response.ok) {
             const data = await response.json();
+            console.log('getCourseDataById', data);
             const resData = data.courseData[0] as CourseData;
             // console.log("resUnits", resUnits);
             return resData;
