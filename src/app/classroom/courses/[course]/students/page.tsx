@@ -12,7 +12,7 @@ const Students: React.FC = () => {
   const [users, setUsers] = useState<UserType[]>([]);
 
   useEffect(() => {
-    console.log('selectedCourse sdfs', selectedCourse);
+    console.log('selectedCourse', selectedCourse);
 
     const fetchData = async () => {
       if (selectedCourse) {
