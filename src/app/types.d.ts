@@ -138,7 +138,8 @@ interface FsaType extends ExerciseType {
 interface SpotreccSubExercise {
     description?: string;
     fileName: string;
-    time: number; // in seconds
+    exerciseTime: number; // in seconds
+    bufferTime: number; // in seconds
 }
 
 interface SpotreccType extends ExerciseType {

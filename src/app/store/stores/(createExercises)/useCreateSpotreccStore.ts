@@ -5,7 +5,8 @@ import { create } from 'zustand';
 export interface SpotreccSubExercise {
     fileName: string;
     description: string | null;
-    time: number;
+    exerciseTime: number; // in seconds
+    bufferTime: number; // in seconds
 }
 
 type CreateSpotreccState = {
