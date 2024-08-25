@@ -1,7 +1,7 @@
 'use client';
 
 import pRetry from 'p-retry';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { useUserStore } from '../store/stores/useUserStore';
 import { getExercisesData } from '../API/classes-service/lessons/functions';
@@ -11,9 +11,11 @@ import SpotreccPage from './(exercises)/_spotrecc/page';
 import LessonInfo from '@/components/InfoBar/LessonInfo/page';
 import LessonFooter from '@/components/(lessonComponents)/lessonFooter/page';
 import { TimeType } from '@/reducers/studentView/(exercises)/fsaReducer';
-import { formatNumberToMinutes } from '../_utils/functions/formatNumberToMinutes';
+import LessonComplete from './_lessonComplete/page';
 
 const Lesson: React.FC = () => {
+  //#region init page
+
   const nextLessonId = useStore(useUserStore, (state) => state.nextLessonId);
   const userId = useStore(useUserStore, (state) => state.userId);
   const infoBarRef = useRef<HTMLDivElement | null>(null);
@@ -25,8 +27,11 @@ const Lesson: React.FC = () => {
   const [currentSpotreccSubIndex, setCurrentSpotreccSubIndex] =
     useState<number>(0);
 
+  const [spotreccPauseClock, setSpotreccPauseClock] = useState<boolean>(false);
+
   const [isExerciseStarted, setIsExerciseStarted] = useState<boolean>(false);
   const [isExerciseFinished, setIsExerciseFinished] = useState<boolean>(false);
+  const [isLessonFinished, setIsLessonFinished] = useState<boolean>(false);
 
   const [timeRemaining, setTimeRemaining] = useState<TimeType>({
     minutes: 0,
@@ -41,16 +46,25 @@ const Lesson: React.FC = () => {
     console.log('currentExercise', currentExercise);
   }, [currentExercise]);
 
+  useEffect(() => {
+    exercisesData &&
+      setIsLessonFinished(currentExerciseIndex === exercisesData.length);
+  }, [currentExerciseIndex, exercisesData]);
+
   const fetchData = useCallback(async () => {
-    const response = await pRetry(
-      () => (nextLessonId ? getExercisesData(nextLessonId) : null),
-      {
-        retries: 5,
+    try {
+      const response = await pRetry(
+        () => (nextLessonId ? getExercisesData(nextLessonId) : null),
+        {
+          retries: 5,
+        }
+      );
+      console.log('SET_EXERCISES_DATA', response);
+      if (response) {
+        setExercisesData(response.exercises);
       }
-    );
-    console.log('SET_EXERCISES_DATA', response);
-    if (response) {
-      setExercisesData(response.exercises);
+    } catch (err) {
+      console.error('fetchData error:', err);
     }
   }, [nextLessonId]);
 
@@ -58,7 +72,11 @@ const Lesson: React.FC = () => {
     fetchData();
   }, [fetchData, nextLessonId]);
 
+  // #endregion
+
   const handleExerciseStarted = useCallback(() => {
+    setSpotreccPauseClock(false);
+
     setIsExerciseStarted(true);
   }, []);
 
@@ -74,11 +92,17 @@ const Lesson: React.FC = () => {
     }
   }, []);
 
+  const pauseClock = useCallback(() => {
+    setSpotreccPauseClock(true);
+  }, []);
+
   const finishMainExercise = useCallback(() => {
     console.log('finish');
   }, []);
 
   const handleSubmit = useCallback(() => {
+    setSpotreccPauseClock(true);
+
     if (currentExercise) {
       if (currentExercise.type === ExercisesTypes.FSA) {
       }
@@ -89,67 +113,85 @@ const Lesson: React.FC = () => {
           setCurrentSpotreccSubIndex((prev) => prev + 1);
         } else {
           console.log('finish');
+
+          setCurrentExerciseIndex((prev) => prev + 1);
+          setIsExerciseStarted(false);
+          setIsExerciseFinished(true);
         }
       }
     }
   }, [currentExercise, currentSpotreccSubIndex]);
 
   return (
-    <section
-      className='relative inline-block h-screen w-full dark:text-duoGrayDark-lightest'
-      id='lesson-grid'
-    >
-      <section className='flex h-full flex-col' id='exercise-section'>
-        <section className='basis-[5%]'>
-          <ProgressBar
-            totalNumOfExercises={exercisesData?.length || 1}
-            numOfExercisesMade={currentExerciseIndex}
+    <>
+      <section
+        className='relative inline-block h-screen w-full dark:text-duoGrayDark-lightest'
+        // id='lesson-grid'
+        id={`${!isLessonFinished ? 'lesson-grid' : 'finished-lesson-grid'}`}
+      >
+        {/* {false ? ( */}
+        {!isLessonFinished ? (
+          <>
+            <section className='flex h-full flex-col' id='exercise-section'>
+              <section className='basis-[5%]'>
+                <ProgressBar
+                  totalNumOfExercises={exercisesData?.length || 1}
+                  numOfExercisesMade={currentExerciseIndex}
+                />
+              </section>
+              <section className='basis-[95%]'>
+                {exercisesData &&
+                  currentExercise &&
+                  (currentExercise.type === ExercisesTypes.FSA ? (
+                    <>{ExercisesTypes.FSA}</>
+                  ) : currentExercise.type === ExercisesTypes.SPOTRECC ? (
+                    <SpotreccPage
+                      exercise={currentExercise as SpotreccType}
+                      isExerciseStarted={isExerciseStarted}
+                      updateTimer={updateTimer}
+                      pauseClock={pauseClock}
+                      finishMainExercise={finishMainExercise}
+                      currentSubExerciseIndex={currentSpotreccSubIndex}
+                    />
+                  ) : (
+                    <>error</>
+                  ))}
+              </section>
+            </section>
+            <section id='info-bar-section'>
+              <LessonInfo
+                infoRef={infoBarRef}
+                exerciseType={currentExercise?.type || ExercisesTypes.FSA}
+                timeRemaining={timeRemaining}
+                isExerciseStarted={
+                  spotreccPauseClock ? false : isExerciseStarted
+                }
+                isExerciseFinished={isExerciseFinished}
+                targetsToSubmit={[]}
+              />
+            </section>
+          </>
+        ) : (
+          <LessonComplete score={85} />
+        )}
+        <section id='footer-section'>
+          <LessonFooter
+            exerciseType={currentExercise?.type || ExercisesTypes.SPOTRECC}
+            fileName={
+              currentExercise?.type === ExercisesTypes.FSA
+                ? (currentExercise as FsaType).fileName
+                : undefined
+            }
+            isExerciseStarted={isExerciseStarted}
+            isExerciseFinished={isExerciseFinished}
+            isLessonFinished={isLessonFinished}
+            onStartExercise={handleExerciseStarted}
+            onSubmit={handleSubmit}
+            updatePassword={(password) => console.log('zip', password)}
           />
         </section>
-        <section className='basis-[95%]'>
-          {exercisesData &&
-            currentExercise &&
-            (currentExercise.type === ExercisesTypes.FSA ? (
-              <>{ExercisesTypes.FSA}</>
-            ) : currentExercise.type === ExercisesTypes.SPOTRECC ? (
-              <SpotreccPage
-                exercise={currentExercise as SpotreccType}
-                isExerciseStarted={isExerciseStarted}
-                updateTimer={updateTimer}
-                finishMainExercise={finishMainExercise}
-                currentSubExerciseIndex={currentSpotreccSubIndex}
-              />
-            ) : (
-              <>error</>
-            ))}
-        </section>
       </section>
-      <section id='info-bar-section'>
-        <LessonInfo
-          infoRef={infoBarRef}
-          exerciseType={currentExercise?.type || ExercisesTypes.FSA}
-          timeRemaining={timeRemaining}
-          isExerciseStarted={isExerciseStarted}
-          isExerciseFinished={isExerciseFinished}
-          targetsToSubmit={[]}
-        />
-      </section>
-      <section id='footer-section'>
-        <LessonFooter
-          exerciseType={currentExercise?.type || ExercisesTypes.SPOTRECC}
-          fileName={
-            currentExercise?.type === ExercisesTypes.FSA
-              ? (currentExercise as FsaType).fileName
-              : undefined
-          }
-          isExerciseStarted={isExerciseStarted}
-          isExerciseFinished={isExerciseFinished}
-          onStartExercise={() => handleExerciseStarted()}
-          onSubmit={handleSubmit}
-          updatePassword={(password) => console.log('zip', password)}
-        />
-      </section>
-    </section>
+    </>
   );
 };
 export default Lesson;
