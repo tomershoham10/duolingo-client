@@ -18,11 +18,18 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
   console.log('EditSpotrecc popup', subExercise);
 
   const [description, setDescription] = useState<string>('');
+  const [header, setHeader] = useState<string>('Edit sub-exercise');
   const [time, setTime] = useState<number>(0);
 
   useEffect(() => {
     setDescription(subExercise.description || '');
     setTime(subExercise.time);
+  }, [subExercise]);
+
+  useEffect(() => {
+    subExercise.fileName
+      ? setHeader(`Edit sub-exercise - ${subExercise.fileName}`)
+      : setHeader(`Edit sub-exercise`);
   }, [subExercise]);
 
   const handleDescriptionChange = useCallback((text: string) => {
@@ -37,7 +44,7 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
     <PopupHeader
       popupType={PopupsTypes.EDIT_SPOTRECC}
       size={PopupSizes.MEDIUM}
-      header={`Edit sub-exercise - ${subExercise.fileName}`}
+      header={header}
     >
       <form
         className='mt-12 grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
