@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import playing from '../../../public/svgs/audioPlayer/playing.svg';
 import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
 import { useKeyDown } from '@/app/_utils/hooks/useKeyDown';
@@ -15,7 +15,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
   const src = props.src;
   const isDisabled = props.isDisabled || false;
   const isPauseable = props.isPauseable || false;
+  const isAutoPlay = props.isAutoPlay || false;
   const size = props.size || AudioPlayerSizes.MEDIUM;
+  const onPlay = props.onPlay;
 
   let width = '';
   let hight = '';
@@ -44,7 +46,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const togglePlayPause = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !isDisabled) {
+      onPlay && onPlay();
       if (!isPauseable) {
         if (!isPlaying) {
           audioRef.current.play();
@@ -60,6 +63,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (isAutoPlay && !isDisabled && audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [isAutoPlay, isDisabled]);
 
   useKeyDown(togglePlayPause, [' ']);
 

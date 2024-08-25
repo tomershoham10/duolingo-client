@@ -398,7 +398,9 @@ interface AudioPlayerProps {
     src: string;
     isDisabled?: boolean;
     isPauseable?: boolean;
+    isAutoPlay?: boolean;
     size?: AudioPlayerSizes;
+    onPlay?: () => void;
 }
 
 // // Button // //
