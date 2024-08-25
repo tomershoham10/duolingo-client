@@ -243,7 +243,6 @@ export const getFileByName = async (bucketName: BucketsNames, exerciseType: Exer
         console.log("getFileByName response", response);
 
         const blob = await response.blob();
-        // const blob = await response.blob();
         console.log('getFileByName blob', blob);
         const url = window.URL.createObjectURL(blob);
 

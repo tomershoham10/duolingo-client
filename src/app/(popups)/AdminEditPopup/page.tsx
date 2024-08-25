@@ -26,6 +26,8 @@ const AdminEditPopup: React.FC = () => {
     ),
   };
 
+  console.log('AdminEditPopup infoBarStore', infoBarStore);
+
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const closePopup = () => {
