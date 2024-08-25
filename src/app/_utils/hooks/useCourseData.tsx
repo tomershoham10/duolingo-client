@@ -138,7 +138,7 @@ const useCourseData = (
       fetchCourseData();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }
-  }, [courseDataState.courseId]);
+  }, [courseDataState.courseId, fetchCourseData]);
 
   const fetchResuls = useCallback(async () => {
     try {

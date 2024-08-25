@@ -143,7 +143,7 @@ const StudentUnitSection: React.FC = () => {
         }
       }
     }
-  }, [nextLessonId, courseDataState.lessons]);
+  }, [nextLessonId, courseDataState.lessons, courseDataState]);
 
   useEffect(() => {
     console.log('0000000', studentDashboardState);
