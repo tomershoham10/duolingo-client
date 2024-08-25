@@ -7,25 +7,26 @@ import { BucketsNames, getFileByName } from '@/app/API/files-service/functions';
 import Countdown from '@/components/(lessonComponents)/Countdown/page';
 import AudioPlayer, { AudioPlayerSizes } from '@/components/AudioPlayer/page';
 
-interface ImageDimensions {
-  width: number;
-  height: number;
-}
+// interface ImageDimensions {
+//   width: number;
+//   height: number;
+// }
 
 interface SpotreccPageProps {
   exercise: SpotreccType;
   isExerciseStarted: boolean;
   updateTimer: (time: number) => void;
-  //   finishSubExercise: () => void;
+  pauseClock: () => void;
   finishMainExercise: () => void;
   currentSubExerciseIndex: number;
 }
 const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
+  //#region init page
   const {
     exercise,
     isExerciseStarted,
     updateTimer,
-    // finishSubExercise,
+    pauseClock,
     finishMainExercise,
     currentSubExerciseIndex,
   } = props;
@@ -34,14 +35,20 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
 
   const [url, setUrl] = useState<string | null>(null);
 
-  const [imageDimensions, setImageDimensions] = useState<ImageDimensions>({
-    width: 0,
-    height: 0,
-  });
+  //   const [imageDimensions, setImageDimensions] = useState<ImageDimensions>({
+  //     width: 0,
+  //     height: 0,
+  //   });
 
   const [showCountdown, setShowCountdown] = useState<boolean>(false);
 
-  const [timeLeft, setTimeLeft] = useState<number>(currentSubExercise.time);
+  const [exerciseTime, setExerciseTime] = useState<number>(
+    currentSubExercise.exerciseTime
+  );
+
+  const [bufferTime, setBufferTime] = useState<number>(
+    currentSubExercise.bufferTime
+  );
 
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
@@ -55,106 +62,139 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
     }
   }, [handleCountdownComplete, isExerciseStarted]);
 
+  const handleContextMenu = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
+  // #endregion
+
+  //#region getting file data
+
   const setWavLength = useCallback(async (responseUrl: string) => {
-    const audio = new Audio(responseUrl);
-    length = await new Promise((resolve) => {
-      audio.addEventListener('loadedmetadata', () => {
-        resolve(audio.duration);
+    try {
+      const audio = new Audio(responseUrl);
+      length = await new Promise((resolve) => {
+        audio.addEventListener('loadedmetadata', () => {
+          resolve(audio.duration);
+        });
       });
-    });
-    console.log('setWavLength', length);
-    setTimeLeft(length);
+      console.log('setWavLength', length);
+      setExerciseTime(length);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   const getFile = useCallback(
     async (fileName: string) => {
-      const responseUrl = await pRetry(
-        () =>
-          fileName.endsWith('.wav')
-            ? getFileByName(
-                BucketsNames.RECORDS,
-                ExercisesTypes.SPOTRECC,
-                fileName
-              )
-            : getFileByName(
-                BucketsNames.IMAGES,
-                ExercisesTypes.SPOTRECC,
-                fileName
-              ),
-        {
-          retries: 5,
-        }
-      );
-      setUrl(responseUrl);
-      fileName.endsWith('.wav') && responseUrl && setWavLength(responseUrl);
+      try {
+        const responseUrl = await pRetry(
+          () =>
+            fileName.endsWith('.wav')
+              ? getFileByName(
+                  BucketsNames.RECORDS,
+                  ExercisesTypes.SPOTRECC,
+                  fileName
+                )
+              : getFileByName(
+                  BucketsNames.IMAGES,
+                  ExercisesTypes.SPOTRECC,
+                  fileName
+                ),
+          {
+            retries: 5,
+          }
+        );
+        setUrl(responseUrl);
+        fileName.endsWith('.wav') && responseUrl && setWavLength(responseUrl);
+      } catch (err) {
+        console.error(err);
+      }
     },
     [setWavLength]
   );
 
-  useEffect(() => {
-    setUrl(null);
-    getFile(currentSubExercise.fileName);
-    !currentSubExercise.fileName.endsWith('.wav') &&
-      setTimeLeft(currentSubExercise.time);
-  }, [currentSubExercise, getFile]);
+  // #endregion
+
+  //#region handling time
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    setUrl(null);
+  }, [currentSubExercise.fileName]);
+
+  useEffect(() => {
+    getFile(currentSubExercise.fileName);
+    if (!currentSubExercise.fileName.endsWith('.wav')) {
+      setExerciseTime(currentSubExercise.exerciseTime);
+    }
+  }, [currentSubExercise.fileName, currentSubExercise.exerciseTime, getFile]);
+
+  useEffect(() => {
+    let exerciseInterval: NodeJS.Timeout | null = null;
 
     if (
       isExerciseStarted &&
       !showCountdown &&
       (currentSubExercise.fileName.endsWith('.wav') ? isAudioPlaying : true)
     ) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          const newTime = prevTime > 0 ? prevTime - 1 : 0;
-          return newTime;
-        });
+      exerciseInterval = setInterval(() => {
+        setExerciseTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
       }, 1000);
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (exerciseInterval) clearInterval(exerciseInterval);
     };
   }, [
-    currentSubExercise.fileName,
-    currentSubExerciseIndex,
-    exercise.subExercises.length,
-    finishMainExercise,
-    isAudioPlaying,
     isExerciseStarted,
     showCountdown,
+    isAudioPlaying,
+    currentSubExercise.fileName,
   ]);
 
   useEffect(() => {
-    if (timeLeft >= 0) {
-      updateTimer(timeLeft);
+    let bufferInterval: NodeJS.Timeout | null = null;
+
+    if (exerciseTime === 0 && bufferTime >= 0) {
+      bufferInterval = setInterval(() => {
+        setBufferTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+      }, 1000);
+    }
+
+    return () => {
+      if (bufferInterval) clearInterval(bufferInterval);
+    };
+  }, [exerciseTime, bufferTime]);
+
+  useEffect(() => {
+    if (exerciseTime > 0 || bufferTime >= 0) {
+      updateTimer(exerciseTime > 0 ? exerciseTime : bufferTime);
+    }
+    if (
+      exerciseTime === 0 &&
+      bufferTime === 0 &&
+      currentSubExerciseIndex < exercise.subExercises.length - 1
+    ) {
+      console.log('pauseClock');
+      pauseClock();
     } else if (
-      timeLeft === 0 &&
+      exerciseTime === 0 &&
+      bufferTime === 0 &&
       currentSubExerciseIndex === exercise.subExercises.length - 1
     ) {
       finishMainExercise();
     }
   }, [
-    timeLeft,
+    exerciseTime,
+    bufferTime,
     updateTimer,
     currentSubExerciseIndex,
     exercise.subExercises.length,
     finishMainExercise,
+    pauseClock,
   ]);
 
-  const handleImageLoad = useCallback(
-    (event: React.SyntheticEvent<HTMLImageElement>) => {
-      const { naturalWidth, naturalHeight } = event.currentTarget;
-      setImageDimensions({ width: naturalWidth, height: naturalHeight });
-    },
-    []
-  );
-
-  const handleContextMenu = useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-  }, []);
+  // #endregion
 
   return (
     <section className='flex h-full flex-col items-center justify-center text-5xl font-bold'>
@@ -175,15 +215,17 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
               className='relative mb-2 flex h-full w-[80%] items-center justify-center pb-2'
               onContextMenu={handleContextMenu}
             >
-              {timeLeft > 0 ? (
+              {exerciseTime > 0 ? (
                 <Image
                   src={url}
                   alt='spotrecc img'
                   fill
-                  onLoad={handleImageLoad}
+                  //   onLoad={handleImageLoad}
                 />
               ) : (
-                <p>selecet a target</p>
+                <>
+                  {bufferTime > 0 ? <p>selecet a target</p> : <p>time is up</p>}
+                </>
               )}
             </section>
           )
