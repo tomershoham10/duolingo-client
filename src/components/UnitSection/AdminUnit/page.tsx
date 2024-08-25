@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import useStore from '@/app/store/useStore';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,23 +39,21 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useFetchTargets();
 
-  const infoBarStore = {
-    fieldId: useInfoBarStore.getState().syllabusFieldId,
+  const fieldId = useInfoBarStore.getState().syllabusFieldId;
 
-    updateFieldType: useInfoBarStore.getState().updatesyllabusFieldType,
-    updateFieldId: useInfoBarStore.getState().updateSyllabusFieldId,
-    updateFieldIndex: useInfoBarStore.getState().updateSyllabusFieldIndex,
-    updateFieldSubIdsList:
-      useInfoBarStore.getState().updateSyllabusSubIdsListField,
-    updateFieldFatherIndex:
-      useInfoBarStore.getState().updateSyllabusFieldFatherIndex,
-    updateIsFieldSuspended:
-      useInfoBarStore.getState().updateSyllabusIsFieldSuspended,
-  };
+  const updateFieldType = useInfoBarStore.getState().updatesyllabusFieldType;
+  const updateFieldId = useInfoBarStore.getState().updateSyllabusFieldId;
+  const updateFieldIndex = useInfoBarStore.getState().updateSyllabusFieldIndex;
+  const updateFieldSubIdsList =
+    useInfoBarStore.getState().updateSyllabusSubIdsListField;
+  const updateFieldFatherIndex =
+    useInfoBarStore.getState().updateSyllabusFieldFatherIndex;
+  const updateIsFieldSuspended =
+    useInfoBarStore.getState().updateSyllabusIsFieldSuspended;
 
   useEffect(() => {
-    console.log('infoBarStore.fieldId', infoBarStore.fieldId);
-  }, [infoBarStore.fieldId]);
+    console.log('infoBarStore.fieldId', fieldId);
+  }, [fieldId]);
 
   const initialCourseDataState = {
     courseId: propsCourseId,
@@ -103,19 +101,31 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
     });
   };
 
-  const updateInfobarData = (
-    filedType: fieldToEditType,
-    fieldId: string,
-    fieldIndex: number,
-    fatherId: string,
-    isSuspended: boolean
-  ) => {
-    infoBarStore.updateFieldType(filedType);
-    infoBarStore.updateFieldId(fieldId);
-    infoBarStore.updateFieldIndex(fieldIndex);
-    infoBarStore.updateFieldFatherIndex(fatherId);
-    infoBarStore.updateIsFieldSuspended(isSuspended);
-  };
+  const updateInfobarData = useCallback(
+    (
+      filedType: fieldToEditType,
+      fieldId: string,
+      fieldIndex: number,
+      subIdsList: string[],
+      fatherId: string,
+      isSuspended: boolean
+    ) => {
+      updateFieldType(filedType);
+      updateFieldId(fieldId);
+      updateFieldIndex(fieldIndex);
+      updateFieldSubIdsList(subIdsList);
+      updateFieldFatherIndex(fatherId);
+      updateIsFieldSuspended(isSuspended);
+    },
+    [
+      updateFieldFatherIndex,
+      updateFieldId,
+      updateFieldIndex,
+      updateFieldSubIdsList,
+      updateFieldType,
+      updateIsFieldSuspended,
+    ]
+  );
 
   return (
     <div className='flex w-full'>
@@ -191,6 +201,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                 fieldToEditType.LEVEL,
                                                                 level._id,
                                                                 levelIndex,
+                                                                level.lessonsIds,
                                                                 unit._id,
                                                                 isSuspended
                                                               );
@@ -224,6 +235,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                   fieldToEditType.LESSON,
                                                                   lesson._id,
                                                                   lessonIndex,
+                                                                  lesson.exercisesIds,
                                                                   level._id,
                                                                   isSuspended
                                                                 );
