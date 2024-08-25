@@ -23,158 +23,127 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import PlusButton from '@/components/PlusButton/page';
 import pRetry from 'p-retry';
+import { useCallback } from 'react';
 
 const SyllabusInfo: React.FC = () => {
-  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
+  const selectedCourse = useStore(
+    useCourseStore,
+    (state) => state.selectedCourse
+  );
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
-  const useInfoBarStoreObj = {
-    fieldToEdit: useStore(useInfoBarStore, (state) => state.syllabusFieldType),
-    fieldId: useStore(useInfoBarStore, (state) => state.syllabusFieldId),
-    fieldIndex: useStore(useInfoBarStore, (state) => state.syllabusFieldIndex),
-    fatherId: useStore(useInfoBarStore, (state) => state.syllabusFieldFatherId),
-    isFieldSuspended: useStore(
-      useInfoBarStore,
-      (state) => state.syllabusIsFieldSuspended
-    ),
-  };
+  const fieldToEdit = useStore(
+    useInfoBarStore,
+    (state) => state.syllabusFieldType
+  );
+  const fieldId = useStore(useInfoBarStore, (state) => state.syllabusFieldId);
+  const fieldIndex = useStore(
+    useInfoBarStore,
+    (state) => state.syllabusFieldIndex
+  );
+  const fatherId = useStore(
+    useInfoBarStore,
+    (state) => state.syllabusFieldFatherId
+  );
+  const isFieldSuspended = useStore(
+    useInfoBarStore,
+    (state) => state.syllabusIsFieldSuspended
+  );
 
-  const suspendField = async () => {
-    if (!!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId) {
-      switch (useInfoBarStoreObj.fieldToEdit) {
-        case fieldToEditType.UNIT:
-          //   const unitStatus = await suspendUnit(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
+  const suspendField = useCallback(async () => {
+    try {
+      if (!!fieldId && !!fatherId) {
+        switch (fieldToEdit) {
+          case fieldToEditType.UNIT:
+            const unitStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId ? suspendUnit(fatherId, fieldId) : null,
+              {
+                retries: 5,
+              }
+            );
 
-          const unitStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? suspendUnit(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
+            return unitStatus;
+          case fieldToEditType.LEVEL:
+            const levelStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId
+                  ? suspendLevel(fatherId, fieldId)
+                  : null,
+              {
+                retries: 5,
+              }
+            );
 
-          return unitStatus;
-        case fieldToEditType.LEVEL:
-          //   const levelStatus = await suspendLevel(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
-
-          const levelStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? suspendLevel(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
-
-          return levelStatus;
-        case fieldToEditType.LESSON:
-          //   const lessonStatus = await suspendLesson(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
-
-          const lessonStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? suspendLesson(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
-          return lessonStatus;
+            return levelStatus;
+          case fieldToEditType.LESSON:
+            const lessonStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId
+                  ? suspendLesson(fatherId, fieldId)
+                  : null,
+              {
+                retries: 5,
+              }
+            );
+            return lessonStatus;
+        }
       }
+    } catch (err) {
+      console.error('suspendField error:', err);
     }
-  };
+  }, [fatherId, fieldId, fieldToEdit]);
 
-  const unsuspendField = async () => {
-    if (!!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId) {
-      switch (useInfoBarStoreObj.fieldToEdit) {
-        case fieldToEditType.UNIT:
-          //   const unitStatus = await unsuspendUnit(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
+  const unsuspendField = useCallback(async () => {
+    try {
+      if (!!fieldId && !!fatherId) {
+        switch (fieldToEdit) {
+          case fieldToEditType.UNIT:
+            const unitStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId
+                  ? unsuspendUnit(fatherId, fieldId)
+                  : null,
+              {
+                retries: 5,
+              }
+            );
 
-          const unitStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? unsuspendUnit(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
-
-          return unitStatus;
-        case fieldToEditType.LEVEL:
-          //   const levelStatus = await unsuspendLevel(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
-
-          const levelStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? unsuspendUnit(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
-          return levelStatus;
-        case fieldToEditType.LESSON:
-          //   const lessonStatus = await unsuspendLesson(
-          //     useInfoBarStoreObj.fatherId,
-          //     useInfoBarStoreObj.fieldId
-          //   );
-
-          const lessonStatus = await pRetry(
-            () =>
-              !!useInfoBarStoreObj.fieldId && !!useInfoBarStoreObj.fatherId
-                ? unsuspendUnit(
-                    useInfoBarStoreObj.fatherId,
-                    useInfoBarStoreObj.fieldId
-                  )
-                : null,
-            {
-              retries: 5,
-            }
-          );
-          return lessonStatus;
+            return unitStatus;
+          case fieldToEditType.LEVEL:
+            const levelStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId
+                  ? unsuspendUnit(fatherId, fieldId)
+                  : null,
+              {
+                retries: 5,
+              }
+            );
+            return levelStatus;
+          case fieldToEditType.LESSON:
+            const lessonStatus = await pRetry(
+              () =>
+                !!fieldId && !!fatherId
+                  ? unsuspendUnit(fatherId, fieldId)
+                  : null,
+              {
+                retries: 5,
+              }
+            );
+            return lessonStatus;
+        }
       }
+    } catch (err) {
+      console.error('fetchData error:', err);
     }
-  };
+  }, [fatherId, fieldId, fieldToEdit]);
 
   return (
     <section className='h-full w-full p-6'>
-      {useInfoBarStoreObj.fieldToEdit ? (
+      {fieldToEdit ? (
         <div className='flex h-full w-full flex-col justify-start gap-10'>
           <span className='text-center text-3xl'>
-            {useInfoBarStoreObj.fieldToEdit} {useInfoBarStoreObj.fieldIndex + 1}
+            {fieldToEdit} {fieldIndex + 1}
           </span>
 
           <section className='flex flex-col gap-4'>
@@ -193,7 +162,7 @@ const SyllabusInfo: React.FC = () => {
 
             <ul className='flex flex-row justify-between'>
               <li className='w-[70%]'>
-                {!useInfoBarStoreObj.isFieldSuspended ? (
+                {!isFieldSuspended ? (
                   <Button
                     label={'Suspend'}
                     color={ButtonColors.WHITE}
