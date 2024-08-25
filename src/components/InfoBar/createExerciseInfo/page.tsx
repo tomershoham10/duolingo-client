@@ -35,11 +35,11 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
     } catch (error) {
       console.error('Failed to fetch records:', error);
     }
-  }, []);
+  }, [exerciseType]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleFileSelected = useCallback(
     (selectedFileName: string, recordLength?: number) => {
@@ -57,7 +57,7 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
         updateRecordLength(recordLength || 0);
       }
     },
-    []
+    [exerciseType, recordsData, setFileName, updateRecordLength]
   );
 
   useEffect(() => {
@@ -130,28 +130,31 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
                 </li>
               ))}
               <li>
-                <Link href='' target='_blank'>
+                preview
+                {/* <Link  href='' target='_blank'>
                   preview
-                </Link>
+                </Link> */}
               </li>
             </ul>
           </div>
-          <button
-            onClick={() => {
-              console.log('add sub exercise', {
-                fileName: selectedFile.name,
-                description: null,
-                time: 15,
-              });
-              addSubExercise({
-                fileName: selectedFile.name,
-                description: null,
-                time: 15, //secs
-              });
-            }}
-          >
-            addSubExercise
-          </button>
+          {exerciseType === ExercisesTypes.SPOTRECC && (
+            <button
+              onClick={() => {
+                console.log('add sub exercise', {
+                  fileName: selectedFile.name,
+                  description: null,
+                  time: 15,
+                });
+                addSubExercise({
+                  fileName: selectedFile.name,
+                  description: null,
+                  time: 15, //secs
+                });
+              }}
+            >
+              addSubExercise
+            </button>
+          )}
         </section>
       )}
     </div>
