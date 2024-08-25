@@ -65,7 +65,11 @@ const Lesson: React.FC = () => {
   const updateTimer = useCallback((time: number) => {
     console.log('handleSpotrecc', time);
     if (time > 60) {
-      const minutes = formatNumberToMinutes(time);
+      let minutes: number = Math.floor(time / 60);
+      let seconds: number = Math.floor(time - 60 * minutes);
+      console.log('updateTimer minutes', minutes, seconds);
+      setTimeRemaining({ minutes: minutes, seconds: seconds });
+    } else {
       setTimeRemaining({ minutes: 0, seconds: time });
     }
   }, []);
