@@ -44,7 +44,8 @@ const config: Config = {
                 'duoGreenDark': {
                     light: '#A9DC5C',
                     default: '#93D333',
-                    text: '#58CC02'
+                    text: '#58CC02',
+                    background: '#93D334'
                 },
 
                 'duoBlue': {
@@ -134,6 +135,7 @@ const config: Config = {
                     buttonHover: '#FFD147',
                     button: '#FFC800',
 
+                    text: '#FFC700',
                     light: '#FFF5D3',
                     lighter: '#FFF9E6',
                     dark: '#E28908',
