@@ -19,11 +19,13 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
 
   const [description, setDescription] = useState<string>('');
   const [header, setHeader] = useState<string>('Edit sub-exercise');
-  const [time, setTime] = useState<number>(0);
+  const [exerciseTime, setExerciseTime] = useState<number>(0);
+  const [bufferTime, setBufferTime] = useState<number>(0);
 
   useEffect(() => {
     setDescription(subExercise.description || '');
-    setTime(subExercise.time);
+    setExerciseTime(subExercise.exerciseTime);
+    setBufferTime(subExercise.bufferTime);
   }, [subExercise]);
 
   useEffect(() => {
@@ -36,8 +38,12 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
     setDescription(text);
   }, []);
 
-  const handleTimeChange = useCallback((text: string) => {
-    setTime(Number(text));
+  const handleExerciseTimeChange = useCallback((text: string) => {
+    setExerciseTime(Number(text));
+  }, []);
+
+  const handleBufferTimeChange = useCallback((text: string) => {
+    setBufferTime(Number(text));
   }, []);
 
   return (
@@ -52,7 +58,8 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
           onSave({
             fileName: subExercise.fileName,
             description: description.length === 0 ? null : description,
-            time: time,
+            exerciseTime: exerciseTime,
+            bufferTime: bufferTime,
           })
         }
       >
@@ -79,8 +86,20 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
           <section className='w-full'>
             <Input
               type={InputTypes.NUMBER}
-              value={time}
-              onChange={handleTimeChange}
+              value={exerciseTime}
+              onChange={handleExerciseTimeChange}
+            />
+          </section>
+        </div>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Answering time
+        </p>
+        <div className='col-span-3 mx-4 flex w-full flex-none flex-col items-center justify-center'>
+          <section className='w-full'>
+            <Input
+              type={InputTypes.NUMBER}
+              value={bufferTime}
+              onChange={handleBufferTimeChange}
             />
           </section>
         </div>

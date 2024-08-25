@@ -18,17 +18,21 @@ const Preview: React.FC<PreviewProps> = (props) => {
   const [url, setUrl] = useState<string | null>(null);
 
   const getFile = useCallback(async () => {
-    if (objectName) {
-      const responseUrl = await pRetry(
-        () =>
-          // bucketName &&
-          // exerciseType &&
-          objectName && getFileByName(bucketName, exerciseType, objectName),
-        {
-          retries: 5,
-        }
-      );
-      setUrl(responseUrl);
+    try {
+      if (objectName) {
+        const responseUrl = await pRetry(
+          () =>
+            // bucketName &&
+            // exerciseType &&
+            objectName && getFileByName(bucketName, exerciseType, objectName),
+          {
+            retries: 5,
+          }
+        );
+        setUrl(responseUrl);
+      }
+    } catch (err) {
+      console.error('getFile error:', err);
     }
   }, [bucketName, exerciseType, objectName]);
 

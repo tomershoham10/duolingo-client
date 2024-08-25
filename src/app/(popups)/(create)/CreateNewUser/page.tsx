@@ -62,57 +62,61 @@ const CreateNewUser: React.FC = () => {
       role: string,
       courseId?: string
     ) => {
-      console.log('create user:', userName, tId, password, role, courseId);
-      setFailedFeilds([]);
-      if (
-        userName.length < 3 ||
-        (0 < tId.length && tId.length < 9) ||
-        (!tId.includes('t') && tId.length === 9) ||
-        password.length < 8 ||
-        role === ''
-      ) {
-        if (userName.length < 3) {
-          addAlert('Please enter a valid user name.', AlertSizes.small);
-          addFailedFields('userName');
-        }
-
+      try {
+        console.log('create user:', userName, tId, password, role, courseId);
+        setFailedFeilds([]);
         if (
+          userName.length < 3 ||
           (0 < tId.length && tId.length < 9) ||
-          (!tId.includes('t') && tId.length === 9)
+          (!tId.includes('t') && tId.length === 9) ||
+          password.length < 8 ||
+          role === ''
         ) {
-          addAlert('Please enter a valid T-Id.', AlertSizes.small);
-          addFailedFields('tId');
-        }
+          if (userName.length < 3) {
+            addAlert('Please enter a valid user name.', AlertSizes.small);
+            addFailedFields('userName');
+          }
 
-        if (password.length < 8) {
-          addAlert('Password too short.', AlertSizes.small);
-          addFailedFields('password');
-        }
+          if (
+            (0 < tId.length && tId.length < 9) ||
+            (!tId.includes('t') && tId.length === 9)
+          ) {
+            addAlert('Please enter a valid T-Id.', AlertSizes.small);
+            addFailedFields('tId');
+          }
 
-        if (role === '') {
-          addAlert('Please select a role.', AlertSizes.small);
-          addFailedFields('role');
+          if (password.length < 8) {
+            addAlert('Password too short.', AlertSizes.small);
+            addFailedFields('password');
+          }
+
+          if (role === '') {
+            addAlert('Please select a role.', AlertSizes.small);
+            addFailedFields('role');
+          }
+          return;
         }
-        return;
-      }
-      const response = await pRetry(
-        () => registerUser(userName, tId, password, role, courseId),
-        {
-          retries: 5,
-        }
-      );
-      console.log(response);
-      if (response === 201) {
-        addAlert('User created successfully.', AlertSizes.small);
-      }
-      if (response === 500 || response === 404 || response === 400) {
-        addAlert(
-          'Error while creating user! please try again',
-          AlertSizes.small
+        const response = await pRetry(
+          () => registerUser(userName, tId, password, role, courseId),
+          {
+            retries: 5,
+          }
         );
-      }
-      if (response === 403) {
-        addAlert('User already existed!', AlertSizes.small);
+        console.log(response);
+        if (response === 201) {
+          addAlert('User created successfully.', AlertSizes.small);
+        }
+        if (response === 500 || response === 404 || response === 400) {
+          addAlert(
+            'Error while creating user! please try again',
+            AlertSizes.small
+          );
+        }
+        if (response === 403) {
+          addAlert('User already existed!', AlertSizes.small);
+        }
+      } catch (err) {
+        console.error('createUser error:', err);
       }
     },
     [addAlert]

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -25,10 +25,8 @@ const Sonograms: React.FC<FSASongramsProps> = (props) => {
     { key: 'metadata.bw', label: 'bw' },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      //   const res = await getAllRecords();
-
+  const fetchData = useCallback(async () => {
+    try {
       const res = (await pRetry(
         () => getFileByBucketAndType(BucketsNames.IMAGES, ExercisesTypes.FSA),
         {
@@ -36,10 +34,15 @@ const Sonograms: React.FC<FSASongramsProps> = (props) => {
         }
       )) as FileType[];
 
-      !!res ? setTableData(res) : null;
-    };
-    fetchData();
+      !!res && setTableData(res);
+    } catch (err) {
+      console.error('fetchData error:', err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   const handleSelectTableRow = (item: any) => {};
   return (
     <div className='fixed left-0 top-0 z-20 flex h-full w-screen items-center justify-center overflow-hidden bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)] transition duration-200 ease-out'>

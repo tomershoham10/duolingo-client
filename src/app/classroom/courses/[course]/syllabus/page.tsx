@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
@@ -28,25 +28,7 @@ const Syllabus: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCourse]);
 
-  const AddUnit = async () => {
-    try {
-      if (!selectedCourse || !selectedCourse._id) {
-        addAlert('Error starting the course', AlertSizes.small);
-        return;
-      }
-      const response = await pRetry(() => createByCourse(selectedCourse._id), {
-        retries: 5,
-      });
-      if (response === 200) {
-        getUnits();
-      }
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getUnits = async () => {
+  const getUnits = useCallback(async () => {
     try {
       const response = await pRetry(
         () =>
@@ -67,7 +49,25 @@ const Syllabus: React.FC = () => {
       console.error('Error fetching courses:', error);
       return [];
     }
-  };
+  }, [selectedCourse]);
+
+  const AddUnit = useCallback(async () => {
+    try {
+      if (!selectedCourse || !selectedCourse._id) {
+        addAlert('Error starting the course', AlertSizes.small);
+        return;
+      }
+      const response = await pRetry(() => createByCourse(selectedCourse._id), {
+        retries: 5,
+      });
+      if (response === 200) {
+        getUnits();
+      }
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [addAlert, getUnits, selectedCourse]);
 
   return (
     <div className='mx-1 h-full w-full overflow-y-auto'>

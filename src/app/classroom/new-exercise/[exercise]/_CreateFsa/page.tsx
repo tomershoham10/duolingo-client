@@ -283,39 +283,43 @@ const CreateFsa: React.FC = () => {
   };
 
   const submit = useCallback(async () => {
-    console.log('submit - fileName', fileName);
-    if (fileName) {
-      setIsUploading(true);
-      const timeBuffers = timeBuffersState.timeBuffersScores.map(
-        (score, index) => ({
-          timeBuffer: timeBuffersState.timeBuffersScores[index],
-          grade: score,
-        })
-      );
+    try {
+      console.log('submit - fileName', fileName);
+      if (fileName) {
+        setIsUploading(true);
+        const timeBuffers = timeBuffersState.timeBuffersScores.map(
+          (score, index) => ({
+            timeBuffer: timeBuffersState.timeBuffersScores[index],
+            grade: score,
+          })
+        );
 
-      const exerciseObject = {
-        type: ExercisesTypes.FSA,
-        timeBuffers: timeBuffers,
-        description: fsaDataState.description,
-        fileName: fileName,
-        relevant: fsaDataState.relevant,
-      };
-      console.log('submit fsa exerciseObject', exerciseObject);
+        const exerciseObject = {
+          type: ExercisesTypes.FSA,
+          timeBuffers: timeBuffers,
+          description: fsaDataState.description,
+          fileName: fileName,
+          relevant: fsaDataState.relevant,
+        };
+        console.log('submit fsa exerciseObject', exerciseObject);
 
-      const response = await pRetry(() => createExercise(exerciseObject), {
-        retries: 5,
-      });
-      if (response) {
-        addAlert('Exercise added successfully', AlertSizes.small);
-        resetCreateFsaStore();
-        router.push('/classroom');
+        const response = await pRetry(() => createExercise(exerciseObject), {
+          retries: 5,
+        });
+        if (response) {
+          addAlert('Exercise added successfully', AlertSizes.small);
+          resetCreateFsaStore();
+          router.push('/classroom');
+        } else {
+          addAlert('Error while createing an exercise', AlertSizes.small);
+        }
       } else {
-        addAlert('Error while createing an exercise', AlertSizes.small);
+        addAlert('Please select a record', AlertSizes.small);
       }
-    } else {
-      addAlert('Please select a record', AlertSizes.small);
+      setIsUploading(false);
+    } catch (err) {
+      console.error('submit error:', err);
     }
-    setIsUploading(false);
   }, [
     addAlert,
     fileName,

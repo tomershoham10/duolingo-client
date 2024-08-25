@@ -8,9 +8,13 @@ export const useFetchTargets = () => {
   const targetsList = useStore(useTargetStore, (state) => state.targets);
 
   const fetchTargets = useCallback(async () => {
-    await pRetry(getTargetsList, {
-      retries: 5,
-    });
+    try {
+      await pRetry(getTargetsList, {
+        retries: 5,
+      });
+    } catch (err) {
+      console.error('fetchTargets error:', err);
+    }
   }, []);
 
   useEffect(() => {

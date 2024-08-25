@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import useStore from '@/app/store/useStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
@@ -50,12 +50,16 @@ const Alert: React.FC = () => {
     }
   }, [alerts]);
 
-  const triggerActionButton = async () => {
-    if (alerts && alerts?.length > 0 && alerts[0].action) {
-      await alerts[0].action();
-      removeAlert(alerts[0].id);
+  const triggerActionButton = useCallback(async () => {
+    try {
+      if (alerts && alerts?.length > 0 && alerts[0].action) {
+        await alerts[0].action();
+        removeAlert(alerts[0].id);
+      }
+    } catch (err) {
+      console.error('fetchData error:', err);
     }
-  };
+  }, [alerts, removeAlert]);
 
   return (
     <>

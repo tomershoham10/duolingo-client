@@ -2,21 +2,21 @@
 import Table from '@/components/Table/page';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getUsersByCourseId } from '@/app/API/users-service/users/functions';
 import pRetry from 'p-retry';
 
 const Students: React.FC = () => {
-  const selectedCourse = useStore(useCourseStore, (state) => state.selectedCourse);
+  const selectedCourse = useStore(
+    useCourseStore,
+    (state) => state.selectedCourse
+  );
 
   const [users, setUsers] = useState<UserType[]>([]);
 
-  useEffect(() => {
-    console.log('selectedCourse', selectedCourse);
-
-    const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    try {
       if (selectedCourse) {
-        // const response = await getUsersByCourseId(courseId);
         const response = await pRetry(
           () => getUsersByCourseId(selectedCourse._id),
           {
@@ -26,9 +26,16 @@ const Students: React.FC = () => {
         console.log('getUsersByCourseId', response);
         !!response ? setUsers(response) : null;
       }
-    };
-    fetchData();
+    } catch (err) {
+      console.error('fetchData error:', err);
+    }
   }, [selectedCourse]);
+
+  useEffect(() => {
+    console.log('selectedCourse', selectedCourse);
+
+    fetchData();
+  }, [fetchData, selectedCourse]);
 
   const headers = [
     { key: 'userName', label: 'User name' },

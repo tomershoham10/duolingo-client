@@ -90,9 +90,13 @@ const CreateNewCourse: React.FC = () => {
   );
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    await createCourseHandle(formData);
+    try {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      await createCourseHandle(formData);
+    } catch (err) {
+      console.error('handleFormSubmit error:', err);
+    }
   };
 
   return (

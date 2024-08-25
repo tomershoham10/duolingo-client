@@ -59,29 +59,37 @@ const AdminSideBar: React.FC = () => {
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
 
   const checkIfCourseExists = useCallback(async (name: string) => {
-    const res = await pRetry(() => getCourseByName(name), {
-      retries: 5,
-    });
-    setIsCourseExisted(!!res);
-    return res;
+    try {
+      const res = await pRetry(() => getCourseByName(name), {
+        retries: 5,
+      });
+      setIsCourseExisted(!!res);
+      return res;
+    } catch (err) {
+      console.error('checkIfCourseExists error:', err);
+    }
   }, []);
 
   const fetchCourseAndUpdateStore = useCallback(async () => {
-    if (pathname.includes('courses')) {
-      const pathArray = decodeURI(pathname).split('/').filter(Boolean);
-      const susName = pathArray[pathArray.indexOf('courses') + 1];
-      console.log('fetchCourseAndUpdateStore', susName, coursesList);
-      if (coursesList && coursesList.length > 0) {
-        const selectedCourse = coursesList.find(
-          (course) =>
-            course.name.toLocaleLowerCase() === susName.toLocaleLowerCase()
-        );
-        // console.log('fetchCourseAndUpdateStore selectedCourse', selectedCourse);
-        updateSelectedCourse(selectedCourse || null);
-      } else {
-        const course = await checkIfCourseExists(susName);
-        updateSelectedCourse(course);
+    try {
+      if (pathname.includes('courses')) {
+        const pathArray = decodeURI(pathname).split('/').filter(Boolean);
+        const susName = pathArray[pathArray.indexOf('courses') + 1];
+        console.log('fetchCourseAndUpdateStore', susName, coursesList);
+        if (coursesList && coursesList.length > 0) {
+          const selectedCourse = coursesList.find(
+            (course) =>
+              course.name.toLocaleLowerCase() === susName.toLocaleLowerCase()
+          );
+          // console.log('fetchCourseAndUpdateStore selectedCourse', selectedCourse);
+          updateSelectedCourse(selectedCourse || null);
+        } else {
+          const course = await checkIfCourseExists(susName);
+          course && updateSelectedCourse(course);
+        }
       }
+    } catch (err) {
+      console.error('fetchCourseAndUpdateStore error:', err);
     }
   }, [pathname, coursesList, updateSelectedCourse, checkIfCourseExists]);
 
@@ -105,17 +113,21 @@ const AdminSideBar: React.FC = () => {
   }, [selectedCourse, coursesList, updateSelectedCourse]);
 
   const fetchCoursesList = useCallback(async () => {
-    if (coursesList !== undefined && coursesList.length === 0) {
-      try {
-        console.log('fetching courses list', coursesList);
-        const fetchedCoursesList = await pRetry(getCourses, {
-          retries: 5,
-        });
+    try {
+      if (coursesList !== undefined && coursesList.length === 0) {
+        try {
+          console.log('fetching courses list', coursesList);
+          const fetchedCoursesList = await pRetry(getCourses, {
+            retries: 5,
+          });
 
-        fetchedCoursesList && updateCoursesList(fetchedCoursesList);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
+          fetchedCoursesList && updateCoursesList(fetchedCoursesList);
+        } catch (error) {
+          console.error('Error fetching courses:', error);
+        }
       }
+    } catch (err) {
+      console.error('fetchCoursesList error:', err);
     }
   }, [coursesList, updateCoursesList]);
 

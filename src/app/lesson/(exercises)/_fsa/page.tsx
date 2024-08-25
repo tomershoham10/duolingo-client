@@ -57,22 +57,26 @@ const FsaPage: React.FC<FsaPageProps> = (props) => {
   const [downloadingFile, setDownloadingFile] = useState<boolean>(false);
 
   const fetchZipPassword = useCallback(async () => {
-    const password = await pRetry(
-      () => {
-        const currentExercise = fsaState.currentExercise;
-        if (currentExercise === null) return null;
-        const fileName = currentExercise.fileName;
-        return getZipPassword(fileName);
-      },
-      {
-        retries: 5,
-      }
-    );
-    console.log('fetchZipPassword', password);
-    lessonDispatch({
-      type: fsaAction.SET_ZIP_PASSWORD,
-      payload: password,
-    });
+    try {
+      const password = await pRetry(
+        () => {
+          const currentExercise = fsaState.currentExercise;
+          if (currentExercise === null) return null;
+          const fileName = currentExercise.fileName;
+          return getZipPassword(fileName);
+        },
+        {
+          retries: 5,
+        }
+      );
+      console.log('fetchZipPassword', password);
+      lessonDispatch({
+        type: fsaAction.SET_ZIP_PASSWORD,
+        payload: password,
+      });
+    } catch (err) {
+      console.error('fetchZipPassword error:', err);
+    }
   }, [fsaState.currentExercise]);
 
   const fetchRelevantData = useCallback(() => {

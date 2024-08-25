@@ -6,6 +6,7 @@ import React, {
   ChangeEvent,
   useState,
   useEffect,
+  useCallback,
 } from 'react';
 import Button, { ButtonTypes, ButtonColors } from '@/components/Button/page';
 import {
@@ -24,6 +25,22 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import pRetry from 'p-retry';
 
 const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
+  const {
+    label,
+    inputName,
+    isDisabled,
+    isMultiple,
+    errorMode,
+    showMode,
+    filesTypes,
+    bucketName,
+    exerciseType,
+    files,
+    onFileChange,
+    onFileRemoved,
+    fileLength,
+  } = props;
+
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
   const addAlert = useAlertStore.getState().addAlert;
@@ -39,12 +56,12 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
 
   const [uploadedFiles, setUploadedFiles] = useState<
     FileType | FileType[] | undefined
-  >(props.files);
+  >(files);
 
   useEffect(() => {
-    console.log('props.files', props.files);
-    setUploadedFiles(props.files);
-  }, [props.files]);
+    console.log('props files', files);
+    setUploadedFiles(files);
+  }, [files]);
 
   useEffect(() => {
     if (selectedFile) {
@@ -55,98 +72,110 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     }
   }, [uploadedFilesNames, selectedFile]);
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    const audioContext = new window.AudioContext();
-    if (files) {
-      if (props.filesTypes === '.wav') {
-        const file = files[0];
-        // const isExisted = await isFileExisted(file.name, 'records');
+  const handleFileChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      const audioContext = new window.AudioContext();
+      if (files) {
+        if (filesTypes === '.wav') {
+          const file = files[0];
+          // const isExisted = await isFileExisted(file.name, 'records');
 
-        const isExisted = await pRetry(
-          () => isFileExisted(file.name, props.exerciseType, props.bucketName),
-          {
-            retries: 5,
-          }
-        );
-        console.log('isFileExisted', file.name, isExisted);
-        if (isExisted) {
-          addAlert('Record already existed!', AlertSizes.small);
-          return;
-        }
-        const reader = new FileReader();
-        console.log('reader', reader);
-        reader.onload = async (event) => {
-          console.log('reader2', reader);
-          if (event && event.target) {
-            const arrayBuffer = event.target.result as ArrayBuffer;
-            if (file.type.includes('audio') && arrayBuffer) {
-              try {
-                const audioBuffer =
-                  await audioContext.decodeAudioData(arrayBuffer);
-
-                const durationInSeconds = audioBuffer.duration;
-                console.log('Duration:', durationInSeconds, 'seconds');
-                props.fileLength
-                  ? props.fileLength(durationInSeconds / 60)
-                  : null;
-              } catch (error) {
-                console.error('Error decoding audio data:', error);
-              }
-            }
-          }
-        };
-        reader.readAsArrayBuffer(file);
-        props.onFileChange(file);
-        setUploadedFilesNames((prevFiles) => [...prevFiles, file.name]);
-      } else {
-        console.log('files uploaded', files);
-
-        const filesArray: File[] = Array.from(files);
-
-        const isValidFile = async (file: File) => {
-          //   const status = await isFileExisted(file.name, BucketsNames.SONOGRAMS);
-
-          const status = await pRetry(
-            () =>
-              isFileExisted(file.name, props.exerciseType, props.bucketName),
+          const isExisted = await pRetry(
+            () => isFileExisted(file.name, exerciseType, bucketName),
             {
               retries: 5,
             }
           );
-          console.log('isFileExisted', file.name, status);
+          console.log('isFileExisted', file.name, isExisted);
+          if (isExisted) {
+            addAlert('Record already existed!', AlertSizes.small);
+            return;
+          }
+          const reader = new FileReader();
+          console.log('reader', reader);
+          reader.onload = async (event) => {
+            try {
+              console.log('reader2', reader);
+              if (event && event.target) {
+                const arrayBuffer = event.target.result as ArrayBuffer;
+                if (file.type.includes('audio') && arrayBuffer) {
+                  try {
+                    const audioBuffer =
+                      await audioContext.decodeAudioData(arrayBuffer);
 
-          status
-            ? addAlert(
-                `Sonogram ${file.name} already existed!`,
-                AlertSizes.small
-              )
-            : null;
-          console.log('status', file.name, status);
-          return !status;
-        };
+                    const durationInSeconds = audioBuffer.duration;
+                    console.log('Duration:', durationInSeconds, 'seconds');
+                    fileLength ? fileLength(durationInSeconds / 60) : null;
+                  } catch (error) {
+                    console.error('Error decoding audio data:', error);
+                  }
+                }
+              }
+            } catch (err) {
+              console.error('reader error:', err);
+            }
+          };
+          reader.readAsArrayBuffer(file);
+          onFileChange(file);
+          setUploadedFilesNames((prevFiles) => [...prevFiles, file.name]);
+        } else {
+          console.log('files uploaded', files);
 
-        const validFilesArray: File[] = await Promise.all(
-          filesArray.map(async (file) => ({
-            file,
-            isValid: await isValidFile(file),
-          }))
-        )
-          .then((result) => result.filter(({ isValid }) => isValid))
-          .then((filteredFiles) => filteredFiles.map(({ file }) => file));
+          const filesArray: File[] = Array.from(files);
 
-        console.log('validFilesArray', validFilesArray);
+          const isValidFile = async (file: File) => {
+            //   const status = await isFileExisted(file.name, BucketsNames.SONOGRAMS);
 
-        // const validFilesList: FileList = new FileList();
+            try {
+              const status = await pRetry(
+                () => isFileExisted(file.name, exerciseType, bucketName),
+                {
+                  retries: 5,
+                }
+              );
+              console.log('isFileExisted', file.name, status);
 
-        props.onFileChange(validFilesArray);
-        setUploadedFilesNames((prevFiles) => [
-          ...prevFiles,
-          ...validFilesArray.map((file) => file.name),
-        ]);
+              status
+                ? addAlert(
+                    `Sonogram ${file.name} already existed!`,
+                    AlertSizes.small
+                  )
+                : null;
+              console.log('status', file.name, status);
+              return !status;
+            } catch (err) {
+              console.error('isValidFile error:', err);
+            }
+          };
+
+          const validFilesArray: File[] = await Promise.all(
+            filesArray.map(async (file) => ({
+              file,
+              isValid: await isValidFile(file),
+            }))
+          )
+            .then((result) => result.filter(({ isValid }) => isValid))
+            .then((filteredFiles) => filteredFiles.map(({ file }) => file));
+
+          console.log('validFilesArray', validFilesArray);
+
+          // const validFilesList: FileList = new FileList();
+
+          onFileChange(validFilesArray);
+          setUploadedFilesNames((prevFiles) => [
+            ...prevFiles,
+            ...validFilesArray.map((file) => file.name),
+          ]);
+        }
       }
-    }
-  };
+      try {
+      } catch (err) {
+        console.error('handleFileChange error:', err);
+      }
+    },
+    [addAlert, bucketName, exerciseType, fileLength, filesTypes, onFileChange]
+  );
 
   const handleUploadedFileSelect = (fileIndex: number) => {
     setSelectedFileIndex(fileIndex);
@@ -178,7 +207,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     setUploadedFilesNames((prev) =>
       prev.filter((_, itemIndex) => itemIndex !== index)
     );
-    props.onFileRemoved(props.filesTypes.includes('.wav') ? undefined : index);
+    onFileRemoved(filesTypes.includes('.wav') ? undefined : index);
   };
 
   useImperativeHandle(ref, () => ({
@@ -199,9 +228,9 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
     <div className='h-fit w-full'>
       <div className='relative flex h-16 w-full flex-row items-center gap-4'>
         <Button
-          label={props.label}
+          label={label}
           color={
-            props.errorMode
+            errorMode
               ? ButtonColors.ERROR
               : theme === Themes.LIGHT
                 ? ButtonColors.GRAYBLUE
@@ -209,23 +238,20 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
           }
           onClick={() => inputRef.current?.click()}
           isDisabled={
-            props.isDisabled ||
-            (!props.isMultiple && uploadedFilesNames.length > 0)
+            isDisabled || (!isMultiple && uploadedFilesNames.length > 0)
           }
           buttonType={ButtonTypes.BUTTON}
         />
-        {props.showMode && uploadedFilesNames.length > 0 ? (
+        {showMode && uploadedFilesNames.length > 0 ? (
           <button
-            className='right-0 flex h-8 w-8 items-center justify-center rounded-full
-            bg-duoGray-lighter text-lg
-             hover:bg-duoGray-hover dark:bg-duoGrayDark-light dark:hover:bg-duoGrayDark-lighter'
+            className='right-0 flex h-8 w-8 items-center justify-center rounded-full bg-duoGray-lighter text-lg hover:bg-duoGray-hover dark:bg-duoGrayDark-light dark:hover:bg-duoGrayDark-lighter'
             onClick={() => setIsFilesListOpen(!isFilesListOpen)}
           >
             <FaExpandAlt />
           </button>
         ) : null}
       </div>
-      {props.showMode && isFilesListOpen && uploadedFilesNames.length > 0 ? (
+      {showMode && isFilesListOpen && uploadedFilesNames.length > 0 ? (
         <div className='w-full rounded-md border-2 dark:border-duoGrayDark-light'>
           <ul
             className='flex flex-col font-bold'
@@ -235,13 +261,11 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
               uploadedFilesNames.map((file, fileIndex) => (
                 <li
                   key={fileIndex}
-                  className={`flex cursor-pointer flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark
-                  ${
+                  className={`flex cursor-pointer flex-row items-center justify-between px-3 py-2 hover:bg-duoBlue-lightest hover:text-duoBlue-light dark:hover:bg-duoGrayDark-dark ${
                     selectedFileIndex === fileIndex
                       ? 'bg-duoBlue-lightest text-duoBlue-light dark:bg-duoGrayDark-dark'
                       : null
-                  }
-                  `}
+                  } `}
                   style={
                     fileIndex === 0
                       ? {
@@ -272,14 +296,13 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
               className={`flex flex-row items-center justify-between px-3 py-2`}
             >
               <button
-                className={`flex w-fit cursor-pointer flex-row hover:text-duoBlue-default dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover
-                ${
-                  props.filesTypes !== '.wav' && selectedFileIndex === -1
+                className={`flex w-fit cursor-pointer flex-row hover:text-duoBlue-default dark:text-duoBlueDark-text dark:hover:text-duoBlueDark-textHover ${
+                  filesTypes !== '.wav' && selectedFileIndex === -1
                     ? 'opacity-60 hover:dark:text-duoBlueDark-text'
                     : ''
                 }`}
                 onClick={() => {
-                  props.filesTypes === '.wav'
+                  filesTypes === '.wav'
                     ? updateSelectedPopup(PopupsTypes.RECORDMETADATA)
                     : updateSelectedPopup(PopupsTypes.SONOLISTMETADATA);
                 }}
@@ -296,11 +319,11 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
       <input
         id='upload-input'
         type='file'
-        name={props.inputName}
+        name={inputName}
         ref={inputRef}
         onChange={handleFileChange}
-        multiple={props.isMultiple}
-        accept={props.filesTypes}
+        multiple={isMultiple}
+        accept={filesTypes}
         className='hidden'
       />
     </div>

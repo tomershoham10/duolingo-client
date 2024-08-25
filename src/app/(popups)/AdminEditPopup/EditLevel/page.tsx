@@ -40,20 +40,22 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
   }, [lessonsDraggingState]);
 
   const fetchLevel = useCallback(async () => {
-    // const response = await getLevelById(props.levelId);
-    const response = await pRetry(() => getLevelById(props.levelId), {
-      retries: 5,
-    });
-    if (response) {
-      console.log(response);
-      //   setLevelData(response);
-      lessonsDraggingDispatch({
-        type: draggingAction.SET_ITEMS_LIST,
-        payload: response.lessonsIds.map((lessonId, levelIndex) => ({
-          id: lessonId,
-          name: `lesson ${levelIndex + 1}`,
-        })),
+    try {
+      const response = await pRetry(() => getLevelById(props.levelId), {
+        retries: 5,
       });
+      if (response) {
+        console.log(response);
+        lessonsDraggingDispatch({
+          type: draggingAction.SET_ITEMS_LIST,
+          payload: response.lessonsIds.map((lessonId, levelIndex) => ({
+            id: lessonId,
+            name: `lesson ${levelIndex + 1}`,
+          })),
+        });
+      }
+    } catch (err) {
+      console.error('fetchLevel error:', err);
     }
   }, [props.levelId]);
 
@@ -61,7 +63,7 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
     fetchLevel();
   }, [fetchLevel, props.levelId]);
 
-  const sumbitUpdate = async () => {
+  const sumbitUpdate = useCallback(async () => {
     try {
       const updatedLevel = {
         _id: props.levelId,
@@ -76,9 +78,9 @@ const EditLevel: React.FC<EditLevelProps> = (props) => {
         : addAlert('error upadting unit', AlertSizes.small);
       res ? location.reload() : null;
     } catch (err) {
-      console.error(err);
+      console.error('sumbitUpdate error: ', err);
     }
-  };
+  }, [addAlert, lessonsDraggingState.itemsList, props.levelId]);
 
   return (
     <section className='relative m-5 flex h-[15rem] w-[40rem] rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[20rem] xl:w-[55rem] 2xl:h-[30rem] 2xl:w-[78.5rem] 3xl:h-[30rem] 3xl:w-[110rem]'>

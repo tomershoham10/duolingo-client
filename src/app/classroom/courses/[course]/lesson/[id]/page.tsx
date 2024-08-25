@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import pRetry from 'p-retry';
 import ProgressBar from '@/components/(lessonComponents)/ProgressBar/page';
 import { getExercisesData } from '@/app/API/classes-service/lessons/functions';
@@ -11,8 +11,8 @@ export default function Page({ params }: { params: { id: string } }) {
   const [totalNumOfExercises, setTotalNumOfExercises] = useState<number>(0);
   const [numOfExercisesMade, setNumOfExercisesMade] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    try {
       if (lessonId) {
         // const results = await getExercisesData(lessonId);
         const results = await pRetry(() => getExercisesData(lessonId), {
@@ -20,9 +20,14 @@ export default function Page({ params }: { params: { id: string } }) {
         });
         setExercises(results?.exercises || null);
       }
-    };
-    fetchData();
+    } catch (err) {
+      console.error('fetchData error:', err);
+    }
   }, [lessonId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     exercises ? setTotalNumOfExercises(exercises.length) : null;

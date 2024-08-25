@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -46,18 +46,22 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
 
   useEffect(() => {
     const fetchExercises = async () => {
-      const res = await pRetry(getAllExercises, {
-        retries: 5,
-      });
-      console.log('fetch exercises', res);
-      editLessonDispatch({
-        type: editLessonAction.SET_TABLE_DATA,
-        payload: res,
-      });
-      editLessonDispatch({
-        type: editLessonAction.SET_EXERCISES,
-        payload: res,
-      });
+      try {
+        const res = await pRetry(getAllExercises, {
+          retries: 5,
+        });
+        console.log('fetch exercises', res);
+        editLessonDispatch({
+          type: editLessonAction.SET_TABLE_DATA,
+          payload: res,
+        });
+        editLessonDispatch({
+          type: editLessonAction.SET_EXERCISES,
+          payload: res,
+        });
+      } catch (err) {
+        console.error('fetchExercises error:', err);
+      }
     };
     fetchExercises();
   }, []);
@@ -66,23 +70,27 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
     console.log('editLessonState.tableData', editLessonState.tableData);
   }, [editLessonState.tableData]);
 
-  const addExerciseToLesson = async () => {
-    const status = await pRetry(
-      () =>
-        !!editLessonState.selectedExercise
-          ? updateLesson(lessonId, {
-              exercisesIds: [
-                ...exercisesList,
-                editLessonState.selectedExercise,
-              ],
-            })
-          : null,
-      {
-        retries: 5,
-      }
-    );
-    alert(status);
-  };
+  const addExerciseToLesson = useCallback(async () => {
+    try {
+      const status = await pRetry(
+        () =>
+          !!editLessonState.selectedExercise
+            ? updateLesson(lessonId, {
+                exercisesIds: [
+                  ...exercisesList,
+                  editLessonState.selectedExercise,
+                ],
+              })
+            : null,
+        {
+          retries: 5,
+        }
+      );
+      alert(status);
+    } catch (err) {
+      console.error('addExerciseToLesson error:', err);
+    }
+  }, [editLessonState.selectedExercise, exercisesList, lessonId]);
 
   return (
     <div className='relative m-5 flex h-[30rem] w-[40rem] rounded-md bg-white p-5 dark:bg-duoGrayDark-darkest xl:h-[35rem] xl:w-[55rem] 2xl:h-[50rem] 2xl:w-[78.5rem] 3xl:h-[70rem] 3xl:w-[110rem]'>

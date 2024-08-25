@@ -8,20 +8,23 @@ import pRetry from 'p-retry';
 
 const Login: React.FC = () => {
   const handleLogin = useCallback(async (formData: FormData) => {
-    const userName = formData.get('userName')?.toString();
-    const password = formData.get('password')?.toString();
-    // if (userName && password) {
-    //   const res = await handleAuth(userName, password);
-    const res = await pRetry(
-      () => (userName && password ? handleAuth(userName, password) : null),
-      {
-        retries: 5,
+    try {
+      const userName = formData.get('userName')?.toString();
+      const password = formData.get('password')?.toString();
+      // if (userName && password) {
+      //   const res = await handleAuth(userName, password);
+      const res = await pRetry(
+        () => (userName && password ? handleAuth(userName, password) : null),
+        {
+          retries: 5,
+        }
+      );
+      if (res === 200) {
+        location.reload();
       }
-    );
-    if (res === 200) {
-      location.reload();
+    } catch (err) {
+      console.error('handleLogin error:', err);
     }
-    // }
   }, []);
 
   const onSubmitCallback = useCallback(() => {

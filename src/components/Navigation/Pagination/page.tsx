@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Button from '@/components/Button/page';
 
 import { ButtonColors } from '@/components/Button/page';
@@ -36,24 +36,27 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleSubmit = async () => {
-    console.log(1);
-    setIsLoading(true);
+  const handleSubmit = useCallback(async () => {
     try {
-      // Perform async operation here
-      console.log(2);
-      await props.onSubmit();
-      console.log(3);
-      // Once the operation is complete, do something
-      console.log('Async operation completed');
-    } catch (error) {
-      // Handle error
-      console.error('Error occurred:', error);
-    } finally {
-      console.log(4);
-      setIsLoading(false);
+      console.log(1);
+      setIsLoading(true);
+      try {
+        console.log(2);
+        await props.onSubmit();
+        console.log(3);
+        // Once the operation is complete, do something
+        console.log('Async operation completed');
+      } catch (error) {
+        // Handle error
+        console.error('Error occurred:', error);
+      } finally {
+        console.log(4);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('handleSubmit error:', err);
     }
-  };
+  }, [props]);
 
   return (
     <div
@@ -61,7 +64,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
       style={{ gridTemplateRows: '180px 1fr 100px' }}
     >
       <div className='relative flex-col overflow-auto'>
-        <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest  dark:text-duoGrayDark-lightest'>
+        <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest dark:text-duoGrayDark-lightest'>
           {!!props.header && !!props.subHeader ? (
             <div className='mb-10 mt-5 flex gap-3 text-4xl font-extrabold uppercase'>
               {props.header}
@@ -73,10 +76,9 @@ const Pagination: React.FC<PaginationProps> = (props) => {
             </div>
           ) : null}
           <nav
-            className={`flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default
-          dark:bg-duoBlueDark-darkest 3xl:gap-[25rem] ${
-            !!props.header ? '' : 'mt-10'
-          }`}
+            className={`flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default dark:bg-duoBlueDark-darkest 3xl:gap-[25rem] ${
+              !!props.header ? '' : 'mt-10'
+            }`}
           >
             {componentsNames.map((componentLabel, navIndex) => (
               <div
