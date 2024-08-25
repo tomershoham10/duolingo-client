@@ -143,12 +143,14 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
                 console.log('add sub exercise', {
                   fileName: selectedFile.name,
                   description: null,
-                  time: 15,
+                  exerciseTime: 15,
+                  bufferTime: 15,
                 });
                 addSubExercise({
                   fileName: selectedFile.name,
                   description: null,
-                  time: 15, //secs
+                  exerciseTime: 15, //secs
+                  bufferTime: 15,
                 });
               }}
             >
