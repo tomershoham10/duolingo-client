@@ -1,5 +1,6 @@
 'use client';
 import { useReducer, useEffect, useCallback, lazy, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useStore } from 'zustand';
 
@@ -37,7 +38,6 @@ import {
   createExercise,
   ExercisesTypes,
 } from '@/app/API/classes-service/exercises/functions';
-import { useRouter } from 'next/navigation';
 
 library.add(faPlus);
 
@@ -316,7 +316,15 @@ const CreateFsa: React.FC = () => {
       addAlert('Please select a record', AlertSizes.small);
     }
     setIsUploading(false);
-  }, []);
+  }, [
+    addAlert,
+    fileName,
+    fsaDataState.description,
+    fsaDataState.relevant,
+    resetCreateFsaStore,
+    router,
+    timeBuffersState.timeBuffersScores,
+  ]);
 
   return (
     <div className='relative mx-auto flex h-full w-full flex-col tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
