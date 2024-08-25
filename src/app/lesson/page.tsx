@@ -65,7 +65,7 @@ const Lesson: React.FC = () => {
   const updateTimer = useCallback((time: number) => {
     console.log('handleSpotrecc', time);
     if (time > 60) {
-      const minues= formatNumberToMinutes(time);
+      const minutes = formatNumberToMinutes(time);
       setTimeRemaining({ minutes: 0, seconds: time });
     }
   }, []);
@@ -92,29 +92,33 @@ const Lesson: React.FC = () => {
 
   return (
     <section
-      className='relative h-screen w-full dark:text-duoGrayDark-lightest'
+      className='relative inline-block h-screen w-full dark:text-duoGrayDark-lightest'
       id='lesson-grid'
     >
-      <section className='h-full' id='exercise-section'>
-        <ProgressBar
-          totalNumOfExercises={exercisesData?.length || 1}
-          numOfExercisesMade={currentExerciseIndex}
-        />
-        {exercisesData &&
-          currentExercise &&
-          (currentExercise.type === ExercisesTypes.FSA ? (
-            <>{ExercisesTypes.FSA}</>
-          ) : currentExercise.type === ExercisesTypes.SPOTRECC ? (
-            <SpotreccPage
-              exercise={currentExercise as SpotreccType}
-              isExerciseStarted={isExerciseStarted}
-              updateTimer={updateTimer}
-              finishMainExercise={finishMainExercise}
-              currentSubExerciseIndex={currentSpotreccSubIndex}
-            />
-          ) : (
-            <>error</>
-          ))}
+      <section className='flex h-full flex-col' id='exercise-section'>
+        <section className='basis-[5%]'>
+          <ProgressBar
+            totalNumOfExercises={exercisesData?.length || 1}
+            numOfExercisesMade={currentExerciseIndex}
+          />
+        </section>
+        <section className='basis-[95%]'>
+          {exercisesData &&
+            currentExercise &&
+            (currentExercise.type === ExercisesTypes.FSA ? (
+              <>{ExercisesTypes.FSA}</>
+            ) : currentExercise.type === ExercisesTypes.SPOTRECC ? (
+              <SpotreccPage
+                exercise={currentExercise as SpotreccType}
+                isExerciseStarted={isExerciseStarted}
+                updateTimer={updateTimer}
+                finishMainExercise={finishMainExercise}
+                currentSubExerciseIndex={currentSpotreccSubIndex}
+              />
+            ) : (
+              <>error</>
+            ))}
+        </section>
       </section>
       <section id='info-bar-section'>
         <LessonInfo
