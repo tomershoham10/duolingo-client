@@ -7,6 +7,11 @@ import { BucketsNames, getFileByName } from '@/app/API/files-service/functions';
 import Countdown from '@/components/(lessonComponents)/Countdown/page';
 import AudioPlayer, { AudioPlayerSizes } from '@/components/AudioPlayer/page';
 
+interface ImageDimensions {
+  width: number;
+  height: number;
+}
+
 interface SpotreccPageProps {
   exercise: SpotreccType;
   isExerciseStarted: boolean;
@@ -28,6 +33,11 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
   const currentSubExercise = exercise.subExercises[currentSubExerciseIndex];
 
   const [url, setUrl] = useState<string | null>(null);
+
+  const [imageDimensions, setImageDimensions] = useState<ImageDimensions>({
+    width: 0,
+    height: 0,
+  });
 
   const [showCountdown, setShowCountdown] = useState<boolean>(false);
 
@@ -134,8 +144,20 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
     finishMainExercise,
   ]);
 
+  const handleImageLoad = useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      const { naturalWidth, naturalHeight } = event.currentTarget;
+      setImageDimensions({ width: naturalWidth, height: naturalHeight });
+    },
+    []
+  );
+
+  const handleContextMenu = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
   return (
-    <section className='flex flex-col items-center justify-center'>
+    <section className='flex h-full flex-col items-center justify-center'>
       {isExerciseStarted ? (
         url ? (
           showCountdown ? (
@@ -149,13 +171,21 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
               onPlay={() => setIsAudioPlaying(true)}
             />
           ) : (
-            <>
+            <section
+              className='relative mb-2 h-full w-[80%] pb-2'
+              onContextMenu={handleContextMenu}
+            >
               {timeLeft > 0 ? (
-                <Image src={url} alt='spotrecc img' width={500} height={300} />
+                <Image
+                  src={url}
+                  alt='spotrecc img'
+                  layout='fill'
+                  onLoad={handleImageLoad}
+                />
               ) : (
                 <p>selecet a target</p>
               )}
-            </>
+            </section>
           )
         ) : (
           <p>loading...</p>
