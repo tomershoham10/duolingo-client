@@ -83,7 +83,9 @@ const LessonInfo: React.FC<LessonInfoProps> = (props) => {
             />
           ) : exerciseType === ExercisesTypes.SPOTRECC ? (
             <></>
-          ) : null}
+          ) : (
+            <p>spotrecc</p>
+          )}
         </>
       )}
     </div>
