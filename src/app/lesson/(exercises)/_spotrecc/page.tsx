@@ -157,7 +157,7 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
   }, []);
 
   return (
-    <section className='flex h-full flex-col items-center justify-center'>
+    <section className='flex h-full flex-col items-center justify-center text-5xl font-bold'>
       {isExerciseStarted ? (
         url ? (
           showCountdown ? (
@@ -172,14 +172,14 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
             />
           ) : (
             <section
-              className='relative mb-2 h-full w-[80%] pb-2'
+              className='relative mb-2 flex h-full w-[80%] items-center justify-center pb-2'
               onContextMenu={handleContextMenu}
             >
               {timeLeft > 0 ? (
                 <Image
                   src={url}
                   alt='spotrecc img'
-                  layout='fill'
+                  fill
                   onLoad={handleImageLoad}
                 />
               ) : (
@@ -193,15 +193,6 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
       ) : (
         <p>SPOTRECC</p>
       )}
-      {/* <button
-        onClick={() =>
-          setCurrentSubExerciseIndex((prev) => {
-            return prev + 1 < exercise.subExercises.length ? prev + 1 : prev;
-          })
-        }
-      > 
-        next
-      </button> */}
     </section>
   );
 };
