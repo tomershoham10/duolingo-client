@@ -16,6 +16,7 @@ interface AdminUnitHeaderProps {
     filedType: fieldToEditType,
     fieldId: string,
     fieldIndex: number,
+    subIdsList: string[],
     fatherId: string,
     isSuspended: boolean
   ) => void;
@@ -32,6 +33,7 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
             fieldToEditType.UNIT,
             unit._id,
             unitIndex,
+            unit.levelsIds,
             courseId,
             isSuspended
           );
