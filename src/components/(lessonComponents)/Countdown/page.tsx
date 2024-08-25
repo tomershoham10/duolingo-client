@@ -17,7 +17,7 @@ const Countdown: React.FC<CountdownProps> = ({ onComplete }) => {
   }, [count, onComplete]);
 
   return (
-    <div className='text-center text-7xl font-extrabold'>
+    <div className='text-center text-8xl font-extrabold'>
       {count > 0 && count}
     </div>
   );
