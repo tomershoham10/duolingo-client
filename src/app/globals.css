@@ -66,12 +66,25 @@ body {
   grid-template-rows: 1fr 140px;
 }
 
+#finished-lesson-grid {
+  width: 100%;
+  display: grid;
+  grid-template-areas:
+    'lesson-completed'
+    'footer';
+  grid-template-rows: 1fr 140px;
+}
+
 #exercise-section {
   grid-area: exercise;
 }
 
 #info-bar-section {
   grid-area: info-bar;
+}
+
+#lesson-completed {
+  grid-area: lesson-completed;
 }
 
 #footer-section {
