@@ -1,6 +1,9 @@
 'use client';
 
 import { lazy, useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import pRetry from 'p-retry';
+
 import { useStore } from 'zustand';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
@@ -15,22 +18,27 @@ import {
   createExercise,
   ExercisesTypes,
 } from '@/app/API/classes-service/exercises/functions';
-import pRetry from 'p-retry';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 const EditSpotrecc = lazy(() => import('@/app/(popups)/EditSpotrecc/page'));
 const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
 
 const CreateSpotrecc: React.FC = () => {
+  const router = useRouter();
+  const addAlert = useAlertStore.getState().addAlert;
+
   const subExercises = useStore(
     useCreateSpotreccStore,
     (state) => state.subExercises
   );
   const updateSubExercise = useCreateSpotreccStore.getState().updateSubExercise;
   const removeSubExercise = useCreateSpotreccStore.getState().removeSubExercise;
+  const resetCreateSpotreccStore = useCreateSpotreccStore.getState().resetStore;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const [openedFileIndex, setOpenedFileIndex] = useState<number | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const removeFile = useCallback(
     (fileName: string) => {
@@ -52,6 +60,7 @@ const CreateSpotrecc: React.FC = () => {
   const submit = useCallback(async () => {
     console.log('submit spotrecc', subExercises);
     if (subExercises.length > 0) {
+      setIsUploading(true);
       const exerciseObject = {
         type: ExercisesTypes.SPOTRECC,
         subExercises: subExercises,
@@ -61,9 +70,18 @@ const CreateSpotrecc: React.FC = () => {
       const response = await pRetry(() => createExercise(exerciseObject), {
         retries: 5,
       });
-      console.log('submit response', response);
+      if (response) {
+        addAlert('Exercise added successfully', AlertSizes.small);
+        resetCreateSpotreccStore();
+        router.push('/classroom');
+      } else {
+        addAlert('Error while createing an exercise', AlertSizes.small);
+      }
+    } else {
+      addAlert('Please select a file', AlertSizes.small);
     }
-  }, [subExercises]);
+    setIsUploading(false);
+  }, [addAlert, resetCreateSpotreccStore, router, subExercises]);
 
   return (
     <div className='flex h-full w-full flex-col overflow-hidden'>
