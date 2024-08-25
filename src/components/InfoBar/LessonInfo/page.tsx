@@ -45,30 +45,32 @@ const LessonInfo: React.FC<LessonInfoProps> = (props) => {
           <br className='3xl:text-4xl' />
           Lesson 1
         </span>
-        <div className='flex flex-row items-center justify-center font-bold sm:text-xl xl:text-2xl 3xl:text-4xl'>
-          <TbClockHour12
-            className={
-              timeRemaining.minutes === 0 && timeRemaining.seconds === 0
-                ? 'mx-2 fill-duoRed-light text-duoRed-default opacity-100 sm:text-3xl xl:text-4xl'
-                : isExerciseStarted && !isExerciseFinished
-                  ? 'mx-2 animate-spin fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
-                  : 'mx-2 fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
-            }
-          />
-          {isExerciseFinished ? (
-            <span className='font-extrabold'>00:00</span>
-          ) : (
-            <span className='font-extrabold'>
-              {timeRemaining.minutes < 10
-                ? `0${timeRemaining.minutes}`
-                : timeRemaining.minutes}
-              :
-              {timeRemaining.seconds < 10
-                ? `0${timeRemaining.seconds}`
-                : timeRemaining.seconds}
-            </span>
-          )}
-        </div>
+        {/* {isExerciseStarted && ( */}
+          <div className='flex flex-row items-center justify-center font-bold sm:text-xl xl:text-2xl 3xl:text-4xl'>
+            <TbClockHour12
+              className={
+                timeRemaining.minutes === 0 && timeRemaining.seconds === 0
+                  ? 'mx-2 fill-duoRed-light text-duoRed-default opacity-100 sm:text-3xl xl:text-4xl'
+                  : isExerciseStarted && !isExerciseFinished
+                    ? 'mx-2 animate-spin fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
+                    : 'mx-2 fill-duoPurple-lighter text-duoPurple-default opacity-100 sm:text-3xl xl:text-4xl'
+              }
+            />
+            {isExerciseFinished ? (
+              <span className='font-extrabold'>00:00</span>
+            ) : (
+              <span className='font-extrabold'>
+                {timeRemaining.minutes < 10
+                  ? `0${timeRemaining.minutes}`
+                  : timeRemaining.minutes}
+                :
+                {timeRemaining.seconds < 10
+                  ? `0${timeRemaining.seconds}`
+                  : timeRemaining.seconds}
+              </span>
+            )}
+          </div>
+        {/* )} */}
       </div>
       {isExerciseStarted && (
         <>
