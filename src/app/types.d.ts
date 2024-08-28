@@ -186,12 +186,36 @@ enum TypesOfSonars {
 }
 
 interface TargetType {
+    // as in posi
     _id: string;
     name: string;
-    countryId: string;
-    type: TypesOfTargets;
-    subType: TypesOfVessels | TypesOfTorpedos | TypesOfSonars;
+    organization: string[];
+    father: string;
+    children: string[];
+    level: number;
+    created: Date;
+    updated: Date;
+    // countryId: string;
+    // type: TypesOfTargets;
+    // subType: TypesOfVessels | TypesOfTorpedos | TypesOfSonars;
 }
+
+
+// ------ ORGANIZATION ------- //
+
+interface OrganizationType {
+    _id: string;
+    organization_name: string;
+    country: string;
+}
+
+// ------ COUNTRIES ------- //
+
+interface CountryType {
+    _id: string;
+    country_name: string;
+}
+
 
 // ------ sources ------- //
 
