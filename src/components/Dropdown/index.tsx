@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FaChevronDown } from 'react-icons/fa';
 import useClickOutside from '@/app/_utils/hooks/useClickOutside';
 
 export enum DropdownSizes {
@@ -72,18 +71,23 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     let styleClass =
       'flex h-10 w-full items-center justify-between rounded-xl border-2 font-bold uppercase md:h-12 lg:h-14';
 
-    if (props.isDisabled) {
-      styleClass +=
-        ' cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
-    } else if (isFailed) {
-      styleClass +=
-        ' cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker';
-    } else if (props.isSearchable && isOpen) {
-      styleClass +=
-        ' cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
-    } else {
-      styleClass +=
-        ' cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+    switch (true) {
+      case props.isDisabled:
+        styleClass +=
+          ' cursor-default border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest opacity-50 dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+        break;
+      case isFailed:
+        styleClass +=
+          ' cursor-pointer border-duoRed-light bg-duoRed-lighter p-3 text-duoRed-darker dark:border-duoRed-darker';
+        break;
+      case props.isSearchable && isOpen:
+        styleClass +=
+          ' cursor-pointer border-duoGray-default bg-duoGray-lighter px-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+        break;
+      default:
+        styleClass +=
+          ' cursor-pointer border-duoGray-default bg-duoGray-lighter p-3 text-duoGray-darkest dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark';
+        break;
     }
 
     return styleClass;
@@ -161,14 +165,15 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
             </span>
           )}
         </div>
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className={`${
+        <section
+          className={`flex-none ${
             isSearchFailed
               ? 'dark:text-duoRed-darker'
               : 'dark:text-duoBlueDark-text'
           }`}
-        />
+        >
+          <FaChevronDown />
+        </section>
       </div>
       {isOpen && !isDisabled && (
         <ul
@@ -178,14 +183,13 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
             dropdownItems.map((item, index) => (
               <li
                 key={index}
-                className={`w-full cursor-pointer p-2 hover:bg-duoGray-hover dark:hover:text-duoGray-darkest
-                  ${
-                    index === 0
-                      ? 'rounded-t-md'
-                      : index === dropdownItems.length - 1
-                        ? 'rounded-b-md'
-                        : ''
-                  }  `}
+                className={`w-full cursor-pointer p-2 hover:bg-duoGray-hover dark:hover:text-duoGray-darkest ${
+                  index === 0
+                    ? 'rounded-t-md'
+                    : index === dropdownItems.length - 1
+                      ? 'rounded-b-md'
+                      : ''
+                } `}
                 onClick={() => handleItemClick(item)}
               >
                 {item}
