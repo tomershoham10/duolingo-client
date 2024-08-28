@@ -27,6 +27,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     value?.toString() || ''
   );
   const [dropdownItems, setDropdownItems] = useState<string[]>(items);
+
   //   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useClickOutside(() => setIsOpen(false));
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -34,6 +35,10 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   const [isSearchFailed, setIsSearchFailed] = useState<boolean>(
     isFailed ? isFailed : false
   );
+
+  useEffect(() => {
+    setDropdownItems(items);
+  }, [items]);
 
   const handleSearch = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
