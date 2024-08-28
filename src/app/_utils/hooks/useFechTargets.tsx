@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import pRetry from 'p-retry';
 import { useStore } from 'zustand';
-import { useTargetStore } from '@/app/store/stores/useTargetStore';
+import { useTargetStore } from '@/app/store/stores/(dropdowns)/useTargetStore';
 import { getTargetsList } from '@/app/API/classes-service/targets/functions';
 
 export const useFetchTargets = () => {

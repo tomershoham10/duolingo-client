@@ -21,7 +21,6 @@ export const useTargetStore = create<TargetState & Action>(
     })
 );
 
-
 if (typeof window !== 'undefined' && localStorage) {
     const targetData = localStorage.getItem("targetsList");
     // console.log("targetData - store", targetData);
