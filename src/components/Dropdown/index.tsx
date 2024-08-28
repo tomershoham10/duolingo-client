@@ -119,9 +119,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
           .toLocaleLowerCase()
           .includes(selectedValue.toString().toLocaleLowerCase())
       );
-      filteredItems.length === 0
-        ? setIsSearchFailed(true)
-        : setIsSearchFailed(false);
+      setIsSearchFailed(filteredItems.length === 0);
     } else {
       setIsSearchFailed(false);
     }
