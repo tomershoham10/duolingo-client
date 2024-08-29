@@ -15,8 +15,6 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 
-import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
-
 import Slider from '@/components/Slider/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
@@ -38,6 +36,7 @@ import {
   createExercise,
   ExercisesTypes,
 } from '@/app/API/classes-service/exercises/functions';
+import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 library.add(faPlus);
 
