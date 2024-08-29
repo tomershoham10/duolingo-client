@@ -2,17 +2,30 @@
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
+import TargetsDropdowns from '@/components/TargetsDropdowns';
 
 interface UploadProps {
-  handleExerciseType: (value: string) => void;
+  //   handleExerciseType: (value: string) => void;
+
+  handleMainId: (value: string) => void;
+  handleSubTypeId: (value: string) => void;
+  handleModelId: (value: string) => void;
+
   handleFileType: (value: string) => void;
 }
 
 const UploadFileSection: React.FC<UploadProps> = (props) => {
-  const { handleExerciseType, handleFileType } = props;
+  const {
+    // handleExerciseType,
+    handleFileType,
+  } = props;
   return (
-    <div className='mt-12 grid w-full grid-cols-2 gap-x-6 gap-y-2 px-4 py-4 3xl:gap-y-12'>
-      <div>
+    <section className='mt-12 w-full px-4 py-4 3xl:gap-y-12'>
+      <p className='mb-1 font-bold text-duoGrayDark-lighter'>
+        Please select exercise type
+      </p>
+      <TargetsDropdowns excludeFileType={true} />
+      {/* <div>
         <p className='mb-1 font-bold text-duoGrayDark-lighter'>
           Please select exercise type
         </p>
@@ -35,8 +48,8 @@ const UploadFileSection: React.FC<UploadProps> = (props) => {
           size={DropdownSizes.SMALL}
           onChange={handleFileType}
         />
-      </div>
-    </div>
+      </div> */}
+    </section>
   );
 };
 
