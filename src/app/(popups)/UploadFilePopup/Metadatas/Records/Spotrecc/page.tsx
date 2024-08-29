@@ -8,7 +8,7 @@ import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames } from '@/app/API/files-service/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
-import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
+import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 interface SoptreccRecordMetaProps {
   file: File | null;

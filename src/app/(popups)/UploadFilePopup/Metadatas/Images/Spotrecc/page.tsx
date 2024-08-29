@@ -3,7 +3,7 @@ import Upload from '@/components/Upload/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { BucketsNames, FeaturesList } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
-import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
+import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 // const Dropdown = dynamic(() => import('@/components/Dropdown'), { ssr: false });
 
 interface SpotreccImageMetaProps {

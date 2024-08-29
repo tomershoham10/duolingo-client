@@ -16,7 +16,7 @@ import { useStore } from 'zustand';
 import { useSourceStore } from '@/app/store/stores/useSourceStore';
 import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
-import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
+import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 const Sonograms = lazy(() => import('./Sonograms/page'));
 
 interface FSAMetaProps {
