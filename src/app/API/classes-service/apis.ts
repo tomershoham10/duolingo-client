@@ -10,6 +10,8 @@ export const COURSES_SERVICE_ENDPOINTS = {
     RESULTS: `${ROUT}/api/results`,
     SOURCES: `${ROUT}/api/sources`,
     TARGETS: `${ROUT}/api/targets`,
+    COUNTRIES: `${ROUT}/api/countries`,
+    ORGANIZATIONS: `${ROUT}/api/organizations`,
     UNITS: `${ROUT}/api/units`,
 };
 
@@ -45,7 +47,7 @@ export const LESSONS_API = {
 export const EXERCISES_API = {
     FSA: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/fsa`,
     SPOTRECC: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/spotrecc`,
-    
+
     GET_RESULT_BY_USER_AND_EXERCISE_ID: `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/getResultByUserAndExerciseId`,
 };
 
