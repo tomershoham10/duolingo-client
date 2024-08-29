@@ -25,7 +25,7 @@ import useCourseData from '@/app/_utils/hooks/useCourseData';
 import LodingAdminSection from './LodingAdminSection/page';
 import AdminUnitHeader from './AdminUnitHeader/page';
 import AdminUnitAccourdion from './AdminUnitAccourdion/page';
-import { useFetchTargets } from '@/app/_utils/hooks/useFechTargets';
+import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 library.add(faBook, faChevronDown, faPenToSquare, faStar);
 
