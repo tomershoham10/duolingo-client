@@ -189,8 +189,8 @@ interface TargetType {
     // as in posi
     _id: string;
     name: string;
-    organization: string[];
-    father: string;
+    organization?: string[];
+    father?: string;
     children: string[];
     level: number;
     created: Date;
