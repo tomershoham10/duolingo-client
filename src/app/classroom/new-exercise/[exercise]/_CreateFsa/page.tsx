@@ -29,7 +29,7 @@ import {
 import {
   fsaDataAction,
   fsaDataReducer,
-} from '@/reducers/adminView/create/fsaDataReducer';
+} from '@/reducers/adminView/(create)/fsaDataReducer';
 import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import {

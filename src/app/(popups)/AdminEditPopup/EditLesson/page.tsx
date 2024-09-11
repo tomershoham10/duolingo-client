@@ -8,7 +8,7 @@ import {
   editLessonAction,
   editLessonReducer,
   editLessonType,
-} from '@/reducers/adminView/popups/editLessonReducer';
+} from '@/reducers/adminView/(popups)/editLessonReducer';
 import Table from '@/components/Table/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
