@@ -1,12 +1,16 @@
 'use client';
-import React from 'react';
+import { lazy } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import Table, { TableHead, TableRow } from '@/components/Table/page';
-import UploadFilePopup from '@/app/(popups)/UploadFilePopup/page';
+// import UploadFilePopup from '@/app/(popups)/UploadFilePopup/page';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+const UploadFilePopup = lazy(
+  () => import('@/app/(popups)/(upload)/UploadFilePopup/page')
+);
+
 library.add(faArrowUpFromBracket);
 
 interface RecordsTableProps {
