@@ -37,6 +37,7 @@ const FILES_SERVICE_ENDPOINTS = {
 
 const FILES_API = {
     UPLOAD_FILE: `${FILES_SERVICE_ENDPOINTS.FILES}/uploadFile`,
+    UPLOAD_FILES_ARRAY: `${FILES_SERVICE_ENDPOINTS.FILES}/uploadFilesArray`,
     IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.FILES}/isFileExisted`,
     GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.FILES}/getMetadataByEtag`,
     GET_FILES_BY_BUCKET_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucket`,
@@ -49,7 +50,6 @@ const FILES_API = {
 
 
 export const uploadFile = async (mainId: string, subtypeId: string, modelId: string, fileType: string, file: File, metadata: Partial<Metadata>): Promise<boolean> => {
-    // export const uploadFile = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, file: File, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
         console.log("uploadFile", mainId, subtypeId, modelId, fileType, file, metadata);
         const formData = new FormData();
@@ -72,6 +72,41 @@ export const uploadFile = async (mainId: string, subtypeId: string, modelId: str
         return false;
     }
 }
+
+export const uploadFilesArray = async (
+    mainId: string,
+    subtypeId: string,
+    modelId: string,
+    files: File[],
+): Promise<boolean> => {
+    try {
+        console.log("uploadFilesArray", mainId, subtypeId, modelId, files);
+        const formData = new FormData();
+
+        files.forEach((file) => {
+            formData.append('files', file);
+        });
+
+        formData.append('mainId', mainId);
+        formData.append('subtypeId', subtypeId);
+        formData.append('modelId', modelId);
+
+        console.log("formData", formData);
+
+        const uploadRecordResponse = await fetch(
+            FILES_API.UPLOAD_FILES_ARRAY,
+            {
+                method: 'POST',
+                body: formData,
+            }
+        );
+
+        return uploadRecordResponse.status === 200;
+    } catch (error: any) {
+        console.log(error);
+        return false;
+    }
+};
 
 export const isFileExisted = async (fileName: string, exerciseType: ExercisesTypes, bucketName: BucketsNames): Promise<boolean> => {
     try {
@@ -123,8 +158,9 @@ export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: stri
     }
 }
 
-export const getFileByBucketName = async (bucketName: BucketsNames): Promise<FileType[]> => {
+export const getFileByBucketName = async (bucketName: string): Promise<FileType[]> => {
     try {
+        // bucketName is a level1 id
         console.log(`${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`);
         const response = await fetch(
             `${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`, {
