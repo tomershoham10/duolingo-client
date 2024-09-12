@@ -30,7 +30,7 @@ const FilesTable: React.FC<RecordsTableProps> = (props) => {
   return (
     <section>
       <UploadFilePopup />
-      <span className='my-3 text-2xl font-bold'>Select \ upload record:</span>
+      <span className='my-3 text-2xl font-bold'>Select \ upload file:</span>
       <section className='my-5 flex justify-start'>
         <Table
           headers={TABLE_HEAD}
