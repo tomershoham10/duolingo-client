@@ -9,7 +9,7 @@ import {
   faCog,
   faRightToBracket,
   faSquarePlus,
-  faHeadphones,
+  faDatabase,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Link from 'next/link';
@@ -33,7 +33,7 @@ library.add(
   faCog,
   faRightToBracket,
   faSquarePlus,
-  faHeadphones
+  faDatabase
 );
 
 const AdminSideBar: React.FC = () => {
@@ -149,10 +149,10 @@ const AdminSideBar: React.FC = () => {
       href: '/classroom/',
     },
     {
-      name: 'Records',
+      name: 'Files',
       popup: PopupsTypes.CLOSED,
-      icon: faHeadphones,
-      href: '/classroom/records',
+      icon: faDatabase,
+      href: '/classroom/files',
     },
     {
       name: 'create',
