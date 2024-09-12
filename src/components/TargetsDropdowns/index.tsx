@@ -2,17 +2,23 @@
 import { useFetchCountries } from '@/app/_utils/hooks/(dropdowns)/useFechCountries';
 import { useFetchOrganizations } from '@/app/_utils/hooks/(dropdowns)/useFechOrganizations';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
-import { useChildrenList } from '@/app/_utils/hooks/useChildrenList';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useCallback, useMemo, useState } from 'react';
 
 interface TargetsDropdownsProps {
   excludeFileType?: boolean;
+  onMainSelected?: (main: TargetType) => void;
+  onSubTypeSelected?: (subType: TargetType) => void;
   onModelSelected?: (model: TargetType) => void;
 }
 
 const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
-  const { excludeFileType, onModelSelected } = props;
+  const {
+    excludeFileType,
+    onMainSelected,
+    onSubTypeSelected,
+    onModelSelected,
+  } = props;
   const [selctedCountry, setSelctedCountry] = useState<CountryType | null>(
     null
   );
@@ -116,8 +122,9 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
       setSelectedMainType(filtedMain || null);
       setSelectedSubType(null);
       setSelectedModel(null);
+      onMainSelected && filtedMain && onMainSelected(filtedMain);
     },
-    [targetsList]
+    [onMainSelected, targetsList]
   );
 
   const handelSubTypeChange = useCallback(
@@ -127,8 +134,9 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
       );
       setSelectedSubType(filtedSubType || null);
       setSelectedModel(null);
+      onSubTypeSelected && filtedSubType && onSubTypeSelected(filtedSubType);
     },
-    [targetsList]
+    [onSubTypeSelected, targetsList]
   );
 
   const handelModelChange = useCallback(
