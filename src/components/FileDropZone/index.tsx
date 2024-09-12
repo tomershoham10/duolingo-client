@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 
 import { useDroppable } from '@dnd-kit/core';
-// import Button, { ButtonColors, ButtonTypes } from '../Button/page';
 
 interface FileDropZoneProps {
   onFilesChanged: (files: File[]) => void;
@@ -53,11 +52,15 @@ const FileDropZone: React.FC<FileDropZoneProps> = (props) => {
       <p className='font-bold text-duoGrayDark-lightestOpacity'>
         Drag & Drop your files here
       </p>
+      <p className='text-sm font-bold text-duoGrayDark-lightestOpacity opacity-85'>
+        Max 10 files
+      </p>
       <input
         type='file'
         ref={fileInputRef}
         className='hidden'
         onChange={handleFileChange}
+        accept='image/*,audio/wav'
         multiple
       />
     </section>
