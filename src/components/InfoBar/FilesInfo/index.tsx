@@ -3,6 +3,8 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Link from 'next/link';
 import { FaRegImages } from 'react-icons/fa';
+import Button, { ButtonColors } from '@/components/Button/page';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 const FilesInfo = () => {
   const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
@@ -10,17 +12,20 @@ const FilesInfo = () => {
     useInfoBarStore,
     (state) => state.selectedModel
   );
+  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
-    <>
+    <div className='h-full w-[90%] overflow-hidden py-5'>
       {selectedModel === null ? (
         <section>Please select a model</section>
       ) : (
-        <>
-          <p>{selectedModel.name}</p>
+        <section className='flex h-full w-full flex-col'>
+          <p className='mx-auto text-2xl font-extrabold'>
+            {selectedModel.name}
+          </p>
           {selectedFile && (
-            <div className='mx-auto flex w-[90%] flex-col'>
+            <div className='mx-auto flex h-full w-full flex-col justify-between'>
               <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
                 <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
                   INFORMATION
@@ -92,11 +97,26 @@ const FilesInfo = () => {
                   ) : null}
                 </li>
               </ul>
+              <section className='mx-auto mb-6 flex w-[90%] flex-col gap-4'>
+                <Button
+                  label={'Edit'}
+                  color={ButtonColors.BLUE}
+                  onClick={() => {
+                    updateSelectedPopup(PopupsTypes.EDIT_METADATA);
+                  }}
+                />
+
+                <Button
+                  label={'DELETE'}
+                  color={ButtonColors.RED}
+                  onClick={() => {}}
+                />
+              </section>
             </div>
           )}
-        </>
+        </section>
       )}
-    </>
+    </div>
   );
 };
 
