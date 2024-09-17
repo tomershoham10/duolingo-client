@@ -1,3 +1,5 @@
+import TableSkeleton from './TableSkeleton';
+
 export interface TableHead {
   key: string;
   label: string;
@@ -13,10 +15,16 @@ interface DefaultTableProps {
   onSelect?: (row: any, index: number) => void;
   selectedRowIndex?: number;
   maxHight?: string;
+  isLoading: boolean;
 }
 
 const Table = (props: DefaultTableProps) => {
-  const { headers, rows, onSelect, selectedRowIndex, maxHight } = props;
+  const { headers, rows, onSelect, selectedRowIndex, maxHight, isLoading } =
+    props;
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
 
   const maximumHight = maxHight || 'max-h-[70%]';
 
@@ -47,9 +55,8 @@ const Table = (props: DefaultTableProps) => {
               <tr
                 key={index}
                 className={`hover:light:text-duoGray-darkest cursor-pointer font-bold hover:bg-duoGray-lighter dark:hover:bg-duoBlueDark-darkest ${
-                  selectedRowIndex === index
-                    ? 'light:text-duoGray-darkest bg-duoGray-lighter dark:bg-duoBlueDark-darkest'
-                    : ''
+                  selectedRowIndex === index &&
+                  'light:text-duoGray-darkest bg-duoGray-lighter dark:bg-duoBlueDark-darkest'
                 } `}
                 onClick={() => {
                   onSelect ? onSelect(rows[index], index) : null;
