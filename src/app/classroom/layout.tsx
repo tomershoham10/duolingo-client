@@ -2,14 +2,12 @@ import { lazy } from 'react';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
 import InfoBar from '@/components/InfoBar/page';
 const AdminEditPopup = lazy(() => import('../(popups)/AdminEditPopup/page'));
-const CreateNewUser = lazy(
-  () => import('../(popups)/(create)/CreateNewUser/page')
-);
+const CreateNewUser = lazy(() => import('../(popups)/(create)/CreateNewUser'));
 const CreateNewCourse = lazy(
-  () => import('../(popups)/(create)/CreateNewCourse/page')
+  () => import('../(popups)/(create)/CreateNewCourse')
 );
 const CreateNewUnit = lazy(
-  () => import('@/app/(popups)/(create)/CreateNewUnit/page')
+  () => import('@/app/(popups)/(create)/CreateNewUnit')
 );
 
 // import { notFound } from 'next/navigation';
