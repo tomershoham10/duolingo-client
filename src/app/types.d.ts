@@ -291,7 +291,7 @@ interface SpotreccImageMetadata extends ImageMetadata {
 interface FileType {
     name: string;
     id?: string;
-    exerciseType: ExercisesTypes;
+    // exerciseType: ExercisesTypes;
     metadata: Partial<Metadata>;
 }
 
