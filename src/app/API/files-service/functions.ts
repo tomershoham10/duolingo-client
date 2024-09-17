@@ -27,6 +27,23 @@ export enum FeaturesList {
     NUMBER_OF_BLADES = "numberOfBlades",
 }
 
+type FileMetadata = {
+    id: string;
+    name: string;
+    metadata: Record<string, any>;
+};
+
+type ModelFiles = {
+    images: FileMetadata[];
+    records: FileMetadata[];
+};
+
+type SubTypeGroup = {
+    [subId: string]: {
+        [modelId: string]: ModelFiles;
+    };
+};
+
 const host = process.env.NEXT_PUBLIC_HOST;
 
 const ROUT = `http://${host}:4002`;
@@ -41,6 +58,7 @@ const FILES_API = {
     IS_FILE_EXISTED: `${FILES_SERVICE_ENDPOINTS.FILES}/isFileExisted`,
     GET_METADATA_BY_ETAG: `${FILES_SERVICE_ENDPOINTS.FILES}/getMetadataByEtag`,
     GET_FILES_BY_BUCKET_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucket`,
+    GET_MODELS_FILES: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucket`,
     GET_FILES_BY_BUCKET_AND_TYPE: `${FILES_SERVICE_ENDPOINTS.FILES}/getFilesByBucketAndType`,
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileByName`,
     GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileMetadataByName`,
@@ -158,12 +176,12 @@ export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: stri
     }
 }
 
-export const getFileByBucketName = async (bucketName: string): Promise<FileType[]> => {
+export const getFileByBucketName = async (mainId: string): Promise<SubTypeGroup | null> => {
     try {
         // bucketName is a level1 id
-        console.log(`${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`);
+        console.log(`${FILES_API.GET_FILES_BY_BUCKET_NAME}/${mainId}`);
         const response = await fetch(
-            `${FILES_API.GET_FILES_BY_BUCKET_NAME}/${bucketName}`, {
+            `${FILES_API.GET_FILES_BY_BUCKET_NAME}/${mainId}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -176,12 +194,38 @@ export const getFileByBucketName = async (bucketName: string): Promise<FileType[
             console.log('getFileByBucketName', data);
             const files = data.files;
             return files;
-        }
-        return [];
+        } else return null;
     }
     catch (error) {
         console.error(`error getting all records - ${error}`);
-        return [];
+        return null;
+    }
+}
+
+export const getModelsFiles = async (mainId: string, subTypeId: string, modelId: string): Promise<SubTypeGroup | null> => {
+    try {
+        // bucketName is a level1 id
+        console.log(`${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}`);
+        const response = await fetch(
+            `${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        console.log('getModelsFiles', response);
+        if (response.ok) {
+            const data = await response.json();
+            console.log('getModelsFiles', data);
+            const files = data.files;
+            return files;
+        }
+        return null;
+    }
+    catch (error) {
+        console.error(`error getModelsFiles - ${error}`);
+        return null;
     }
 }
 
