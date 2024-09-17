@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 type TargetState = {
-    targets: TargetType[];
+    targets: TargetType[] | null;
 }
 
 type Action = {
@@ -14,10 +14,17 @@ type Action = {
 
 export const useTargetStore = create<TargetState & Action>(
     (set) => ({
-        targets: [],
-        setTargets: (targets: TargetType[]) => set(() => ({ targets: targets })),
-        addTarget: (target: TargetType) => set((state) => ({ targets: [...state.targets, target] })),
-        removeTarget: (targetId: string) => set((state) => ({ targets: state.targets.filter(t => t._id !== targetId) })),
+        targets: null,
+        setTargets: (targets: TargetType[] | null) => set(() => ({ targets: targets })),
+        addTarget: (target: TargetType) => set((state) => ({
+            targets: state.targets ? [...state.targets, target]
+                : [target]
+        })),
+        removeTarget: (targetId: string) => set((state) => ({
+            targets: state.targets ?
+                state.targets.filter(t => t._id !== targetId)
+                : state.targets
+        })),
     })
 );
 
@@ -29,7 +36,11 @@ if (typeof window !== 'undefined' && localStorage) {
         // console.log("useTargetStore parsedData", parsedData);
         useTargetStore.getState().setTargets(Object.values(parsedData));
         // console.log("useTargetStore useTargetStore.getState().targets", useTargetStore.getState().targets, typeof parsedData);
+    } else {
+        useTargetStore.getState().setTargets([]);
     }
+} else {
+    useTargetStore.getState().setTargets([]);
 }
 
 

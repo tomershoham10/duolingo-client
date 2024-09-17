@@ -6,7 +6,7 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 type CourseState = {
     selectedCourse: CoursesType | null;
-    coursesList: CoursesType[];
+    coursesList: CoursesType[] | null;
 }
 type Action = {
     // updateCourseId: (_id: CoursesType['_id']) => void;
@@ -21,7 +21,7 @@ type Action = {
 export const useCourseStore = create<CourseState & Action>(
     (set) => ({
         selectedCourse: null,
-        coursesList: [],
+        coursesList: null,
         // updateSelectedCourse: () => set((selectedCourse) => (selectedCourse: selectedCourse)),
         updateSelectedCourse: (selectedCourse) => set(() => ({ selectedCourse: selectedCourse })),
         // updateCourseName: (name) => set(() => ({ name: name })),
@@ -33,16 +33,20 @@ export const useCourseStore = create<CourseState & Action>(
 
 if (typeof window !== 'undefined' && localStorage) {
     const coursesData = localStorage.getItem("coursesData");
-    console.log("useCourseStore coursesData", coursesData);
+    // console.log("useCourseStore coursesData", coursesData);
     if (coursesData) {
         const parsedData = JSON.parse(coursesData);
-        console.log("useCourseStore parsedData", parsedData);
+        // console.log("useCourseStore parsedData", parsedData);
         // useCourseStore.getState().updateCourseId(parsedData._id);
         // useCourseStore.getState().updateCourseName(parsedData.name);
         // useCourseStore.getState().updateUnitsList(parsedData.units);
         useCourseStore.getState().updateSelectedCourse(parsedData.selectedCourse);
-        useCourseStore.getState().updateCoursesList(parsedData.coursesList);
+        useCourseStore.getState().updateCoursesList(parsedData.coursesList || []);
+    } else {
+        useCourseStore.getState().updateCoursesList([]);
     }
+} else {
+    useCourseStore.getState().updateCoursesList([]);
 }
 
 if (process.env.NODE_ENV === 'development') {

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 type CountryState = {
-    countries: CountryType[];
+    countries: CountryType[] | null;
 }
 
 type Action = {
@@ -14,10 +14,16 @@ type Action = {
 
 export const useCountryStore = create<CountryState & Action>(
     (set) => ({
-        countries: [],
+        countries: null,
         setCountries: (countries: CountryType[]) => set(() => ({ countries: countries })),
-        addCountry: (country: CountryType) => set((state) => ({ countries: [...state.countries, country] })),
-        removeCountry: (countryId: string) => set((state) => ({ countries: state.countries.filter(c => c._id !== countryId) })),
+        addCountry: (country: CountryType) => set((state) => ({
+            countries: state.countries ? [...state.countries, country] : [country]
+        })),
+        removeCountry: (countryId: string) => set((state) => ({
+            countries: state.countries ?
+                state.countries.filter(c => c._id !== countryId) :
+                state.countries
+        })),
     })
 );
 
@@ -29,7 +35,11 @@ if (typeof window !== 'undefined' && localStorage) {
         // console.log("useCountryStore parsedData", parsedData);
         useCountryStore.getState().setCountries(Object.values(parsedData));
         // console.log("useCountryStore useCountryStore.getState().countries", useCountryStore.getState().countries, typeof parsedData);
+    } else {
+        useCountryStore.getState().setCountries([]);
     }
+} else {
+    useCountryStore.getState().setCountries([]);
 }
 
 

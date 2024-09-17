@@ -27,14 +27,7 @@ import handleLogout from '@/app/_utils/functions/handleLogOut';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 
-library.add(
-  faHome,
-  faUser,
-  faCog,
-  faRightToBracket,
-  faSquarePlus,
-  faDatabase
-);
+library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase);
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();
@@ -114,7 +107,7 @@ const AdminSideBar: React.FC = () => {
 
   const fetchCoursesList = useCallback(async () => {
     try {
-      if (coursesList !== undefined && coursesList.length === 0) {
+      if (coursesList && coursesList.length === 0) {
         try {
           console.log('fetching courses list', coursesList);
           const fetchedCoursesList = await pRetry(getCourses, {
@@ -132,7 +125,9 @@ const AdminSideBar: React.FC = () => {
   }, [coursesList, updateCoursesList]);
 
   useEffect(() => {
-    fetchCoursesList();
+    if (coursesList !== null && coursesList && coursesList.length === 0) {
+      fetchCoursesList();
+    }
   }, [coursesList, fetchCoursesList]);
 
   useEffect(() => {
