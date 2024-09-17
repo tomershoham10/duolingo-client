@@ -1,16 +1,21 @@
 'use client';
-import { useStore } from 'zustand';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { Suspense, useCallback, useMemo, useState } from 'react';
-import Table, { TableHead } from '@/components/Table/page';
+import { lazy, useCallback, useMemo, useState } from 'react';
 import pRetry from 'p-retry';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import Table, { TableHead } from '@/components/Table/page';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 import useModelsTableData from '@/app/_utils/hooks/useModelsTableData';
 import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import UploadFilePopup from '@/app/(popups)/(upload)/UploadFilePopup/page';
 import { getModelsFiles } from '@/app/API/files-service/functions';
+
+const UploadFilePopup = lazy(
+  () => import('@/app/(popups)/(upload)/UploadFilesPopup/page')
+);
+const EditMetadataPopup = lazy(
+  () => import('@/app/(popups)/(edit)/EditMetadata')
+);
 
 const Files: React.FC = () => {
   const targetsList = useFetchTargets();
@@ -25,8 +30,14 @@ const Files: React.FC = () => {
 
   console.log('modelsTableData', modelsTableData);
 
+  const updateSelectedMainTypeId =
+    useInfoBarStore.getState().updateSelectedMainTypeId;
+  const updateSelectedSubTypeId =
+    useInfoBarStore.getState().updateSelectedSubTypeId;
   const updateSelectedModel = useInfoBarStore.getState().updateSelectedModel;
+
   const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
+
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const modelsTableHead: TableHead[] = [
@@ -95,11 +106,22 @@ const Files: React.FC = () => {
       setSelectedFilesRowIndex(-1);
       console.log('handleSelectModelsRow', row);
       fetchModelFiles(row.mainTypeId, row.subTypeId, row.modelId);
+      updateSelectedMainTypeId(row.mainTypeId);
+      updateSelectedSubTypeId(row.subTypeId);
+
       const model = targetsList?.find((target) => target._id === row.modelId);
+
       updateSelectedModel(model || null);
       setSelectedModelsRowIndex(index);
     },
-    [fetchModelFiles, targetsList, updateSelectedFile, updateSelectedModel]
+    [
+      fetchModelFiles,
+      targetsList,
+      updateSelectedFile,
+      updateSelectedMainTypeId,
+      updateSelectedModel,
+      updateSelectedSubTypeId,
+    ]
   );
 
   const handleSelectFilesRow = useCallback(
@@ -120,6 +142,7 @@ const Files: React.FC = () => {
   return (
     <section className='mx-auto flex h-full w-fit flex-col gap-6 px-6 pb-4 text-duoGray-darkest dark:text-duoGrayDark-lightest'>
       <UploadFilePopup />
+      <EditMetadataPopup />
       <div className='flex flex-col gap-3'>
         <span className='text-3xl font-bold'>Models table</span>
         <Table
@@ -152,7 +175,8 @@ const Files: React.FC = () => {
           color={ButtonColors.BLUE}
           icon={faArrowUpFromBracket}
           //   loadingLabel={'Uploading...'}
-          onClick={() => updateSelectedPopup(PopupsTypes.UPLOAD_RECORD)}
+          isDisabled={selectedModelsRowIndex < 0}
+          onClick={() => updateSelectedPopup(PopupsTypes.EDIT_METADATA)}
         />
       </div>
     </section>
