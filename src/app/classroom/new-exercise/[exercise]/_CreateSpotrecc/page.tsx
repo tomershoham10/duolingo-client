@@ -20,7 +20,9 @@ import {
 } from '@/app/API/classes-service/exercises/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-const EditSpotrecc = lazy(() => import('@/app/(popups)/EditSpotrecc/page'));
+const EditSpotrecc = lazy(
+  () => import('@/app/(popups)/(edit)/EditSpotrecc/page')
+);
 const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
 
 const CreateSpotrecc: React.FC = () => {

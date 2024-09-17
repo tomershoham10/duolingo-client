@@ -8,7 +8,7 @@ import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 const UploadFilePopup = lazy(
-  () => import('@/app/(popups)/(upload)/UploadFilePopup/page')
+  () => import('@/app/(popups)/(upload)/UploadFilesPopup/page')
 );
 
 library.add(faArrowUpFromBracket);
