@@ -25,6 +25,7 @@ type useInfoBarState = {
     syllabusSubIdsListField: string[];
     syllabusIsFieldSuspended: boolean;
 
+    selectedModel: TargetType | null;
     selectedFile: Partial<FileType> | undefined;
 }
 type Action = {
@@ -35,6 +36,7 @@ type Action = {
     updateSyllabusSubIdsListField: (syllabusSubIdsListField: useInfoBarState['syllabusSubIdsListField']) => void;
     updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended: useInfoBarState['syllabusIsFieldSuspended']) => void;
 
+    updateSelectedModel: (selectedModel: useInfoBarState['selectedModel']) => void;
     updateSelectedFile: (selectedFile: useInfoBarState['selectedFile']) => void;
     resetStore: () => void;
 }
@@ -48,6 +50,7 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
         syllabusFieldFatherId: undefined,
         syllabusIsFieldSuspended: false,
         syllabusSubIdsListField: [],
+        selectedModel: null,
         selectedFile: undefined,
         updatesyllabusFieldType: (syllabusFieldType) => set(() => ({ syllabusFieldType: syllabusFieldType })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
@@ -55,6 +58,7 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
         updateSyllabusFieldFatherIndex: (syllabusFieldFatherId) => set(() => ({ syllabusFieldFatherId: syllabusFieldFatherId })),
         updateSyllabusSubIdsListField: (syllabusSubIdsListField) => set(() => ({ syllabusSubIdsListField: syllabusSubIdsListField })),
         updateSyllabusIsFieldSuspended: (syllabusIsFieldSuspended) => set(() => ({ syllabusIsFieldSuspended: syllabusIsFieldSuspended })),
+        updateSelectedModel: (newSelectedModel) => set({ selectedModel: newSelectedModel }),
         updateSelectedFile: (newSelectedFile) => set({ selectedFile: newSelectedFile }),
         resetStore: () => {
             set(() => ({
