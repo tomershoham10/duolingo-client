@@ -54,7 +54,7 @@ const Students: React.FC = () => {
             {Object.values(users).length} students
           </p>
           <section className='my-5 flex justify-start'>
-            <Table headers={headers} rows={users} />
+            <Table headers={headers} rows={users} isLoading={false} />
           </section>
         </div>
       ) : (
@@ -63,7 +63,7 @@ const Students: React.FC = () => {
             0 students
           </p>
 
-          <Table headers={headers} rows={[]} />
+          <Table headers={headers} rows={[]} isLoading={false} />
         </div>
       )}
     </>

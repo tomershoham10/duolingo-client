@@ -124,6 +124,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
                   .indexOf(editLessonState.selectedExercise)
               : undefined
           }
+          isLoading={false}
         />
         <div className='mx-auto mt-4 w-32'>
           <Button

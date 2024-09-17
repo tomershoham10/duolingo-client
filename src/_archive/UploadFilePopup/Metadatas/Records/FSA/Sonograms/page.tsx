@@ -68,6 +68,7 @@ const Sonograms: React.FC<FSASongramsProps> = (props) => {
               headers={TABLE_HEAD}
               rows={tableData}
               onSelect={handleSelectTableRow}
+              isLoading={false}
               //   selectedRowIndex={
               //     tableData && tableData.length > 0
               //       ? tableData

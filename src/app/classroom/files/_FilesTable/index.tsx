@@ -37,6 +37,7 @@ const FilesTable: React.FC<RecordsTableProps> = (props) => {
           rows={tableData}
           onSelect={onSelect}
           selectedRowIndex={selectedRowIndex}
+          isLoading={false}
         />
       </section>
       <div className='relative flex items-center justify-start py-8'>
