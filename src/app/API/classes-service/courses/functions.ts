@@ -19,14 +19,16 @@ interface CourseData extends CoursesType {
 export const createCourse = async (name: string): Promise<number | null> => {
     try {
         console.log('createCourse', name);
-        const response = await fetch(COURSES_SERVICE_ENDPOINTS.COURSES, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: name })
-        });
+        const response = await fetch(
+            COURSES_SERVICE_ENDPOINTS.COURSES,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name: name })
+            });
 
         return response.status;
 
