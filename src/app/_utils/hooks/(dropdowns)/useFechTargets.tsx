@@ -8,7 +8,7 @@ import { getTargetsList } from '@/app/API/classes-service/(dropdowns)/targets/fu
 export const useFetchTargets = () => {
   const targetsList = useStore(useTargetStore, (state) => state.targets);
   const setTargets = useTargetStore.getState().setTargets;
-  console.log('useFetchTargets targetsList', targetsList);
+  //   console.log('useFetchTargets targetsList', targetsList);
   const fetchTargets = useCallback(async () => {
     try {
       const response = await pRetry(getTargetsList, {
@@ -22,10 +22,15 @@ export const useFetchTargets = () => {
   }, [setTargets]);
 
   useEffect(() => {
-    if (!targetsList || targetsList.length === 0) {
+    // console.log(
+    //   'useFetchTargets check',
+    //   targetsList,
+    //   targetsList !== null && targetsList.length === 0
+    // );
+    if (targetsList !== null && targetsList.length === 0) {
       fetchTargets();
     }
   }, [fetchTargets, targetsList]);
 
-  return targetsList.sort((a, b) => a.name.localeCompare(b.name));
+  return targetsList?.sort((a, b) => a.name.localeCompare(b.name)) || null;
 };

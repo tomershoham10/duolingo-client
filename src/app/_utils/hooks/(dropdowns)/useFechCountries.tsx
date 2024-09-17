@@ -8,7 +8,7 @@ import { getCountriesList } from '@/app/API/classes-service/(dropdowns)/countrie
 export const useFetchCountries = () => {
   const countiresList = useStore(useCountryStore, (state) => state.countries);
   const setCountries = useCountryStore.getState().setCountries;
-  console.log('usefetchCountries countiresList', countiresList);
+  //   console.log('usefetchCountries countiresList', countiresList);
   const fetchCountries = useCallback(async () => {
     try {
       const response = await pRetry(getCountriesList, {
@@ -22,12 +22,14 @@ export const useFetchCountries = () => {
   }, [setCountries]);
 
   useEffect(() => {
-    if (!countiresList || countiresList.length === 0) {
+    if (countiresList !== null && countiresList.length === 0) {
       fetchCountries();
     }
   }, [fetchCountries, countiresList]);
 
-  return countiresList.sort((a, b) =>
-    a.country_name.localeCompare(b.country_name)
+  return (
+    countiresList?.sort((a, b) =>
+      a.country_name.localeCompare(b.country_name)
+    ) || null
   );
 };

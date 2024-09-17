@@ -11,7 +11,7 @@ export const useFetchOrganizations = () => {
     (state) => state.organizations
   );
   const setOrganizations = useOrganizationStore.getState().setOrganizations;
-  console.log('useFetchOrganizations organizationsList', organizationsList);
+  //   console.log('useFetchOrganizations organizationsList', organizationsList);
   const fetchOrganizations = useCallback(async () => {
     try {
       const response = await pRetry(getOrganizationsList, {
@@ -25,12 +25,14 @@ export const useFetchOrganizations = () => {
   }, [setOrganizations]);
 
   useEffect(() => {
-    if (!organizationsList || organizationsList.length === 0) {
+    if (organizationsList !== null && organizationsList.length === 0) {
       fetchOrganizations();
     }
   }, [fetchOrganizations, organizationsList]);
 
-  return organizationsList.sort((a, b) =>
-    a.organization_name.localeCompare(b.organization_name)
+  return (
+    organizationsList?.sort((a, b) =>
+      a.organization_name.localeCompare(b.organization_name)
+    ) || null
   );
 };
