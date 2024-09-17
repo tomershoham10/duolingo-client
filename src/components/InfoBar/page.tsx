@@ -5,6 +5,7 @@ import { useUserStore } from '@/app/store/stores/useUserStore';
 import { usePathname } from 'next/navigation';
 import CreateExerciseInfo from './createExerciseInfo/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
+const FilesInfo = lazy(() => import('./FilesInfo/'));
 const SyllabusInfo = lazy(() => import('./syllabusInfo/page'));
 // const CreateExerciseInfo = lazy(() => import('./CreateExerciseInfo/page'));
 const RecordsInfo = lazy(() => import('./RecordsInfo/page'));
@@ -23,6 +24,8 @@ const InfoBar: React.FC = () => {
             pathname.split('/').filter(Boolean).pop() as ExercisesTypes
           }
         />
+      ) : pathname.includes('files') ? (
+        <FilesInfo />
       ) : pathname.includes('records') ? (
         <RecordsInfo />
       ) : (
