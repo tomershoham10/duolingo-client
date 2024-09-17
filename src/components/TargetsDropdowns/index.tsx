@@ -40,7 +40,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
   const handleCountryChange = useCallback(
     (countryName: string) => {
-      const countryObj = countiresList.find(
+      const countryObj = countiresList?.find(
         (country) => country.country_name === countryName
       );
 
@@ -52,15 +52,15 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
   const filteredOrganizationsList = useMemo(() => {
     if (!selctedCountry) {
-      return organizationsList.map((org) => org.organization_name);
+      return organizationsList?.map((org) => org.organization_name);
     }
     console.log(selctedCountry._id);
-    const filteredOrganizations = organizationsList.filter(
+    const filteredOrganizations = organizationsList?.filter(
       (organization) => organization.country === selctedCountry._id
     );
     console.log(filteredOrganizations);
 
-    const filteredOrganizationsNames = filteredOrganizations.map(
+    const filteredOrganizationsNames = filteredOrganizations?.map(
       (organization) => organization.organization_name
     );
     console.log(filteredOrganizationsNames);
@@ -70,14 +70,14 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
   const filteredSubTypesList = useMemo(() => {
     if (!selectedMainType) {
       return targetsList
-        .filter((target) => target.level === 2)
+        ?.filter((target) => target.level === 2)
         .map((target) => target.name);
     }
 
-    const filteredSubTypes = targetsList.filter(
+    const filteredSubTypes = targetsList?.filter(
       (target) => target.level === 2 && target.father === selectedMainType._id
     );
-    const filteredSubTypesNames = filteredSubTypes.map(
+    const filteredSubTypesNames = filteredSubTypes?.map(
       (subType) => subType.name
     );
 
@@ -89,7 +89,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
       return [];
     }
 
-    const filteredModels = targetsList.filter(
+    const filteredModels = targetsList?.filter(
       (target) =>
         target.level === 3 &&
         target.father === selectedSubType._id &&
@@ -97,14 +97,14 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
           ? target.organization?.includes(selctedOrganization._id)
           : true)
     );
-    const filteredModelsNames = filteredModels.map((model) => model.name);
+    const filteredModelsNames = filteredModels?.map((model) => model.name);
 
     return filteredModelsNames;
   }, [selctedOrganization, selectedSubType, targetsList]);
 
   const handleOrganizationChange = useCallback(
     (organizationName: string) => {
-      const organizationObj = organizationsList.find(
+      const organizationObj = organizationsList?.find(
         (organization) => organization.organization_name === organizationName
       );
 
@@ -116,7 +116,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
   const handelMainTypeChange = useCallback(
     (targetName: string) => {
-      const filtedMain = targetsList.find(
+      const filtedMain = targetsList?.find(
         (target) => target.name === targetName && target.level === 1
       );
       setSelectedMainType(filtedMain || null);
@@ -129,7 +129,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
   const handelSubTypeChange = useCallback(
     (targetName: string) => {
-      const filtedSubType = targetsList.find(
+      const filtedSubType = targetsList?.find(
         (target) => target.name === targetName && target.level === 2
       );
       setSelectedSubType(filtedSubType || null);
@@ -141,7 +141,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
   const handelModelChange = useCallback(
     (targetName: string) => {
-      const filtedModel = targetsList.find(
+      const filtedModel = targetsList?.find(
         (target) =>
           target.name === targetName &&
           target.level === 3 &&
@@ -163,7 +163,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
           isSearchable={true}
           placeholder={'Country'}
           value={selctedCountry?.country_name}
-          items={countiresList.map((country) => country.country_name)}
+          items={countiresList?.map((country) => country.country_name) || []}
           onChange={handleCountryChange}
           size={DropdownSizes.SMALL}
         />
@@ -172,7 +172,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
         <Dropdown
           isSearchable={true}
           placeholder={'Organization'}
-          items={filteredOrganizationsList}
+          items={filteredOrganizationsList || []}
           value={selctedOrganization?.organization_name}
           onChange={handleOrganizationChange}
           size={DropdownSizes.SMALL}
@@ -183,9 +183,11 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
           isSearchable={true}
           placeholder={'Main type'}
           value={selectedMainType?.name}
-          items={targetsList
-            .filter((target) => target.level === 1)
-            .map((target) => target.name)}
+          items={
+            targetsList
+              ?.filter((target) => target.level === 1)
+              .map((target) => target.name) || []
+          }
           onChange={handelMainTypeChange}
           size={DropdownSizes.SMALL}
         />
@@ -195,7 +197,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
           isSearchable={true}
           placeholder={'Sub type'}
           value={selectedSubType?.name}
-          items={filteredSubTypesList}
+          items={filteredSubTypesList || []}
           onChange={handelSubTypeChange}
           size={DropdownSizes.SMALL}
         />
@@ -205,7 +207,7 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
           isSearchable={true}
           placeholder={'Model'}
           value={selectedModel?.name}
-          items={filteredModelsList}
+          items={filteredModelsList || []}
           onChange={handelModelChange}
           size={DropdownSizes.SMALL}
         />
