@@ -123,7 +123,11 @@ const CreateNewUser: React.FC = () => {
   );
 
   return (
-    <PopupHeader popupType={PopupsTypes.NEWUSER} header='Create new user'>
+    <PopupHeader
+      popupType={PopupsTypes.NEWUSER}
+      header='Create new user'
+      onClose={() => {}}
+    >
       {/* <div className='grid-rows-7 ml-[5.5rem] mr-24 grid w-[30rem] px-4 py-4 flex-none grid-cols-4 flex-col items-center justify-center'> */}
       <div className='mt-12 grid w-full grid-cols-4 grid-rows-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
