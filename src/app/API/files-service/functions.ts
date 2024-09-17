@@ -340,10 +340,10 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
     }
 }
 
-export const deleteFile = async (fileName: string, exerciseType: ExercisesTypes, bucketName: BucketsNames): Promise<boolean> => {
+export const deleteFile = async (fileName: string, bucketName: BucketsNames): Promise<boolean> => {
     try {
         const response = await fetch(
-            `${FILES_API.DELETE_FILE}/${bucketName}/${exerciseType}/${fileName}`, {
+            `${FILES_API.DELETE_FILE}/${bucketName}/${fileName}`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {

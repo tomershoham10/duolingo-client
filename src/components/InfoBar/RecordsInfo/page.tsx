@@ -15,15 +15,11 @@ const RecordsInfo: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
   const deleteRecord = useCallback(async () => {
     try {
-      if (selectedFile && selectedFile.exerciseType && selectedFile.name) {
+      if (selectedFile && selectedFile.name) {
         const response = await pRetry(
           () =>
-            selectedFile.exerciseType && selectedFile.name
-              ? deleteFile(
-                  selectedFile.name,
-                  selectedFile.exerciseType,
-                  BucketsNames.RECORDS
-                )
+            selectedFile && selectedFile.name
+              ? deleteFile(selectedFile.name, BucketsNames.RECORDS)
               : null,
           {
             retries: 5,
@@ -31,10 +27,7 @@ const RecordsInfo: React.FC = () => {
         );
 
         if (response) {
-          addAlert(
-            'record deleted',
-            AlertSizes.small
-          );
+          addAlert('record deleted', AlertSizes.small);
         }
       }
     } catch (error) {
@@ -47,7 +40,7 @@ const RecordsInfo: React.FC = () => {
   return (
     <>
       {!!selectedFile ? (
-        <section className='flex h-full flex-col justify-between '>
+        <section className='flex h-full flex-col justify-between'>
           <FileData />
           <section className='mx-auto mb-6 flex w-[90%] flex-col gap-4'>
             <Button

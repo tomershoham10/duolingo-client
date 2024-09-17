@@ -66,7 +66,6 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                   showMode={false}
                   files={{
                     name: file?.name || '',
-                    exerciseType: ExercisesTypes.FSA,
                     metadata: {},
                   }}
                   onFileChange={handleFileChange}

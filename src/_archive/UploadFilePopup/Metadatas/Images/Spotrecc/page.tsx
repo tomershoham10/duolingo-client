@@ -29,7 +29,6 @@ const SpotreccImageMetadata: React.FC<SpotreccImageMetaProps> = (props) => {
             showMode={false}
             files={{
               name: file?.name || '',
-              exerciseType: ExercisesTypes.SPOTRECC,
               metadata: {},
             }}
             onFileChange={handleFileChange}

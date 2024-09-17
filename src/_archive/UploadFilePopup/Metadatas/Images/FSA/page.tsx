@@ -37,7 +37,6 @@ const FSASonogramMetadata: React.FC<FSASonogramMetaProps> = (props) => {
                 showMode={false}
                 files={{
                   name: file?.name || '',
-                  exerciseType: ExercisesTypes.FSA,
                   metadata: {},
                 }}
                 onFileChange={handleFileChange}
