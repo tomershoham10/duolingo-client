@@ -47,7 +47,7 @@ const RecordsInfo: React.FC = () => {
               label={'Edit'}
               color={ButtonColors.BLUE}
               onClick={() => {
-                updateSelectedPopup(PopupsTypes.RECORDMETADATA);
+                updateSelectedPopup(PopupsTypes.EDIT_METADATA);
               }}
             />
 
