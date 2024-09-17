@@ -290,7 +290,8 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                                                                                   exercise._id
                                                                                 )}
                                                                                 targetsList={
-                                                                                  targetsList
+                                                                                  targetsList ||
+                                                                                  []
                                                                                 }
                                                                                 toggleAccordion={
                                                                                   toggleAccordion
