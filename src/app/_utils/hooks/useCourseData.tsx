@@ -129,14 +129,12 @@ const useCourseData = (
     } catch (error) {
       console.error('Error fetching units data:', error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseDataDispatch, courseDataState.courseId]);
+  }, [addAlert, courseDataDispatch, courseDataState]);
 
   useEffect(() => {
     if (courseDataState.courseId) {
       console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       fetchCourseData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
   }, [courseDataState.courseId, fetchCourseData]);
 
@@ -203,8 +201,7 @@ const useCourseData = (
     ) {
       userId ? fetchResuls() : null;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseDataState.lessons]);
+  }, [courseDataState.lessons, fetchResuls, userId]);
 };
 
 export default useCourseData;
