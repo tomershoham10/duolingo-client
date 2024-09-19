@@ -4,7 +4,7 @@ import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import FileData from '../FileData/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { BucketsNames, deleteFile } from '@/app/API/files-service/functions';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
