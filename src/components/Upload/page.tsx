@@ -8,7 +8,10 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import Button, { ButtonTypes, ButtonColors } from '@/components/(buttons)/Button/page';
+import Button, {
+  ButtonTypes,
+  ButtonColors,
+} from '@/components/(buttons)/Button/page';
 import {
   FaRegFileAudio,
   FaRegTrashAlt,
@@ -203,7 +206,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
 
   const handleFileRemoved = (index: number) => {
     console.log('handleFileRemoved', index);
-    updateSelectedFile(undefined);
+    updateSelectedFile(null);
     setUploadedFilesNames((prev) =>
       prev.filter((_, itemIndex) => itemIndex !== index)
     );
