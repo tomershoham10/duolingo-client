@@ -131,7 +131,7 @@ const CreateSpotrecc: React.FC = () => {
         onModelSelected={handleModelSelected}
       />
 
-      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
+      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3 mt-12'>
         {subExercises.map((exercise, index) => (
           <div
             key={index}
