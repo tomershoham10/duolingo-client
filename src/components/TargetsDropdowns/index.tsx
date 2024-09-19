@@ -7,9 +7,9 @@ import { useCallback, useMemo, useState } from 'react';
 
 interface TargetsDropdownsProps {
   excludeFileType?: boolean;
-  onMainSelected?: (main: TargetType) => void;
-  onSubTypeSelected?: (subType: TargetType) => void;
-  onModelSelected?: (model: TargetType) => void;
+  onMainSelected?: (main: TargetType | null) => void;
+  onSubTypeSelected?: (subType: TargetType | null) => void;
+  onModelSelected?: (model: TargetType | null) => void;
 }
 
 const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
@@ -110,48 +110,60 @@ const TargetsDropdowns: React.FC<TargetsDropdownsProps> = (props) => {
 
       setSelctedOrganization(organizationObj || null);
       setSelectedModel(null);
+      onMainSelected && onMainSelected(null);
     },
-    [organizationsList]
+    [onMainSelected, organizationsList]
   );
 
   const handelMainTypeChange = useCallback(
     (targetName: string) => {
-      const filtedMain = targetsList?.find(
-        (target) => target.name === targetName && target.level === 1
-      );
-      setSelectedMainType(filtedMain || null);
+      const filtedMain =
+        targetsList?.find(
+          (target) => target.name === targetName && target.level === 1
+        ) || null;
+      setSelectedMainType(filtedMain);
+
       setSelectedSubType(null);
+      onSubTypeSelected && onSubTypeSelected(null);
+
       setSelectedModel(null);
-      onMainSelected && filtedMain && onMainSelected(filtedMain);
+      onModelSelected && onModelSelected(null);
+
+      onMainSelected && onMainSelected(filtedMain);
     },
-    [onMainSelected, targetsList]
+    [onMainSelected, onModelSelected, onSubTypeSelected, targetsList]
   );
 
   const handelSubTypeChange = useCallback(
     (targetName: string) => {
-      const filtedSubType = targetsList?.find(
-        (target) => target.name === targetName && target.level === 2
-      );
-      setSelectedSubType(filtedSubType || null);
+      const filtedSubType =
+        targetsList?.find(
+          (target) => target.name === targetName && target.level === 2
+        ) || null;
+      setSelectedSubType(filtedSubType);
+
       setSelectedModel(null);
-      onSubTypeSelected && filtedSubType && onSubTypeSelected(filtedSubType);
+      onModelSelected && onModelSelected(null);
+
+      onSubTypeSelected && onSubTypeSelected(filtedSubType);
     },
-    [onSubTypeSelected, targetsList]
+    [onModelSelected, onSubTypeSelected, targetsList]
   );
 
   const handelModelChange = useCallback(
     (targetName: string) => {
-      const filtedModel = targetsList?.find(
-        (target) =>
-          target.name === targetName &&
-          target.level === 3 &&
-          target.father === selectedSubType?._id &&
-          (selctedOrganization
-            ? target.organization?.includes(selctedOrganization._id)
-            : true)
-      );
-      setSelectedModel(filtedModel || null);
-      onModelSelected && filtedModel && onModelSelected(filtedModel);
+      const filtedModel =
+        targetsList?.find(
+          (target) =>
+            target.name === targetName &&
+            target.level === 3 &&
+            target.father === selectedSubType?._id &&
+            (selctedOrganization
+              ? target.organization?.includes(selctedOrganization._id)
+              : true)
+        ) || null;
+      setSelectedModel(filtedModel);
+      onModelSelected && onModelSelected(filtedModel);
     },
     [onModelSelected, selctedOrganization, selectedSubType?._id, targetsList]
   );
