@@ -29,7 +29,7 @@ type useInfoBarState = {
     selectedSubTypeId: string | null;
     selectedModel: TargetType | null;
 
-    selectedFile: Partial<FileType> | undefined;
+    selectedFile: Partial<FileType> | null;
 }
 type Action = {
     updatesyllabusFieldType: (syllabusFieldType: useInfoBarState['syllabusFieldType']) => void;
@@ -60,7 +60,7 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
         selectedMainTypeId: null,
         selectedSubTypeId: null,
         selectedModel: null,
-        selectedFile: undefined,
+        selectedFile: null,
         updatesyllabusFieldType: (syllabusFieldType) => set(() => ({ syllabusFieldType: syllabusFieldType })),
         updateSyllabusFieldId: (syllabusFieldId) => set(() => ({ syllabusFieldId: syllabusFieldId })),
         updateSyllabusFieldIndex: (syllabusFieldIndex) => set(() => ({ syllabusFieldIndex: syllabusFieldIndex })),
