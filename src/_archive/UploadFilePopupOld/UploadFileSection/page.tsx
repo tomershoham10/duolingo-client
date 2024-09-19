@@ -16,7 +16,7 @@ const UploadFileSection: React.FC<UploadProps> = (props) => {
     // handleFileType,
   } = props;
 
-  const handleModelSelected = useCallback((model: TargetType) => {}, []);
+  const handleModelSelected = useCallback((model: TargetType | null) => {}, []);
   return (
     <section className='mt-12 w-full px-4 py-4 3xl:gap-y-12'>
       <p className='mb-1 font-bold text-duoGrayDark-lighter'>

@@ -18,7 +18,7 @@ interface PopupHeaderProps {
   popupType: PopupsTypes;
   header: string;
   size?: PopupSizes;
-  onClose: () => void;
+  onClose?: () => void;
 }
 const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
   const { children, popupType, header, size, onClose } = props;
@@ -65,7 +65,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
         >
           <button
             onClick={() => {
-              onClose();
+              onClose && onClose();
               updateSelectedPopup(PopupsTypes.CLOSED);
             }}
             className='z-50 h-fit w-fit flex-none rounded-md text-duoGray-dark'
