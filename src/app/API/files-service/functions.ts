@@ -63,7 +63,8 @@ const FILES_API = {
     GET_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileByName`,
     GET_FILE_METADATA_MY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/getFileMetadataByName`,
     GET_ENCRYPTED_FILE_BY_NAME: `${FILES_SERVICE_ENDPOINTS.FILES}/downloadEncryptedZip`,
-    DELETE_FILE: `${FILES_SERVICE_ENDPOINTS.FILES}/delete`,
+    UPDATE_FILE_METADATA: `${FILES_SERVICE_ENDPOINTS.FILES}/updateMetadata`,
+    DELETE_FILE: `${FILES_SERVICE_ENDPOINTS.FILES}/deleteFile`,
 };
 
 
@@ -340,10 +341,31 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
     }
 }
 
-export const deleteFile = async (fileName: string, bucketName: BucketsNames): Promise<boolean> => {
+export const updateMetadata = async (mainId: string, subtypeId: string, modelId: string, fileType: string, objectName: string, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
+        const body = JSON.stringify({ objectName: objectName, metadata: metadata });
         const response = await fetch(
-            `${FILES_API.DELETE_FILE}/${bucketName}/${fileName}`, {
+            `${FILES_API.UPDATE_FILE_METADATA}/${mainId}/${subtypeId}/${modelId}/${fileType}`, {
+            method: "PUT",
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: body
+        });
+        return response.status === 200;
+    } catch (error) {
+        console.error(`error updateMetadata - ${error}`);
+        return false;
+    }
+}
+
+export const deleteFile = async (mainId: string, subtypeId: string, modelId: string, fileType: string, objectName: string): Promise<boolean> => {
+    try {
+        const encodedObjectName = encodeURIComponent(objectName);
+
+        const response = await fetch(
+            `${FILES_API.DELETE_FILE}/${mainId}/${subtypeId}/${modelId}/${fileType}/${encodedObjectName}`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {
