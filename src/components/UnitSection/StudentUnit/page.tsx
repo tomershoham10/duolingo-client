@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
@@ -304,21 +304,24 @@ const StudentUnitSection: React.FC = () => {
     console.log('nextLessonId', nextLessonId);
   }, [nextLessonId]);
 
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      startLessonRef.current &&
-      !startLessonRef.current.contains(event.target as Node) &&
-      levelButtonRef.current &&
-      !levelButtonRef.current.contains(event.target as Node)
-    ) {
-      // console.log("handleOutsideClick");
-      studentDashboardDispatch({
-        type: studentDashboardAction.SET_IS_NEXT_LESSON_POPUP_VISIBLE,
-        payload: false,
-      });
-      updateSelectedPopup(PopupsTypes.CLOSED);
-    }
-  };
+  const handleOutsideClick = useCallback(
+    (event: MouseEvent) => {
+      if (
+        startLessonRef.current &&
+        !startLessonRef.current.contains(event.target as Node) &&
+        levelButtonRef.current &&
+        !levelButtonRef.current.contains(event.target as Node)
+      ) {
+        // console.log("handleOutsideClick");
+        studentDashboardDispatch({
+          type: studentDashboardAction.SET_IS_NEXT_LESSON_POPUP_VISIBLE,
+          payload: false,
+        });
+        updateSelectedPopup(PopupsTypes.CLOSED);
+      }
+    },
+    [levelButtonRef, startLessonRef, updateSelectedPopup]
+  );
 
   useEffect(() => {
     // console.log("isNextLessonPopupVisible", isNextLessonPopupVisible);
