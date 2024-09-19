@@ -7,9 +7,8 @@ import {
   BucketsNames,
   getFileByBucketAndType,
 } from '@/app/API/files-service/functions';
-// import Link from 'next/link';
-import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
+import MetadataSection from '../(utils)/MetadataSection';
 
 interface CreateExerciseInfoProps {
   exerciseType: ExercisesTypes;
@@ -24,6 +23,7 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
   const [recordsData, setRecordsData] = useState<FileType[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
 
+  // need to fetch data by model
   const fetchData = useCallback(async () => {
     try {
       const res = (await pRetry(
@@ -100,43 +100,10 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
       </ul>
 
       {selectedFile && (
-        <section>
-          <div className='mx-auto flex w-full flex-col'>
-            <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
-              <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
-                INFORMATION
-              </li>
-              <li className='my-1 scale-105 text-center font-extrabold opacity-70 dark:text-duoBlueDark-text'>
-                {selectedFile.name}
-              </li>
-
-              {Object.keys(selectedFile.metadata).map((metaKey, metaIndex) => (
-                <li className='my-1' key={metaKey}>
-                  {Object.keys(selectedFile.metadata)[metaIndex] !==
-                    'content-type' && (
-                    <>
-                      {`${Object.keys(selectedFile.metadata)[metaIndex]}: `}
-                      {Object.keys(selectedFile.metadata)[metaIndex] ===
-                      'record_length'
-                        ? formatNumberToMinutes(
-                            Number(
-                              Object.values(selectedFile.metadata)[metaIndex]
-                            )
-                          )
-                        : Object.values(selectedFile.metadata)[metaIndex] ||
-                          'false'}
-                    </>
-                  )}
-                </li>
-              ))}
-              <li>
-                preview
-                {/* <Link  href='' target='_blank'>
-                  preview
-                </Link> */}
-              </li>
-            </ul>
-          </div>
+        <MetadataSection
+          fileName={selectedFile.name}
+          metadata={selectedFile.metadata}
+        >
           {exerciseType === ExercisesTypes.SPOTRECC && (
             <button
               onClick={() => {
@@ -157,7 +124,7 @@ const CreateExerciseInfo: React.FC<CreateExerciseInfoProps> = (props) => {
               addSubExercise
             </button>
           )}
-        </section>
+        </MetadataSection>
       )}
     </div>
   );
