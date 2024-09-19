@@ -19,6 +19,9 @@ import {
   ExercisesTypes,
 } from '@/app/API/classes-service/exercises/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import TargetsDropdowns from '@/components/TargetsDropdowns';
+import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 const EditSpotrecc = lazy(
   () => import('@/app/(popups)/(edit)/EditSpotrecc/page')
@@ -29,15 +32,37 @@ const CreateSpotrecc: React.FC = () => {
   const router = useRouter();
   const addAlert = useAlertStore.getState().addAlert;
 
-  const subExercises = useStore(
-    useCreateSpotreccStore,
-    (state) => state.subExercises
-  );
+  const updateSelectedMainTypeId =
+    useInfoBarStore.getState().updateSelectedMainTypeId;
+  const updateSelectedSubTypeId =
+    useInfoBarStore.getState().updateSelectedSubTypeId;
+  const updateSelectedModel = useInfoBarStore.getState().updateSelectedModel;
+
+  const updateSelectedFile = useInfoBarStore.getState().updateSelectedFile;
+
   const updateSubExercise = useCreateSpotreccStore.getState().updateSubExercise;
   const removeSubExercise = useCreateSpotreccStore.getState().removeSubExercise;
   const resetCreateSpotreccStore = useCreateSpotreccStore.getState().resetStore;
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
+  const selectedMainTypeId = useStore(
+    useInfoBarStore,
+    (state) => state.selectedMainTypeId
+  );
+  const selectedSubTypeId = useStore(
+    useInfoBarStore,
+    (state) => state.selectedSubTypeId
+  );
+  const selectedModel = useStore(
+    useInfoBarStore,
+    (state) => state.selectedModel
+  );
+
+  const subExercises = useStore(
+    useCreateSpotreccStore,
+    (state) => state.subExercises
+  );
 
   const [openedFileIndex, setOpenedFileIndex] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -89,8 +114,23 @@ const CreateSpotrecc: React.FC = () => {
     }
   }, [addAlert, resetCreateSpotreccStore, router, subExercises]);
 
+  const { handleMainTypeSelected, handleSubTypeSelected, handleModelSelected } =
+    useDropdownSelections(
+      updateSelectedMainTypeId,
+      updateSelectedSubTypeId,
+      updateSelectedModel,
+      updateSelectedFile,
+      selectedSubTypeId
+    );
+
   return (
     <div className='flex h-full w-full flex-col overflow-hidden'>
+      <TargetsDropdowns
+        onMainSelected={handleMainTypeSelected}
+        onSubTypeSelected={handleSubTypeSelected}
+        onModelSelected={handleModelSelected}
+      />
+
       <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
         {subExercises.map((exercise, index) => (
           <div
