@@ -7,7 +7,7 @@ import { useStore } from 'zustand';
 import UploadFiles from '../Upload';
 import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
+import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
@@ -66,7 +66,7 @@ const UploadFilesPopup: React.FC = () => {
 
   return (
     <PopupHeader
-      popupType={PopupsTypes.EDIT_METADATA}
+      popupType={PopupsTypes.UPLOAD_FILES}
       header={'upload'}
       size={PopupSizes.LARGE}
       onClose={resetState}

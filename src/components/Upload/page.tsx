@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import Button, { ButtonTypes, ButtonColors } from '@/components/Button/page';
+import Button, { ButtonTypes, ButtonColors } from '@/components/(buttons)/Button/page';
 import {
   FaRegFileAudio,
   FaRegTrashAlt,

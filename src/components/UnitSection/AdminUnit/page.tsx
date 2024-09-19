@@ -10,7 +10,7 @@ import {
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import Button, { ButtonColors } from '../../Button/page';
+import Button, { ButtonColors } from '../../(buttons)/Button/page';
 import {
   fieldToEditType,
   useInfoBarStore,

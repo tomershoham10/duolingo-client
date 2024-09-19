@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import useStore from '@/app/store/useStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 interface StartLessonPopup {

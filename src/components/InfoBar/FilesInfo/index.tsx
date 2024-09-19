@@ -3,7 +3,7 @@ import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Link from 'next/link';
 import { FaRegImages } from 'react-icons/fa';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 
 const FilesInfo = () => {

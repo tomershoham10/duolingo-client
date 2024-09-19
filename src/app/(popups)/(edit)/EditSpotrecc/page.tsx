@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Input, { InputTypes } from '@/components/Input/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';

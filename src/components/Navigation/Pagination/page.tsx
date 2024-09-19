@@ -1,8 +1,8 @@
 'use client';
 import { useCallback, useState } from 'react';
-import Button from '@/components/Button/page';
+import Button from '@/components/(buttons)/Button/page';
 
-import { ButtonColors } from '@/components/Button/page';
+import { ButtonColors } from '@/components/(buttons)/Button/page';
 import { useStore } from 'zustand';
 import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 

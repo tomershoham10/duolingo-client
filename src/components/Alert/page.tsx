@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useStore from '@/app/store/useStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 const Alert: React.FC = () => {

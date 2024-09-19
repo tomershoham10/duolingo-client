@@ -1,9 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useReducer, useState } from 'react';
-import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
+import PopupHeader, { PopupSizes } from '@/app/(popups)/PopupHeader/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
-import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
+import Button, {
+  ButtonColors,
+  ButtonTypes,
+} from '@/components/(buttons)/Button/page';
 import UploadFiles from '../(subPages)/Upload/page';
 import SelectModel from '../(subPages)/SelectModel/page';
 import {
@@ -127,6 +130,7 @@ const UploadFilesPopup: React.FC = () => {
       popupType={PopupsTypes.UPLOAD_FILES}
       header={headLine}
       size={inMetadataPage ? PopupSizes.LARGE : PopupSizes.SMALL}
+      onClose={() => {}}
     >
       {!inMetadataPage ? (
         <SelectModel

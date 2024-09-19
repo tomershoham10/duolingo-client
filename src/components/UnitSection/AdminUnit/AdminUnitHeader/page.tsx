@@ -4,7 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 
 import { fieldToEditType } from '@/app/store/stores/useInfoBarStore';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 library.add(faBook);
 
 interface AdminUnitHeaderProps {

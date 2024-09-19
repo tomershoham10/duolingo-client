@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Input, { InputTypes } from '@/components/Input/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import useStore from '@/app/store/useStore';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';

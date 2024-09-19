@@ -1,5 +1,5 @@
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 
 interface LessonFooterProps {
   exerciseType: ExercisesTypes;

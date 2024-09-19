@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 // import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';

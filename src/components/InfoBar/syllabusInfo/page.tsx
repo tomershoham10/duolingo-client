@@ -6,7 +6,7 @@ import {
   useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import {
   suspendUnit,
   unsuspendUnit,

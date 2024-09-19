@@ -11,7 +11,7 @@ import {
   SpotreccSubExercise,
   useCreateSpotreccStore,
 } from '@/app/store/stores/(createExercises)/useCreateSpotreccStore';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { BucketsNames } from '@/app/API/files-service/functions';
 import {

@@ -14,7 +14,7 @@ import {
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import pRetry from 'p-retry';
 

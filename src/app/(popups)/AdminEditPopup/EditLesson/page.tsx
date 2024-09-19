@@ -10,7 +10,7 @@ import {
   editLessonType,
 } from '@/reducers/adminView/(popups)/editLessonReducer';
 import Table from '@/components/Table/page';
-import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
+import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
 import pRetry from 'p-retry';
 

@@ -19,7 +19,7 @@ import Slider from '@/components/Slider/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import PlusButton from '@/components/PlusButton/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 
 import {
   TimeBuffersAction,

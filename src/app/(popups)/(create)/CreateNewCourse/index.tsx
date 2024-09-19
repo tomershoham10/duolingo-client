@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 
 import Input, { InputTypes } from '@/components/Input/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import {
   createCourse,

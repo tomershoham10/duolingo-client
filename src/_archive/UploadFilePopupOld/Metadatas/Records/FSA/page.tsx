@@ -1,14 +1,14 @@
 'use client';
 import { lazy, useState } from 'react';
 import Upload from '@/components/Upload/page';
-import Button, { ButtonColors } from '@/components/Button/page';
+import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import {
   BucketsNames,
   SignatureTypes,
   SonarSystem,
 } from '@/app/API/files-service/functions';
-import SwitchButton from '@/components/SwitchButton/page';
+import SwitchButton from '@/components/(buttons)/SwitchButton/page';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';

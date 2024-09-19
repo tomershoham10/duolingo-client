@@ -1,6 +1,6 @@
 'use client';
 import Input, { InputTypes } from '@/components/Input/page';
-import Button, { ButtonColors, ButtonTypes } from '@/components/Button/page';
+import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
 import { handleAuth } from '../API/users-service/users/functions';
 import { useKeyDown } from '../_utils/hooks/useKeyDown';
 import { useCallback } from 'react';
