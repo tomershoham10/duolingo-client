@@ -2,7 +2,7 @@
 import { usePopupStore } from '@/app/store/stores/usePopupStore';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import SwitchButton from '@/components/SwitchButton/page';
+import SwitchButton from '@/components/(buttons)/SwitchButton/page';
 
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { SignatureTypes } from '@/app/API/files-service/functions';
@@ -11,7 +11,15 @@ import Slider from '@/components/Slider/page';
 
 library.add(faXmark);
 
-const FSARecMetaPopup: React.FC = () => {
+interface RecordsMetadataPopupProps {
+  mainTypeId: string;
+  subTypeId: string;
+  model: TargetType;
+  selectedFile: Partial<FileType>;
+}
+
+const RecordsMetadataPopup: React.FC<RecordsMetadataPopupProps> = (props) => {
+  const { mainTypeId, subTypeId, model, selectedFile } = props;
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
 
   return (
@@ -140,4 +148,4 @@ const FSARecMetaPopup: React.FC = () => {
   );
 };
 
-export default FSARecMetaPopup;
+export default RecordsMetadataPopup;
