@@ -19,8 +19,6 @@ const NewExercise = ({ params }: { params: { exercise: ExercisesTypes } }) => {
         <p className='text-duoGrayDark-lighter'> {params.exercise}</p>
       </section>
 
-      <TargetsDropdowns />
-
       <section className='h-full'>{components[params.exercise]}</section>
     </section>
   );
