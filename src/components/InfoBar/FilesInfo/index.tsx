@@ -1,19 +1,61 @@
-import { useStore } from 'zustand';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
+import { useStore } from 'zustand';
 import { FaRegImages } from 'react-icons/fa';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
+import pRetry from 'p-retry';
+import { deleteFile } from '@/app/API/files-service/functions';
 
 const FilesInfo = () => {
   const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
+
+  const selectedMainTypeId = useStore(
+    useInfoBarStore,
+    (state) => state.selectedMainTypeId
+  );
+  const selectedSubTypeId = useStore(
+    useInfoBarStore,
+    (state) => state.selectedSubTypeId
+  );
   const selectedModel = useStore(
     useInfoBarStore,
     (state) => state.selectedModel
   );
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
+
+  const [isDeletingLoading, setIsDeletingLoading] = useState<boolean>(false);
+
+  const deleteSelectedFile = useCallback(async () => {
+    setIsDeletingLoading(true);
+    const fileType = selectedFile?.name?.endsWith('.wav')
+      ? 'records'
+      : 'images';
+    const response = await pRetry(
+      () => {
+        selectedMainTypeId &&
+        selectedSubTypeId &&
+        selectedModel &&
+        selectedFile &&
+        selectedFile.name
+          ? deleteFile(
+              selectedMainTypeId,
+              selectedSubTypeId,
+              selectedModel._id,
+              fileType,
+              selectedFile.name
+            )
+          : null;
+      },
+      {
+        retries: 5,
+      }
+    );
+    setIsDeletingLoading(false);
+  }, [selectedFile, selectedMainTypeId, selectedModel, selectedSubTypeId]);
 
   return (
     <div className='h-full w-[90%] overflow-hidden py-5'>
@@ -101,15 +143,15 @@ const FilesInfo = () => {
                 <Button
                   label={'Edit'}
                   color={ButtonColors.BLUE}
-                  onClick={() => {
-                    updateSelectedPopup(PopupsTypes.EDIT_METADATA);
-                  }}
+                  onClick={() => updateSelectedPopup(PopupsTypes.EDIT_METADATA)}
                 />
 
                 <Button
                   label={'DELETE'}
                   color={ButtonColors.RED}
-                  onClick={() => {}}
+                  onClick={deleteSelectedFile}
+                  isLoading={isDeletingLoading}
+                  loadingLabel='Deleting...'
                 />
               </section>
             </div>
