@@ -1,16 +1,19 @@
 'use client';
-import { lazy, useCallback, useEffect, useMemo, useState } from 'react';
-import pRetry from 'p-retry';
+import { lazy, useCallback, useEffect, useState } from 'react';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Table, { TableHead } from '@/components/Table/page';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 // import useModelsTableData from '@/app/_utils/hooks/useModelsTableData';
-import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
+import Button, {
+  ButtonColors,
+  ButtonTypes,
+} from '@/components/(buttons)/Button/page';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import { getModelsFiles } from '@/app/API/files-service/functions';
 import TargetsDropdowns from '@/components/TargetsDropdowns';
 import { useStore } from 'zustand';
+import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
+import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
 
 const UploadFilePopup = lazy(
   () => import('@/app/(popups)/(upload)/UploadFilesPopup/page')
@@ -24,8 +27,6 @@ const Files: React.FC = () => {
 
   const [selectedFilesRowIndex, setSelectedFilesRowIndex] =
     useState<number>(-1);
-
-  const [filesData, setFilesData] = useState<FileType[]>([]);
 
   const selectedMainTypeId = useStore(
     useInfoBarStore,
@@ -56,51 +57,15 @@ const Files: React.FC = () => {
     { key: 'hasMetadata', label: 'Has metadata' },
   ];
 
-  const fetchModelFiles = useCallback(
-    async (mainId: string, subTypeId: string, modelId: string) => {
-      const res = await pRetry(
-        () => getModelsFiles(mainId, subTypeId, modelId),
-        {
-          retries: 5,
-        }
-      );
-      console.log('fetchModelFiles1', res);
-      if (res) {
-        if (Object.values(res).length > 0) {
-          // else - model has no files
-          const imagesData = res[subTypeId][modelId]['images'];
-          const recordsData = res[subTypeId][modelId]['records'];
-          const comboData = [
-            ...recordsData.map((rec) => {
-              return { ...rec, type: 'record' };
-            }),
-            ...imagesData.map((img) => {
-              return { ...img, type: 'image' };
-            }),
-          ];
-          setFilesData(
-            comboData.map((file) => {
-              return {
-                ...file,
-                hasMetadata:
-                  Object.values(file.metadata).length > 0 ? 'yes' : 'no',
-              };
-            })
-          );
-          console.log('fetchModelFiles2', imagesData, recordsData, [
-            ...recordsData,
-            ...imagesData,
-          ]);
-        } else {
-          setFilesData([]);
-        }
-      } else {
-        alert('error');
-        setFilesData([]);
-      }
-    },
-    []
+  const { filesData, fetchData } = useFetchModelFiles(
+    selectedMainTypeId,
+    selectedSubTypeId,
+    selectedModel?._id || null
   );
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSelectFilesRow = useCallback(
     (row: any, index: number) => {
@@ -111,35 +76,14 @@ const Files: React.FC = () => {
     [updateSelectedFile]
   );
 
-  const handleMainTypeSelected = useCallback(
-    (main: TargetType | null) => {
-      //   setSelectedMainTypeId(main?._id || null);
-      updateSelectedMainTypeId(main?._id || null);
-    },
-    [updateSelectedMainTypeId]
-  );
-
-  const handleSubTypeSelected = useCallback(
-    (subType: TargetType | null) => {
-      //   setSelectedSubTypeId(subType?._id || null);
-      updateSelectedSubTypeId(subType?._id || null);
-    },
-    [updateSelectedSubTypeId]
-  );
-
-  const handleModelSelected = useCallback(
-    (model: TargetType | null) => {
-      //   setSelectedModel(model);
-      updateSelectedModel(model);
-      if (model) {
-        if (selectedSubTypeId === null) {
-          //   setSelectedSubTypeId(model.father || null);
-          updateSelectedSubTypeId(model.father || null);
-        }
-      }
-    },
-    [selectedSubTypeId, updateSelectedModel, updateSelectedSubTypeId]
-  );
+  const { handleMainTypeSelected, handleSubTypeSelected, handleModelSelected } =
+    useDropdownSelections(
+      updateSelectedMainTypeId,
+      updateSelectedSubTypeId,
+      updateSelectedModel,
+      updateSelectedFile,
+      selectedSubTypeId
+    );
 
   useEffect(() => {
     if (targetsList && selectedSubTypeId && selectedMainTypeId === null) {
@@ -156,21 +100,6 @@ const Files: React.FC = () => {
     selectedSubTypeId,
     targetsList,
     updateSelectedMainTypeId,
-  ]);
-
-  useEffect(() => {
-    if (selectedMainTypeId && selectedModel?._id && selectedSubTypeId) {
-      fetchModelFiles(
-        selectedMainTypeId,
-        selectedSubTypeId,
-        selectedModel?._id
-      );
-    }
-  }, [
-    fetchModelFiles,
-    selectedMainTypeId,
-    selectedModel?._id,
-    selectedSubTypeId,
   ]);
 
   // #region models table option
