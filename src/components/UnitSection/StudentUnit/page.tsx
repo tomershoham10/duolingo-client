@@ -117,8 +117,11 @@ const StudentUnitSection: React.FC = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseDataState.results]);
+  }, [
+    courseDataState.results,
+    nextLessonId,
+    studentDashboardState.lockedLessons,
+  ]);
 
   useEffect(() => {
     if (nextLessonId && courseDataState.lessons) {
@@ -207,8 +210,11 @@ const StudentUnitSection: React.FC = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentDashboardState.currentLevelId, courseDataState.units]);
+  }, [
+    studentDashboardState.currentLevelId,
+    courseDataState.units,
+    studentDashboardState,
+  ]);
 
   useEffect(() => {
     if (studentDashboardState.currentUnitId && courseDataState.units) {
@@ -257,8 +263,11 @@ const StudentUnitSection: React.FC = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentDashboardState.currentUnitId, courseDataState.units]);
+  }, [
+    studentDashboardState.currentUnitId,
+    courseDataState.units,
+    studentDashboardState.finisedLevelsIds,
+  ]);
 
   useEffect(() => {
     if (studentDashboardState.currentLevelId && nextLessonId) {
@@ -325,8 +334,11 @@ const StudentUnitSection: React.FC = () => {
       // console.log("check2");
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentDashboardState.isNextLessonPopupVisible]);
+  }, [
+    handleOutsideClick,
+    studentDashboardState.isNextLessonPopupVisible,
+    updateSelectedPopup,
+  ]);
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-center px-3 py-6'>
