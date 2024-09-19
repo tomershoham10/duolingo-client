@@ -55,16 +55,12 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     [items]
   );
 
-  const handleItemClick = useCallback(
-    (item: string) => {
-      setSelectedValue(item);
-      onChange && onChange(item);
-      setIsSearchFailed(false);
-      setIsOpen(false);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange]
-  );
+  const handleItemClick = useCallback((item: string) => {
+    setSelectedValue(item);
+    onChange && onChange(item);
+    setIsSearchFailed(false);
+    setIsOpen(false);
+  }, [onChange]);
 
   const toggleDropdown = useCallback(() => {
     if (!isDisabled) {

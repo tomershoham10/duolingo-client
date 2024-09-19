@@ -20,14 +20,6 @@ const Syllabus: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
 
   const [unitsIds, setUnitsIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (selectedCourse && selectedCourse._id) {
-      getUnits();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCourse]);
-
   const getUnits = useCallback(async () => {
     try {
       const response = await pRetry(
@@ -50,6 +42,12 @@ const Syllabus: React.FC = () => {
       return [];
     }
   }, [selectedCourse]);
+
+  useEffect(() => {
+    if (selectedCourse && selectedCourse._id) {
+      getUnits();
+    }
+  }, [getUnits, selectedCourse]);
 
   const AddUnit = useCallback(async () => {
     try {
