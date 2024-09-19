@@ -14,8 +14,8 @@ const MetadataSection: React.FC<MetadataSectionProps> = (props) => {
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
-    <div className='mx-auto flex h-full w-full flex-col justify-between'>
-      <ul className='my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
+    <div className='mx-auto flex h-full w-full flex-col justify-between items-center'>
+      <ul className='w-full my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
         <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
           INFORMATION
         </li>
