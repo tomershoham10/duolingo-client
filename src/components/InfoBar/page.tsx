@@ -8,7 +8,7 @@ import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 const FilesInfo = lazy(() => import('./FilesInfo/'));
 const SyllabusInfo = lazy(() => import('./syllabusInfo/page'));
 // const CreateExerciseInfo = lazy(() => import('./CreateExerciseInfo/page'));
-const RecordsInfo = lazy(() => import('./RecordsInfo/page'));
+// const RecordsInfo = lazy(() => import('./RecordsInfo/page'));
 
 const InfoBar: React.FC = () => {
   const pathname = usePathname();
@@ -26,9 +26,10 @@ const InfoBar: React.FC = () => {
         />
       ) : pathname.includes('files') ? (
         <FilesInfo />
-      ) : pathname.includes('records') ? (
-        <RecordsInfo />
       ) : (
+        //   : pathname.includes('records') ? (
+        //     <RecordsInfo />
+        //   )
         <ul className='flex-grow'>
           <li className='text-xl uppercase'>hello {userName}!</li>
         </ul>
