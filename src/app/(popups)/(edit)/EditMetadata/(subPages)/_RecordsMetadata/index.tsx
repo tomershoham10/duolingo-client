@@ -1,13 +1,17 @@
 'use client';
-import { usePopupStore } from '@/app/store/stores/usePopupStore';
+import { useCallback } from 'react';
+import pRetry from 'p-retry';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import SwitchButton from '@/components/(buttons)/SwitchButton/page';
-
-import Dropdown, { DropdownSizes } from '@/components/Dropdown';
-import { SignatureTypes } from '@/app/API/files-service/functions';
-import Input, { InputTypes } from '@/components/Input/page';
 import Slider from '@/components/Slider/page';
+import Input, { InputTypes } from '@/components/Input/page';
+import SwitchButton from '@/components/(buttons)/SwitchButton/page';
+import Dropdown, { DropdownSizes } from '@/components/Dropdown';
+import {
+  SignatureTypes,
+  updateMetadata,
+} from '@/app/API/files-service/functions';
+import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
 
 library.add(faXmark);
 
@@ -21,6 +25,26 @@ interface RecordsMetadataPopupProps {
 const RecordsMetadataPopup: React.FC<RecordsMetadataPopupProps> = (props) => {
   const { mainTypeId, subTypeId, model, selectedFile } = props;
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
+
+  const submitMetadata = useCallback(async () => {
+    const response = await pRetry(
+      () => {
+        selectedFile.name &&
+          updateMetadata(
+            mainTypeId,
+            subTypeId,
+            model._id,
+            'images',
+            selectedFile.name,
+            {}
+          );
+      },
+      {
+        retries: 5,
+      }
+    );
+    console.log('submitMetadata response', response);
+  }, [mainTypeId, model._id, selectedFile.name, subTypeId]);
 
   return (
     <div className='w-full items-start justify-start'>
@@ -144,6 +168,12 @@ const RecordsMetadataPopup: React.FC<RecordsMetadataPopupProps> = (props) => {
           </div>
         </div>
       </div>
+      <Button
+        label={'Update'}
+        buttonType={ButtonTypes.SUBMIT}
+        color={ButtonColors.BLUE}
+        onClick={submitMetadata}
+      />
     </div>
   );
 };
