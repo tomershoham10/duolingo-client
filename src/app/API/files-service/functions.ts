@@ -6,7 +6,7 @@
 
 import { decode } from "jsonwebtoken";
 
-export enum BucketsNames {
+export enum FileTypes {
     RECORDS = 'records',
     IMAGES = 'images'
 }
@@ -68,7 +68,7 @@ const FILES_API = {
 };
 
 
-export const uploadFile = async (mainId: string, subtypeId: string, modelId: string, fileType: string, file: File, metadata: Partial<Metadata>): Promise<boolean> => {
+export const uploadFile = async (mainId: string, subtypeId: string, modelId: string, fileType: FileTypes, file: File, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
         console.log("uploadFile", mainId, subtypeId, modelId, fileType, file, metadata);
         const formData = new FormData();
@@ -127,7 +127,7 @@ export const uploadFilesArray = async (
     }
 };
 
-export const isFileExisted = async (fileName: string, exerciseType: ExercisesTypes, bucketName: BucketsNames): Promise<boolean> => {
+export const isFileExisted = async (fileName: string, exerciseType: ExercisesTypes, bucketName: FileTypes): Promise<boolean> => {
     try {
         const response = await fetch(
             `${FILES_API.IS_FILE_EXISTED}/${bucketName}/${exerciseType}/${fileName}`, {
@@ -150,7 +150,7 @@ export const isFileExisted = async (fileName: string, exerciseType: ExercisesTyp
     }
 }
 
-export const getFileMetadataByETag = async (bucketName: BucketsNames, etag: string): Promise<{
+export const getFileMetadataByETag = async (bucketName: FileTypes, etag: string): Promise<{
     name: string,
     id: string,
     metadata: Partial<Metadata>
@@ -230,7 +230,7 @@ export const getModelsFiles = async (mainId: string, subTypeId: string, modelId:
     }
 }
 
-export const getFileByBucketAndType = async (bucketName: BucketsNames, exerciseType: ExercisesTypes): Promise<FileType[]> => {
+export const getFileByBucketAndType = async (bucketName: FileTypes, exerciseType: ExercisesTypes): Promise<FileType[]> => {
     try {
         const response = await fetch(
             `${FILES_API.GET_FILES_BY_BUCKET_AND_TYPE}/${bucketName}/${exerciseType}`, {
@@ -255,10 +255,12 @@ export const getFileByBucketAndType = async (bucketName: BucketsNames, exerciseT
     }
 }
 
-export const getFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
+export const getFileByName = async (mainId: string, subtypeId: string, modelId: string, fileType: FileTypes, objectName: string): Promise<string | null> => {
     try {
+
+        const encodedObjectName = encodeURIComponent(objectName);
         const response = await fetch(
-            `${FILES_API.GET_FILE_BY_NAME}/${bucketName}/${exerciseType}/${objectName}`, {
+            `${FILES_API.GET_FILE_BY_NAME}/${mainId}/${subtypeId}/${modelId}/${fileType}/${encodedObjectName}`, {
             method: 'GET',
             credentials: 'include',
         })
@@ -278,10 +280,11 @@ export const getFileByName = async (bucketName: BucketsNames, exerciseType: Exer
     }
 }
 
-export const getEncryptedFileByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
+export const getEncryptedFileByName = async (bucketName: FileTypes, exerciseType: ExercisesTypes, objectName: string): Promise<string | null> => {
     try {
+        const encodedObjectName = encodeURIComponent(objectName);
         const response = await fetch(
-            `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${exerciseType}/${objectName}`
+            `${FILES_API.GET_ENCRYPTED_FILE_BY_NAME}/${bucketName}/${exerciseType}/${encodedObjectName}`
         )
 
         console.log("downloadEncryptedZip response", response);
@@ -312,15 +315,17 @@ export const getEncryptedFileByName = async (bucketName: BucketsNames, exerciseT
     }
 }
 
-export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseType: ExercisesTypes, objectName: string): Promise<{
+export const getFileMetadataByName = async (bucketName: FileTypes, exerciseType: ExercisesTypes, objectName: string): Promise<{
     name: string,
     id: string,
     metadata: Partial<Metadata>
 } | null> => {
     try {
         console.log('getFileMetadataByName recordId', objectName);
+        const encodedObjectName = encodeURIComponent(objectName);
+
         const response = await fetch(
-            `${FILES_API.GET_FILE_METADATA_MY_NAME}/${bucketName}/${exerciseType}/${objectName}`, {
+            `${FILES_API.GET_FILE_METADATA_MY_NAME}/${bucketName}/${exerciseType}/${encodedObjectName}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -341,7 +346,7 @@ export const getFileMetadataByName = async (bucketName: BucketsNames, exerciseTy
     }
 }
 
-export const updateMetadata = async (mainId: string, subtypeId: string, modelId: string, fileType: string, objectName: string, metadata: Partial<Metadata>): Promise<boolean> => {
+export const updateMetadata = async (mainId: string, subtypeId: string, modelId: string, fileType: FileTypes, objectName: string, metadata: Partial<Metadata>): Promise<boolean> => {
     try {
         const body = JSON.stringify({ objectName: objectName, metadata: metadata });
         const response = await fetch(
@@ -360,7 +365,7 @@ export const updateMetadata = async (mainId: string, subtypeId: string, modelId:
     }
 }
 
-export const deleteFile = async (mainId: string, subtypeId: string, modelId: string, fileType: string, objectName: string): Promise<boolean> => {
+export const deleteFile = async (mainId: string, subtypeId: string, modelId: string, fileType: FileTypes, objectName: string): Promise<boolean> => {
     try {
         const encodedObjectName = encodeURIComponent(objectName);
 
