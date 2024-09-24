@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
+import pRetry from 'p-retry';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import pRetry from 'p-retry';
-import { deleteFile } from '@/app/API/files-service/functions';
+import { deleteFile, FileTypes } from '@/app/API/files-service/functions';
 import MetadataSection from '../(utils)/MetadataSection';
 
 const FilesInfo = () => {
@@ -29,8 +29,8 @@ const FilesInfo = () => {
   const deleteSelectedFile = useCallback(async () => {
     setIsDeletingLoading(true);
     const fileType = selectedFile?.name?.endsWith('.wav')
-      ? 'records'
-      : 'images';
+      ? FileTypes.RECORDS
+      : FileTypes.IMAGES;
     const response = await pRetry(
       () => {
         selectedMainTypeId &&
@@ -65,6 +65,14 @@ const FilesInfo = () => {
           </p>
           {selectedFile && (
             <MetadataSection
+              mainId={selectedMainTypeId || ''}
+              subtypeId={selectedSubTypeId || ''}
+              modelId={selectedModel._id}
+              fileType={
+                selectedFile.name?.endsWith('.wav')
+                  ? FileTypes.RECORDS
+                  : FileTypes.IMAGES
+              }
               fileName={selectedFile.name || 'file'}
               metadata={selectedFile.metadata || Object.create(null)}
             >

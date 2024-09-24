@@ -1,21 +1,30 @@
-import { ReactNode } from 'react';
+import { lazy, ReactNode } from 'react';
 import Link from 'next/link';
 import { FaRegImages } from 'react-icons/fa';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
+import { FileTypes } from '@/app/API/files-service/functions';
+const Preview = lazy(() => import('@/app/(popups)/Preview/page'));
 
 interface MetadataSectionProps {
-  children: ReactNode;
+  children?: ReactNode;
+  mainId: string;
+  subtypeId: string;
+  modelId: string;
+  fileType: FileTypes;
   fileName: string;
   metadata: Partial<Metadata>;
 }
 const MetadataSection: React.FC<MetadataSectionProps> = (props) => {
-  const { children, fileName, metadata } = props;
+  const { children, mainId, subtypeId, modelId, fileType, fileName, metadata } =
+    props;
+  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const regexFilesEnding = new RegExp('.wav|\\.jpg|\\.jpeg', 'g');
 
   return (
-    <div className='mx-auto flex h-full w-full flex-col justify-between items-center'>
-      <ul className='w-full my-4 rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
+    <div className='mx-auto flex h-full w-full flex-col items-center justify-between'>
+      <ul className='my-4 w-full rounded-lg border-2 px-6 py-4 dark:border-duoGrayDark-light'>
         <li className='w-full border-b-2 text-center text-duoGreen-default dark:border-duoGrayDark-light dark:text-duoBlueDark-text'>
           INFORMATION
         </li>
@@ -44,7 +53,7 @@ const MetadataSection: React.FC<MetadataSectionProps> = (props) => {
           </section>
         ))}
         <li>
-          {fileName.endsWith('.wav') ? (
+          {fileType === FileTypes.RECORDS ? (
             'sonograms_names' in metadata &&
             metadata.sonograms_names &&
             metadata.sonograms_names.length > 0 ? (
@@ -64,7 +73,22 @@ const MetadataSection: React.FC<MetadataSectionProps> = (props) => {
             )
           ) : null}
         </li>
+        <li>
+          <button
+            className='font-bold text-duoBlueDark-default'
+            onClick={() => updateSelectedPopup(PopupsTypes.PREVIEW)}
+          >
+            preview
+          </button>
+        </li>
       </ul>
+      <Preview
+        mainId={mainId}
+        subtypeId={subtypeId}
+        modelId={modelId}
+        fileType={fileType}
+        objectName={fileName}
+      />
       {children}
     </div>
   );

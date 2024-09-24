@@ -81,6 +81,14 @@ const CreateSpotreccInfo: React.FC = () => {
 
       {selectedFile && (
         <MetadataSection
+          mainId={selectedMainTypeId || ''}
+          subtypeId={selectedSubTypeId || ''}
+          modelId={selectedModel?._id || ''}
+          fileType={
+            selectedFile.name?.endsWith('.wav')
+              ? FileTypes.RECORDS
+              : FileTypes.IMAGES
+          }
           fileName={selectedFile.name}
           metadata={selectedFile.metadata}
         >
