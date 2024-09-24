@@ -13,7 +13,6 @@ import {
 } from '@/app/store/stores/(createExercises)/useCreateSpotreccStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
-import { BucketsNames } from '@/app/API/files-service/functions';
 import {
   createExercise,
   ExercisesTypes,
@@ -131,7 +130,7 @@ const CreateSpotrecc: React.FC = () => {
         onModelSelected={handleModelSelected}
       />
 
-      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3 mt-12'>
+      <section className='mt-12 flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
         {subExercises.map((exercise, index) => (
           <div
             key={index}
@@ -202,15 +201,15 @@ const CreateSpotrecc: React.FC = () => {
           isLoading={false}
         />
       </section>
-      {openedFileIndex !== null && openedFileIndex < subExercises.length && (
-        <>
-          <Preview
-            bucketName={BucketsNames.RECORDS}
-            exerciseType={ExercisesTypes.SPOTRECC}
-            objectName={subExercises[openedFileIndex].fileName}
-          />
-        </>
-      )}
+      {/* {openedFileIndex !== null && openedFileIndex < subExercises.length && (
+         <>
+           <Preview
+             bucketName={BucketsNames.RECORDS}
+             exerciseType={ExercisesTypes.SPOTRECC}
+             objectName={subExercises[openedFileIndex].fileName}
+           />
+         </>
+       )} */}
     </div>
   );
 };
