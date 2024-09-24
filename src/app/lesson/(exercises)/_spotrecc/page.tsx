@@ -3,7 +3,7 @@ import Image from 'next/image';
 import pRetry from 'p-retry';
 
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { BucketsNames, getFileByName } from '@/app/API/files-service/functions';
+import { getFileByName } from '@/app/API/files-service/functions';
 import Countdown from '@/components/(lessonComponents)/Countdown/page';
 import AudioPlayer, { AudioPlayerSizes } from '@/components/AudioPlayer/page';
 
@@ -92,12 +92,12 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
           () =>
             fileName.endsWith('.wav')
               ? getFileByName(
-                  BucketsNames.RECORDS,
+                  FileTypes.RECORDS,
                   ExercisesTypes.SPOTRECC,
                   fileName
                 )
               : getFileByName(
-                  BucketsNames.IMAGES,
+                  FileTypes.IMAGES,
                   ExercisesTypes.SPOTRECC,
                   fileName
                 ),
