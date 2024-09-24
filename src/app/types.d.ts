@@ -77,14 +77,9 @@ interface FeatureObject {
     value: number | string
 }
 
-enum BucketsNames {
+enum FileTypes {
     RECORDS = 'records',
     IMAGES = 'images'
-}
-
-interface FileObject {
-    fileName: string,
-    bucket: BucketsNames
 }
 
 interface ExerciseType {
@@ -109,19 +104,9 @@ enum FeaturesList {
     NUMBER_OF_BLADES = 'numberOfBlades',
 }
 
-enum BucketsNames {
-    RECORDS = 'records',
-    IMAGES = 'images',
-}
-
 interface FeatureObject {
     type: FeaturesList;
     value: number | string;
-}
-
-interface FileObject {
-    fileName: string;
-    bucket: BucketsNames;
 }
 
 interface FsaType extends ExerciseType {
