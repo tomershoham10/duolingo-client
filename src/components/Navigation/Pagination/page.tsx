@@ -7,30 +7,22 @@ import { useStore } from 'zustand';
 import { Themes, useThemeStore } from '@/app/store/stores/useThemeStore';
 
 const Pagination: React.FC<PaginationProps> = (props) => {
+  const { header, subHeader, components, subProps, onNext, onSubmit } = props;
   const theme = useStore(useThemeStore, (state) => state.theme);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const componentsNames = Object.keys(props.components);
-  const Component = Object.values(props.components)[currentPage];
+  const componentsNames = Object.keys(components);
+  const Component = Object.values(components)[currentPage];
 
-  const handleNextPage = () => {
-    // try {
-    const nextFunc = props.onNext[componentsNames[currentPage]];
+  const handleNextPage = useCallback(() => {
+    const nextFunc = onNext[componentsNames[currentPage]];
+    console.log('handleNextPage1', nextFunc);
     const canNavigate = nextFunc();
+    console.log('handleNextPage2', canNavigate);
     if (canNavigate) {
-      // if (currentPage === componentsNames.length - 1) {
-      //   setIsLoading(true);
-      //   await props.onSubmit();
-      // } else {
       setCurrentPage((prev) => prev + 1);
-      // }
     }
-    // } catch (err) {
-    //   console.error(err);
-    // } finally {
-    //   setIsLoading(false);
-    // }
-  };
+  }, [componentsNames, currentPage, onNext]);
 
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
@@ -42,7 +34,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
       setIsLoading(true);
       try {
         console.log(2);
-        await props.onSubmit();
+        await onSubmit();
         console.log(3);
         // Once the operation is complete, do something
         console.log('Async operation completed');
@@ -56,28 +48,28 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     } catch (err) {
       console.error('handleSubmit error:', err);
     }
-  }, [props]);
+  }, [onSubmit]);
 
   return (
     <div
       className='grid h-full w-full'
-      style={{ gridTemplateRows: '180px 1fr 100px' }}
+      style={{ gridTemplateRows: '100px 1fr 100px' }}
     >
       <div className='relative flex-col overflow-auto'>
         <div className='absolute inset-x-0 top-0 flex flex-col items-start justify-center text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-          {!!props.header && !!props.subHeader ? (
+          {!!header && !!subHeader ? (
             <div className='mb-10 mt-5 flex gap-3 text-4xl font-extrabold uppercase'>
-              {props.header}
-              <p className='text-duoGrayDark-lighter'> {props.subHeader}</p>
+              {header}
+              <p className='text-duoGrayDark-lighter'> {subHeader}</p>
             </div>
-          ) : !!props.header ? (
+          ) : !!header ? (
             <div className='mb-10 mt-5 flex gap-3 text-4xl font-extrabold uppercase'>
-              {props.header}
+              {header}
             </div>
           ) : null}
           <nav
             className={`flex h-2 flex-row gap-[10rem] self-center bg-duoGray-default dark:bg-duoBlueDark-darkest 3xl:gap-[25rem] ${
-              !!props.header ? '' : 'mt-10'
+              !!header ? '' : 'mt-10'
             }`}
           >
             {componentsNames.map((componentLabel, navIndex) => (
@@ -110,9 +102,9 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           </nav>
         </div>
       </div>
-      <Component {...props.subProps} />
+      <Component {...subProps} />
       <div className='relative w-full'>
-        {currentPage === Object.keys(props.components).length - 1 ? (
+        {currentPage === Object.keys(components).length - 1 ? (
           <div className='absolute inset-y-1/3 right-[1rem] w-24'>
             <Button
               label={'SUBMIT'}
