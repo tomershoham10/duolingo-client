@@ -111,7 +111,7 @@ const FsaPage: React.FC<FsaPageProps> = (props) => {
         const url = await pRetry(
           () =>
             getEncryptedFileByName(
-              BucketsNames.RECORDS,
+              FileTypes.RECORDS,
               exerciseType,
               recordName
             ),
