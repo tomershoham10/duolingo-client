@@ -4,7 +4,7 @@ export enum fsaFieldsType {
     TIMEBUFFERS = 'timeBuffers',
 }
 
-export enum fsaDataAction {
+export enum FsaDataActionsList {
     SET_DESCRIPTION = 'setDescription',
 
     SET_RELEVANT = 'setRelevant',
@@ -17,14 +17,14 @@ export enum fsaDataAction {
     SET_TARGET_FROM_DROPDOWN = 'setTargetFromDropdown'
 }
 
-type Action =
-    | { type: fsaDataAction.SET_DESCRIPTION; payload: string }
-    | { type: fsaDataAction.SET_RELEVANT, payload: relevantList[] }
-    | { type: fsaDataAction.ADD_RELEVANT, payload: relevantList }
-    | { type: fsaDataAction.REMOVE_TARGET_FROM_RELEVANT; payload: relevantList }
-    | { type: fsaDataAction.SET_UNFILLED_FIELDS, payload: fsaFieldsType[] }
-    | { type: fsaDataAction.SET_SHOW_PLACE_HOLDER, payload: boolean }
-    | { type: fsaDataAction.SET_TARGET_FROM_DROPDOWN, payload: TargetType | null }
+export type FsaDataAction =
+    | { type: FsaDataActionsList.SET_DESCRIPTION; payload: string }
+    | { type: FsaDataActionsList.SET_RELEVANT, payload: relevantList[] }
+    | { type: FsaDataActionsList.ADD_RELEVANT, payload: relevantList }
+    | { type: FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT; payload: relevantList }
+    | { type: FsaDataActionsList.SET_UNFILLED_FIELDS, payload: fsaFieldsType[] }
+    | { type: FsaDataActionsList.SET_SHOW_PLACE_HOLDER, payload: boolean }
+    | { type: FsaDataActionsList.SET_TARGET_FROM_DROPDOWN, payload: TargetType | null }
 
 interface relevantList {
     id: string,
@@ -41,25 +41,25 @@ export interface fsaDataType {
 
 export const fsaDataReducer = (
     state: fsaDataType,
-    action: Action
+    action: FsaDataAction
 ): fsaDataType => {
     switch (action.type) {
-        case fsaDataAction.SET_DESCRIPTION:
+        case FsaDataActionsList.SET_DESCRIPTION:
             return { ...state, description: action.payload };
-        case fsaDataAction.SET_RELEVANT:
+        case FsaDataActionsList.SET_RELEVANT:
             return { ...state, relevant: action.payload };
-        case fsaDataAction.ADD_RELEVANT:
+        case FsaDataActionsList.ADD_RELEVANT:
             return { ...state, relevant: [...state.relevant, action.payload] };
-        case fsaDataAction.REMOVE_TARGET_FROM_RELEVANT:
+        case FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT:
             return { ...state, relevant: state.relevant };
 
-        case fsaDataAction.SET_UNFILLED_FIELDS:
+        case FsaDataActionsList.SET_UNFILLED_FIELDS:
             return { ...state, unfilledFields: action.payload };
 
-        case fsaDataAction.SET_SHOW_PLACE_HOLDER:
+        case FsaDataActionsList.SET_SHOW_PLACE_HOLDER:
             return { ...state, showPlaceholder: action.payload };
 
-        case fsaDataAction.SET_TARGET_FROM_DROPDOWN:
+        case FsaDataActionsList.SET_TARGET_FROM_DROPDOWN:
             return { ...state, targetFromDropdown: action.payload };
 
         default:
