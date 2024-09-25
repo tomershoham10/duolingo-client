@@ -4,7 +4,7 @@ import Upload from '@/components/Upload/page';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import {
-  BucketsNames,
+  FileTypes,
   SignatureTypes,
   SonarSystem,
 } from '@/app/API/files-service/functions';
@@ -22,7 +22,7 @@ const Sonograms = lazy(() => import('./Sonograms/page'));
 interface FSAMetaProps {
   file: File | null;
   metadata: Partial<FSAMetadata>;
-  fileType: BucketsNames;
+  fileType: FileTypes;
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
   handleFileLength: (time: number | null) => void;
@@ -61,7 +61,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                   label={'Add record'}
                   filesTypes='.wav'
                   isMultiple={false}
-                  bucketName={BucketsNames.RECORDS}
+                  bucketName={FileTypes.RECORDS}
                   exerciseType={ExercisesTypes.FSA}
                   showMode={false}
                   files={{
@@ -71,7 +71,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
                   onFileChange={handleFileChange}
                   onFileRemoved={handleFileRemoved}
                   fileLength={(time) => {
-                    fileType === BucketsNames.RECORDS
+                    fileType === FileTypes.RECORDS
                       ? handleFileLength(time)
                       : null;
                   }}

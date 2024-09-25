@@ -1,7 +1,7 @@
 import Upload from '@/components/Upload/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import Input, { InputTypes } from '@/components/Input/page';
-import { BucketsNames, SonarSystem } from '@/app/API/files-service/functions';
+import { FileTypes, SonarSystem } from '@/app/API/files-service/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { isSonogramMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 
@@ -32,7 +32,7 @@ const FSASonogramMetadata: React.FC<FSASonogramMetaProps> = (props) => {
                 label={'Add sonogram'}
                 filesTypes='image/*'
                 isMultiple={false}
-                bucketName={BucketsNames.IMAGES}
+                bucketName={FileTypes.IMAGES}
                 exerciseType={ExercisesTypes.FSA}
                 showMode={false}
                 files={{

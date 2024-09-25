@@ -6,7 +6,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Table, { TableHead, TableRow } from '@/components/Table/page';
 import pRetry from 'p-retry';
 import {
-  BucketsNames,
+  FileTypes,
   getFileByBucketAndType,
 } from '@/app/API/files-service/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
@@ -28,7 +28,7 @@ const Sonograms: React.FC<FSASongramsProps> = (props) => {
   const fetchData = useCallback(async () => {
     try {
       const res = (await pRetry(
-        () => getFileByBucketAndType(BucketsNames.IMAGES, ExercisesTypes.FSA),
+        () => getFileByBucketAndType(FileTypes.IMAGES, ExercisesTypes.FSA),
         {
           retries: 5,
         }

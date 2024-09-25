@@ -1,7 +1,7 @@
 'use client';
 import Upload from '@/components/Upload/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { BucketsNames, FeaturesList } from '@/app/API/files-service/functions';
+import { FileTypes, FeaturesList } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 // const Dropdown = dynamic(() => import('@/components/Dropdown'), { ssr: false });
@@ -24,7 +24,7 @@ const SpotreccImageMetadata: React.FC<SpotreccImageMetaProps> = (props) => {
             label={'Add sonogram'}
             filesTypes='image/*'
             isMultiple={false}
-            bucketName={BucketsNames.IMAGES}
+            bucketName={FileTypes.IMAGES}
             exerciseType={ExercisesTypes.SPOTRECC}
             showMode={false}
             files={{
