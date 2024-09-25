@@ -1,14 +1,16 @@
-import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
-// import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
-import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
-import Table, { TableHead } from '@/components/Table/page';
-import TargetsDropdowns from '@/components/TargetsDropdowns';
 import { useCallback, useEffect, useState } from 'react';
 import { useStore } from 'zustand';
 
+import Table, { TableHead } from '@/components/Table/page';
+import TableSkeleton from '@/components/Table/TableSkeleton';
+import TargetsDropdowns from '@/components/TargetsDropdowns';
+import { FileTypes } from '@/app/API/files-service/functions';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
+import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
+
 const FilesSelection = () => {
-//   const targetsList = useFetchTargets();
+  //   const targetsList = useFetchTargets();
 
   const [selectedFilesRowIndex, setSelectedFilesRowIndex] =
     useState<number>(-1);
@@ -37,7 +39,8 @@ const FilesSelection = () => {
   const { filesData, fetchData } = useFetchModelFiles(
     selectedMainTypeId,
     selectedSubTypeId,
-    selectedModel?._id || null
+    selectedModel?._id || null,
+    FileTypes.RECORDS
   );
 
   useEffect(() => {
@@ -75,24 +78,37 @@ const FilesSelection = () => {
           onMainSelected={handleMainTypeSelected}
           onSubTypeSelected={handleSubTypeSelected}
           onModelSelected={handleModelSelected}
+          excludeFileType={true}
         />
       </div>
       {selectedMainTypeId &&
         selectedSubTypeId &&
         selectedModel &&
-        filesData.length > 0 && (
-          <div className='flex w-fit flex-col gap-3'>
-            <span className='text-xl font-bold opacity-70'>Files table</span>
-            <Table
-              headers={filesTableHead}
-              rows={filesData}
-              onSelect={handleSelectFilesRow}
-              selectedRowIndex={selectedFilesRowIndex}
-              maxHight={'max-h-[306px]'}
-              isLoading={false}
-            />
-          </div>
-        )}
+        (filesData ? (
+          filesData.length > 0 ? (
+            <div className='flex w-fit flex-col gap-3'>
+              <span className='text-xl font-bold text-duoGrayDark-lightestOpacity'>
+                Files table
+              </span>
+              <Table
+                headers={filesTableHead}
+                rows={filesData}
+                onSelect={handleSelectFilesRow}
+                selectedRowIndex={selectedFilesRowIndex}
+                maxHight={'max-h-[306px]'}
+                isLoading={false}
+              />
+            </div>
+          ) : (
+            <p className='mt-2 text-lg text-duoGrayDark-lightestOpacity'>
+              The selected model has no records.
+            </p>
+          )
+        ) : (
+          <section className='mx-auto w-fit'>
+            <TableSkeleton />
+          </section>
+        ))}
     </section>
   );
 };
