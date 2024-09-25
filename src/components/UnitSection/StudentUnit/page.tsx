@@ -15,7 +15,7 @@ import {
   studentDashboardReducer,
 } from '@/reducers/studentView/studentDashboardReducer';
 import {
-  courseDataAction,
+  CourseDataActionsList,
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
@@ -46,7 +46,7 @@ const StudentUnitSection: React.FC = () => {
   useEffect(() => {
     if (courseId) {
       courseDataDispatch({
-        type: courseDataAction.SET_COURSE_ID,
+        type: CourseDataActionsList.SET_COURSE_ID,
         payload: courseId,
       });
     }

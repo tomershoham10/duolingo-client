@@ -1,18 +1,20 @@
 'use client';
 import { useCallback, useEffect, useReducer } from 'react';
+import pRetry from 'p-retry';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { getAllExercises } from '@/app/API/classes-service/exercises/functions';
 import {
-  editLessonAction,
+  EditLessonAction,
   editLessonReducer,
-  editLessonType,
 } from '@/reducers/adminView/(popups)/editLessonReducer';
 import Table from '@/components/Table/page';
-import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
+import Button, {
+  ButtonColors,
+  ButtonTypes,
+} from '@/components/(buttons)/Button/page';
 import { updateLesson } from '@/app/API/classes-service/lessons/functions';
-import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -32,7 +34,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
     { key: 'dateCreated', label: 'date created' },
   ];
 
-  const initialEditLessonState: editLessonType = {
+  const initialEditLessonState = {
     exercisesList: [],
     selectedExercise: undefined,
     tableHeaders: headers,
@@ -52,11 +54,11 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
         });
         console.log('fetch exercises', res);
         editLessonDispatch({
-          type: editLessonAction.SET_TABLE_DATA,
+          type: EditLessonAction.SET_TABLE_DATA,
           payload: res,
         });
         editLessonDispatch({
-          type: editLessonAction.SET_EXERCISES,
+          type: EditLessonAction.SET_EXERCISES,
           payload: res,
         });
       } catch (err) {
@@ -113,7 +115,7 @@ const EditLesson: React.FC<EditLessonProps> = (props) => {
           onSelect={(row) => {
             console.log(row._id);
             editLessonDispatch({
-              type: editLessonAction.SET_SELECTED_EXERCISES,
+              type: EditLessonAction.SET_SELECTED_EXERCISES,
               payload: row._id,
             });
           }}

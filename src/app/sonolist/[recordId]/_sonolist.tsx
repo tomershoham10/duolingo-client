@@ -22,7 +22,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
       const fileMetadata = await pRetry(
         () =>
           getFileMetadataByName(
-            BucketsNames.RECORDS,
+            FileTypes.RECORDS,
             ExercisesTypes.FSA,
             recordName
           ),
@@ -35,24 +35,24 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
         if (isFSAMetadata(metadata) && metadata.sonograms_names) {
           const promises = metadata.sonograms_names.map(async (sonogram) => {
             try {
-              //   const blob = await getFileByName(BucketsNames.SONOGRAMS, sonogram);
+              //   const blob = await getFileByName(FileTypes.SONOGRAMS, sonogram);
 
-              const url = await pRetry(
-                () =>
-                  getFileByName(
-                    BucketsNames.IMAGES,
-                    ExercisesTypes.FSA,
-                    sonogram
-                  ),
-                {
-                  retries: 5,
-                }
-              );
-              if (url) {
-                return url;
-              } else {
-                return null;
-              }
+            //   const url = await pRetry(
+            //     () =>
+            //       getFileByName(
+            //         FileTypes.IMAGES,
+            //         ExercisesTypes.FSA,
+            //         sonogram
+            //       ),
+            //     {
+            //       retries: 5,
+            //     }
+            //   );
+            //   if (url) {
+            //     return url;
+            //   } else {
+            //     return null;
+            //   }
             } catch (error) {
               console.error('Error reading file:', error);
               return null;
@@ -60,10 +60,10 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
           });
 
           const results = await Promise.all(promises);
-          const filteredResults = results.filter(
-            (result): result is string => typeof result === 'string'
-          );
-          setSonolist(filteredResults); // Set filtered results directly
+        //   const filteredResults = results.filter(
+        //     (result): result is string => typeof result === 'string'
+        //   );
+        //   setSonolist(filteredResults); // Set filtered results directly
         }
       }
     } catch (error) {

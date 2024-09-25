@@ -1,19 +1,18 @@
 'use client';
-import { useStore } from 'zustand';
 import Upload from '@/components/Upload/page';
 import Slider from '@/components/Slider/page';
-import SwitchButton from '@/components/(buttons)/SwitchButton/page';
+import { FileTypes } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
+import SwitchButton from '@/components/(buttons)/SwitchButton/page';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { BucketsNames } from '@/app/API/files-service/functions';
 import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
-import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
+import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 
 interface SoptreccRecordMetaProps {
   file: File | null;
   metadata: Partial<FSAMetadata>;
-  fileType: BucketsNames;
+  fileType: FileTypes;
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
   handleFileLength: (time: number | null) => void;
@@ -51,7 +50,7 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
                   label={'Add record'}
                   filesTypes='.wav'
                   isMultiple={false}
-                  bucketName={BucketsNames.RECORDS}
+                  bucketName={FileTypes.RECORDS}
                   exerciseType={ExercisesTypes.FSA}
                   showMode={false}
                   files={{

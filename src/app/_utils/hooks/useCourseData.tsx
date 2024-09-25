@@ -1,10 +1,10 @@
 'use client';
-import { useCallback, useEffect } from 'react';
+import { Dispatch, useCallback, useEffect } from 'react';
 import pRetry from 'p-retry';
 import {
-  CourseDataActionTypes,
-  courseDataAction,
-  courseDataType,
+  CourseDataAction,
+  CourseDataActionsList,
+  CourseDataType,
 } from '@/reducers/courseDataReducer';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getCourseDataById } from '@/app/API/classes-service/courses/functions';
@@ -13,8 +13,8 @@ import { getResultsByLessonAndUser } from '@/app/API/classes-service/results/fun
 
 const useCourseData = (
   userId: string | undefined,
-  courseDataState: courseDataType,
-  courseDataDispatch: (value: CourseDataActionTypes) => void
+  courseDataState: CourseDataType,
+  courseDataDispatch: Dispatch<CourseDataAction>
 ) => {
   const addAlert = useAlertStore.getState().addAlert;
 
@@ -44,12 +44,12 @@ const useCourseData = (
         });
 
         courseDataDispatch({
-          type: courseDataAction.SET_UNITS,
+          type: CourseDataActionsList.SET_UNITS,
           payload: units,
         });
 
         courseDataDispatch({
-          type: courseDataAction.SET_SUSPENDED_UNITS_IDS,
+          type: CourseDataActionsList.SET_SUSPENDED_UNITS_IDS,
           payload: courseData.suspendedUnitsIds,
         });
 
@@ -73,7 +73,7 @@ const useCourseData = (
             };
           });
           courseDataDispatch({
-            type: courseDataAction.SET_LEVELS,
+            type: CourseDataActionsList.SET_LEVELS,
             payload: levels,
           });
 
@@ -101,7 +101,7 @@ const useCourseData = (
             });
 
             courseDataDispatch({
-              type: courseDataAction.SET_LESSONS,
+              type: CourseDataActionsList.SET_LESSONS,
               payload: lessons,
             });
           }
@@ -118,7 +118,7 @@ const useCourseData = (
           });
           if (exercisesData.length > 0) {
             courseDataDispatch({
-              type: courseDataAction.SET_EXERCISES,
+              type: CourseDataActionsList.SET_EXERCISES,
               payload: exercisesData,
             });
           }
@@ -184,7 +184,7 @@ const useCourseData = (
 
         const result = await Promise.all(promises);
         courseDataDispatch({
-          type: courseDataAction.SET_RESULTS,
+          type: CourseDataActionsList.SET_RESULTS,
           payload: result.flat(),
         });
       }

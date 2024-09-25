@@ -1,4 +1,4 @@
-export enum courseDataAction {
+export enum CourseDataActionsList {
     SET_COURSE_ID = 'setCourseId',
     SET_UNITS = 'setUnits',
     SET_SUSPENDED_UNITS_IDS = 'setSuspendedUnitsIds',
@@ -21,20 +21,20 @@ export interface ResultsState {
     results: { numOfExercises: number; results: ResultType[] };
 }[];
 
-export type CourseDataActionTypes =
-    | { type: courseDataAction.SET_COURSE_ID, payload: string | null }
-    | { type: courseDataAction.SET_UNITS, payload: UnitType[] }
-    | { type: courseDataAction.SET_SUSPENDED_UNITS_IDS, payload: string[] }
-    | { type: courseDataAction.SET_LEVELS, payload: DataWithFatherId<LevelType>[] }
-    // | { type: courseDataAction.SET_UNSUSPENDED_LEVELS, payload: DataWithFatherId<LevelType>[] }
-    | { type: courseDataAction.SET_LESSONS, payload: DataWithFatherId<LessonType>[] }
-    // | { type: courseDataAction.SET_UNSUSPENDED_LESSONS, payload: DataWithFatherId<LessonType>[] }
-    | { type: courseDataAction.SET_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
-    // | { type: courseDataAction.SET_UNSUSPENDED_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
-    | { type: courseDataAction.SET_RESULTS, payload: ResultsState[] }
+export type CourseDataAction =
+    | { type: CourseDataActionsList.SET_COURSE_ID, payload: string | null }
+    | { type: CourseDataActionsList.SET_UNITS, payload: UnitType[] }
+    | { type: CourseDataActionsList.SET_SUSPENDED_UNITS_IDS, payload: string[] }
+    | { type: CourseDataActionsList.SET_LEVELS, payload: DataWithFatherId<LevelType>[] }
+    // | { type: CourseDataActionsList.SET_UNSUSPENDED_LEVELS, payload: DataWithFatherId<LevelType>[] }
+    | { type: CourseDataActionsList.SET_LESSONS, payload: DataWithFatherId<LessonType>[] }
+    // | { type: CourseDataActionsList.SET_UNSUSPENDED_LESSONS, payload: DataWithFatherId<LessonType>[] }
+    | { type: CourseDataActionsList.SET_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
+    // | { type: CourseDataActionsList.SET_UNSUSPENDED_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
+    | { type: CourseDataActionsList.SET_RESULTS, payload: ResultsState[] }
 
 
-export interface courseDataType {
+export interface CourseDataType {
     courseId: string | null,
     units: UnitType[];
     suspendedUnitsIds: string[];
@@ -48,29 +48,29 @@ export interface courseDataType {
 }
 
 export const courseDataReducer = (
-    state: courseDataType,
-    action: CourseDataActionTypes
-): courseDataType => {
+    state: CourseDataType,
+    action: CourseDataAction
+): CourseDataType => {
     switch (action.type) {
-        case courseDataAction.SET_COURSE_ID:
+        case CourseDataActionsList.SET_COURSE_ID:
             return { ...state, courseId: action.payload };
-        case courseDataAction.SET_UNITS:
+        case CourseDataActionsList.SET_UNITS:
             return { ...state, units: action.payload };
-        case courseDataAction.SET_SUSPENDED_UNITS_IDS:
+        case CourseDataActionsList.SET_SUSPENDED_UNITS_IDS:
             return { ...state, suspendedUnitsIds: action.payload };
-        case courseDataAction.SET_LEVELS:
+        case CourseDataActionsList.SET_LEVELS:
             return { ...state, levels: action.payload };
-        // case courseDataAction.SET_UNSUSPENDED_LEVELS:
+        // case CourseDataActionsList.SET_UNSUSPENDED_LEVELS:
         //     return { ...state, unsuspendedLevels: action.payload };
-        case courseDataAction.SET_LESSONS:
+        case CourseDataActionsList.SET_LESSONS:
             return { ...state, lessons: action.payload };
-        // case courseDataAction.SET_UNSUSPENDED_LESSONS:
+        // case CourseDataActionsList.SET_UNSUSPENDED_LESSONS:
         //     return { ...state, unsuspendedLessons: action.payload };
-        case courseDataAction.SET_EXERCISES:
+        case CourseDataActionsList.SET_EXERCISES:
             return { ...state, exercises: action.payload };
-        // case courseDataAction.SET_UNSUSPENDED_EXERCISES:
+        // case CourseDataActionsList.SET_UNSUSPENDED_EXERCISES:
         //     return { ...state, unsuspendedExercises: action.payload };
-        case courseDataAction.SET_RESULTS:
+        case CourseDataActionsList.SET_RESULTS:
             return { ...state, results: action.payload };
 
         default:

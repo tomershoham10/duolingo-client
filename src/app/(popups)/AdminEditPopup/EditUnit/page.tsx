@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useReducer } from 'react';
+import pRetry from 'p-retry';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +9,7 @@ import {
   updateUnit,
 } from '@/app/API/classes-service/units/functions';
 import {
-  editUnitAction,
+  EditUnitAction,
   editUnitReducer,
 } from '@/reducers/adminView/(popups)/editUnitReducer';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
@@ -16,7 +17,6 @@ import DraggbleList, { Diractions } from '@/components/DraggableList/page';
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import pRetry from 'p-retry';
 
 library.add(faXmark);
 
@@ -52,7 +52,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
 
   const setDragLevelsList = useCallback(() => {
     editUnitDispatch({
-      type: editUnitAction.SET_LEVELS,
+      type: EditUnitAction.SET_LEVELS,
       payload: levelsDraggingState.itemsList.map((item) => item.id),
     });
   }, [levelsDraggingState.itemsList]);
@@ -61,42 +61,39 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
     setDragLevelsList();
   }, [setDragLevelsList]);
 
-  const fetchUnit = useCallback(
-    async (unitId: string) => {
-      try {
-        // const response = await getUnitById(unitId);
-        const response = await pRetry(() => getUnitById(unitId), {
-          retries: 5,
+  const fetchUnit = useCallback(async (unitId: string) => {
+    try {
+      // const response = await getUnitById(unitId);
+      const response = await pRetry(() => getUnitById(unitId), {
+        retries: 5,
+      });
+      if (response) {
+        editUnitDispatch({
+          type: EditUnitAction.SET_DESCRIPTION,
+          payload: response.description,
         });
-        if (response) {
-          editUnitDispatch({
-            type: editUnitAction.SET_DESCRIPTION,
-            payload: response.description,
-          });
 
-          editUnitDispatch({
-            type: editUnitAction.SET_LEVELS,
-            payload: response.levelsIds,
-          });
-          editUnitDispatch({
-            type: editUnitAction.SET_SUSPENDED_LEVELS,
-            payload: response.suspendedLevelsIds,
-          });
+        editUnitDispatch({
+          type: EditUnitAction.SET_LEVELS,
+          payload: response.levelsIds,
+        });
+        editUnitDispatch({
+          type: EditUnitAction.SET_SUSPENDED_LEVELS,
+          payload: response.suspendedLevelsIds,
+        });
 
-          levelsDraggingDispatch({
-            type: draggingAction.SET_ITEMS_LIST,
-            payload: response.levelsIds.map((levelId, levelIndex) => ({
-              id: levelId,
-              name: `level ${levelIndex + 1}`,
-            })),
-          });
-        }
-      } catch (err) {
-        console.error(err);
+        levelsDraggingDispatch({
+          type: draggingAction.SET_ITEMS_LIST,
+          payload: response.levelsIds.map((levelId, levelIndex) => ({
+            id: levelId,
+            name: `level ${levelIndex + 1}`,
+          })),
+        });
       }
-    },
-    []
-  );
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
     fetchUnit(editUnitState.unitId);
@@ -152,7 +149,7 @@ const EditUnit: React.FC<EditUnitProps> = (props) => {
               value={editUnitState.description}
               onChange={(text: string) => {
                 editUnitDispatch({
-                  type: editUnitAction.SET_DESCRIPTION,
+                  type: EditUnitAction.SET_DESCRIPTION,
                   payload: text,
                 });
               }}
