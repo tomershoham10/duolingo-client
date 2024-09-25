@@ -1,6 +1,6 @@
 import { TableHead, TableRow } from "@/components/Table/page";
 
-export enum editLessonAction {
+export enum EditLessonAction {
     SET_EXERCISES = 'setExercises',
     SET_SELECTED_EXERCISES = 'setSelctedExercise',
     SET_TABLE_DATA = 'setTableData',
@@ -8,12 +8,12 @@ export enum editLessonAction {
 }
 
 type Action =
-    | { type: editLessonAction.SET_EXERCISES, payload: ExerciseType[] }
-    | { type: editLessonAction.SET_SELECTED_EXERCISES, payload: string }
-    | { type: editLessonAction.SET_TABLE_DATA, payload: TableRow[] }
-    | { type: editLessonAction.ADD_TABLE_ROW, payload: TableRow }
+    | { type: EditLessonAction.SET_EXERCISES, payload: ExerciseType[] }
+    | { type: EditLessonAction.SET_SELECTED_EXERCISES, payload: string }
+    | { type: EditLessonAction.SET_TABLE_DATA, payload: TableRow[] }
+    | { type: EditLessonAction.ADD_TABLE_ROW, payload: TableRow }
 
-export interface editLessonType {
+export interface EditLessonType {
     exercisesList: ExerciseType[],
     selectedExercise: string | undefined,
     tableHeaders: TableHead[],
@@ -21,17 +21,17 @@ export interface editLessonType {
 }
 
 export const editLessonReducer = (
-    state: editLessonType,
+    state: EditLessonType,
     action: Action
-): editLessonType => {
+): EditLessonType => {
     switch (action.type) {
-        case editLessonAction.SET_EXERCISES:
+        case EditLessonAction.SET_EXERCISES:
             return { ...state, exercisesList: action.payload };
-        case editLessonAction.SET_SELECTED_EXERCISES:
+        case EditLessonAction.SET_SELECTED_EXERCISES:
             return { ...state, selectedExercise: action.payload };
-        case editLessonAction.SET_TABLE_DATA:
+        case EditLessonAction.SET_TABLE_DATA:
             return { ...state, tableData: action.payload };
-        case editLessonAction.ADD_TABLE_ROW:
+        case EditLessonAction.ADD_TABLE_ROW:
             return { ...state, tableData: [...state.tableData, action.payload] };
 
         default:
