@@ -38,7 +38,9 @@ const CreateSpotreccInfo: React.FC = () => {
     (selectedFileName: string, recordLength?: number) => {
       console.log('handleFileSelected', CreateSpotreccInfo);
       setSelectedFile(
-        filesData.filter((item) => item.name === selectedFileName)[0]
+        filesData
+          ? filesData.filter((item) => item.name === selectedFileName)[0]
+          : null
       );
     },
     [filesData]
@@ -56,27 +58,28 @@ const CreateSpotreccInfo: React.FC = () => {
     <div className='flex h-full w-full flex-col gap-3 p-4'>
       <h1>Files</h1>
       <ul className='max-h-[33%] w-full cursor-pointer overflow-hidden rounded-md border-2 border-duoGrayDark-light px-2 py-2 hover:overflow-y-auto'>
-        {filesData.map((file, index) => (
-          <li
-            key={file.name}
-            className={`grid w-full border-duoGrayDark-dark text-lg ${
-              index === Object.values(CreateSpotreccInfo).length - 1 ||
-              Object.values(CreateSpotreccInfo).length === 1
-                ? 'border-0'
-                : 'border-b-2'
-            }`}
-          >
-            <div
-              className='w-full overflow-hidden text-ellipsis whitespace-nowrap p-1 hover:rounded-md hover:bg-duoGrayDark-light'
-              onClick={() => {
-                handleFileSelected(file.name);
-              }}
-              title={file.name} // Tooltip for long names
+        {filesData &&
+          filesData.map((file, index) => (
+            <li
+              key={file.name}
+              className={`grid w-full border-duoGrayDark-dark text-lg ${
+                index === Object.values(CreateSpotreccInfo).length - 1 ||
+                Object.values(CreateSpotreccInfo).length === 1
+                  ? 'border-0'
+                  : 'border-b-2'
+              }`}
             >
-              {file.name}
-            </div>
-          </li>
-        ))}
+              <div
+                className='w-full overflow-hidden text-ellipsis whitespace-nowrap p-1 hover:rounded-md hover:bg-duoGrayDark-light'
+                onClick={() => {
+                  handleFileSelected(file.name);
+                }}
+                title={file.name} // Tooltip for long names
+              >
+                {file.name}
+              </div>
+            </li>
+          ))}
       </ul>
 
       {selectedFile && (
