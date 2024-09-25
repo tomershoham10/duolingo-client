@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useReducer, useState } from 'react';
-import useStore from '@/app/store/useStore';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -9,18 +8,15 @@ import {
   faPenToSquare,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
-import Button, { ButtonColors } from '../../(buttons)/Button/page';
 import {
   fieldToEditType,
   useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
 import {
   DataWithFatherId,
-  courseDataAction,
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
-import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
 import LodingAdminSection from './LodingAdminSection/page';
 import AdminUnitHeader from './AdminUnitHeader/page';
