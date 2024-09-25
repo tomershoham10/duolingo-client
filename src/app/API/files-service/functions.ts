@@ -203,18 +203,24 @@ export const getFileByBucketName = async (mainId: string): Promise<SubTypeGroup 
     }
 }
 
-export const getModelsFiles = async (mainId: string, subTypeId: string, modelId: string): Promise<SubTypeGroup | null> => {
+export const getModelsFiles = async (mainId: string, subTypeId: string, modelId: string, fileType?: FileTypes): Promise<SubTypeGroup | null> => {
     try {
         // bucketName is a level1 id
         console.log(`${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}`);
+
+        const query = !fileType ?
+            `${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}`
+            : `${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}/${fileType}`;
+
         const response = await fetch(
-            `${FILES_API.GET_MODELS_FILES}/${mainId}/${subTypeId}/${modelId}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+            query,
+            {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
         console.log('getModelsFiles', response);
         if (response.ok) {
             const data = await response.json();
