@@ -14,6 +14,7 @@ import TargetsDropdowns from '@/components/TargetsDropdowns';
 import { useStore } from 'zustand';
 import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
 import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
+import TableSkeleton from '@/components/Table/TableSkeleton';
 
 const UploadFilePopup = lazy(
   () => import('@/app/(popups)/(upload)/UploadFilesPopup/page')
@@ -186,30 +187,29 @@ const Files: React.FC = () => {
       {selectedMainTypeId &&
         selectedSubTypeId &&
         selectedModel &&
-        filesData.length > 0 && (
-          <div className='flex w-fit flex-col gap-3'>
-            <span className='text-xl font-bold opacity-70'>Files table</span>
-            <Table
-              headers={filesTableHead}
-              rows={filesData}
-              onSelect={handleSelectFilesRow}
-              selectedRowIndex={selectedFilesRowIndex}
-              maxHight={'max-h-[306px]'}
-              isLoading={false}
-            />
-          </div>
-        )}
-      {/* <div className='relative flex items-center justify-start py-8'>
-        <Button
-          label={'UPLOAD'}
-          buttonType={ButtonTypes.SUBMIT}
-          color={ButtonColors.BLUE}
-          icon={faArrowUpFromBracket}
-          //   loadingLabel={'Uploading...'}
-          isDisabled={selectedModelsRowIndex < 0}
-          onClick={() => updateSelectedPopup(PopupsTypes.EDIT_METADATA)}
-        />
-      </div> */}
+        (filesData ? (
+          filesData.length > 0 ? (
+            <div className='flex w-fit flex-col gap-3'>
+              <span className='text-xl font-bold opacity-70'>Files table</span>
+              <Table
+                headers={filesTableHead}
+                rows={filesData}
+                onSelect={handleSelectFilesRow}
+                selectedRowIndex={selectedFilesRowIndex}
+                maxHight={'max-h-[306px]'}
+                isLoading={false}
+              />
+            </div>
+          ) : (
+            <p className='mt-2 text-lg text-duoGrayDark-lightestOpacity'>
+              The selected model has no records.
+            </p>
+          )
+        ) : (
+          <section className='mx-auto w-fit'>
+            <TableSkeleton />
+          </section>
+        ))}
     </section>
   );
 };
