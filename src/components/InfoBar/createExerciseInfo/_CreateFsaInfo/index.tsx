@@ -22,7 +22,7 @@ const CreateFsaInfo = () => {
   return (
     <div className='mx-auto h-full w-[90%] overflow-hidden py-5'>
       {selectedModel === null ? (
-        <section>Please select a model</section>
+        <p className='opacity-80 text-center'>Please select a model</p>
       ) : (
         <section className='mx-auto flex h-full w-full flex-col justify-start'>
           <p className='mx-auto text-2xl font-extrabold'>
