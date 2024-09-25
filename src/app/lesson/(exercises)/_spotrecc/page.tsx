@@ -88,30 +88,31 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
   const getFile = useCallback(
     async (fileName: string) => {
       try {
-        const responseUrl = await pRetry(
-          () =>
-            fileName.endsWith('.wav')
-              ? getFileByName(
-                  FileTypes.RECORDS,
-                  ExercisesTypes.SPOTRECC,
-                  fileName
-                )
-              : getFileByName(
-                  FileTypes.IMAGES,
-                  ExercisesTypes.SPOTRECC,
-                  fileName
-                ),
-          {
-            retries: 5,
-          }
-        );
-        setUrl(responseUrl);
-        fileName.endsWith('.wav') && responseUrl && setWavLength(responseUrl);
+        // const responseUrl = await pRetry(
+        //   () =>
+        //     fileName.endsWith('.wav')
+        //       ? getFileByName(
+        //           FileTypes.RECORDS,
+        //           ExercisesTypes.SPOTRECC,
+        //           fileName
+        //         )
+        //       : getFileByName(
+        //           FileTypes.IMAGES,
+        //           ExercisesTypes.SPOTRECC,
+        //           fileName
+        //         ),
+        //   {
+        //     retries: 5,
+        //   }
+        // );
+        // setUrl(responseUrl);
+        // fileName.endsWith('.wav') && responseUrl && setWavLength(responseUrl);
       } catch (err) {
         console.error(err);
       }
     },
-    [setWavLength]
+    // [setWavLength]
+    []
   );
 
   // #endregion
