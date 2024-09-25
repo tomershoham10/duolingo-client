@@ -1,4 +1,4 @@
-export enum uploadFilesAction {
+export enum UploadFilesAction {
     SET_MAIN_ID = "setMainId",
     SET_SUB_TYPE_ID = "setSubTypeId",
     SET_MODEL = "setModel",
@@ -11,16 +11,16 @@ export enum uploadFilesAction {
 
 
 type Action =
-    | { type: uploadFilesAction.SET_FILES, payload: File[] }
+    | { type: UploadFilesAction.SET_FILES, payload: File[] }
 
-    | { type: uploadFilesAction.SET_MAIN_ID, payload: string | null }
-    | { type: uploadFilesAction.SET_SUB_TYPE_ID, payload: string | null }
-    | { type: uploadFilesAction.SET_MODEL, payload: TargetType | null }
+    | { type: UploadFilesAction.SET_MAIN_ID, payload: string | null }
+    | { type: UploadFilesAction.SET_SUB_TYPE_ID, payload: string | null }
+    | { type: UploadFilesAction.SET_MODEL, payload: TargetType | null }
 
-    | { type: uploadFilesAction.RESET_FILES_STATE }
-    | { type: uploadFilesAction.REMOVE_FILE, payload: string | null }
+    | { type: UploadFilesAction.RESET_FILES_STATE }
+    | { type: UploadFilesAction.REMOVE_FILE, payload: string | null }
 
-export interface uploadFilesDataType {
+export interface UploadFilesDataType {
     mainId: string | null;
     subtypeId: string | null;
     model: TargetType | null;
@@ -29,24 +29,24 @@ export interface uploadFilesDataType {
 }
 
 export const uploadFilesReducer = (
-    state: uploadFilesDataType,
+    state: UploadFilesDataType,
     action: Action
-): uploadFilesDataType => {
+): UploadFilesDataType => {
     switch (action.type) {
-        case uploadFilesAction.SET_FILES:
+        case UploadFilesAction.SET_FILES:
             return { ...state, files: action.payload };
 
-        case uploadFilesAction.SET_MAIN_ID:
+        case UploadFilesAction.SET_MAIN_ID:
             return { ...state, mainId: action.payload };
-        case uploadFilesAction.SET_SUB_TYPE_ID:
+        case UploadFilesAction.SET_SUB_TYPE_ID:
             return { ...state, subtypeId: action.payload };
-        case uploadFilesAction.SET_MODEL:
+        case UploadFilesAction.SET_MODEL:
             return { ...state, model: action.payload };
 
-        case uploadFilesAction.RESET_FILES_STATE:
+        case UploadFilesAction.RESET_FILES_STATE:
             return { ...state, files: [] };
 
-        case uploadFilesAction.REMOVE_FILE:
+        case UploadFilesAction.REMOVE_FILE:
             return { ...state, files: state.files.filter(file => file.name !== action.payload) };
 
         default:
