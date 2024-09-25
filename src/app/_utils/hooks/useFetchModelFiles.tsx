@@ -5,9 +5,10 @@ import { getModelsFiles } from '@/app/API/files-service/functions';
 export const useFetchModelFiles = (
   mainTypeId: string | null,
   subTypeId: string | null,
-  modelId: string | null
+  modelId: string | null,
+  fileType?: FileTypes
 ) => {
-  const [filesData, setFilesData] = useState<FileType[]>([]);
+  const [filesData, setFilesData] = useState<FileType[] | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -15,7 +16,7 @@ export const useFetchModelFiles = (
         const res = await pRetry(
           () =>
             mainTypeId && subTypeId && modelId
-              ? getModelsFiles(mainTypeId, subTypeId, modelId)
+              ? getModelsFiles(mainTypeId, subTypeId, modelId, fileType)
               : null,
           { retries: 5 }
         );
@@ -57,7 +58,7 @@ export const useFetchModelFiles = (
       console.error('Failed to fetch records:', error);
       setFilesData([]);
     }
-  }, [mainTypeId, modelId, subTypeId]);
+  }, [fileType, mainTypeId, modelId, subTypeId]);
 
   return { filesData, fetchData };
 };
