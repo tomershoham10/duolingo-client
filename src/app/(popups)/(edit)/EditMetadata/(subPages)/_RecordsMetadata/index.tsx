@@ -11,7 +11,10 @@ import {
   SignatureTypes,
   updateMetadata,
 } from '@/app/API/files-service/functions';
-import Button, { ButtonColors, ButtonTypes } from '@/components/(buttons)/Button/page';
+import Button, {
+  ButtonColors,
+  ButtonTypes,
+} from '@/components/(buttons)/Button/page';
 
 library.add(faXmark);
 
@@ -34,7 +37,7 @@ const RecordsMetadataPopup: React.FC<RecordsMetadataPopupProps> = (props) => {
             mainTypeId,
             subTypeId,
             model._id,
-            'images',
+            FileTypes.IMAGES,
             selectedFile.name,
             {}
           );

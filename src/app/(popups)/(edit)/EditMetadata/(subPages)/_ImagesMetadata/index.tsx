@@ -2,7 +2,11 @@ import { useCallback } from 'react';
 import pRetry from 'p-retry';
 import Input, { InputTypes } from '@/components/Input/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
-import { SonarSystem, updateMetadata } from '@/app/API/files-service/functions';
+import {
+  FileTypes,
+  SonarSystem,
+  updateMetadata,
+} from '@/app/API/files-service/functions';
 import Button, {
   ButtonColors,
   ButtonTypes,
@@ -28,7 +32,7 @@ const ImagesMetadataPopup: React.FC<ImagesMetadataPopupProps> = (props) => {
             mainTypeId,
             subTypeId,
             model._id,
-            'images',
+            FileTypes.IMAGES,
             selectedFile.name,
             {
               sonogram_type: SonarSystem.DEMON,
