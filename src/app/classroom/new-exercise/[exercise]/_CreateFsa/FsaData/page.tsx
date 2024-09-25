@@ -1,9 +1,7 @@
 'use client';
-import { useReducer, useEffect, useCallback, lazy, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useReducer, useEffect, useCallback, lazy, Dispatch } from 'react';
 
 import { useStore } from 'zustand';
-import pRetry from 'p-retry';
 
 const DraggbleList = lazy(() => import('@/components/DraggableList/page'));
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
@@ -25,26 +23,27 @@ import {
 } from '@/reducers/timeBuffersReducer';
 
 import {
-  fsaDataAction,
-  fsaDataReducer,
+  FsaDataAction,
+  FsaDataActionsList,
+  fsaDataType,
 } from '@/reducers/adminView/(create)/fsaDataReducer';
 import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import {
-  createExercise,
-  ExercisesTypes,
-} from '@/app/API/classes-service/exercises/functions';
+import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 library.add(faPlus);
 
-const FsaData: React.FC = () => {
-  const router = useRouter();
+interface CreateFsaDataSectionProps {
+  fsaDataState: fsaDataType;
+  fsaDataDispatch: Dispatch<FsaDataAction>;
+}
+
+const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
+  const { fsaDataState, fsaDataDispatch } = props;
 
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useFetchTargets();
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  //   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
   const fileName = useStore(useCreateFsaStore, (state) => state.fileName);
   const recordLength = useStore(
@@ -52,26 +51,21 @@ const FsaData: React.FC = () => {
     (state) => state.recordLength
   );
 
-  const resetCreateFsaStore = useCreateFsaStore.getState().resetStore;
+  const toggleMenuOpen = useContextMenuStore().toggleMenuOpen;
+  const setCoordinates = useContextMenuStore().setCoordinates;
+  const setContent = useContextMenuStore().setContent;
 
-  const contextMenuStore = {
-    toggleMenuOpen: useContextMenuStore.getState().toggleMenuOpen,
-    setCoordinates: useContextMenuStore.getState().setCoordinates,
-    setContent: useContextMenuStore.getState().setContent,
-  };
-
-  const initialFsaDataState = {
-    description: undefined,
-    relevant: [],
-    unfilledFields: [],
-    showPlaceholder: true,
-    targetFromDropdown: null,
-  };
+  //   #region initiating states
 
   const initialRelevantDraggingState = {
     grabbedItemId: 'released',
     itemsList: [],
   };
+
+  const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
+    draggingReducer,
+    initialRelevantDraggingState
+  );
 
   const initialTimeBuffersState = {
     rangeIndex: 1,
@@ -80,20 +74,12 @@ const FsaData: React.FC = () => {
     addedValueLeftPerc: -1,
   };
 
-  const [fsaDataState, fsaDataDispatch] = useReducer(
-    fsaDataReducer,
-    initialFsaDataState
-  );
-
-  const [relevantDraggingState, relevantDraggingDispatch] = useReducer(
-    draggingReducer,
-    initialRelevantDraggingState
-  );
-
   const [timeBuffersState, timeBuffersDispatch] = useReducer(
     timeBuffersReducer,
     initialTimeBuffersState
   );
+
+  //   #endregion
 
   //   const [unfilledFields, setUnfilledFields] = useState<fsaFieldsType[]>([]);
 
@@ -104,41 +90,44 @@ const FsaData: React.FC = () => {
 
   const setRelevant = useCallback(() => {
     fsaDataDispatch({
-      type: fsaDataAction.SET_RELEVANT,
+      type: FsaDataActionsList.SET_RELEVANT,
       payload: relevantDraggingState.itemsList,
     });
-  }, [relevantDraggingState.itemsList]);
+  }, [fsaDataDispatch, relevantDraggingState.itemsList]);
 
   useEffect(() => {
     setRelevant();
   }, [setRelevant]);
 
-  const handleTargetsDropdown = (selectedTargetName: string) => {
-    fsaDataDispatch({
-      type: fsaDataAction.SET_SHOW_PLACE_HOLDER,
-      payload: false,
-    });
+  const handleTargetsDropdown = useCallback(
+    (selectedTargetName: string) => {
+      fsaDataDispatch({
+        type: FsaDataActionsList.SET_SHOW_PLACE_HOLDER,
+        payload: false,
+      });
 
-    if (targetsList) {
-      const selectedTarget = targetsList.find(
-        (target) => target.name === selectedTargetName
-      );
+      if (targetsList) {
+        const selectedTarget = targetsList.find(
+          (target) => target.name === selectedTargetName
+        );
 
-      if (selectedTarget) {
-        fsaDataDispatch({
-          type: fsaDataAction.SET_TARGET_FROM_DROPDOWN,
-          payload: selectedTarget,
-        });
+        if (selectedTarget) {
+          fsaDataDispatch({
+            type: FsaDataActionsList.SET_TARGET_FROM_DROPDOWN,
+            payload: selectedTarget,
+          });
+        }
       }
-    }
-  };
+    },
+    [fsaDataDispatch, targetsList]
+  );
 
-  const addTargetToRelevant = () => {
+  const addTargetToRelevant = useCallback(() => {
     if (fsaDataState.targetFromDropdown) {
       const relevantIds = fsaDataState.relevant.map((target) => target.id);
       if (!relevantIds.includes(fsaDataState.targetFromDropdown._id)) {
         fsaDataDispatch({
-          type: fsaDataAction.ADD_RELEVANT,
+          type: FsaDataActionsList.ADD_RELEVANT,
           payload: {
             id: fsaDataState.targetFromDropdown._id,
             name: fsaDataState.targetFromDropdown.name,
@@ -157,33 +146,42 @@ const FsaData: React.FC = () => {
     } else {
       addAlert('please select a target.', AlertSizes.small);
     }
-  };
+  }, [
+    addAlert,
+    fsaDataDispatch,
+    fsaDataState.relevant,
+    fsaDataState.targetFromDropdown,
+  ]);
 
-  const handleContextMenu = (
-    event: React.MouseEvent<HTMLDivElement>,
-    left: number,
-    right: number
-  ) => {
-    event.preventDefault();
-    contextMenuStore.toggleMenuOpen();
-    contextMenuStore.setCoordinates({ pageX: event.pageX, pageY: event.pageY });
-    contextMenuStore.setContent([
-      {
-        icon: faPlus,
-        onClick: () => {
-          console.log('clicked');
+  const handleContextMenu = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>, left: number, right: number) => {
+      event.preventDefault();
+      toggleMenuOpen();
+      setCoordinates({
+        pageX: event.pageX,
+        pageY: event.pageY,
+      });
+      setContent([
+        {
+          icon: faPlus,
+          onClick: () => {
+            console.log('clicked');
 
-          timeBuffersDispatch({
-            type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC,
-            payload: Math.round(100 * ((event.pageX - left) / (right - left))),
-          });
+            timeBuffersDispatch({
+              type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC,
+              payload: Math.round(
+                100 * ((event.pageX - left) / (right - left))
+              ),
+            });
 
-          contextMenuStore.toggleMenuOpen();
+            toggleMenuOpen();
+          },
         },
-      },
-    ]);
-    console.log(left, right, '%');
-  };
+      ]);
+      console.log(left, right, '%');
+    },
+    [setContent, setCoordinates, toggleMenuOpen]
+  );
 
   const handleTimeBufferRange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -202,128 +200,88 @@ const FsaData: React.FC = () => {
   const deleteTimeBuffer = (index: number) => {
     console.log('new exercise - deleteTimeBuffer - index', index);
     timeBuffersDispatch({
-      type: TimeBuffersAction.SET_RANGE_INDEX,
-      payload: timeBuffersState.rangeIndex - 1,
-    });
-
-    timeBuffersDispatch({
-      type: TimeBuffersAction.DELETE_TIME_VAL,
+      type: TimeBuffersAction.DELETE_TIME_BUFFER,
       payload: index,
     });
-
-    timeBuffersDispatch({
-      type: TimeBuffersAction.SET_SCORES_ARRAY,
-      payload: timeBuffersState.timeBuffersScores.filter(
-        (item) => item !== timeBuffersState.timeBuffersScores[index]
-      ),
-    });
   };
 
-  const handleNewScore = (newScore: number, newTime: number) => {
-    const minutesArrays = timeBuffersState.timeBufferRangeValues;
+  const findPervScoreIndex = useCallback(
+    (newScore: number, newTime: number): number | undefined => {
+      const scoresArrays = timeBuffersState.timeBuffersScores;
+      console.log('scoresArrays', scoresArrays);
 
-    if (minutesArrays.includes(newTime) || minutesArrays[0] > newTime) {
-      return false;
-    }
-    const pervScoreIndex = findPervScoreIndex(newScore, newTime);
-    console.log('pervScoreIndex', pervScoreIndex);
-    pervScoreIndex !== undefined
-      ? addNewScoreBuffer(pervScoreIndex, newScore, newTime)
-      : null;
-  };
-
-  const findPervScoreIndex = (
-    newScore: number,
-    newTime: number
-  ): number | undefined => {
-    const scoresArrays = timeBuffersState.timeBuffersScores;
-    console.log('scoresArrays', scoresArrays);
-
-    if (scoresArrays[scoresArrays.length - 1] > newScore) {
-      console.log('scoresArrays.length-1', scoresArrays.length - 1);
-      return scoresArrays.length - 1;
-    }
-    for (let i = scoresArrays.length - 1; i >= 0; i--) {
-      console.log(i, scoresArrays[i], newScore, scoresArrays[i - 1]);
-      console.log(
-        'newScore > scoresArrays[i]',
-        newScore > scoresArrays[i],
-        'newScore < scoresArrays[i - 1]',
-        newScore < scoresArrays[i - 1]
-      );
-      if (scoresArrays[i] < newScore && newScore < scoresArrays[i - 1]) {
-        return i;
+      if (scoresArrays[scoresArrays.length - 1] > newScore) {
+        console.log('scoresArrays.length-1', scoresArrays.length - 1);
+        return scoresArrays.length - 1;
       }
-    }
-  };
-
-  const addNewScoreBuffer = (
-    pervScoreIndex: number,
-    newScore: number,
-    newTime: number
-  ) => {
-    console.log('pervScoreIndex', pervScoreIndex);
-    timeBuffersDispatch({
-      type: TimeBuffersAction.SET_RANGE_INDEX,
-      payload: timeBuffersState.rangeIndex + 1,
-    });
-
-    timeBuffersDispatch({
-      type: TimeBuffersAction.ADD_SCORE,
-      payload: newScore,
-    });
-
-    timeBuffersDispatch({
-      type: TimeBuffersAction.ADD_VAL_TIME_ARRAY,
-      payload: newTime,
-    });
-  };
-
-  const submit = useCallback(async () => {
-    try {
-      console.log('submit - fileName', fileName);
-      if (fileName) {
-        setIsUploading(true);
-        const timeBuffers = timeBuffersState.timeBuffersScores.map(
-          (score, index) => ({
-            timeBuffer: timeBuffersState.timeBuffersScores[index],
-            grade: score,
-          })
+      for (let i = scoresArrays.length - 1; i >= 0; i--) {
+        console.log(i, scoresArrays[i], newScore, scoresArrays[i - 1]);
+        console.log(
+          'newScore > scoresArrays[i]',
+          newScore > scoresArrays[i],
+          'newScore < scoresArrays[i - 1]',
+          newScore < scoresArrays[i - 1]
         );
-
-        const exerciseObject = {
-          type: ExercisesTypes.FSA,
-          timeBuffers: timeBuffers,
-          description: fsaDataState.description,
-          fileName: fileName,
-          relevant: fsaDataState.relevant,
-        };
-        console.log('submit fsa exerciseObject', exerciseObject);
-
-        const response = await pRetry(() => createExercise(exerciseObject), {
-          retries: 5,
-        });
-        if (response) {
-          addAlert('Exercise added successfully', AlertSizes.small);
-          resetCreateFsaStore();
-          router.push('/classroom');
-        } else {
-          addAlert('Error while createing an exercise', AlertSizes.small);
+        if (scoresArrays[i] < newScore && newScore < scoresArrays[i - 1]) {
+          return i;
         }
-      } else {
-        addAlert('Please select a record', AlertSizes.small);
       }
-      setIsUploading(false);
-    } catch (err) {
-      console.error('submit error:', err);
+    },
+    [timeBuffersState.timeBuffersScores]
+  );
+
+  const addNewScoreBuffer = useCallback(
+    (pervScoreIndex: number, newScore: number, newTime: number) => {
+      console.log('pervScoreIndex', pervScoreIndex);
+      timeBuffersDispatch({
+        type: TimeBuffersAction.ADD_NEW_SCORE_BUFFER,
+        payload: { newScore, newTime },
+      });
+    },
+    []
+  );
+
+  const handleNewScore = useCallback(
+    (newScore: number, newTime: number) => {
+      const minutesArrays = timeBuffersState.timeBufferRangeValues;
+
+      if (minutesArrays.includes(newTime) || minutesArrays[0] > newTime) {
+        return false;
+      }
+      const pervScoreIndex = findPervScoreIndex(newScore, newTime);
+      console.log('pervScoreIndex', pervScoreIndex);
+      pervScoreIndex !== undefined
+        ? addNewScoreBuffer(pervScoreIndex, newScore, newTime)
+        : null;
+    },
+    [
+      addNewScoreBuffer,
+      findPervScoreIndex,
+      timeBuffersState.timeBufferRangeValues,
+    ]
+  );
+
+  useEffect(() => {
+    if (fileName) {
+      const timeBuffers = timeBuffersState.timeBuffersScores.map(
+        (score, index) => ({
+          timeBuffer: timeBuffersState.timeBuffersScores[index],
+          grade: score,
+        })
+      );
+
+      const exerciseObject = {
+        type: ExercisesTypes.FSA,
+        timeBuffers: timeBuffers,
+        description: fsaDataState.description,
+        fileName: fileName,
+        relevantList: fsaDataState.relevant,
+      };
     }
   }, [
-    addAlert,
     fileName,
     fsaDataState.description,
     fsaDataState.relevant,
-    resetCreateFsaStore,
-    router,
     timeBuffersState.timeBuffersScores,
   ]);
 
@@ -339,7 +297,7 @@ const FsaData: React.FC = () => {
             value={fsaDataState.description}
             onChange={(text: string) => {
               fsaDataDispatch({
-                type: fsaDataAction.SET_DESCRIPTION,
+                type: FsaDataActionsList.SET_DESCRIPTION,
                 payload: text,
               });
             }}
@@ -418,15 +376,6 @@ const FsaData: React.FC = () => {
           />
         </div>
       </div>
-      {/* <section className='absolute bottom-6 w-[6rem]'>
-        <Button
-          color={ButtonColors.BLUE}
-          isLoading={isUploading}
-          loadingLabel={'Uploading...'}
-          label='CREATE'
-          onClick={submit}
-        />
-      </section> */}
     </div>
   );
 };
