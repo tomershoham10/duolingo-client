@@ -5,7 +5,9 @@ export enum TimeBuffersAction {
     ADD_VAL_TIME_ARRAY = 'addValTimeArray',
     EDIT_TIME_VALS_ARRAY = 'editTimeValsArray',
     DELETE_TIME_VAL = 'deleteTimeVal',
-    SET_ADDED_VALUE_LEFT_PERC = 'setAddedValueLeftPerc'
+    SET_ADDED_VALUE_LEFT_PERC = 'setAddedValueLeftPerc',
+    ADD_NEW_SCORE_BUFFER = 'addNewScoreBuffer',
+    DELETE_TIME_BUFFER = 'deleteTimeBuffer'
 }
 
 interface NewSliderVal {
@@ -21,6 +23,8 @@ type Action =
     | { type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY, payload: NewSliderVal }
     | { type: TimeBuffersAction.DELETE_TIME_VAL, payload: number }
     | { type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC, payload: number }
+    | { type: TimeBuffersAction.ADD_NEW_SCORE_BUFFER, payload: { newScore: number, newTime: number } }
+    | { type: TimeBuffersAction.DELETE_TIME_BUFFER, payload: number }
 
 export interface TimeBuffersType {
     rangeIndex: number,
@@ -49,6 +53,29 @@ export const timeBuffersReducer = (
 
         case TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC:
             return { ...state, addedValueLeftPerc: action.payload };
+
+        case TimeBuffersAction.ADD_NEW_SCORE_BUFFER:
+            return {
+                ...state,
+                rangeIndex: state.rangeIndex + 1,
+                timeBuffersScores: [...state.timeBuffersScores, action.payload.newScore],
+                timeBufferRangeValues: [...state.timeBufferRangeValues, action.payload.newTime],
+            };
+
+        case TimeBuffersAction.DELETE_TIME_BUFFER:
+            const newScores = state.timeBuffersScores.filter(
+                (_, i) => i !== action.payload
+            );
+            const newRangeValues = state.timeBufferRangeValues.filter(
+                (_, i) => i !== action.payload
+            );
+            return {
+                ...state,
+                rangeIndex: state.rangeIndex - 1,
+                timeBuffersScores: newScores,
+                timeBufferRangeValues: newRangeValues,
+            };
+
 
         default:
             return state;
