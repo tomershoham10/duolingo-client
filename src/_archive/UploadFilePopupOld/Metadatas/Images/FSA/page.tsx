@@ -3,11 +3,11 @@ import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import Input, { InputTypes } from '@/components/Input/page';
 import { FileTypes, SonarSystem } from '@/app/API/files-service/functions';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { isSonogramMetadata } from '@/app/_utils/functions/filesMetadata/functions';
+import { isImageMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 
 interface FSASonogramMetaProps {
   file: File | null;
-  metadata: Partial<SonogramMetadata>;
+  metadata: Partial<ImageMetadata>;
   exerciseType: ExercisesTypes;
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
@@ -24,7 +24,7 @@ const FSASonogramMetadata: React.FC<FSASonogramMetaProps> = (props) => {
   } = props;
   return (
     <>
-      {metadata && isSonogramMetadata(metadata, exerciseType) ? (
+      {metadata && isImageMetadata(metadata, exerciseType) ? (
         <div className='mt-8 grid w-full grid-cols-1 gap-x-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
           <section className='flex flex-row items-center justify-start gap-4 border-b-2 border-duoGrayDark-light'>
             <section className='w-fit'>

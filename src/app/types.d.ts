@@ -232,7 +232,7 @@ enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-type Metadata = RecordMetadata | SonogramMetadata;
+type Metadata = RecordMetadata | ImageMetadata;
 
 interface RecordMetadata {
     record_length: number;

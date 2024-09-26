@@ -9,7 +9,7 @@ import {
   SonarSystem,
 } from '@/app/API/files-service/functions';
 import SwitchButton from '@/components/(buttons)/SwitchButton/page';
-import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
+import { isRecordMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 import { formatNumberToMinutes } from '@/app/_utils/functions/formatNumberToMinutes';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import { useStore } from 'zustand';
@@ -21,7 +21,7 @@ const Sonograms = lazy(() => import('./Sonograms/page'));
 
 interface FSAMetaProps {
   file: File | null;
-  metadata: Partial<FSAMetadata>;
+  metadata: Partial<RecordMetadata>;
   fileType: FileTypes;
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
@@ -52,7 +52,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
 
   return (
     <>
-      {isFSAMetadata(metadata) ? (
+      {isRecordMetadata(metadata) ? (
         <div className='mt-8 grid w-full grid-cols-2 gap-x-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
           <section className='col-span-2 grid grid-cols-2 gap-x-4 border-b-2 border-duoGrayDark-light'>
             <section className='flex flex-row items-center justify-start gap-4'>

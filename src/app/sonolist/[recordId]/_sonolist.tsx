@@ -6,7 +6,7 @@ import {
   getFileMetadataByName,
 } from '@/app/API/files-service/functions';
 import pRetry from 'p-retry';
-import { isFSAMetadata } from '@/app/_utils/functions/filesMetadata/functions';
+import { isRecordMetadata } from '@/app/_utils/functions/filesMetadata/functions';
 
 interface SonolistProps {
   recordName: string;
@@ -32,7 +32,7 @@ const Sonograms: React.FC<SonolistProps> = ({ recordName }) => {
       );
       if (fileMetadata) {
         const metadata = fileMetadata.metadata;
-        if (isFSAMetadata(metadata) && metadata.sonograms_names) {
+        if (isRecordMetadata(metadata) && metadata.sonograms_names) {
           const promises = metadata.sonograms_names.map(async (sonogram) => {
             try {
               //   const blob = await getFileByName(FileTypes.SONOGRAMS, sonogram);

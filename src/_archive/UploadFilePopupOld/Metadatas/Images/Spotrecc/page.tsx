@@ -8,7 +8,7 @@ import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 interface SpotreccImageMetaProps {
   file: File | null;
-  metadata: Partial<FSAMetadata>;
+  metadata: Partial<RecordMetadata>;
   handleFileChange: (files: File | File[] | null) => void;
   handleFileRemoved: (fileIndex: number | undefined) => void;
   updateMetadata: (field: string, val: any) => void;
