@@ -232,45 +232,27 @@ enum SonarSystem {
     LOFAR = 'lofar'
 }
 
-type Metadata = FSAMetadata | SonogramMetadata | SpotreccRecordMetadata | SpotreccImageMetadata;
+type Metadata = RecordMetadata | SonogramMetadata;
 
 interface RecordMetadata {
     record_length: number;
     difficulty_level: number;
-    // exercise_type: ExerciseTypes;
-}
-
-interface ImageMetadata {
-    // exercise_type: ExerciseTypes;
-}
-
-interface FSAMetadata extends RecordMetadata {
     channels_number: number;
     sonograms_names: string[];
     targets_ids_list: string[];
     operation: string | null;
     source_id: string | null;
-    is_in_italy: boolean; //
+    is_in_italy: boolean;
     aux: boolean;
     is_backround_vessels: boolean;
-    signature_type: SignatureTypes; //
+    signature_type: SignatureTypes;
     sonar_system: SonarSystem;
 }
 
-interface SonogramMetadata extends ImageMetadata {
+interface ImageMetadata {
     sonogram_type: SonarSystem;
     fft: number;
     bw: number;
-}
-
-interface SpotreccRecordMetadata extends RecordMetadata {
-    targets_ids?: string[];
-    notable_features: FeaturesList[];
-}
-
-interface SpotreccImageMetadata extends ImageMetadata {
-    targets_ids?: string[];
-    notable_features: FeaturesList[];
 }
 
 interface FileType {
