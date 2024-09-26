@@ -57,10 +57,8 @@ const CreateFsa: React.FC = () => {
       onNext={onNext}
       onSubmit={onSubmit}
       subProps={{
-        Create: {
-          fsaDataState,
-          fsaDataDispatch,
-        },
+        fsaDataState,
+        fsaDataDispatch,
       }}
     />
   );
