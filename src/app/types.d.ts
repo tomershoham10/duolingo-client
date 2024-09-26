@@ -68,18 +68,17 @@ enum ExercisesTypes {
     SPOTRECC = "spotrecc"
 }
 
-enum FeaturesList {
-    NUMBER_OF_BLADES = "numberOfBlades",
-}
-
-interface FeatureObject {
-    type: FeaturesList,
-    value: number | string
-}
-
 enum FileTypes {
     RECORDS = 'records',
     IMAGES = 'images'
+}
+
+interface FileRoute {
+    mainId: string;
+    subTypeId: string;
+    modelId: string;
+    fileType: FileTypes;
+    objectName: string;
 }
 
 interface ExerciseType {
@@ -95,11 +94,6 @@ interface TimeBuffersType {
     grade: number;
 }
 
-enum ExercisesTypes {
-    FSA = 'fsa',
-    SPOTRECC = 'spotrecc',
-}
-
 enum FeaturesList {
     NUMBER_OF_BLADES = 'numberOfBlades',
 }
@@ -113,7 +107,7 @@ interface FsaType extends ExerciseType {
     // targetsList?: string[]; //may be 2 correct answers
     timeBuffers: TimeBuffersType[];
     description?: string;
-    fileName: string;
+    fileRoute: FileRoute;
 
     relevant?: string[];
     // acceptableTargets?: string[];
@@ -122,7 +116,7 @@ interface FsaType extends ExerciseType {
 //~~~~~~~~~~~ SPOTRECC ~~~~~~~~~~~//
 interface SpotreccSubExercise {
     description?: string;
-    fileName: string;
+    fileRoute: FileRoute;
     exerciseTime: number; // in seconds
     bufferTime: number; // in seconds
 }
@@ -257,6 +251,7 @@ interface ImageMetadata {
 
 interface FileType {
     name: string;
+
     id?: string;
     // exerciseType: ExercisesTypes;
     metadata: Partial<Metadata>;
@@ -367,12 +362,6 @@ enum PermissionsTypes {
 // // classroom // //
 // // --> new-exercise <-- // //
 // // // --> _ExerciseData <-- // // //
-
-// enum FSAFieldsType {
-//     DESCRIPTION = 'description',
-//     RELEVANT = 'relevant',
-//     TIMEBUFFERS = 'timeBuffers',
-// }
 
 ////////////////////////////////
 

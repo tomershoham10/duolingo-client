@@ -62,8 +62,8 @@ const FsaPage: React.FC<FsaPageProps> = (props) => {
         () => {
           const currentExercise = fsaState.currentExercise;
           if (currentExercise === null) return null;
-          const fileName = currentExercise.fileName;
-          return getZipPassword(fileName);
+          const fileRoute = currentExercise.fileRoute;
+          return getZipPassword(fileRoute);
         },
         {
           retries: 5,

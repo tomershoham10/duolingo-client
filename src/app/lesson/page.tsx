@@ -179,7 +179,7 @@ const Lesson: React.FC = () => {
             exerciseType={currentExercise?.type || ExercisesTypes.SPOTRECC}
             fileName={
               currentExercise?.type === ExercisesTypes.FSA
-                ? (currentExercise as FsaType).fileName
+                ? (currentExercise as FsaType).fileRoute.objectName
                 : undefined
             }
             isExerciseStarted={isExerciseStarted}

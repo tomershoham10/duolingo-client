@@ -3,7 +3,7 @@ import Image from 'next/image';
 import pRetry from 'p-retry';
 
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
-import { getFileByName } from '@/app/API/files-service/functions';
+import { FileTypes, getFileByName } from '@/app/API/files-service/functions';
 import Countdown from '@/components/(lessonComponents)/Countdown/page';
 import AudioPlayer, { AudioPlayerSizes } from '@/components/AudioPlayer/page';
 
@@ -86,7 +86,7 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
   }, []);
 
   const getFile = useCallback(
-    async (fileName: string) => {
+    async (fileRoute: FileRoute) => {
       try {
         // const responseUrl = await pRetry(
         //   () =>
@@ -121,14 +121,14 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
 
   useEffect(() => {
     setUrl(null);
-  }, [currentSubExercise.fileName]);
+  }, [currentSubExercise.fileRoute]);
 
   useEffect(() => {
-    getFile(currentSubExercise.fileName);
-    if (!currentSubExercise.fileName.endsWith('.wav')) {
+    getFile(currentSubExercise.fileRoute);
+    if (currentSubExercise.fileRoute.fileType !== FileTypes.RECORDS) {
       setExerciseTime(currentSubExercise.exerciseTime);
     }
-  }, [currentSubExercise.fileName, currentSubExercise.exerciseTime, getFile]);
+  }, [currentSubExercise.fileRoute, currentSubExercise.exerciseTime, getFile]);
 
   useEffect(() => {
     let exerciseInterval: NodeJS.Timeout | null = null;
@@ -136,7 +136,9 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
     if (
       isExerciseStarted &&
       !showCountdown &&
-      (currentSubExercise.fileName.endsWith('.wav') ? isAudioPlaying : true)
+      (currentSubExercise.fileRoute.fileType === FileTypes.RECORDS
+        ? isAudioPlaying
+        : true)
     ) {
       exerciseInterval = setInterval(() => {
         setExerciseTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
@@ -150,7 +152,7 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
     isExerciseStarted,
     showCountdown,
     isAudioPlaying,
-    currentSubExercise.fileName,
+    currentSubExercise.fileRoute,
   ]);
 
   useEffect(() => {
@@ -203,7 +205,7 @@ const SpotreccPage: React.FC<SpotreccPageProps> = (props) => {
         url ? (
           showCountdown ? (
             <Countdown onComplete={handleCountdownComplete} />
-          ) : currentSubExercise.fileName.endsWith('.wav') ? (
+          ) : currentSubExercise.fileRoute.fileType === FileTypes.RECORDS ? (
             <AudioPlayer
               src={url}
               size={AudioPlayerSizes.MEDIUM}
