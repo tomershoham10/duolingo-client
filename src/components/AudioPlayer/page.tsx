@@ -1,6 +1,6 @@
 'use client';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
 import playing from '../../../public/svgs/audioPlayer/playing.svg';
 import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
 import { useKeyDown } from '@/app/_utils/hooks/useKeyDown';
@@ -12,12 +12,7 @@ export enum AudioPlayerSizes {
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
-  const src = props.src;
-  const isDisabled = props.isDisabled || false;
-  const isPauseable = props.isPauseable || false;
-  const isAutoPlay = props.isAutoPlay || false;
-  const size = props.size || AudioPlayerSizes.MEDIUM;
-  const onPlay = props.onPlay;
+  const { src, isDisabled, isPauseable, isAutoPlay, size, onPlay } = props;
 
   let width = '';
   let hight = '';
@@ -45,7 +40,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = useCallback(() => {
     if (audioRef.current && !isDisabled) {
       onPlay && onPlay();
       if (!isPauseable) {
@@ -62,7 +57,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
         setIsPlaying(!isPlaying);
       }
     }
-  };
+  }, [isDisabled, isPauseable, isPlaying, onPlay]);
 
   useEffect(() => {
     if (isAutoPlay && !isDisabled && audioRef.current) {
