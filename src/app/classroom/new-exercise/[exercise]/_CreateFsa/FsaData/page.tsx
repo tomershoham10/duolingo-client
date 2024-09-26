@@ -25,27 +25,27 @@ import {
 import {
   FsaDataAction,
   FsaDataActionsList,
-  fsaDataType,
+  FsaDataType,
 } from '@/reducers/adminView/(create)/fsaDataReducer';
 import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 
 library.add(faPlus);
 
 interface CreateFsaDataSectionProps {
-  fsaDataState: fsaDataType;
+  fsaDataState: FsaDataType;
   fsaDataDispatch: Dispatch<FsaDataAction>;
 }
 
 const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
   const { fsaDataState, fsaDataDispatch } = props;
 
-  const addAlert = useAlertStore.getState().addAlert;
-  const targetsList = useFetchTargets();
+  console.log('FsaData props', props);
 
-  const fileName = useStore(useCreateFsaStore, (state) => state.fileName);
+  const addAlert = useAlertStore.getState().addAlert;
+  const targetsList = useFetchTargets()?.filter((target) => target.level === 3);
+
   const recordLength = useStore(
     useCreateFsaStore,
     (state) => state.recordLength
@@ -149,8 +149,8 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
   }, [
     addAlert,
     fsaDataDispatch,
-    fsaDataState.relevant,
-    fsaDataState.targetFromDropdown,
+    fsaDataState?.relevant,
+    fsaDataState?.targetFromDropdown,
   ]);
 
   const handleContextMenu = useCallback(
@@ -260,30 +260,6 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
       timeBuffersState.timeBufferRangeValues,
     ]
   );
-
-  useEffect(() => {
-    if (fileName) {
-      const timeBuffers = timeBuffersState.timeBuffersScores.map(
-        (score, index) => ({
-          timeBuffer: timeBuffersState.timeBuffersScores[index],
-          grade: score,
-        })
-      );
-
-      const exerciseObject = {
-        type: ExercisesTypes.FSA,
-        timeBuffers: timeBuffers,
-        description: fsaDataState.description,
-        fileName: fileName,
-        relevantList: fsaDataState.relevant,
-      };
-    }
-  }, [
-    fileName,
-    fsaDataState.description,
-    fsaDataState.relevant,
-    timeBuffersState.timeBuffersScores,
-  ]);
 
   return (
     <div className='relative mx-auto flex h-full w-full flex-col tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
