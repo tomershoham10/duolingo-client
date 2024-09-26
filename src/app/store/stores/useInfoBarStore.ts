@@ -77,7 +77,14 @@ export const useInfoBarStore = create<useInfoBarState & Action>(
             set(() => ({
                 syllabusFieldType: undefined,
                 syllabusFieldId: undefined,
-                selectedFile: undefined,
+                syllabusFieldIndex: 0,
+                syllabusFieldFatherId: undefined,
+                syllabusIsFieldSuspended: false,
+                syllabusSubIdsListField: [],
+                selectedMainTypeId: null,
+                selectedSubTypeId: null,
+                selectedModel: null,
+                selectedFile: null,
             }));
         }
     }),
