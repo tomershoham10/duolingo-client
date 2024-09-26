@@ -19,36 +19,36 @@ export enum FsaDataActionsList {
 
 export type FsaDataAction =
     | { type: FsaDataActionsList.SET_DESCRIPTION; payload: string }
-    | { type: FsaDataActionsList.SET_RELEVANT, payload: relevantList[] }
-    | { type: FsaDataActionsList.ADD_RELEVANT, payload: relevantList }
-    | { type: FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT; payload: relevantList }
+    | { type: FsaDataActionsList.SET_RELEVANT, payload: RelevantList[] }
+    | { type: FsaDataActionsList.ADD_RELEVANT, payload: RelevantList }
+    | { type: FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT; payload: RelevantList }
     | { type: FsaDataActionsList.SET_UNFILLED_FIELDS, payload: fsaFieldsType[] }
     | { type: FsaDataActionsList.SET_SHOW_PLACE_HOLDER, payload: boolean }
     | { type: FsaDataActionsList.SET_TARGET_FROM_DROPDOWN, payload: TargetType | null }
 
-interface relevantList {
+interface RelevantList {
     id: string,
     name: string,
 }
 
-export interface fsaDataType {
+export interface FsaDataType {
     description: string | undefined,
-    relevant: relevantList[],
+    relevant: RelevantList[],
     unfilledFields: fsaFieldsType[],
     showPlaceholder: boolean,
     targetFromDropdown: TargetType | null
 }
 
 export const fsaDataReducer = (
-    state: fsaDataType,
+    state: FsaDataType,
     action: FsaDataAction
-): fsaDataType => {
+): FsaDataType => {
     switch (action.type) {
         case FsaDataActionsList.SET_DESCRIPTION:
             return { ...state, description: action.payload };
         case FsaDataActionsList.SET_RELEVANT:
             return { ...state, relevant: action.payload };
-        case FsaDataActionsList.ADD_RELEVANT:
+            case FsaDataActionsList.ADD_RELEVANT:
             return { ...state, relevant: [...state.relevant, action.payload] };
         case FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT:
             return { ...state, relevant: state.relevant };
