@@ -22,16 +22,28 @@ export enum ButtonTypes {
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
+  const {
+    label,
+    icon,
+    color,
+    onClick,
+    href,
+    className,
+    isDisabled,
+    buttonType,
+    loadingLabel,
+    isLoading,
+  } = props;
   const router = useRouter();
   const status = useFormStatus();
-  let addedStyle: string = props.style ? props.style : 'w-full';
+  let addedStyle: string = className || 'w-full';
 
   let buttonColor: string = '';
   let buttonBorderColor: string = '';
   let buttonHoverColor: string = '';
   let textColor: string = '';
 
-  switch (props.color) {
+  switch (color) {
     case 'Blue':
       buttonColor =
         'bg-duoBlue-button group-active:translate-y-[4px] group-active:border-0';
@@ -125,29 +137,25 @@ const Button: React.FC<ButtonProps> = (props) => {
     <div className='group relative'>
       <div
         className={`${buttonBorderColor} ${textColor} flex flex-col justify-end ${addedStyle} text-md rounded-2xl border-b-[4px] border-transparent font-extrabold ${
-          props.isDisabled ? 'cursor-default' : 'cursor-pointer'
+          isDisabled ? 'cursor-default' : 'cursor-pointer'
         }`}
       >
         <button
           className={`flex flex-row items-center justify-center text-center ${buttonColor} w-full rounded-2xl px-3 py-2 ${buttonHoverColor} ${
-            status.pending || props.isLoading ? 'h-10' : 'gap-2'
+            status.pending || isLoading ? 'h-10' : 'gap-2'
           }`}
-          disabled={status.pending || props.isLoading ? true : props.isDisabled}
+          disabled={status.pending || isLoading ? true : isDisabled}
           onClick={() => {
-            if (props.onClick) {
-              props.onClick();
-            }
-            if (props.href) {
-              router.push(props.href);
-            }
+            onClick && onClick();
+            href && router.push(href);
           }}
-          type={props.buttonType}
+          type={buttonType}
         >
-          {status.pending || props.isLoading ? (
+          {status.pending || isLoading ? (
             <>
               <svg
                 className={`${
-                  props.loadingLabel ? '-ml-1 mr-3' : ''
+                  loadingLabel ? '-ml-1 mr-3' : ''
                 } h-5 w-5 animate-spin text-white dark:text-duoBlueDark-darkest`}
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -167,21 +175,17 @@ const Button: React.FC<ButtonProps> = (props) => {
                   d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                 ></path>
               </svg>
-              {props.loadingLabel ? (
+              {loadingLabel ? (
                 <p className='tracking-wide dark:text-duoBlueDark-darkest'>
-                  {props.loadingLabel}
+                  {loadingLabel}
                 </p>
               ) : null}
             </>
           ) : (
             <>
-              {props.icon && (
-                <FontAwesomeIcon className='py-1 text-xl' icon={props.icon} />
-              )}
-              {props.label && (
-                <p className='flex items-center justify-center'>
-                  {props.label}
-                </p>
+              {icon && <FontAwesomeIcon className='py-1 text-xl' icon={icon} />}
+              {label && (
+                <p className='flex items-center justify-center'>{label}</p>
               )}
             </>
           )}
