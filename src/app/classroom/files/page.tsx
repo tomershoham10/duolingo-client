@@ -202,7 +202,7 @@ const Files: React.FC = () => {
             </div>
           ) : (
             <p className='mt-2 text-lg text-duoGrayDark-lightestOpacity'>
-              The selected model has no records.
+              The selected model has no files.
             </p>
           )
         ) : (
