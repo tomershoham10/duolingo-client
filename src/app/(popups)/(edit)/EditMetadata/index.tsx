@@ -24,28 +24,24 @@ const EditMetadataPopup: React.FC = () => {
   return (
     <PopupHeader
       popupType={PopupsTypes.EDIT_METADATA}
-      header={`Edit metadata${selectedFile?.name && ` - ${selectedFile}`}`}
+      header={`Edit metadata${selectedFile?.name && ` - ${selectedFile.name}`}`}
       onClose={() => {}}
     >
       {mainTypeId && subTypeId && model && selectedFile ? (
         selectedFile.name?.endsWith('.wav') ? (
-          <div className='mt-12 grid w-full grid-cols-4 grid-rows-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
-            <RecordsMetadataPopup
-              mainTypeId={mainTypeId}
-              subTypeId={subTypeId}
-              model={model}
-              selectedFile={selectedFile}
-            />
-          </div>
+          <RecordsMetadataPopup
+            mainTypeId={mainTypeId}
+            subTypeId={subTypeId}
+            model={model}
+            selectedFile={selectedFile}
+          />
         ) : (
-          <div className='mt-12 grid w-full grid-cols-4 grid-rows-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
-            <ImagesMetadataPopup
-              mainTypeId={mainTypeId}
-              subTypeId={subTypeId}
-              model={model}
-              selectedFile={selectedFile}
-            />
-          </div>
+          <ImagesMetadataPopup
+            mainTypeId={mainTypeId}
+            subTypeId={subTypeId}
+            model={model}
+            selectedFile={selectedFile}
+          />
         )
       ) : (
         <>loading...</>
