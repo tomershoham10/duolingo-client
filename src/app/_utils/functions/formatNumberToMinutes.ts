@@ -1,15 +1,12 @@
-export const formatNumberToMinutes = (time: number) => {
-    let hours: number = 0;
-    let minutes: number = Math.floor(time);
-    let seconds: number = Math.floor(60 * (time - minutes));
-
-    if (minutes > 60) {
-        hours = Math.floor(minutes / 60);
-        minutes = minutes - hours * 60;
+export const formatNumberToMinutes = (timeInSeconds: number): string => {
+    if (isNaN(timeInSeconds) || timeInSeconds < 0) {
+        return '00:00';
     }
-    return hours ?
-        (hours < 10 ? `0${hours}` : hours) + ':' : ''
-        +
-        ((minutes < 10 ? `0${minutes}` : minutes) + ':' +
-            (seconds < 10 ? `0${seconds}` : seconds));
+
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+
+    const formatTwoDigits = (num: number): string => num.toString().padStart(2, '0');
+
+    return `${formatTwoDigits(minutes)}:${formatTwoDigits(seconds)}`;
 }
