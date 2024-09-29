@@ -2,7 +2,8 @@
 import { useState } from 'react';
 
 const SwitchButton: React.FC<SwitchButtonProps> = (props) => {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const { state, onSwitch } = props;
+  //   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   return (
     <label
@@ -13,17 +14,17 @@ const SwitchButton: React.FC<SwitchButtonProps> = (props) => {
       <input
         type='checkbox'
         id='switch-button-input'
-        checked={isChecked}
+        checked={state}
         onChange={() => {
-          setIsChecked(!isChecked);
-          props.onSwitch(isChecked);
+          //   setIsChecked(!isChecked);
+          onSwitch(state);
         }}
         className='h-[20px] w-[20px]'
       />
       <div
         id='switch-button'
         className={`absolute h-[34px] w-[32px] rounded-[10px] border-2 border-b-4 dark:border-duoBlueDark-text dark:bg-duoGrayDark-darkest ${
-          isChecked ? 'switched' : ''
+          state && 'switched'
         }`}
       ></div>
     </label>
