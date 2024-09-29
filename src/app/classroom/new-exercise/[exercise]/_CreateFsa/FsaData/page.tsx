@@ -1,5 +1,12 @@
 'use client';
-import { useReducer, useEffect, useCallback, lazy, Dispatch } from 'react';
+import {
+  useReducer,
+  useEffect,
+  useCallback,
+  lazy,
+  Dispatch,
+  useMemo,
+} from 'react';
 
 import { useStore } from 'zustand';
 
@@ -27,9 +34,10 @@ import {
   FsaDataActionsList,
   FsaDataType,
 } from '@/reducers/adminView/(create)/fsaDataReducer';
-import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
+// import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
+import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 library.add(faPlus);
 
@@ -46,10 +54,16 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useFetchTargets()?.filter((target) => target.level === 3);
 
-  const recordLength = useStore(
-    useCreateFsaStore,
-    (state) => state.recordLength
-  );
+  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
+
+  const recordLength = useMemo(() => {
+    if (selectedFile) {
+      const metadata = selectedFile.metadata as RecordMetadata;
+      return metadata.record_length;
+    } else return 0;
+  }, [selectedFile]);
+
+  console.log('FsaData - recordLength', recordLength);
 
   const toggleMenuOpen = useContextMenuStore().toggleMenuOpen;
   const setCoordinates = useContextMenuStore().setCoordinates;
