@@ -79,7 +79,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
             <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
               {header}
             </div>
-            {children}
+            <section className='mt-12'>{children}</section>
           </div>
         </div>
       ) : null}
