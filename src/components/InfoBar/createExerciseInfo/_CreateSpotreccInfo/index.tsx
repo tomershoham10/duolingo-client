@@ -6,6 +6,7 @@ import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
 import PlusButton from '@/components/PlusButton/page';
+import { FileTypes } from '@/app/API/files-service/functions';
 
 const CreateSpotreccInfo: React.FC = () => {
   const addSubExercise = useCreateSpotreccStore.getState().addSubExercise;
