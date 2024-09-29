@@ -38,9 +38,8 @@ const MetadataSection: React.FC<MetadataSectionProps> = (props) => {
               <li key={metaIndex} className='my-1'>
                 <span className=''>
                   {Object.keys(metadata)[metaIndex] !== 'content-type' &&
-                  Object.keys(metadata)[metaIndex] !== 'sonograms_names'
-                    ? `${Object.keys(metadata)[metaIndex]}: `
-                    : null}
+                    Object.keys(metadata)[metaIndex] !== 'sonograms_names' &&
+                    `${Object.keys(metadata)[metaIndex].replace(/_/g, ' ')}: `}
                 </span>
                 {Object.keys(metadata)[metaIndex] === 'record_length'
                   ? formatNumberToMinutes(Number(meta))
