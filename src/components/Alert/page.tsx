@@ -85,7 +85,7 @@ const Alert: React.FC = () => {
                     : ButtonColors.WHITE
                 }
                 label={'Close'}
-                style={'col-span-1 h-fit self-end flex-none'}
+                className={'col-span-1 h-fit self-end flex-none'}
                 onClick={() => removeAlert(alerts[0].id)}
               />
               {alerts[0].action && alerts[0].actionLabel ? (
@@ -96,7 +96,7 @@ const Alert: React.FC = () => {
                       : ButtonColors.WHITE
                   }
                   label={alerts[0].actionLabel}
-                  style={'col-span-1 h-fit self-start flex-none'}
+                  className={'col-span-1 h-fit self-start flex-none'}
                   onClick={triggerActionButton}
                 />
               ) : null}

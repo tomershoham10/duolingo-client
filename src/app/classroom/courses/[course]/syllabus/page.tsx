@@ -90,7 +90,7 @@ const Syllabus: React.FC = () => {
             onClick={() => {
               AddUnit();
             }}
-            style={
+            className={
               'w-44 flex-none mt-[] mx-auto flex justify-center items-cetnter'
             }
           />

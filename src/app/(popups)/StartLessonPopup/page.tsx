@@ -57,7 +57,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
                       ? ButtonColors.WHITE
                       : ButtonColors.GRAYGREEN
                   }
-                  style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
+                  className={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />
                 <div className='absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[945%] rotate-45 transform rounded-sm bg-duoGreen-default text-transparent'>
@@ -79,7 +79,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
                       ? ButtonColors.WHITE
                       : ButtonColors.GRAYGREEN
                   }
-                  style={'relative inset-x-0 top-16 w-[90%] mx-auto'}
+                  className={'relative inset-x-0 top-16 w-[90%] mx-auto'}
                   onClick={() => router.push('/lesson')}
                 />
                 <div className='absolute left-1/2 top-full h-4 w-4 origin-center -translate-x-1/2 -translate-y-[945%] rotate-45 transform rounded-sm bg-duoGreen-default text-transparent'>

@@ -32,7 +32,7 @@ const LessonFooter: React.FC<LessonFooterProps> = (props) => {
                 <Button
                   label={'Download Record'}
                   color={ButtonColors.PURPLE}
-                  style={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
+                  className={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
                   onClick={onStartExercise}
                 />
               )}
@@ -40,7 +40,7 @@ const LessonFooter: React.FC<LessonFooterProps> = (props) => {
               <Button
                 label={'Start'}
                 color={ButtonColors.PURPLE}
-                style={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
+                className={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
                 onClick={onStartExercise}
               />
             </>
@@ -51,7 +51,7 @@ const LessonFooter: React.FC<LessonFooterProps> = (props) => {
           <Button
             label={'Next'}
             color={ButtonColors.PURPLE}
-            style={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
+            className={'w-[8rem] 3xl:w-[12rem] text-2xl tracking-widest'}
             onClick={onSubmit}
           />
         )
@@ -59,7 +59,7 @@ const LessonFooter: React.FC<LessonFooterProps> = (props) => {
         <Button
           label={'Continue'}
           color={ButtonColors.PURPLE}
-          style={'w-[12rem] 3xl:w-[16rem] text-2xl tracking-widest'}
+          className={'w-[12rem] 3xl:w-[16rem] text-2xl tracking-widest'}
           onClick={onSubmit}
         />
       )}
