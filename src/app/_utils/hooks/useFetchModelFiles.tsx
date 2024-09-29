@@ -43,12 +43,23 @@ export const useFetchModelFiles = (
             ...imagesData.map((img) => ({ ...img, type: 'image' })),
           ];
 
+          console.log(
+            'hasMetadata',
+            comboData.map((file) =>
+              Object.keys(file.metadata).filter(
+                (meta) =>
+                  meta !== 'record_length' && meta !== 'number_of_channels'
+              )
+            )
+          );
+
           setFilesData(
             comboData.map((file) => ({
               ...file,
               hasMetadata:
-                Object.values(file.metadata).filter(
-                  (meta) => meta === 'record_length'
+                Object.keys(file.metadata).filter(
+                  (meta) =>
+                    meta !== 'record_length' && meta !== 'number_of_channels'
                 ).length > 0
                   ? 'yes'
                   : 'no',
