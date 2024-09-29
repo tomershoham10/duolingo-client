@@ -47,7 +47,11 @@ export const useFetchModelFiles = (
             comboData.map((file) => ({
               ...file,
               hasMetadata:
-                Object.values(file.metadata).length > 0 ? 'yes' : 'no',
+                Object.values(file.metadata).filter(
+                  (meta) => meta === 'record_length'
+                ).length > 0
+                  ? 'yes'
+                  : 'no',
             }))
           );
         } else {
