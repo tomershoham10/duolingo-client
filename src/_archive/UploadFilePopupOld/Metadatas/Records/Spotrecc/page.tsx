@@ -79,6 +79,7 @@ const SoptreccRecordMetadata: React.FC<SoptreccRecordMetaProps> = (props) => {
                 updateMetadata('is_in_italy', !isChecked);
                 console.log(!isChecked);
               }}
+              state={false}
             />
           </div>
 

@@ -105,6 +105,7 @@ const FSAMetadata: React.FC<FSAMetaProps> = (props) => {
 
                 console.log(isChecked);
               }}
+              state={false}
             />
           </div>
 
