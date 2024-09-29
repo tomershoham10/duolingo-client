@@ -231,7 +231,7 @@ type Metadata = RecordMetadata | ImageMetadata;
 interface RecordMetadata {
     record_length: number;
     difficulty_level: number;
-    channels_number: number;
+    number_of_channels: number;
     sonograms_names: string[];
     targets_ids_list: string[];
     operation: string | null;
@@ -410,7 +410,7 @@ interface ButtonProps {
     color: ButtonColors;
     onClick?: () => void;
     href?: string;
-    style?: string;
+    className?: string;
     isDisabled?: boolean;
     buttonType?: ButtonTypes;
     loadingLabel?: string;
@@ -559,6 +559,7 @@ interface SortableItemProps {
 
 interface SwitchButtonProps {
     onSwitch: (isChecked: boolean) => void;
+    state: boolean;
 }
 
 // // Table // //
