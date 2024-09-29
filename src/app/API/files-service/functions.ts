@@ -23,6 +23,11 @@ export enum SonarSystem {
     LOFAR = 'lofar'
 }
 
+export enum NumberOfChannels {
+    MONO = 'mono',
+    STEREO = 'stereo'
+}
+
 export enum FeaturesList {
     NUMBER_OF_BLADES = "numberOfBlades",
 }
