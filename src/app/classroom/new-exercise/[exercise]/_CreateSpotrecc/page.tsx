@@ -123,14 +123,14 @@ const CreateSpotrecc: React.FC = () => {
     );
 
   return (
-    <div className='flex h-full w-full flex-col overflow-hidden'>
+    <section className='flex pt-6 h-full w-full flex-col overflow-hidden'>
       <TargetsDropdowns
         onMainSelected={handleMainTypeSelected}
         onSubTypeSelected={handleSubTypeSelected}
         onModelSelected={handleModelSelected}
       />
 
-      <section className='mt-12 flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
+      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
         {subExercises.map((exercise, index) => (
           <div
             key={index}
@@ -210,7 +210,7 @@ const CreateSpotrecc: React.FC = () => {
            />
          </>
        )} */}
-    </div>
+    </section>
   );
 };
 
