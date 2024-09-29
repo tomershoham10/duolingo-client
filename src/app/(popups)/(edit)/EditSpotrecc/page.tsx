@@ -54,7 +54,7 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
       onClose={() => {}}
     >
       <form
-        className='mt-12 grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
+        className='grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
         action={() =>
           onSave({
             fileName: subExercise.fileName,

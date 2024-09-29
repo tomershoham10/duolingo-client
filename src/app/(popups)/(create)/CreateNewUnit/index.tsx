@@ -34,7 +34,7 @@ const CreateNewUnit: React.FC = () => {
   return (
     <PopupHeader popupType={PopupsTypes.NEWUNIT} header='Create new user'>
       {/* <div className='ml-[5.5rem] mr-24 grid flex-none grid-cols-4 grid-rows-6 flex-col items-center justify-center'> */}
-      <div className='mt-12 grid w-full grid-cols-4 grid-rows-5 gap-y-4 px-4 py-4 3xl:gap-y-12'>
+      <div className='grid w-full grid-cols-4 grid-rows-5 gap-y-4 px-4 py-4 3xl:gap-y-12'>
         {/* <p
           className=' col-span-4 flex flex-none items-center justify-center text-2xl 
                         font-extrabold text-duoGray-darkest'

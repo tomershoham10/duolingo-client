@@ -106,7 +106,7 @@ const CreateNewCourse: React.FC = () => {
       size={PopupSizes.SMALL}
     >
       <form
-        className='mt-12 grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
+        className='grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
         onSubmit={handleFormSubmit}
       >
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
