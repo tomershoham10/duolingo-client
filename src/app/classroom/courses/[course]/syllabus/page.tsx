@@ -2,14 +2,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
+import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
-// import { usePopupStore } from '@/app/store/stores/usePopupStore';
-import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import AdminUnit from '@/components/UnitSection/AdminUnit/page';
-import LodingAdminSection from '@/components/UnitSection/AdminUnit/LodingAdminSection/page';
 import { createByCourse } from '@/app/API/classes-service/units/functions';
 import { getCourseById } from '@/app/API/classes-service/courses/functions';
+import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
+import LodingAdminSection from '@/components/UnitSection/AdminUnit/(components)/LodingAdminSection/page';
 
 const Syllabus: React.FC = () => {
   const selectedCourse = useStore(
@@ -19,7 +18,7 @@ const Syllabus: React.FC = () => {
 
   const addAlert = useAlertStore.getState().addAlert;
 
-  const [unitsIds, setUnitsIds] = useState<string[]>([]);
+  const [unitsIds, setUnitsIds] = useState<string[] | null>(null);
   const getUnits = useCallback(async () => {
     try {
       const response = await pRetry(
@@ -44,10 +43,10 @@ const Syllabus: React.FC = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
-    if (selectedCourse && selectedCourse._id) {
+    if (selectedCourse && selectedCourse._id && unitsIds === null) {
       getUnits();
     }
-  }, [getUnits, selectedCourse]);
+  }, [getUnits, selectedCourse, unitsIds]);
 
   const AddUnit = useCallback(async () => {
     try {
@@ -91,7 +90,7 @@ const Syllabus: React.FC = () => {
               AddUnit();
             }}
             className={
-              'w-44 flex-none mt-[] mx-auto flex justify-center items-cetnter'
+              'items-cetnter mx-auto mt-[] flex w-44 flex-none justify-center'
             }
           />
         </div>
