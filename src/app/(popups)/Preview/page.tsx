@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import pRetry from 'p-retry';
@@ -45,7 +46,7 @@ const Preview: React.FC<PreviewProps> = (props) => {
       header='preview'
       size={PopupSizes.LARGE}
     >
-      <div className='mx-4 mt-8 flex h-full flex-none flex-col items-center justify-center'>
+      <div className='mx-4 mt-8 flex h-full w-full flex-col items-center justify-center'>
         {url ? (
           fileType === FileTypes.RECORDS ? (
             <AudioPlayer
@@ -54,7 +55,15 @@ const Preview: React.FC<PreviewProps> = (props) => {
               isPauseable={true}
             />
           ) : (
-            <p>image</p>
+            <div className='relative h-full w-full'>
+              <Image
+                src={url}
+                alt='Sonogram'
+                layout='fill'
+                objectFit='contain'
+                unoptimized={true}
+              />
+            </div>
           )
         ) : (
           <p>loading...</p>
