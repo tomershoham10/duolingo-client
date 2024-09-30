@@ -40,12 +40,16 @@ const AdminUnitLevelsSection: React.FC<AdminUnitLevelsSectionProps> = (
   } = props;
   return (
     <div className='flex flex-col'>
-      {levelsData.length > 0 &&
+      {courseDataState.units &&
+        levelsData.length > 0 &&
         levelsData.map((level, levelIndex) => (
           <div
             key={level._id}
-            className={`px-6 flex h-fit flex-col border-2 border-t-0 border-duoGray-light dark:border-duoGrayDark-dark ${
-              levelIndex === courseDataState.levels.length && 'rounded-b-lg'
+            className={`flex h-fit flex-col border-2 border-t-0 border-duoGray-light px-6 dark:border-duoGrayDark-dark ${
+              levelIndex ===
+                courseDataState.units!.find((unit) => unit._id === unitId)!
+                  .levelsIds.length -
+                  1 && 'rounded-b-lg'
             }`}
           >
             {courseDataState.lessons &&
