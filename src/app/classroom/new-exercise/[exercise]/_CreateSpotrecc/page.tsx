@@ -45,18 +45,19 @@ const CreateSpotrecc: React.FC = () => {
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
-  const selectedMainTypeId = useStore(
-    useInfoBarStore,
-    (state) => state.selectedMainTypeId
-  );
+//   const selectedMainTypeId = useStore(
+//     useInfoBarStore,
+//     (state) => state.selectedMainTypeId
+//   );
   const selectedSubTypeId = useStore(
     useInfoBarStore,
     (state) => state.selectedSubTypeId
   );
-  const selectedModel = useStore(
-    useInfoBarStore,
-    (state) => state.selectedModel
-  );
+  
+//   const selectedModel = useStore(
+//     useInfoBarStore,
+//     (state) => state.selectedModel
+//   );
 
   const subExercises = useStore(
     useCreateSpotreccStore,
@@ -67,9 +68,9 @@ const CreateSpotrecc: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const removeFile = useCallback(
-    (fileName: string) => {
+    (fileRoute: FileRoute) => {
       setOpenedFileIndex(null);
-      removeSubExercise(fileName);
+      removeSubExercise(fileRoute);
     },
     [removeSubExercise]
   );
@@ -123,14 +124,14 @@ const CreateSpotrecc: React.FC = () => {
     );
 
   return (
-    <section className='flex pt-6 h-full w-full flex-col overflow-hidden'>
+    <section className='flex h-full w-full flex-col overflow-hidden pt-6'>
       <TargetsDropdowns
         onMainSelected={handleMainTypeSelected}
         onSubTypeSelected={handleSubTypeSelected}
         onModelSelected={handleModelSelected}
       />
 
-      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3'>
+      <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3 pt-6'>
         {subExercises.map((exercise, index) => (
           <div
             key={index}
@@ -141,7 +142,7 @@ const CreateSpotrecc: React.FC = () => {
                 : 'cursor-pointer'
             }`}
           >
-            <p className={`font-extrabold`}>{exercise.fileName}</p>
+            <p className={`font-extrabold`}>{exercise.fileRoute.objectName}</p>
             {openedFileIndex !== null && openedFileIndex === index && (
               <section>
                 <button
@@ -152,7 +153,7 @@ const CreateSpotrecc: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => removeFile(exercise.fileName)}
+                  onClick={() => removeFile(exercise.fileRoute)}
                   className='absolute right-10 top-2'
                 >
                   <FaTrashAlt />
@@ -198,7 +199,7 @@ const CreateSpotrecc: React.FC = () => {
           label='CREATE'
           color={ButtonColors.BLUE}
           onClick={submit}
-          isLoading={false}
+          isLoading={isUploading}
         />
       </section>
       {/* {openedFileIndex !== null && openedFileIndex < subExercises.length && (
