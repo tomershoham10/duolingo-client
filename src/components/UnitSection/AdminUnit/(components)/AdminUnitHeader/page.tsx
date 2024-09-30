@@ -34,7 +34,7 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
     updateInfobarData,
   } = props;
   return (
-    <div className='flex-col'>
+    <div className='flex-col w-full'>
       <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white dark:bg-duoGrayDark-dark sm:h-fit'>
         <button
           className='col-span-1 flex-none cursor-pointer items-center justify-start text-xl font-extrabold'
