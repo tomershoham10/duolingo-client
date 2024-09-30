@@ -27,6 +27,11 @@ const EditMetadataPopup: React.FC = () => {
       header={`Edit metadata${selectedFile?.name && ` - ${selectedFile.name}`}`}
       onClose={() => {}}
     >
+      {/* size={
+          selectedFile && selectedFile.name?.endsWith('.wav')
+            ? PopupSizes.MEDIUM
+            : PopupSizes.SMALL
+        } */}
       {mainTypeId && subTypeId && model && selectedFile ? (
         selectedFile.name?.endsWith('.wav') ? (
           <RecordsMetadataPopup
