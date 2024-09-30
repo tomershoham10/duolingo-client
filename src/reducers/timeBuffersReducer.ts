@@ -1,4 +1,4 @@
-export enum TimeBuffersAction {
+export enum TimeBuffersActionsList {
     SET_RANGE_INDEX = 'setRangeIndex',
     ADD_SCORE = 'addScore',
     SET_SCORES_ARRAY = 'setScoresArray',
@@ -15,18 +15,18 @@ interface NewSliderVal {
     newVal: number
 }
 
-type Action =
-    | { type: TimeBuffersAction.SET_RANGE_INDEX, payload: number }
-    | { type: TimeBuffersAction.ADD_SCORE, payload: number }
-    | { type: TimeBuffersAction.SET_SCORES_ARRAY, payload: number[] }
-    | { type: TimeBuffersAction.ADD_VAL_TIME_ARRAY, payload: number }
-    | { type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY, payload: NewSliderVal }
-    | { type: TimeBuffersAction.DELETE_TIME_VAL, payload: number }
-    | { type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC, payload: number }
-    | { type: TimeBuffersAction.ADD_NEW_SCORE_BUFFER, payload: { newScore: number, newTime: number } }
-    | { type: TimeBuffersAction.DELETE_TIME_BUFFER, payload: number }
+export type TimeBuffersAction =
+    | { type: TimeBuffersActionsList.SET_RANGE_INDEX, payload: number }
+    | { type: TimeBuffersActionsList.ADD_SCORE, payload: number }
+    | { type: TimeBuffersActionsList.SET_SCORES_ARRAY, payload: number[] }
+    | { type: TimeBuffersActionsList.ADD_VAL_TIME_ARRAY, payload: number }
+    | { type: TimeBuffersActionsList.EDIT_TIME_VALS_ARRAY, payload: NewSliderVal }
+    | { type: TimeBuffersActionsList.DELETE_TIME_VAL, payload: number }
+    | { type: TimeBuffersActionsList.SET_ADDED_VALUE_LEFT_PERC, payload: number }
+    | { type: TimeBuffersActionsList.ADD_NEW_SCORE_BUFFER, payload: { newScore: number, newTime: number } }
+    | { type: TimeBuffersActionsList.DELETE_TIME_BUFFER, payload: number }
 
-export interface TimeBuffersType {
+export interface TimeBuffersReducerType {
     rangeIndex: number,
     timeBuffersScores: number[],
     timeBufferRangeValues: number[],
@@ -34,27 +34,27 @@ export interface TimeBuffersType {
 }
 
 export const timeBuffersReducer = (
-    state: TimeBuffersType,
-    action: Action
-): TimeBuffersType => {
+    state: TimeBuffersReducerType,
+    action: TimeBuffersAction
+): TimeBuffersReducerType => {
     switch (action.type) {
-        case TimeBuffersAction.SET_RANGE_INDEX:
+        case TimeBuffersActionsList.SET_RANGE_INDEX:
             return { ...state, rangeIndex: action.payload };
-        case TimeBuffersAction.SET_SCORES_ARRAY:
+        case TimeBuffersActionsList.SET_SCORES_ARRAY:
             return { ...state, timeBuffersScores: action.payload };
-        case TimeBuffersAction.ADD_SCORE:
+        case TimeBuffersActionsList.ADD_SCORE:
             return { ...state, timeBuffersScores: [...state.timeBuffersScores, action.payload] };
-        case TimeBuffersAction.ADD_VAL_TIME_ARRAY:
+        case TimeBuffersActionsList.ADD_VAL_TIME_ARRAY:
             return { ...state, timeBufferRangeValues: [...state.timeBufferRangeValues, action.payload] };
-        case TimeBuffersAction.EDIT_TIME_VALS_ARRAY:
+        case TimeBuffersActionsList.EDIT_TIME_VALS_ARRAY:
             return { ...state, timeBufferRangeValues: editSliders(state, action.payload) };
-        case TimeBuffersAction.DELETE_TIME_VAL:
+        case TimeBuffersActionsList.DELETE_TIME_VAL:
             return { ...state, timeBufferRangeValues: deleteTimeRangeVal(state, action.payload) };
 
-        case TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC:
+        case TimeBuffersActionsList.SET_ADDED_VALUE_LEFT_PERC:
             return { ...state, addedValueLeftPerc: action.payload };
 
-        case TimeBuffersAction.ADD_NEW_SCORE_BUFFER:
+        case TimeBuffersActionsList.ADD_NEW_SCORE_BUFFER:
             return {
                 ...state,
                 rangeIndex: state.rangeIndex + 1,
@@ -62,7 +62,7 @@ export const timeBuffersReducer = (
                 timeBufferRangeValues: [...state.timeBufferRangeValues, action.payload.newTime],
             };
 
-        case TimeBuffersAction.DELETE_TIME_BUFFER:
+        case TimeBuffersActionsList.DELETE_TIME_BUFFER:
             const newScores = state.timeBuffersScores.filter(
                 (_, i) => i !== action.payload
             );
@@ -82,7 +82,7 @@ export const timeBuffersReducer = (
     }
 };
 
-const editSliders = (state: TimeBuffersType, payload: NewSliderVal) => {
+const editSliders = (state: TimeBuffersReducerType, payload: NewSliderVal) => {
     return state.timeBufferRangeValues.map((value, i) =>
         i === payload.index
             ? payload.newVal > state.timeBufferRangeValues[i + 1]
@@ -94,7 +94,7 @@ const editSliders = (state: TimeBuffersType, payload: NewSliderVal) => {
     );
 }
 
-const deleteTimeRangeVal = (state: TimeBuffersType, index: number) => {
+const deleteTimeRangeVal = (state: TimeBuffersReducerType, index: number) => {
     return state.timeBufferRangeValues.filter(
         (item) => item !== state.timeBufferRangeValues[index]
     )
