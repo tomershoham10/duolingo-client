@@ -1,6 +1,6 @@
 const LodingAdminSection: React.FC = () => {
   return (
-    <div className='mt-8 h-full w-full'>
+    <div className='mt-6 h-full w-full px-24'>
       <div className='w-full items-center rounded-t-lg bg-duoGreen-default py-5 dark:bg-duoGrayDark-dark sm:h-fit'>
         <div className='ml-4 flex h-full animate-pulse flex-col gap-5'>
           <div className='h-3 w-20 rounded-2xl bg-duoGrayDark-lighter'></div>
@@ -54,7 +54,7 @@ const LodingAdminSection: React.FC = () => {
               </div>
 
               <div className='flex w-full flex-row items-center justify-between pt-2'>
-                <div className='h-3 w-32 animate-pulse rounded-2xl bg-duoGrayDark-lighter mt-2'></div>
+                <div className='mt-2 h-3 w-32 animate-pulse rounded-2xl bg-duoGrayDark-lighter'></div>
               </div>
             </div>
           </div>
