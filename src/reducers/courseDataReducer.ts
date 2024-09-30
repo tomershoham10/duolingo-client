@@ -36,7 +36,7 @@ export type CourseDataAction =
 
 export interface CourseDataType {
     courseId: string | null,
-    units: UnitType[];
+    units: UnitType[] | null;
     suspendedUnitsIds: string[];
     levels: DataWithFatherId<LevelType>[];
     // unsuspendedLevels: DataWithFatherId<LevelType>[];
