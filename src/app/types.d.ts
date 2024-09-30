@@ -58,11 +58,6 @@ interface ResultType {
 
 // ------ exercises ------- //
 
-interface TimeBuffersType {
-    timeBuffer: number;
-    grade: number;
-}
-
 enum ExercisesTypes {
     FSA = "fsa",
     SPOTRECC = "spotrecc"
