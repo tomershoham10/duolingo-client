@@ -20,7 +20,6 @@ import {
   unsuspendLesson,
 } from '@/app/API/classes-service/levels/functions';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import PlusButton from '@/components/PlusButton/page';
 import pRetry from 'p-retry';
 import { useCallback } from 'react';
