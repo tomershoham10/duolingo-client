@@ -1,23 +1,32 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { Dispatch, useCallback, useEffect, useReducer, useState } from 'react';
 import {
   fieldToEditType,
   useInfoBarStore,
 } from '@/app/store/stores/useInfoBarStore';
-import { courseDataReducer } from '@/reducers/courseDataReducer';
+import {
+  CourseDataAction,
+  courseDataReducer,
+  CourseDataType,
+} from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
 import LodingAdminSection from './(components)/LodingAdminSection/page';
 import AdminUnitHeader from './(components)/AdminUnitHeader/page';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 import AdminUnitLevelsSection from './(components)/AdminUnitLevelsSection';
+import PlusButton from '@/components/PlusButton/page';
+import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
 interface AdminUnitProps {
-  courseId: string;
+  courseDataState: CourseDataType;
+  courseDataDispatch: Dispatch<CourseDataAction>;
 }
 
 const AdminUnit: React.FC<AdminUnitProps> = (props) => {
-  const propsCourseId = props.courseId;
+  const { courseDataState } = props;
 
   const targetsList = useFetchTargets();
+
+  const addAlert = useAlertStore.getState().addAlert;
 
   const fieldId = useInfoBarStore.getState().syllabusFieldId;
 
@@ -34,26 +43,6 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   useEffect(() => {
     console.log('infoBarStore.fieldId', fieldId);
   }, [fieldId]);
-
-  const initialCourseDataState = {
-    courseId: propsCourseId,
-    units: [],
-    suspendedUnitsIds: [],
-    levels: [{ fatherId: null, data: [] }],
-    // unsuspendedLevels: [{ fatherId: null, data: [] }],
-    lessons: [{ fatherId: null, data: [] }],
-    // unsuspendedLessons: [{ fatherId: null, data: [] }],
-    exercises: [{ fatherId: null, data: [] }],
-    // unsuspendedExercises: [{ fatherId: null, data: [] }],
-    results: [],
-  };
-
-  const [courseDataState, courseDataDispatch] = useReducer(
-    courseDataReducer,
-    initialCourseDataState
-  );
-
-  useCourseData(undefined, courseDataState, courseDataDispatch);
 
   const [exerciseAccordion, setExerciseAccordion] = useState<string[]>([]);
 
@@ -99,56 +88,56 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
   );
 
   return (
-    <div className='flex w-full'>
-      <div className='mx-24 h-full w-full text-black'>
-        {courseDataState.units && courseDataState.units.length > 0 ? (
-          courseDataState.units.map((unit, unitIndex) => (
-            <div
-              key={unit._id}
-              className={`flex-none py-[2rem] ${
-                courseDataState.suspendedUnitsIds.includes(unit._id) &&
-                'opacity-60'
-              } `}
-            >
-              <AdminUnitHeader
-                unit={unit}
-                unitIndex={unitIndex}
-                courseId={propsCourseId}
-                isSuspended={courseDataState.suspendedUnitsIds.includes(
-                  unit._id
-                )}
-                updateInfobarData={updateInfobarData}
+    <>
+      {courseDataState.courseId &&
+        courseDataState.units &&
+        courseDataState.units.length > 0 && (
+          <div className='flex h-full w-full flex-col px-24 gap-6'>
+            {courseDataState.units.map((unit, unitIndex) => (
+              <div
+                key={unit._id}
+                className={`flex w-full flex-col items-center justify-start gap-2 ${
+                  courseDataState.suspendedUnitsIds.includes(unit._id) &&
+                  'opacity-60'
+                } `}
               >
-                <div className='flex flex-col'>
-                  {courseDataState.levels &&
-                    courseDataState.levels.length > 0 &&
-                    courseDataState.levels.map(
-                      (levelsObject, levelsObjectIndex) => (
-                        <div key={levelsObjectIndex} className='flex-none'>
-                          {levelsObject.fatherId === unit._id && (
-                            <AdminUnitLevelsSection
-                              unitId={unit._id}
-                              levelsData={levelsObject.data}
-                              courseDataState={courseDataState}
-                              suspendedLevelsIds={unit.suspendedLevelsIds}
-                              exerciseAccordion={exerciseAccordion}
-                              targetsList={targetsList}
-                              updateInfobarData={updateInfobarData}
-                              toggleAccordion={toggleAccordion}
-                            />
-                          )}
-                        </div>
-                      )
-                    )}
-                </div>
-              </AdminUnitHeader>
-            </div>
-          ))
-        ) : (
-          <LodingAdminSection />
+                <AdminUnitHeader
+                  unit={unit}
+                  unitIndex={unitIndex}
+                  courseId={courseDataState.courseId!}
+                  isSuspended={courseDataState.suspendedUnitsIds.includes(
+                    unit._id
+                  )}
+                  updateInfobarData={updateInfobarData}
+                >
+                  <div className='flex flex-col'>
+                    {courseDataState.levels &&
+                      courseDataState.levels.length > 0 &&
+                      courseDataState.levels.map(
+                        (levelsObject, levelsObjectIndex) => (
+                          <div key={levelsObjectIndex} className='flex-none'>
+                            {levelsObject.fatherId === unit._id && (
+                              <AdminUnitLevelsSection
+                                unitId={unit._id}
+                                levelsData={levelsObject.data}
+                                courseDataState={courseDataState}
+                                suspendedLevelsIds={unit.suspendedLevelsIds}
+                                exerciseAccordion={exerciseAccordion}
+                                targetsList={targetsList}
+                                updateInfobarData={updateInfobarData}
+                                toggleAccordion={toggleAccordion}
+                              />
+                            )}
+                          </div>
+                        )
+                      )}
+                  </div>
+                </AdminUnitHeader>
+              </div>
+            ))}
+          </div>
         )}
-      </div>
-    </div>
+    </>
   );
 };
 

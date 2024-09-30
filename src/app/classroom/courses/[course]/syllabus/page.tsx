@@ -1,14 +1,19 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useReducer } from 'react';
 import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { createByCourse } from '@/app/API/classes-service/units/functions';
-import { getCourseById } from '@/app/API/classes-service/courses/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import LodingAdminSection from '@/components/UnitSection/AdminUnit/(components)/LodingAdminSection/page';
+import {
+  CourseDataActionsList,
+  courseDataReducer,
+} from '@/reducers/courseDataReducer';
+import useCourseData from '@/app/_utils/hooks/useCourseData';
+import PlusButton from '@/components/PlusButton/page';
 
 const Syllabus: React.FC = () => {
   const selectedCourse = useStore(
@@ -18,84 +23,88 @@ const Syllabus: React.FC = () => {
 
   const addAlert = useAlertStore.getState().addAlert;
 
-  const [unitsIds, setUnitsIds] = useState<string[] | null>(null);
-  const getUnits = useCallback(async () => {
+  const initialCourseDataState = {
+    courseId: null,
+    units: null,
+    suspendedUnitsIds: [],
+    levels: [{ fatherId: null, data: [] }],
+    // unsuspendedLevels: [{ fatherId: null, data: [] }],
+    lessons: [{ fatherId: null, data: [] }],
+    // unsuspendedLessons: [{ fatherId: null, data: [] }],
+    exercises: [{ fatherId: null, data: [] }],
+    // unsuspendedExercises: [{ fatherId: null, data: [] }],
+    results: [],
+  };
+
+  const [courseDataState, courseDataDispatch] = useReducer(
+    courseDataReducer,
+    initialCourseDataState
+  );
+
+  useEffect(() => {
+    if (selectedCourse && selectedCourse._id) {
+      courseDataDispatch({
+        type: CourseDataActionsList.SET_COURSE_ID,
+        payload: selectedCourse._id,
+      });
+    }
+  }, [selectedCourse]);
+
+  const { fetchCourseData } = useCourseData(
+    undefined,
+    courseDataState,
+    courseDataDispatch
+  );
+
+  const addUnit = useCallback(async () => {
     try {
-      const response = await pRetry(
-        () =>
-          selectedCourse && selectedCourse._id
-            ? getCourseById(selectedCourse._id)
-            : null,
+      const status = await pRetry(
+        () => createByCourse(courseDataState.courseId!),
         {
           retries: 5,
         }
       );
-      if (!!!response) {
-        console.error('Failed to fetch course by id.');
-        return [];
+
+      if (status) {
+        await fetchCourseData();
+        addAlert('Unit added successfully', AlertSizes.small);
+      } else {
+        addAlert('Failed to add unit', AlertSizes.small);
       }
-      const unitsIdsList = response.unitsIds;
-      setUnitsIds(unitsIdsList);
     } catch (error) {
-      console.error('Error fetching courses:', error);
-      return [];
+      console.error('Error adding unit:', error);
+      addAlert('Error adding unit', AlertSizes.small);
     }
-  }, [selectedCourse]);
-
-  useEffect(() => {
-    if (selectedCourse && selectedCourse._id && unitsIds === null) {
-      getUnits();
-    }
-  }, [getUnits, selectedCourse, unitsIds]);
-
-  const AddUnit = useCallback(async () => {
-    try {
-      if (!selectedCourse || !selectedCourse._id) {
-        addAlert('Error starting the course', AlertSizes.small);
-        return;
-      }
-      const response = await pRetry(() => createByCourse(selectedCourse._id), {
-        retries: 5,
-      });
-      if (response === 200) {
-        getUnits();
-      }
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  }, [addAlert, getUnits, selectedCourse]);
+  }, [addAlert, courseDataState.courseId, fetchCourseData]);
 
   return (
-    <div className='mx-1 h-full w-full overflow-y-auto'>
-      {unitsIds ? (
-        unitsIds.length > 0 && !!selectedCourse && !!selectedCourse._id ? (
-          <AdminUnit courseId={selectedCourse._id} />
+    <section className='h-full w-full overflow-y-auto'>
+      {courseDataState.units ? (
+        courseDataState.units.length > 0 ? (
+          <section className='felx flex-col pt-6'>
+            <AdminUnit
+              courseDataState={courseDataState}
+              courseDataDispatch={courseDataDispatch}
+            />
+            <PlusButton onClick={addUnit} label='add unit' />
+          </section>
         ) : (
-          <div className='flex w-full'>
-            <div className='mx-24 h-full w-full'>
-              <LodingAdminSection />
-            </div>
+          <div className='flex h-full w-full flex-col justify-start'>
+            <span className='flex-none text-2xl font-extrabold text-duoGray-darkest'>
+              0 units
+            </span>
+            <Button
+              label={'START COURSE'}
+              color={ButtonColors.BLUE}
+              onClick={addUnit}
+              className='items-cetnter mx-auto mt-[] flex w-44 flex-none justify-center'
+            />
           </div>
         )
       ) : (
-        <div className='flex h-full w-full flex-col justify-start'>
-          <span className='flex-none text-2xl font-extrabold text-duoGray-darkest'>
-            0 units
-          </span>
-          <Button
-            label={'START COURSE'}
-            color={ButtonColors.BLUE}
-            onClick={() => {
-              AddUnit();
-            }}
-            className={
-              'items-cetnter mx-auto mt-[] flex w-44 flex-none justify-center'
-            }
-          />
-        </div>
+        <LodingAdminSection />
       )}
-    </div>
+    </section>
   );
 };
 
