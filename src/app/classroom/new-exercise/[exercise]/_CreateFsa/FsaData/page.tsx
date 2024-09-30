@@ -1,14 +1,5 @@
 'use client';
-import {
-  useReducer,
-  useEffect,
-  useCallback,
-  lazy,
-  Dispatch,
-  useMemo,
-} from 'react';
-
-import { useStore } from 'zustand';
+import { useReducer, useEffect, useCallback, lazy, Dispatch } from 'react';
 
 const DraggbleList = lazy(() => import('@/components/DraggableList/page'));
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
@@ -26,7 +17,8 @@ import PlusButton from '@/components/PlusButton/page';
 
 import {
   TimeBuffersAction,
-  timeBuffersReducer,
+  TimeBuffersActionsList,
+  TimeBuffersReducerType,
 } from '@/reducers/timeBuffersReducer';
 
 import {
@@ -37,33 +29,30 @@ import {
 // import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
-import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 
 library.add(faPlus);
 
 interface CreateFsaDataSectionProps {
+  recordLength: number;
   fsaDataState: FsaDataType;
   fsaDataDispatch: Dispatch<FsaDataAction>;
+  timeBuffersState: TimeBuffersReducerType;
+  timeBuffersDispatch: Dispatch<TimeBuffersAction>;
 }
 
 const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
-  const { fsaDataState, fsaDataDispatch } = props;
+  const {
+    recordLength,
+    fsaDataState,
+    fsaDataDispatch,
+    timeBuffersState,
+    timeBuffersDispatch,
+  } = props;
 
   console.log('FsaData props', props);
 
   const addAlert = useAlertStore.getState().addAlert;
   const targetsList = useFetchTargets()?.filter((target) => target.level === 3);
-
-  const selectedFile = useStore(useInfoBarStore, (state) => state.selectedFile);
-
-  const recordLength = useMemo(() => {
-    if (selectedFile) {
-      const metadata = selectedFile.metadata as RecordMetadata;
-      return metadata.record_length;
-    } else return 0;
-  }, [selectedFile]);
-
-  console.log('FsaData - recordLength', recordLength);
 
   const toggleMenuOpen = useContextMenuStore().toggleMenuOpen;
   const setCoordinates = useContextMenuStore().setCoordinates;
@@ -80,19 +69,6 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
     draggingReducer,
     initialRelevantDraggingState
   );
-
-  const initialTimeBuffersState = {
-    rangeIndex: 1,
-    timeBuffersScores: [100],
-    timeBufferRangeValues: [recordLength ? recordLength / 2 : 10],
-    addedValueLeftPerc: -1,
-  };
-
-  const [timeBuffersState, timeBuffersDispatch] = useReducer(
-    timeBuffersReducer,
-    initialTimeBuffersState
-  );
-
   //   #endregion
 
   //   const [unfilledFields, setUnfilledFields] = useState<fsaFieldsType[]>([]);
@@ -182,7 +158,7 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
             console.log('clicked');
 
             timeBuffersDispatch({
-              type: TimeBuffersAction.SET_ADDED_VALUE_LEFT_PERC,
+              type: TimeBuffersActionsList.SET_ADDED_VALUE_LEFT_PERC,
               payload: Math.round(
                 100 * ((event.pageX - left) / (right - left))
               ),
@@ -194,7 +170,7 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
       ]);
       console.log(left, right, '%');
     },
-    [setContent, setCoordinates, toggleMenuOpen]
+    [setContent, setCoordinates, timeBuffersDispatch, toggleMenuOpen]
   );
 
   const handleTimeBufferRange = (
@@ -205,7 +181,7 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
 
     index !== undefined
       ? timeBuffersDispatch({
-          type: TimeBuffersAction.EDIT_TIME_VALS_ARRAY,
+          type: TimeBuffersActionsList.EDIT_TIME_VALS_ARRAY,
           payload: { index: index, newVal: Number(e.target.value) },
         })
       : null;
@@ -214,7 +190,7 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
   const deleteTimeBuffer = (index: number) => {
     console.log('new exercise - deleteTimeBuffer - index', index);
     timeBuffersDispatch({
-      type: TimeBuffersAction.DELETE_TIME_BUFFER,
+      type: TimeBuffersActionsList.DELETE_TIME_BUFFER,
       payload: index,
     });
   };
@@ -248,11 +224,11 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
     (pervScoreIndex: number, newScore: number, newTime: number) => {
       console.log('pervScoreIndex', pervScoreIndex);
       timeBuffersDispatch({
-        type: TimeBuffersAction.ADD_NEW_SCORE_BUFFER,
+        type: TimeBuffersActionsList.ADD_NEW_SCORE_BUFFER,
         payload: { newScore, newTime },
       });
     },
-    []
+    [timeBuffersDispatch]
   );
 
   const handleNewScore = useCallback(
