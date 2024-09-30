@@ -54,8 +54,7 @@ const SyllabusInfo: React.FC = () => {
         switch (fieldToEdit) {
           case fieldToEditType.UNIT:
             const unitStatus = await pRetry(
-              () =>
-                !!fieldId && !!fatherId ? suspendUnit(fatherId, fieldId) : null,
+              () => suspendUnit(fatherId, fieldId),
               {
                 retries: 5,
               }
@@ -64,10 +63,7 @@ const SyllabusInfo: React.FC = () => {
             return unitStatus;
           case fieldToEditType.LEVEL:
             const levelStatus = await pRetry(
-              () =>
-                !!fieldId && !!fatherId
-                  ? suspendLevel(fatherId, fieldId)
-                  : null,
+              () => suspendLevel(fatherId, fieldId),
               {
                 retries: 5,
               }
@@ -76,10 +72,7 @@ const SyllabusInfo: React.FC = () => {
             return levelStatus;
           case fieldToEditType.LESSON:
             const lessonStatus = await pRetry(
-              () =>
-                !!fieldId && !!fatherId
-                  ? suspendLesson(fatherId, fieldId)
-                  : null,
+              () => suspendLesson(fatherId, fieldId),
               {
                 retries: 5,
               }
@@ -161,22 +154,22 @@ const SyllabusInfo: React.FC = () => {
 
             <ul className='flex flex-row justify-between'>
               <li className='w-[70%]'>
-                {!isFieldSuspended ? (
-                  <Button
-                    label={'Suspend'}
-                    color={ButtonColors.WHITE}
-                    onClick={() => {
-                      console.log('suspend click');
-                      suspendField();
-                    }}
-                  />
-                ) : (
+                {isFieldSuspended ? (
                   <Button
                     label={'Unsuspend'}
                     color={ButtonColors.PURPLE}
                     onClick={() => {
                       console.log('unsuspend click');
                       unsuspendField();
+                    }}
+                  />
+                ) : (
+                  <Button
+                    label={'Suspend'}
+                    color={ButtonColors.WHITE}
+                    onClick={() => {
+                      console.log('suspend click');
+                      suspendField();
                     }}
                   />
                 )}
