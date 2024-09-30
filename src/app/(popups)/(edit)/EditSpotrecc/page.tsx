@@ -29,8 +29,8 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
   }, [subExercise]);
 
   useEffect(() => {
-    subExercise.fileName
-      ? setHeader(`Edit sub-exercise - ${subExercise.fileName}`)
+    subExercise.fileRoute.objectName
+      ? setHeader(`Edit sub-exercise - ${subExercise.fileRoute.objectName}`)
       : setHeader(`Edit sub-exercise`);
   }, [subExercise]);
 
@@ -57,8 +57,8 @@ const EditSpotrecc: React.FC<EditSpotreccProps> = (props) => {
         className='grid w-full grid-cols-4 grid-rows-3 gap-y-4 px-4 py-4 3xl:gap-y-12'
         action={() =>
           onSave({
-            fileName: subExercise.fileName,
-            description: description.length === 0 ? null : description,
+            fileRoute: subExercise.fileRoute,
+            description: description,
             exerciseTime: exerciseTime,
             bufferTime: bufferTime,
           })

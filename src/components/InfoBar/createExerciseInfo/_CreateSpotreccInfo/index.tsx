@@ -100,16 +100,27 @@ const CreateSpotreccInfo: React.FC = () => {
             onClick={() => {
               console.log('add sub exercise', {
                 fileName: selectedFile.name,
-                description: null,
+                description: undefined,
                 exerciseTime: 15,
                 bufferTime: 15,
               });
-              addSubExercise({
-                fileName: selectedFile.name,
-                description: null,
-                exerciseTime: 15,
-                bufferTime: 15,
-              });
+              selectedMainTypeId &&
+                selectedSubTypeId &&
+                selectedModel &&
+                addSubExercise({
+                  fileRoute: {
+                    mainId: selectedMainTypeId,
+                    subTypeId: selectedSubTypeId,
+                    modelId: selectedModel._id,
+                    fileType: selectedFile.name.endsWith('.wav')
+                      ? FileTypes.RECORDS
+                      : FileTypes.IMAGES,
+                    objectName: selectedFile.name,
+                  },
+                  description: undefined,
+                  exerciseTime: 15,
+                  bufferTime: 15,
+                });
             }}
           />
         </MetadataSection>
