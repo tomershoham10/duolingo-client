@@ -1,3 +1,6 @@
+'use client';
+import { useCallback, useEffect, useReducer, useState } from 'react';
+import pRetry from 'p-retry';
 import { getZipPassword } from '@/app/API/auth-service/functions';
 import { getEncryptedFileByName } from '@/app/API/files-service/functions';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
@@ -5,8 +8,6 @@ import {
   fsaAction,
   fsaReducer,
 } from '@/reducers/studentView/(exercises)/fsaReducer';
-import pRetry from 'p-retry';
-import { useCallback, useEffect, useReducer, useState } from 'react';
 
 interface FsaPageProps {
   currentExercise: FsaType;
@@ -110,11 +111,7 @@ const FsaPage: React.FC<FsaPageProps> = (props) => {
         setDownloadingFile(true);
         const url = await pRetry(
           () =>
-            getEncryptedFileByName(
-              FileTypes.RECORDS,
-              exerciseType,
-              recordName
-            ),
+            getEncryptedFileByName(FileTypes.RECORDS, exerciseType, recordName),
           {
             retries: 5,
           }

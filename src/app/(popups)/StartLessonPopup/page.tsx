@@ -31,7 +31,7 @@ const StartLessonPopup: React.FC<StartLessonPopup> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    selectedPopup === PopupsTypes.STARTLESSON
+    selectedPopup === PopupsTypes.START_LESSON
       ? setIsOpen(true)
       : setIsOpen(false);
   }, [selectedPopup]);

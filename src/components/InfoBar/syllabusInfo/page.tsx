@@ -16,13 +16,16 @@ import {
   unsuspendLevel,
 } from '@/app/API/classes-service/units/functions';
 import {
+  addLevelByUnitId,
   suspendLesson,
   unsuspendLesson,
 } from '@/app/API/classes-service/levels/functions';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import PlusButton from '@/components/PlusButton/page';
 import pRetry from 'p-retry';
 import { useCallback } from 'react';
+import RoundButton from '@/components/RoundButton';
+import { TiPlus } from 'react-icons/ti';
+import { FiTrash2 } from 'react-icons/fi';
+import { addLessonByLevelId } from '@/app/API/classes-service/lessons/functions';
 
 const SyllabusInfo: React.FC = () => {
   const selectedCourse = useStore(
@@ -30,6 +33,7 @@ const SyllabusInfo: React.FC = () => {
     (state) => state.selectedCourse
   );
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
+
   const fieldToEdit = useStore(
     useInfoBarStore,
     (state) => state.syllabusFieldType
@@ -47,6 +51,52 @@ const SyllabusInfo: React.FC = () => {
     useInfoBarStore,
     (state) => state.syllabusIsFieldSuspended
   );
+
+  const handleEditButtonClicked = useCallback(() => {
+    if (!!fieldId) {
+      switch (fieldToEdit) {
+        case fieldToEditType.UNIT:
+          updateSelectedPopup(PopupsTypes.EDIT_UNIT);
+
+        case fieldToEditType.LEVEL:
+          updateSelectedPopup(PopupsTypes.EDIT_LEVEL);
+
+        case fieldToEditType.LESSON:
+          updateSelectedPopup(PopupsTypes.EDIT_LESSON);
+          break;
+      }
+    }
+  }, [fieldId, fieldToEdit, updateSelectedPopup]);
+
+  const handlePlusButton = useCallback(async () => {
+    try {
+      console.log('handlePlusButton', fieldToEdit);
+      if (!!fieldId) {
+        switch (fieldToEdit) {
+          case fieldToEditType.UNIT:
+            const unitStatus = await pRetry(() => addLevelByUnitId(fieldId), {
+              retries: 5,
+            });
+            return unitStatus;
+
+          case fieldToEditType.LEVEL:
+            const levelStatus = await pRetry(
+              () => addLessonByLevelId(fieldId),
+              {
+                retries: 5,
+              }
+            );
+            return levelStatus;
+
+          case fieldToEditType.LESSON:
+            updateSelectedPopup(PopupsTypes.ADD_EXERCISES);
+            break;
+        }
+      }
+    } catch (err) {
+      console.error('suspendField error:', err);
+    }
+  }, [fieldId, fieldToEdit, updateSelectedPopup]);
 
   const suspendField = useCallback(async () => {
     try {
@@ -133,7 +183,7 @@ const SyllabusInfo: React.FC = () => {
   return (
     <section className='h-full w-full p-6'>
       {fieldToEdit ? (
-        <div className='flex h-full w-full flex-col justify-start gap-10'>
+        <div className='flex h-full w-full flex-col justify-between gap-10'>
           <span className='text-center text-3xl'>
             {fieldToEdit} {fieldIndex + 1}
           </span>
@@ -144,16 +194,14 @@ const SyllabusInfo: React.FC = () => {
                 <Button
                   label={'Edit'}
                   color={ButtonColors.BLUE}
-                  onClick={() => {
-                    updateSelectedPopup(PopupsTypes.ADMINEDIT);
-                  }}
+                  onClick={handleEditButtonClicked}
                 />
               </section>
-              <PlusButton onClick={() => {}} />
+              <RoundButton Icon={TiPlus} onClick={handlePlusButton} />
             </section>
 
             <ul className='flex flex-row justify-between'>
-              <li className='w-[70%]'>
+              <li className='w-[75%]'>
                 {isFieldSuspended ? (
                   <Button
                     label={'Unsuspend'}
@@ -174,9 +222,8 @@ const SyllabusInfo: React.FC = () => {
                   />
                 )}
               </li>
-              <li className='w-[3.5rem]'>
-                <Button color={ButtonColors.RED} icon={faTrashCan} />
-              </li>
+
+              <RoundButton Icon={FiTrash2} onClick={() => {}} />
             </ul>
           </section>
         </div>

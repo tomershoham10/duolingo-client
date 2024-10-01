@@ -82,6 +82,25 @@ export const getLessonsData = async (levelId: string): Promise<LessonType[]> => 
     }
 };
 
+export const addLevelByUnitId = async (unitId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `${LEVELS_API.ADD_LEVEL_BY_UNIT_ID}/${unitId}`,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        return response.status === 201;
+    } catch (error: any) {
+        throw new Error(`error while addLevelByUnitId: ${error.message}`);
+    }
+};
+
 export const getUnsuspendedLessonsData = async (levelId: string): Promise<LessonType[]> => {
     try {
         const response = await fetch(

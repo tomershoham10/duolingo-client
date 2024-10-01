@@ -72,6 +72,7 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
                     exerciseObject.data.map((exercise, exerciseIndex) => (
                       <section key={exerciseIndex}>
                         <AdminUnitAccourdion
+                          key={exercise._id}
                           exercise={exercise}
                           exerciseIndex={exerciseIndex}
                           isOpen={exerciseAccordion.includes(exercise._id)}

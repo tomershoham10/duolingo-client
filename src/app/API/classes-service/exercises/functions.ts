@@ -38,6 +38,32 @@ export const createExercise = async (newExercise: Partial<FsaType> | Partial<Spo
     }
 };
 
+export const getExerciseById = async (exerciseId: string): Promise<ExerciseType | null> => {
+    try {
+        const response = await fetch(
+            `${COURSES_SERVICE_ENDPOINTS.EXERCISES}/${exerciseId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resExercise = data.exercise;
+            console.log("leves api - getExerciseById", resExercise);
+            return resExercise;
+        } else {
+            console.error("Failed to fetch getExerciseById.");
+            return null;
+        }
+    } catch (error) {
+        throw new Error(`getExerciseById error: ${error}`);
+    }
+};
+
 export const getAllExercises = async (): Promise<ExerciseType[]> => {
     try {
         const response = await fetch(

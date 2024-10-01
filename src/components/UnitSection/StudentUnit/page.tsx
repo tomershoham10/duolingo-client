@@ -327,7 +327,7 @@ const StudentUnitSection: React.FC = () => {
     // console.log("isNextLessonPopupVisible", isNextLessonPopupVisible);
     if (studentDashboardState.isNextLessonPopupVisible) {
       document.addEventListener('mousedown', handleOutsideClick);
-      updateSelectedPopup(PopupsTypes.STARTLESSON);
+      updateSelectedPopup(PopupsTypes.START_LESSON);
     } else {
       // console.log("check1");
       document.removeEventListener('mousedown', handleOutsideClick);

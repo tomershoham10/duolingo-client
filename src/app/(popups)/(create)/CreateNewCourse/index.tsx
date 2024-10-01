@@ -101,7 +101,7 @@ const CreateNewCourse: React.FC = () => {
 
   return (
     <PopupHeader
-      popupType={PopupsTypes.NEWCOURSE}
+      popupType={PopupsTypes.NEW_COURSE}
       header='Create new course'
       size={PopupSizes.SMALL}
     >

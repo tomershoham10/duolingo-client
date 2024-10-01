@@ -124,7 +124,7 @@ const CreateNewUser: React.FC = () => {
 
   return (
     <PopupHeader
-      popupType={PopupsTypes.NEWUSER}
+      popupType={PopupsTypes.NEW_USER}
       header='Create new user'
       onClose={() => {}}
     >

@@ -4,15 +4,20 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 export enum PopupsTypes {
     CLOSED = "closed",
-    NEWUSER = "newUser",
-    NEWCOURSE = "newCourse",
-    NEWUNIT = "newUnit",
-    STARTLESSON = "startLesson",
-    ADMINEDIT = "adminEdit",
+    NEW_USER = "newUser",
+    NEW_COURSE = "newCourse",
+    NEW_UNIT = "newUnit",
+    START_LESSON = "startLesson",
+    ADMIN_EDIT = "adminEdit",
     UPLOAD_FILES = "uploadFiles",
     EDIT_METADATA = "editMetadata",
-    SONOLISTMETADATA = "sonolistMetadata",
+    SONOLIST_METADATA = "sonolistMetadata",
     EDIT_SPOTRECC = "editSpotrecc",
+
+    EDIT_LESSON = "editLesson",
+    EDIT_LEVEL = "editLevel",
+    EDIT_UNIT = "editUnit",
+    ADD_EXERCISES = "addExercises",
     PREVIEW = "preview",
 }
 

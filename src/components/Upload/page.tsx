@@ -307,7 +307,7 @@ const Upload = forwardRef<UploadRef, UploadProps>((props: UploadProps, ref) => {
                 onClick={() => {
                   filesTypes === '.wav'
                     ? updateSelectedPopup(PopupsTypes.EDIT_METADATA)
-                    : updateSelectedPopup(PopupsTypes.SONOLISTMETADATA);
+                    : updateSelectedPopup(PopupsTypes.SONOLIST_METADATA);
                 }}
                 // disabled={selectedFileIndex === -1
                 // }

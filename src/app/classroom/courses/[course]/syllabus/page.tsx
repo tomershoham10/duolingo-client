@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useCallback, useReducer } from 'react';
+import { useEffect, useCallback, useReducer, lazy } from 'react';
 import pRetry from 'p-retry';
+import { TiPlus } from 'react-icons/ti';
 import useStore from '@/app/store/useStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
@@ -13,7 +14,19 @@ import {
   courseDataReducer,
 } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
-import PlusButton from '@/components/PlusButton/page';
+import RoundButton from '@/components/RoundButton';
+
+const EditUnit = lazy(() => import('@/app/(popups)/(syllabus)/EditUnit/page'));
+const EditLevel = lazy(
+  () => import('@/app/(popups)/(syllabus)/EditLevel/page')
+);
+const EditLesson = lazy(
+  () => import('@/app/(popups)/(syllabus)/EditLesson/page')
+);
+
+const AddExercises = lazy(
+  () => import('@/app/(popups)/(syllabus)/addExercises/page')
+);
 
 const Syllabus: React.FC = () => {
   const selectedCourse = useStore(
@@ -79,6 +92,10 @@ const Syllabus: React.FC = () => {
 
   return (
     <section className='h-full w-full overflow-y-auto'>
+      <EditUnit />
+      <EditLevel />
+      <EditLesson />
+      <AddExercises />
       {courseDataState.units ? (
         courseDataState.units.length > 0 ? (
           <section className='felx flex-col pt-6'>
@@ -86,7 +103,7 @@ const Syllabus: React.FC = () => {
               courseDataState={courseDataState}
               courseDataDispatch={courseDataDispatch}
             />
-            <PlusButton onClick={addUnit} label='add unit' />
+            <RoundButton label='add unit' Icon={TiPlus} onClick={addUnit} />
           </section>
         ) : (
           <div className='flex h-full w-full flex-col justify-start'>

@@ -1,7 +1,6 @@
 import { lazy } from 'react';
 import AdminSideBar from '../../components/Navigation/AdminSideBar/page';
 import InfoBar from '@/components/InfoBar/page';
-const AdminEditPopup = lazy(() => import('../(popups)/AdminEditPopup/page'));
 const CreateNewUser = lazy(() => import('../(popups)/(create)/CreateNewUser'));
 const CreateNewCourse = lazy(
   () => import('../(popups)/(create)/CreateNewCourse')
@@ -22,7 +21,6 @@ export default function RootLayout({
       {/* <Alert /> */}
       <CreateNewUser />
       <CreateNewCourse />
-      <AdminEditPopup />
       <CreateNewUnit />
       <div className='flex h-full w-full flex-row'>
         <div className='basis-1/5 2xl:basis-[15%] 3xl:basis-[10%]'>

@@ -127,18 +127,18 @@ const CreateFsa: React.FC = () => {
   };
 
   return (
-    <Pagination
-      components={components}
-      onNext={onNext}
-      onSubmit={onSubmit}
-      subProps={{
-        recordLength,
-        fsaDataState,
-        fsaDataDispatch,
-        timeBuffersState,
-        timeBuffersDispatch,
-      }}
-    />
+        <Pagination
+        components={components}
+        onNext={onNext}
+        onSubmit={onSubmit}
+        subProps={{
+            recordLength,
+            fsaDataState,
+            fsaDataDispatch,
+            timeBuffersState,
+            timeBuffersDispatch,
+        }}
+        />
   );
 };
 

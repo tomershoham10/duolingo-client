@@ -5,8 +5,9 @@ import MetadataSection from '../../(utils)/MetadataSection';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { useFetchModelFiles } from '@/app/_utils/hooks/useFetchModelFiles';
-import PlusButton from '@/components/PlusButton/page';
 import { FileTypes } from '@/app/API/files-service/functions';
+import RoundButton from '@/components/RoundButton';
+import { TiPlus } from 'react-icons/ti';
 
 const CreateSpotreccInfo: React.FC = () => {
   const addSubExercise = useCreateSpotreccStore.getState().addSubExercise;
@@ -96,7 +97,8 @@ const CreateSpotreccInfo: React.FC = () => {
           fileName={selectedFile.name}
           metadata={selectedFile.metadata}
         >
-          <PlusButton
+          <RoundButton
+            Icon={TiPlus}
             onClick={() => {
               console.log('add sub exercise', {
                 fileName: selectedFile.name,

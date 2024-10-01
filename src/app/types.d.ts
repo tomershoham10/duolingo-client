@@ -505,11 +505,13 @@ interface PaginationProps {
     onSubmit: () => Promise<void>;
 }
 
-// // PlusButton // //
+// // RoundButton // //
 
-interface PlusButtonProps {
-    onClick: () => void;
+interface RoundButtonProps {
     label?: string;
+    Icon: IconType;
+    className?: string;
+    onClick: () => void;
 }
 
 // // ProgressBar // //

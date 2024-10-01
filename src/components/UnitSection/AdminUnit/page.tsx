@@ -5,15 +5,11 @@ import {
 } from '@/app/store/stores/useInfoBarStore';
 import {
   CourseDataAction,
-  courseDataReducer,
   CourseDataType,
 } from '@/reducers/courseDataReducer';
-import useCourseData from '@/app/_utils/hooks/useCourseData';
-import LodingAdminSection from './(components)/LodingAdminSection/page';
 import AdminUnitHeader from './(components)/AdminUnitHeader/page';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 import AdminUnitLevelsSection from './(components)/AdminUnitLevelsSection';
-import PlusButton from '@/components/PlusButton/page';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
 interface AdminUnitProps {

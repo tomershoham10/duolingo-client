@@ -138,11 +138,11 @@ const AdminSideBar: React.FC = () => {
       subItems: [
         {
           name: 'New User',
-          popup: PopupsTypes.NEWUSER,
+          popup: PopupsTypes.NEW_USER,
         },
         {
           name: 'New Course',
-          popup: PopupsTypes.NEWCOURSE,
+          popup: PopupsTypes.NEW_COURSE,
         },
         {
           name: 'New Exercise',

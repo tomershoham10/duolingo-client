@@ -1,6 +1,8 @@
 'use client';
 import { useReducer, useEffect, useCallback, lazy, Dispatch } from 'react';
 
+import { TiPlus } from 'react-icons/ti';
+
 const DraggbleList = lazy(() => import('@/components/DraggableList/page'));
 import { draggingAction, draggingReducer } from '@/reducers/dragReducer';
 import { Diractions } from '@/components/DraggableList/page';
@@ -13,7 +15,6 @@ import { useContextMenuStore } from '@/app/store/stores/useContextMenuStore';
 import Slider from '@/components/Slider/page';
 import Textbox, { FontSizes } from '@/components/Textbox/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
-import PlusButton from '@/components/PlusButton/page';
 
 import {
   TimeBuffersAction,
@@ -29,6 +30,7 @@ import {
 // import { useCreateFsaStore } from '@/app/store/stores/(createExercises)/useCreateFsaStore';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
+import RoundButton from '@/components/RoundButton';
 
 library.add(faPlus);
 
@@ -291,7 +293,11 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
               />
             </div>
 
-            <PlusButton label={'relevant'} onClick={addTargetToRelevant} />
+            <RoundButton
+              label='relevant'
+              Icon={TiPlus}
+              onClick={addTargetToRelevant}
+            />
           </div>
         ) : null}
       </div>

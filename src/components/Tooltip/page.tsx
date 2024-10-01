@@ -112,7 +112,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
 
   useEffect(() => {
     // console.log('tooltip', selectedPopup);
-    if (selectedPopup === PopupsTypes.STARTLESSON) {
+    if (selectedPopup === PopupsTypes.START_LESSON) {
       tooltipDispatch({
         type: tooltipAction.SET_IS_POP_EFFECT,
         payload: true,
@@ -125,7 +125,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
     if (
       tooltipElement &&
       tooltipState.isPopEffect &&
-      selectedPopup !== PopupsTypes.STARTLESSON
+      selectedPopup !== PopupsTypes.START_LESSON
     ) {
       tooltipElement.classList.remove('tooltip');
       tooltipElement.classList.add('bounce-and-pop');
@@ -149,7 +149,7 @@ const Tooltip: React.FC<tooltipProps> = (props) => {
 
   return (
     <section className={className}>
-      {selectedPopup !== PopupsTypes.STARTLESSON ? (
+      {selectedPopup !== PopupsTypes.START_LESSON ? (
         <div
           id='tooltip-main-div'
           onClick={() =>

@@ -11,6 +11,7 @@ export enum PopupSizes {
   SMALL = 'small',
   MEDIUM = 'medium',
   LARGE = 'large',
+  EXTRA_LARGE = 'extraLarge',
 }
 
 interface PopupHeaderProps {
@@ -41,8 +42,14 @@ const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
 
       break;
     case PopupSizes.LARGE:
-      widthClass = 'w-[40rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[70rem]';
+      widthClass = 'w-[40rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[80rem]';
       heightClass = 'h-[35rem] md:h-[35rem] xl:h-[35rem]';
+
+      break;
+
+    case PopupSizes.EXTRA_LARGE:
+      widthClass = 'w-[40rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[120rem]';
+      heightClass = 'h-[35rem] md:h-[35rem] 2x:h-[] 3xl:h-[70rem]';
 
       break;
     default:

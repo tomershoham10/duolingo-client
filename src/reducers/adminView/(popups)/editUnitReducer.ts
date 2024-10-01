@@ -8,7 +8,7 @@ export enum EditUnitAction {
 }
 
 type Action =
-    | { type: EditUnitAction.SET_UNIT_ID, payload: string }
+    | { type: EditUnitAction.SET_UNIT_ID, payload: string | null }
     | { type: EditUnitAction.SET_DESCRIPTION, payload: string | undefined }
     | { type: EditUnitAction.SET_LEVELS, payload: string[] }
     | { type: EditUnitAction.SET_SUSPENDED_LEVELS, payload: string[] }
@@ -16,7 +16,7 @@ type Action =
     | { type: EditUnitAction.DELETE_LEVEL, payload: string }
 
 export interface UnitDataType {
-    unitId: string,
+    unitId: string | null,
     description: string | undefined,
     levels: string[],
 }
