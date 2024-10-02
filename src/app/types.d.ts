@@ -175,6 +175,24 @@ interface TargetType {
     // subType: TypesOfVessels | TypesOfTorpedos | TypesOfSonars;
 }
 
+// ------ RELEVANT ------- //
+
+interface RelevantAmlachType {
+    countries: string[];
+    organization: string[];
+    amlach_main_type: string | null;
+    amlach_sub_type: string | null;
+    model: string | null;
+  }
+  
+  interface RelevantType {
+    // as in posi
+    _id: string;
+    relevant_name: string;
+    amlach: RelevantAmlachType[];
+    recived_date: Date;
+    update_date: Date;
+  }
 
 // ------ ORGANIZATION ------- //
 
