@@ -121,7 +121,7 @@ const CreateSpotrecc: React.FC = () => {
     } catch (err) {
       console.error('submit error:', err);
     }
-  }, [addAlert, resetCreateSpotreccStore, router, subExercises]);
+  }, [addAlert, adminComments, resetCreateSpotreccStore, router, subExercises]);
 
   const { handleMainTypeSelected, handleSubTypeSelected, handleModelSelected } =
     useDropdownSelections(
