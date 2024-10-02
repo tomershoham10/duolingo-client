@@ -58,6 +58,7 @@ const CreateFsa: React.FC = () => {
 
   const initialFsaDataState = {
     description: undefined,
+    adminComments: undefined,
     relevant: [],
     unfilledFields: [],
     showPlaceholder: true,
@@ -97,6 +98,7 @@ const CreateFsa: React.FC = () => {
           }));
         const exercise = {
           type: ExercisesTypes.FSA,
+          adminComments: fsaDataState.adminComments,
           fileRoute: {
             mainId: selectedMainTypeId,
             subTypeId: selectedSubTypeId,
@@ -127,18 +129,18 @@ const CreateFsa: React.FC = () => {
   };
 
   return (
-        <Pagination
-        components={components}
-        onNext={onNext}
-        onSubmit={onSubmit}
-        subProps={{
-            recordLength,
-            fsaDataState,
-            fsaDataDispatch,
-            timeBuffersState,
-            timeBuffersDispatch,
-        }}
-        />
+    <Pagination
+      components={components}
+      onNext={onNext}
+      onSubmit={onSubmit}
+      subProps={{
+        recordLength,
+        fsaDataState,
+        fsaDataDispatch,
+        timeBuffersState,
+        timeBuffersDispatch,
+      }}
+    />
   );
 };
 

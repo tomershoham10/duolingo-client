@@ -6,6 +6,7 @@ export enum fsaFieldsType {
 
 export enum FsaDataActionsList {
     SET_DESCRIPTION = 'setDescription',
+    SET_ADMIN_COMMENTS = 'setAdminComments',
 
     SET_RELEVANT = 'setRelevant',
     ADD_RELEVANT = 'addRelevant',
@@ -18,7 +19,9 @@ export enum FsaDataActionsList {
 }
 
 export type FsaDataAction =
-    | { type: FsaDataActionsList.SET_DESCRIPTION; payload: string }
+    | { type: FsaDataActionsList.SET_DESCRIPTION; payload: string | undefined }
+    | { type: FsaDataActionsList.SET_ADMIN_COMMENTS; payload: string | undefined }
+
     | { type: FsaDataActionsList.SET_RELEVANT, payload: RelevantList[] }
     | { type: FsaDataActionsList.ADD_RELEVANT, payload: RelevantList }
     | { type: FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT; payload: RelevantList }
@@ -33,6 +36,7 @@ interface RelevantList {
 
 export interface FsaDataType {
     description: string | undefined,
+    adminComments: string | undefined;
     relevant: RelevantList[],
     unfilledFields: fsaFieldsType[],
     showPlaceholder: boolean,
@@ -46,9 +50,11 @@ export const fsaDataReducer = (
     switch (action.type) {
         case FsaDataActionsList.SET_DESCRIPTION:
             return { ...state, description: action.payload };
+        case FsaDataActionsList.SET_ADMIN_COMMENTS:
+            return { ...state, adminComments: action.payload };
         case FsaDataActionsList.SET_RELEVANT:
             return { ...state, relevant: action.payload };
-            case FsaDataActionsList.ADD_RELEVANT:
+        case FsaDataActionsList.ADD_RELEVANT:
             return { ...state, relevant: [...state.relevant, action.payload] };
         case FsaDataActionsList.REMOVE_TARGET_FROM_RELEVANT:
             return { ...state, relevant: state.relevant };

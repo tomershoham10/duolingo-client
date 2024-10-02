@@ -77,9 +77,10 @@ interface FileRoute {
 }
 
 interface ExerciseType {
-    _id: string;
+    _id: string
     dateCreated: Date;
     type: ExercisesTypes;
+    adminComments?: string;
 }
 
 //~~~~~~~~~~~ FSA ~~~~~~~~~~~//

@@ -10,10 +10,12 @@ export interface SpotreccSubExercise {
 }
 
 type CreateSpotreccState = {
+    adminComments: string | undefined,
     subExercises: SpotreccSubExercise[];
 }
 
 type Action = {
+    setAdminComments: (adminComments: string | undefined) => void;
     addSubExercise: (exercise: SpotreccSubExercise) => void;
     updateSubExercise: (updartedExercise: SpotreccSubExercise) => void;
     removeSubExercise: (fileRoute: FileRoute) => void;
@@ -22,7 +24,9 @@ type Action = {
 
 export const useCreateSpotreccStore = create<CreateSpotreccState & Action>(
     (set) => ({
+        adminComments: undefined,
         subExercises: [],
+        setAdminComments: (adminComments) => set(() => ({ adminComments: adminComments })),
         addSubExercise: (subExercise) => set((state) => {
             const exists = state.subExercises.some(exercise =>
                 exercise.fileRoute.mainId === subExercise.fileRoute.mainId &&

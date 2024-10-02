@@ -31,6 +31,7 @@ import {
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 import RoundButton from '@/components/RoundButton';
+import Input, { InputTypes } from '@/components/Input/page';
 
 library.add(faPlus);
 
@@ -255,7 +256,23 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
 
   return (
     <div className='relative mx-auto flex h-full w-full flex-col tracking-wide text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-      <section>
+      <div>
+        <span className='my-3 text-2xl font-bold'>Admin comments:</span>
+        <div className='mb-4 mt-3'>
+          <Input
+            type={InputTypes.TEXT}
+            placeholder='Add comments'
+            value={fsaDataState.adminComments}
+            onChange={(text: string) => {
+              fsaDataDispatch({
+                type: FsaDataActionsList.SET_ADMIN_COMMENTS,
+                payload: text,
+              });
+            }}
+          />
+        </div>
+      </div>
+      <div>
         <span className='my-3 text-2xl font-bold'>Description:</span>
         <div className='mb-4 mt-3'>
           <Textbox
@@ -271,7 +288,7 @@ const FsaData: React.FC<CreateFsaDataSectionProps> = (props) => {
             }}
           />
         </div>
-      </section>
+      </div>
       <div className='w-full'>
         <span className='my-3 text-2xl font-bold'>Targets list:</span>
         {targetsList ? (

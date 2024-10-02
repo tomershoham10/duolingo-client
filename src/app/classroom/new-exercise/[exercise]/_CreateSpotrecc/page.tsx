@@ -21,6 +21,7 @@ import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import TargetsDropdowns from '@/components/TargetsDropdowns';
 import { useDropdownSelections } from '@/app/_utils/hooks/(dropdowns)/useDropdownSelections';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import Input, { InputTypes } from '@/components/Input/page';
 
 const EditSpotrecc = lazy(
   () => import('@/app/(popups)/(edit)/EditSpotrecc/page')
@@ -45,24 +46,31 @@ const CreateSpotrecc: React.FC = () => {
 
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
-//   const selectedMainTypeId = useStore(
-//     useInfoBarStore,
-//     (state) => state.selectedMainTypeId
-//   );
+  //   const selectedMainTypeId = useStore(
+  //     useInfoBarStore,
+  //     (state) => state.selectedMainTypeId
+  //   );
   const selectedSubTypeId = useStore(
     useInfoBarStore,
     (state) => state.selectedSubTypeId
   );
-  
-//   const selectedModel = useStore(
-//     useInfoBarStore,
-//     (state) => state.selectedModel
-//   );
+
+  //   const selectedModel = useStore(
+  //     useInfoBarStore,
+  //     (state) => state.selectedModel
+  //   );
+
+  const adminComments = useStore(
+    useCreateSpotreccStore,
+    (state) => state.adminComments
+  );
 
   const subExercises = useStore(
     useCreateSpotreccStore,
     (state) => state.subExercises
   );
+
+  const setAdminComments = useCreateSpotreccStore.getState().setAdminComments;
 
   const [openedFileIndex, setOpenedFileIndex] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -91,6 +99,7 @@ const CreateSpotrecc: React.FC = () => {
         setIsUploading(true);
         const exerciseObject = {
           type: ExercisesTypes.SPOTRECC,
+          adminComments: adminComments,
           subExercises: subExercises,
         };
         console.log('submit spotrecc exerciseObject', exerciseObject);
@@ -130,6 +139,20 @@ const CreateSpotrecc: React.FC = () => {
         onSubTypeSelected={handleSubTypeSelected}
         onModelSelected={handleModelSelected}
       />
+
+      <div className='my-2'>
+        <span className='my-3 text-2xl font-bold'>Admin comments:</span>
+        <div className='mb-4 mt-3'>
+          <Input
+            type={InputTypes.TEXT}
+            placeholder='Add comments'
+            value={adminComments}
+            onChange={(text: string) => {
+              setAdminComments(text);
+            }}
+          />
+        </div>
+      </div>
 
       <section className='flex max-h-[80%] basis-[85%] flex-col gap-4 overflow-auto pr-3 pt-6'>
         {subExercises.map((exercise, index) => (
