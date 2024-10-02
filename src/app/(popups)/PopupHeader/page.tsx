@@ -48,8 +48,8 @@ const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
       break;
 
     case PopupSizes.EXTRA_LARGE:
-      widthClass = 'w-[40rem] xl:w-[55rem] 2xl:w-[57.5rem] 3xl:w-[120rem]';
-      heightClass = 'h-[35rem] md:h-[35rem] 2x:h-[] 3xl:h-[70rem]';
+      widthClass = 'w-[50rem] xl:w-[75rem] 2xl:w-[110rem] 3xl:w-[120rem]';
+      heightClass = 'h-[27rem] xl:h-[40rem] 2xl:h-[60rem] 3xl:h-[70rem]';
 
       break;
     default:
@@ -86,7 +86,7 @@ const PopupHeader: React.FC<PopupHeaderProps> = (props) => {
             <div className='absolute left-0 flex h-10 w-full justify-center border-b-2 text-xl font-extrabold dark:border-duoBlueDark-text 3xl:h-12 3xl:text-2xl'>
               {header}
             </div>
-            <section className='mt-12'>{children}</section>
+            <section className='mt-12 2xl:mt-20'>{children}</section>
           </div>
         </div>
       ) : null}
