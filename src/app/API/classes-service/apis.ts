@@ -10,6 +10,7 @@ export const COURSES_SERVICE_ENDPOINTS = {
     RESULTS: `${ROUT}/api/results`,
     SOURCES: `${ROUT}/api/sources`,
     TARGETS: `${ROUT}/api/targets`,
+    RELEVANT: `${ROUT}/api/relevant`,
     COUNTRIES: `${ROUT}/api/countries`,
     ORGANIZATIONS: `${ROUT}/api/organizations`,
     UNITS: `${ROUT}/api/units`,
