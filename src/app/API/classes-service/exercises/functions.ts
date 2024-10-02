@@ -64,6 +64,35 @@ export const getExerciseById = async (exerciseId: string): Promise<ExerciseType 
     }
 };
 
+export const getExercisesByModelId = async (modelId: string): Promise<ExerciseType[] | null> => {
+    try {
+        const response = await fetch(
+            `${EXERCISES_API.GET_EXERCISES_BY_MODEL_ID}/${modelId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.status === 200) {
+            const data = await response.json();
+            const resExercises = data.exercises;
+            console.log("leves api - getExercisesByModelId", resExercises);
+            return resExercises;
+        } else
+            if (response.status === 404) {
+                return [];
+            } else {
+                console.error("Failed to fetch Exercises By this ModelId.");
+                return null;
+            }
+    } catch (error) {
+        throw new Error(`getExerciseById error: ${error}`);
+    }
+};
+
 export const getAllExercises = async (): Promise<ExerciseType[]> => {
     try {
         const response = await fetch(
