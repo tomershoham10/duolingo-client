@@ -22,21 +22,6 @@ export const useRelevantStore = create<RelevantState & Action>(
     })
 );
 
-if (typeof window !== 'undefined' && localStorage) {
-    const relevantData = localStorage.getItem("relevantLists");
-    // console.log("relevantData - store", relevantData);
-    if (relevantData) {
-        const parsedData = JSON.parse(relevantData) as RelevantType[];
-        // console.log("useRelevantStore parsedData", parsedData);
-        useRelevantStore.getState().setRelevantLists(Object.values(parsedData));
-        // console.log("useRelevantStore useRelevantStore.getState().relevantLists", useRelevantStore.getState().relevantLists, typeof parsedData);
-    } else {
-        useRelevantStore.getState().setRelevantLists(null);
-    }
-} else {
-    useRelevantStore.getState().setRelevantLists(null);
-}
-
 
 if (process.env.NODE_ENV === 'development') {
     mountStoreDevtool('RelevantStore', useRelevantStore);

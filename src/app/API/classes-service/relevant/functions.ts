@@ -24,8 +24,6 @@ export const getRelevantLists = async (): Promise<RelevantType[] | null> => {
             const relevantLists = data.lists as ResponseRelevantType[];
             if (relevantLists) {
                 const formatedRelevantLists = relevantLists.map(({ __v, ...rest }) => rest)
-                localStorage.setItem(
-                    "relevantLists", JSON.stringify(formatedRelevantLists));
                 return formatedRelevantLists;
             } else return null;
         } else {
