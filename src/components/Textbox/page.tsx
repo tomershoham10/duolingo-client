@@ -52,7 +52,7 @@ const Textbox: React.FC<TextboxProps> = (props) => {
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
             onChange(event.target.value);
           }}
-          className={`h-full w-full rounded-md border-2 px-3 py-2 focus:outline-none ${
+          className={`h-full w-full rounded-md border-2 px-3 py-2 focus:outline-none dark:focus:border-duoBlueDark-text ${
             errorMode
               ? 'border-duoRed-default bg-duoRed-lighter text-duoRed-darker'
               : 'textarea-dark-placeholder bg-duoGray-lighter dark:border-duoGrayDark-light dark:bg-duoGrayDark-dark'
