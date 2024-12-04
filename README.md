@@ -18,5 +18,5 @@ A **Next.js** application inspired by Duolingo, designed to train navy sonar ope
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **State Management**: Zustand
-- **Backend**: Node.js
+- **Backend**: Node.js, Python
 - **Database**: MongoDB, MinIO
