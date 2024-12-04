@@ -1,4 +1,4 @@
-# Duolingo Client for Sonar Training
+# Sonar Training
 
 A **Next.js** application inspired by Duolingo, designed to train navy sonar operators through interactive exercises and a structured learning experience.
 
