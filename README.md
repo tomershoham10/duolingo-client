@@ -2,7 +2,6 @@
 
 A **Next.js** application inspired by Duolingo, designed to train navy sonar operators through interactive exercises and a structured learning experience.
 
-**Note**: This project is still under development and not a final version. Some features may be incomplete or subject to change.
 ---
 
 ## 🚀 Features
@@ -20,3 +19,6 @@ A **Next.js** application inspired by Duolingo, designed to train navy sonar ope
 - **State Management**: Zustand
 - **Backend**: Node.js, Python
 - **Database**: MongoDB, MinIO
+
+---
+
