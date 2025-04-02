@@ -12,6 +12,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Link from 'next/link';
+import handleLogout from '@/app/_utils/functions/handleLogOut';
+import ItemsList from '../AdminSideBar/ItemsList';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
 
@@ -20,10 +22,17 @@ const StudentSideBar: React.FC = () => {
 
   const [selected, setSelected] = useState<number>();
 
-  const sidebarItems: { label: string; icon: any; href: string }[] = [
-    { label: 'LEARN', icon: faHome, href: '/learn' },
-    { label: 'USERS', icon: faUser, href: '/users' },
+  const sidebarItems: SidebarItem[] = [
+    { name: 'LEARN', icon: faHome, href: '/learn' },
+    { name: 'USERS', icon: faUser, href: '/users' },
+    {
+      name: 'Settings',
+      icon: faCog,
+      subItems: [{ name: 'Log out', onClick: () => handleLogout() }],
+    },
   ];
+
+
 
   return (
     <div className='flex h-screen flex-col justify-start border-r-2 border-zinc-500/25 text-sm font-extrabold tracking-wide text-gray-500 dark:text-duoGrayDark-lightest'>
@@ -32,37 +41,7 @@ const StudentSideBar: React.FC = () => {
       </label>
 
       <ul className='mx-auto w-[90%]'>
-        {sidebarItems.map((item, index) => (
-          <li
-            key={item.label}
-            className={` my-3 cursor-pointer rounded-xl border-2  px-3 py-3 ${
-              pathname.includes(item.href)
-                ? 'border-duoBlue-lighter bg-duoBlue-lightest text-duoBlue-light dark:border-duoBlueDark-text dark:bg-duoGrayDark-dark dark:text-duoBlueDark-text'
-                : 'hover-bg-zinc-100 border-transparent dark:hover:bg-duoGrayDark-dark'
-            }`}
-          >
-            <button
-              className='flex cursor-pointer flex-row items-center justify-center pr-2'
-              onClick={() => setSelected(index)}
-            >
-              <FontAwesomeIcon
-                className={`fa-xs fa-solid ml-2 mr-4 h-6 w-6 ${
-                  pathname.includes(item.href)
-                    ? ''
-                    : 'dark:text-duoGrayDark-midDark'
-                }`}
-                icon={item.icon}
-              />
-
-              <Link
-                className='flex h-full cursor-pointer'
-                href={item.href ? item.href : ''}
-              >
-                {item.label}
-              </Link>
-            </button>
-          </li>
-        ))}
+      <ItemsList itemsList={sidebarItems} />
       </ul>
     </div>
   );
