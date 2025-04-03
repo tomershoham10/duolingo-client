@@ -35,15 +35,14 @@ const StudentSideBar: React.FC = () => {
 
 
   return (
-    <div className='flex h-screen flex-col justify-start border-r-2 border-zinc-500/25 text-sm font-extrabold tracking-wide text-gray-500 dark:text-duoGrayDark-lightest'>
-      <label className='mb-2 mt-2 pb-2 pl-6 pr-6 pt-6 text-[2rem] font-[850] text-duoGreen-default'>
+    <section className='flex h-screen w-full select-none flex-col justify-center border-r-2 border-duoGray-light bg-duoGray-lighter font-extrabold tracking-wide text-duoGray-darker dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest dark:text-duoGrayDark-lightest'>
+      <label className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6 text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'>
         duolingo
       </label>
 
-      <ul className='mx-auto w-[90%]'>
+
       <ItemsList itemsList={sidebarItems} />
-      </ul>
-    </div>
+    </section>
   );
 };
 
