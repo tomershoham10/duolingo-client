@@ -26,6 +26,7 @@ import RoundButton from '@/components/RoundButton';
 import { TiPlus } from 'react-icons/ti';
 import { FiTrash2 } from 'react-icons/fi';
 import { addLessonByLevelId } from '@/app/API/classes-service/lessons/functions';
+import { LESSONS_API, LEVELS_API, UNITS_API } from '@/app/API/classes-service/apis';
 
 const SyllabusInfo: React.FC = () => {
   const selectedCourse = useStore(
@@ -180,6 +181,39 @@ const SyllabusInfo: React.FC = () => {
     }
   }, [fatherId, fieldId, fieldToEdit]);
 
+  const handleDeleteButton = useCallback(async () => {
+
+    try {
+      if (!!fieldId && !!fatherId) {
+        switch (fieldToEdit) {
+          case fieldToEditType.UNIT:
+            return await pRetry(
+              () => deleteItemById(fieldId, UNITS_API.DELLETE_UNIT_BY_UNIT_ID),
+              {
+                retries: 5,
+              }
+            );
+          case fieldToEditType.LEVEL:
+            return await pRetry(
+              () => deleteItemById(fieldId, LEVELS_API.DELLETE_LEVEL_BY_LEVEL_ID),
+              {
+                retries: 5,
+              }
+            );
+          case fieldToEditType.LESSON:
+            return await pRetry(
+              () => deleteItemById(fieldId, LESSONS_API.DELLETE_LESSON_BY_LESSON_ID),
+              {
+                retries: 5,
+              }
+            );
+        }
+      }
+    } catch (err) {
+      console.error('fetchData error:', err);
+    }
+  }, [fatherId, fieldId, fieldToEdit]);
+
   return (
     <section className='h-full w-full p-6'>
       {fieldToEdit ? (
@@ -223,7 +257,7 @@ const SyllabusInfo: React.FC = () => {
                 )}
               </li>
 
-              <RoundButton Icon={FiTrash2} onClick={() => {}} />
+              <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton()} />
             </ul>
           </section>
         </div>
@@ -235,3 +269,22 @@ const SyllabusInfo: React.FC = () => {
 };
 
 export default SyllabusInfo;
+async function deleteItemById(lessonId: string, api_path: string): Promise<any> {
+  try {
+    const response = await fetch(
+      `${api_path}/${lessonId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    return response.status === 201;
+  } catch (error: any) {
+    throw new Error(`error while addLessonByLevelId: ${error.message}`);
+  }
+}
+
