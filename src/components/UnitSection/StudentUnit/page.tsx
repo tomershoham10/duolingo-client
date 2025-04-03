@@ -213,7 +213,6 @@ const StudentUnitSection: React.FC = () => {
   }, [
     studentDashboardState.currentLevelId,
     courseDataState.units,
-    studentDashboardState,
   ]);
 
   useEffect(() => {
