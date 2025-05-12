@@ -7,10 +7,11 @@ import { fieldToEditType } from '@/app/store/stores/useInfoBarStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { ReactNode, useCallback } from 'react';
 import RoundButton from '@/components/RoundButton';
-import { FiTrash2 } from 'react-icons/fi';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import pRetry from 'p-retry';
 import { UNITS_API } from '@/app/API/classes-service/apis';
 import deleteItemById from '@/components/UnitSection/utils/buttonUtils';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 library.add(faBook);
 
 interface AdminUnitHeaderProps {
@@ -38,6 +39,7 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
     isSuspended,
     updateInfobarData,
   } = props;
+  const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
   const handleDeleteButton = useCallback(async (lessonId: string) => {
     try {
@@ -52,6 +54,11 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
       console.error('fetchData error:', err);
     }
   }, []);
+
+  const handleEditButton = useCallback(
+    (unitId: string) => {
+      updateSelectedPopup(PopupsTypes.EDIT_UNIT);
+    }, [])
 
   return (
     <div className='flex-col w-full'>
@@ -89,6 +96,17 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
               <Button label={'CREATE GUIDEBOOK'} color={ButtonColors.WHITE} />
             </div>
           )}
+          <RoundButton Icon={FiEdit} onClick={() => {
+            updateInfobarData(
+              fieldToEditType.UNIT,
+              unit._id,
+              unitIndex,
+              unit.levelsIds,
+              courseId,
+              isSuspended
+            );
+            handleEditButton(unit._id);
+          }} />
           <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton(unit._id)} />
         </div>
       </div>
