@@ -52,7 +52,7 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
           <label className='cursor-pointer'>Unit {unitIndex + 1}</label>
         </button>
         <label className='col-span-2 w-[90%] items-center justify-center font-semibold'>
-          {unit.description}
+          {"Description: " + unit.description}
         </label>
         <div className='row-span-2 mr-5 flex items-start justify-end'>
           {unit.guidebookId ? (

@@ -102,6 +102,7 @@ const AdminUnitLevelsSection: React.FC<AdminUnitLevelsSectionProps> = (
                             targetsList={targetsList}
                             updateInfobarData={updateInfobarData}
                             toggleAccordion={toggleAccordion}
+                            levelIndex={levelIndex}
                           />
                         </section>
                       ))}

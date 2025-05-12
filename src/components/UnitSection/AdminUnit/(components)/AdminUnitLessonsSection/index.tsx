@@ -10,6 +10,7 @@ interface AdminUnitLessonsSectionProps {
   courseDataState: CourseDataType;
   exerciseAccordion: string[];
   targetsList: TargetType[] | null;
+  levelIndex: number;
   updateInfobarData: (
     filedType: fieldToEditType,
     fieldId: string,
@@ -31,6 +32,7 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
     courseDataState,
     exerciseAccordion,
     targetsList,
+    levelIndex,
     updateInfobarData,
     toggleAccordion,
   } = props;
@@ -53,7 +55,7 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
           }}
         >
           <span>
-            LESSON
+            Level {levelIndex + 1}
             {' - '}
             {lesson.name}
           </span>
