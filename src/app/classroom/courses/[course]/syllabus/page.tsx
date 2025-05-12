@@ -6,7 +6,7 @@ import useStore from '@/app/store/useStore';
 import AdminUnit from '@/components/UnitSection/AdminUnit/page';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
-import { createByCourse } from '@/app/API/classes-service/units/functions';
+import { createUnitByCourse } from '@/app/API/classes-service/units/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import LodingAdminSection from '@/components/UnitSection/AdminUnit/(components)/LodingAdminSection/page';
 import {
@@ -72,7 +72,7 @@ const Syllabus: React.FC = () => {
   const addUnit = useCallback(async () => {
     try {
       const status = await pRetry(
-        () => createByCourse(courseDataState.courseId!),
+        () => createUnitByCourse(courseDataState.courseId!),
         {
           retries: 5,
         }
@@ -103,7 +103,7 @@ const Syllabus: React.FC = () => {
               courseDataState={courseDataState}
               courseDataDispatch={courseDataDispatch}
             />
-            <RoundButton label='add unit' Icon={TiPlus} onClick={addUnit} />
+            <RoundButton label='Add Unit' Icon={TiPlus} onClick={addUnit} />
           </section>
         ) : (
           <div className='flex h-full w-full flex-col justify-start'>

@@ -58,10 +58,10 @@ const SyllabusInfo: React.FC = () => {
       switch (fieldToEdit) {
         case fieldToEditType.UNIT:
           updateSelectedPopup(PopupsTypes.EDIT_UNIT);
-
+          break;
         case fieldToEditType.LEVEL:
           updateSelectedPopup(PopupsTypes.EDIT_LEVEL);
-
+          break;
         case fieldToEditType.LESSON:
           updateSelectedPopup(PopupsTypes.EDIT_LESSON);
           break;

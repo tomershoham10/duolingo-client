@@ -29,7 +29,7 @@ export const getUnits = async (): Promise<UnitType[] | null> => {
     }
 };
 
-export const createByCourse = async (courseId: string): Promise<number> => {
+export const createUnitByCourse = async (courseId: string): Promise<number> => {
     try {
         const response = await fetch(
             `${UNITS_API.CREATE_BY_COURSE}`,
