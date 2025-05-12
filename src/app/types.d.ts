@@ -16,6 +16,7 @@ interface CoursesType {
 // ------ units ------- //
 
 interface UnitType {
+    name: string | undefined;
     _id: string;
     levelsIds: string[];
     suspendedLevelsIds: string[];

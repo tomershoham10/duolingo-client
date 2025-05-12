@@ -5,6 +5,7 @@ export enum EditUnitAction {
     SET_SUSPENDED_LEVELS = 'setSuspendedLevels',
     ADD_LEVEL = 'addLevel',
     DELETE_LEVEL = 'deleteLevel',
+    SET_NAME = "setName",
 }
 
 type Action =
@@ -14,11 +15,13 @@ type Action =
     | { type: EditUnitAction.SET_SUSPENDED_LEVELS, payload: string[] }
     | { type: EditUnitAction.ADD_LEVEL, payload: string }
     | { type: EditUnitAction.DELETE_LEVEL, payload: string }
+    | { type: EditUnitAction.SET_NAME, payload: string | undefined }
 
 export interface UnitDataType {
     unitId: string | null,
     description: string | undefined,
     levels: string[],
+    name: string | undefined,
 }
 
 export const editUnitReducer = (
@@ -36,6 +39,8 @@ export const editUnitReducer = (
             return { ...state, levels: [...state.levels, action.payload] };
         case EditUnitAction.DELETE_LEVEL:
             return { ...state, levels: [...state.levels, action.payload] };
+        case EditUnitAction.SET_NAME:
+            return { ...state, name: action.payload };
 
         default:
             return state;

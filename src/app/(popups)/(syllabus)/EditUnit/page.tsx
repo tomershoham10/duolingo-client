@@ -33,6 +33,7 @@ const EditUnit: React.FC = () => {
     description: undefined,
     levels: [],
     suspendedLevels: [],
+    name: '',
   };
 
   useEffect(() => {
@@ -91,6 +92,11 @@ const EditUnit: React.FC = () => {
           payload: response.suspendedLevelsIds,
         });
 
+        editUnitDispatch({
+          type: EditUnitAction.SET_NAME,
+          payload: response.name,
+        });
+
         levelsDraggingDispatch({
           type: draggingAction.SET_ITEMS_LIST,
           payload: response.levelsIds.map((levelId, levelIndex) => ({
@@ -119,6 +125,7 @@ const EditUnit: React.FC = () => {
           _id: editUnitState.unitId,
           description: editUnitState.description,
           levels: editUnitState.levels,
+          name: editUnitState.name,
         };
         //   const res = await updateUnit(updatedUnit);
         const response = await pRetry(() => updateUnit(updatedUnit), {
@@ -141,6 +148,23 @@ const EditUnit: React.FC = () => {
       header={`Unit no. ${unitIndex + 1}`}
       onClose={() => {}}
     >
+      <section className='flex h-32 w-full flex-row gap-6'>
+        <p className='text-xl font-bold'>Name:</p>
+        <section className='h-full w-full'>
+          <Textbox
+            isEditMode={false}
+            fontSizeProps={FontSizes.MEDIUM}
+            placeHolder={'Add Name...'}
+            value={editUnitState.name}
+            onChange={(text: string) => {
+              editUnitDispatch({
+                type: EditUnitAction.SET_NAME,
+                payload: text,
+              });
+            }}
+          />
+        </section>
+      </section>
       <section className='flex h-32 w-full flex-row gap-6'>
         <p className='text-xl font-bold'>Description:</p>
         <section className='h-full w-full'>
