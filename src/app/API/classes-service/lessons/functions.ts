@@ -27,6 +27,33 @@ export const getAllLessons = async (): Promise<LessonType[] | null> => {
     }
 };
 
+export const getLessonById = async (lessonId: string|undefined,): Promise<LessonType | null> => {
+    try {
+        const response = await fetch(
+            `${COURSES_SERVICE_ENDPOINTS.LESSONS}/${lessonId}`,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (response.ok) {
+            const data = await response.json();
+            const resLesson = data.lesson;
+            // console.log("leves api - getAllLessons", resLessons);
+            return resLesson;
+        } else {
+            console.error("Failed to fetch Lesson: " + lessonId);
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching Lesson: " + lessonId + " :", error);
+        return null;
+    }
+};
+
 export const updateLesson = async (lessonId: string, newFields: Partial<LessonType>): Promise<boolean> => {
     try {
         console.log("updateLesson newFields", newFields);

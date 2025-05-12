@@ -11,7 +11,7 @@ import Button, {
   ButtonColors,
   ButtonTypes,
 } from '@/components/(buttons)/Button/page';
-import { updateLesson } from '@/app/API/classes-service/lessons/functions';
+import { getLessonById, updateLesson } from '@/app/API/classes-service/lessons/functions';
 import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { useStore } from 'zustand';
@@ -24,6 +24,8 @@ const EditLesson: React.FC = () => {
     (state) => state.syllabusFieldIndex
   );
 
+
+
   const exercisesList = useStore(
     useInfoBarStore,
     (state) => state.syllabusSubIdsListField
@@ -35,11 +37,13 @@ const EditLesson: React.FC = () => {
     { key: 'dateCreated', label: 'date created' },
   ];
 
+
   const initialEditLessonState = {
     exercisesList: [],
     selectedExercise: undefined,
     tableHeaders: headers,
     tableData: [],
+    lesson: undefined,
   };
 
   const [editLessonState, editLessonDispatch] = useReducer(
@@ -73,6 +77,31 @@ const EditLesson: React.FC = () => {
     console.log('editLessonState.tableData', editLessonState.tableData);
   }, [editLessonState.tableData]);
 
+  useEffect(() => {
+    console.log('editLessonState.lesson', editLessonState.lesson);
+    const fetchLesson = async () => {
+      try {
+        const lesson = await pRetry(
+          () =>
+            getLessonById(lessonId),
+          {
+            retries: 5,
+          }
+        );
+        console.log('fetch lesson', lesson);
+        if (lesson)
+          editLessonDispatch({
+            type: EditLessonAction.SET_LESSON,
+            payload: lesson
+          });
+      } catch (err) {
+        console.error('fetchExercises error:', err);
+      }
+    };
+    fetchLesson();
+
+  }, [lessonId]);
+
   const addExerciseToLesson = useCallback(async () => {
     try {
       if (lessonId && editLessonState.selectedExercise) {
@@ -99,8 +128,8 @@ const EditLesson: React.FC = () => {
     <PopupHeader
       popupType={PopupsTypes.EDIT_LESSON}
       size={PopupSizes.MEDIUM}
-      header={`lesson no. ${lessonIndex + 1}`}
-      onClose={() => {}}
+      header={`${editLessonState?.lesson?.name}`}
+      onClose={() => { }}
     >
       <p className='mb-2 text-xl font-bold'>Add an exercise:</p>
       <Table
@@ -116,8 +145,8 @@ const EditLesson: React.FC = () => {
         selectedRowIndex={
           !!editLessonState.selectedExercise
             ? editLessonState.exercisesList
-                .map((exercise) => exercise._id)
-                .indexOf(editLessonState.selectedExercise)
+              .map((exercise) => exercise._id)
+              .indexOf(editLessonState.selectedExercise)
             : undefined
         }
         isLoading={false}
