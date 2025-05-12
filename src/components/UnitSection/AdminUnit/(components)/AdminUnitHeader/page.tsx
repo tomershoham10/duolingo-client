@@ -5,7 +5,12 @@ import { faBook } from '@fortawesome/free-solid-svg-icons';
 
 import { fieldToEditType } from '@/app/store/stores/useInfoBarStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
+import RoundButton from '@/components/RoundButton';
+import { FiTrash2 } from 'react-icons/fi';
+import pRetry from 'p-retry';
+import { UNITS_API } from '@/app/API/classes-service/apis';
+import deleteItemById from '@/components/UnitSection/utils/buttonUtils';
 library.add(faBook);
 
 interface AdminUnitHeaderProps {
@@ -33,6 +38,21 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
     isSuspended,
     updateInfobarData,
   } = props;
+
+  const handleDeleteButton = useCallback(async (lessonId: string) => {
+    try {
+      return await pRetry(
+        () => deleteItemById(lessonId, UNITS_API.DELLETE_UNIT_BY_UNIT_ID),
+        {
+          retries: 5,
+        }
+      );
+    }
+    catch (err) {
+      console.error('fetchData error:', err);
+    }
+  }, []);
+
   return (
     <div className='flex-col w-full'>
       <div className='grid-col-3 grid h-[6.5rem] max-h-[6.5rem] min-h-[6.5rem] w-full grid-flow-col grid-rows-2 items-center justify-between rounded-t-lg bg-duoGreen-default py-3 pl-4 text-white dark:bg-duoGrayDark-dark sm:h-fit'>
@@ -69,12 +89,14 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
               <Button label={'CREATE GUIDEBOOK'} color={ButtonColors.WHITE} />
             </div>
           )}
+          <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton(unit._id)} />
         </div>
       </div>
       {children}
     </div>
   );
 };
+
 
 export default AdminUnitHeader;
 

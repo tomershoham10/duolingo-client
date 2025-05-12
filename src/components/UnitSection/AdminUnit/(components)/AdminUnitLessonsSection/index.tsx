@@ -1,6 +1,12 @@
 import { CourseDataType } from '@/reducers/courseDataReducer';
 import AdminUnitAccourdion from '../AdminUnitAccourdion/page';
 import { fieldToEditType } from '@/app/store/stores/useInfoBarStore';
+import RoundButton from '@/components/RoundButton';
+import { FiTrash2 } from 'react-icons/fi';
+import { useCallback } from 'react';
+import { LESSONS_API } from '@/app/API/classes-service/apis';
+import pRetry from 'p-retry';
+import deleteItemById from '@/components/UnitSection/utils/buttonUtils';
 
 interface AdminUnitLessonsSectionProps {
   levelId: string;
@@ -36,6 +42,21 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
     updateInfobarData,
     toggleAccordion,
   } = props;
+
+  const handleDeleteButton = useCallback(async (lessonId: string) => {
+    try {
+      return await pRetry(
+        () => deleteItemById(lessonId, LESSONS_API.DELLETE_LESSON_BY_LESSON_ID),
+        {
+          retries: 5,
+        }
+      );
+    }
+    catch (err) {
+      console.error('fetchData error:', err);
+    }
+  }, []);
+
 
   return (
     <div className='flex w-full flex-row pt-4 text-base font-medium'>
@@ -88,6 +109,7 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
             )}
         </div>
       </div>
+      <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton(lesson._id)} />
     </div>
   );
 };
