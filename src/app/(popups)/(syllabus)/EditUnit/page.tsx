@@ -18,6 +18,7 @@ import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import Input, { InputTypes } from '@/components/Input/page';
 
 const EditUnit: React.FC = () => {
   const addAlert = useAlertStore.getState().addAlert;
@@ -146,23 +147,21 @@ const EditUnit: React.FC = () => {
       popupType={PopupsTypes.EDIT_UNIT}
       size={PopupSizes.MEDIUM}
       header={`Unit no. ${unitIndex + 1}`}
-      onClose={() => {}}
+      onClose={() => { }}
     >
       <section className='flex h-32 w-full flex-row gap-6'>
         <p className='text-xl font-bold'>Name:</p>
         <section className='h-full w-full'>
-          <Textbox
-            isEditMode={false}
-            fontSizeProps={FontSizes.MEDIUM}
-            placeHolder={'Add Name...'}
-            value={editUnitState?.name? editUnitState.name : ''}
+          <Input
+            type={InputTypes.TEXT}
+            placeholder={'Add Name...'}
+            value={editUnitState?.name ? editUnitState.name : ''}
             onChange={(text: string) => {
               editUnitDispatch({
                 type: EditUnitAction.SET_NAME,
                 payload: text,
               });
-            }}
-          />
+            }} />
         </section>
       </section>
       <section className='flex h-32 w-full flex-row gap-6'>
@@ -172,7 +171,7 @@ const EditUnit: React.FC = () => {
             isEditMode={false}
             fontSizeProps={FontSizes.MEDIUM}
             placeHolder={'Add desription...'}
-            value={editUnitState?.description? editUnitState.description : ''}
+            value={editUnitState?.description ? editUnitState.description : ''}
             onChange={(text: string) => {
               editUnitDispatch({
                 type: EditUnitAction.SET_DESCRIPTION,
