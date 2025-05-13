@@ -25,6 +25,7 @@ export const USERS_API = {
     GET_USERS_BY_COURSE_ID: `${USERS_SERVICE_ENDPOINT}/getUsersByCourseId`,
     LOGIN: `${USERS_SERVICE_ENDPOINT}/login`,
     UPDATE_NEXT_LESSON_ID: `${USERS_SERVICE_ENDPOINT}/updateNextLessonId`,
+    GET_ALL_USERS: `${USERS_SERVICE_ENDPOINT}/`,
 }
 
 export const registerUser = async (userName: string, tId: string, password: string, permission: string, courseId: string | undefined): Promise<number | undefined> => {
@@ -192,6 +193,27 @@ export const updateNextLessonIdForUser = async (userId: string): Promise<any | n
         } else return null
     } catch (error) {
         console.error("updating user Error:", error);
+        return null;
+    }
+}
+
+export const getAllUsers = async (): Promise<UserType[] | null> => {
+    try {
+        const response = await fetch(`${USERS_API.GET_ALL_USERS}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (response.ok) {
+            const usersList = await response.json() as UserType[];
+            console.log("get all users", usersList);
+            return usersList;
+        } else return null;
+    }
+    catch (error) {
+        console.error("getAllUsers Error:", error);
         return null;
     }
 }

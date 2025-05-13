@@ -9,6 +9,7 @@ import {
   faRightToBracket,
   faSquarePlus,
   faDatabase,
+  faUsersRectangle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import pRetry from 'p-retry';
@@ -25,7 +26,7 @@ import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import CourseList from './CourseList';
 import ItemsList from './ItemsList';
 
-library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase);
+library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase, faUsersRectangle);
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();
@@ -84,7 +85,7 @@ const AdminSideBar: React.FC = () => {
       const course = coursesList.filter((course) =>
         !!selectedCourse.name
           ? course.name?.toLocaleLowerCase() ===
-            selectedCourse.name.toLocaleLowerCase()
+          selectedCourse.name.toLocaleLowerCase()
           : course
       )[0];
 
@@ -125,6 +126,12 @@ const AdminSideBar: React.FC = () => {
       popup: PopupsTypes,
       icon: faHome,
       href: '/classroom/',
+    },
+    {
+      name: 'Users',
+      popup: PopupsTypes,
+      icon: faUsersRectangle,
+      href: '/users/',
     },
     {
       name: 'Files',
