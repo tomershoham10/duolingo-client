@@ -98,9 +98,7 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
               <Button label={'CREATE GUIDEBOOK'} color={ButtonColors.WHITE} />
             </div>
           )}
-          <RoundButton Icon={FiEdit} onClick={() => {
-            handleEditButton(unit._id);
-          }} />
+          <RoundButton Icon={FiEdit} onClick={() => handleEditButton(unit._id)} />
           <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton(unit._id)} />
         </div>
       </div>
