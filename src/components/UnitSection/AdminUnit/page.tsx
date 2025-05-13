@@ -10,7 +10,6 @@ import {
 import AdminUnitHeader from './(components)/AdminUnitHeader/page';
 import { useFetchTargets } from '@/app/_utils/hooks/(dropdowns)/useFechTargets';
 import AdminUnitLevelsSection from './(components)/AdminUnitLevelsSection';
-import { useAlertStore } from '@/app/store/stores/useAlertStore';
 
 interface AdminUnitProps {
   courseDataState: CourseDataType;
@@ -22,7 +21,6 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
 
   const targetsList = useFetchTargets();
 
-  const addAlert = useAlertStore.getState().addAlert;
 
   const fieldId = useInfoBarStore.getState().syllabusFieldId;
 

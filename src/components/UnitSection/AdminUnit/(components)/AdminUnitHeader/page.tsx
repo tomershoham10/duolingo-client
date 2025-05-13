@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 
-import { fieldToEditType } from '@/app/store/stores/useInfoBarStore';
+import { fieldToEditType, useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { ReactNode, useCallback } from 'react';
 import RoundButton from '@/components/RoundButton';
@@ -57,8 +57,10 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
 
   const handleEditButton = useCallback(
     (unitId: string) => {
+      updateFieldId(unitId);
       updateSelectedPopup(PopupsTypes.EDIT_UNIT);
     }, [])
+  const updateFieldId = useInfoBarStore.getState().updateSyllabusFieldId;
 
   return (
     <div className='flex-col w-full'>
@@ -97,14 +99,6 @@ const AdminUnitHeader: React.FC<AdminUnitHeaderProps> = (props) => {
             </div>
           )}
           <RoundButton Icon={FiEdit} onClick={() => {
-            updateInfobarData(
-              fieldToEditType.UNIT,
-              unit._id,
-              unitIndex,
-              unit.levelsIds,
-              courseId,
-              isSuspended
-            );
             handleEditButton(unit._id);
           }} />
           <RoundButton Icon={FiTrash2} onClick={() => handleDeleteButton(unit._id)} />
