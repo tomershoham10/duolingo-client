@@ -68,6 +68,7 @@ export const updateLesson = async (lessonId: string, newFields: Partial<LessonTy
                 body: JSON.stringify(newFields)
             },
         );
+        debugger;
         return response.ok;
     } catch (error) {
         console.error("Error fetching lesson:", error);

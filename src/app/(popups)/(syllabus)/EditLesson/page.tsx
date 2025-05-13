@@ -16,6 +16,8 @@ import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import { useAlertStore, AlertSizes } from '@/app/store/stores/useAlertStore';
+import Input, { InputTypes } from '@/components/Input/page';
 
 const EditLesson: React.FC = () => {
   const lessonId = useStore(useInfoBarStore, (state) => state.syllabusFieldId);
@@ -44,6 +46,7 @@ const EditLesson: React.FC = () => {
     tableHeaders: headers,
     tableData: [],
     lesson: undefined,
+    name: '',
   };
 
   const [editLessonState, editLessonDispatch] = useReducer(
@@ -89,11 +92,16 @@ const EditLesson: React.FC = () => {
           }
         );
         console.log('fetch lesson', lesson);
-        if (lesson)
+        if (lesson) {
           editLessonDispatch({
             type: EditLessonAction.SET_LESSON,
             payload: lesson
           });
+          editLessonDispatch({
+            type: EditLessonAction.SET_NAME,
+            payload: lesson.name
+          });
+        }
       } catch (err) {
         console.error('fetchExercises error:', err);
       }
@@ -124,13 +132,54 @@ const EditLesson: React.FC = () => {
     }
   }, [editLessonState.selectedExercise, exercisesList, lessonId]);
 
+
+  const addAlert = useAlertStore.getState().addAlert;
+
+  const sumbitUpdate = async () => {
+    try {
+      if (lessonId) {
+        const lessonUpdate = {
+          _id: lessonId,
+          name: editLessonState.name,
+        };
+        const response = await pRetry(() => updateLesson(lessonId, lessonUpdate), {
+          retries: 5,
+        });
+        response
+          ? addAlert('updated successfully', AlertSizes.small)
+          : addAlert('error upadting lesson', AlertSizes.small);
+        response ? location.reload() : null;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <PopupHeader
       popupType={PopupsTypes.EDIT_LESSON}
       size={PopupSizes.MEDIUM}
-      header={`${editLessonState?.lesson?.name}`}
+      header={`${editLessonState?.name}`}
       onClose={() => { }}
     >
+      <>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Name:
+        </p>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+          <Input
+            type={InputTypes.TEXT}
+            placeholder={'Name'}
+            value={editLessonState?.name}
+            onChange={(text: string) => {
+              editLessonDispatch({
+                type: EditLessonAction.SET_NAME,
+                payload: text,
+              });
+            }}
+          />
+        </div>
+      </>
       <p className='mb-2 text-xl font-bold'>Add an exercise:</p>
       <Table
         headers={editLessonState.tableHeaders}
@@ -159,6 +208,13 @@ const EditLesson: React.FC = () => {
           onClick={addExerciseToLesson}
         />
       </div>
+      <section className='absolute bottom-8 left-1/2 mx-auto w-44 flex-none -translate-x-1/2'>
+        <Button
+          label={'SUBMIT'}
+          color={ButtonColors.BLUE}
+          onClick={sumbitUpdate}
+        />
+      </section>
     </PopupHeader>
   );
 };

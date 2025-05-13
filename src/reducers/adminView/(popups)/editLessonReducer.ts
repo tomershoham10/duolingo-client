@@ -6,6 +6,7 @@ export enum EditLessonAction {
     SET_TABLE_DATA = 'setTableData',
     ADD_TABLE_ROW = 'addTableRow',
     SET_LESSON = 'setLesson',
+    SET_NAME = 'setName',
 }
 
 type Action =
@@ -14,6 +15,7 @@ type Action =
     | { type: EditLessonAction.SET_TABLE_DATA, payload: TableRow[] }
     | { type: EditLessonAction.ADD_TABLE_ROW, payload: TableRow }
     | { type: EditLessonAction.SET_LESSON, payload: LessonType }
+    | { type: EditLessonAction.SET_NAME, payload: string };
 
 export interface EditLessonType {
     exercisesList: ExerciseType[],
@@ -21,6 +23,7 @@ export interface EditLessonType {
     tableHeaders: TableHead[],
     tableData: TableRow[],
     lesson: LessonType | undefined,
+    name: string | undefined,
 }
 
 export const editLessonReducer = (
@@ -38,6 +41,8 @@ export const editLessonReducer = (
             return { ...state, tableData: [...state.tableData, action.payload] };
         case EditLessonAction.SET_LESSON:
             return { ...state, lesson: action.payload };
+        case EditLessonAction.SET_NAME:
+            return { ...state, name: action.payload };
         default:
             return state;
     }
