@@ -155,7 +155,7 @@ const EditUnit: React.FC = () => {
             isEditMode={false}
             fontSizeProps={FontSizes.MEDIUM}
             placeHolder={'Add Name...'}
-            value={editUnitState.name}
+            value={editUnitState?.name? editUnitState.name : ''}
             onChange={(text: string) => {
               editUnitDispatch({
                 type: EditUnitAction.SET_NAME,
@@ -172,7 +172,7 @@ const EditUnit: React.FC = () => {
             isEditMode={false}
             fontSizeProps={FontSizes.MEDIUM}
             placeHolder={'Add desription...'}
-            value={editUnitState.description}
+            value={editUnitState?.description? editUnitState.description : ''}
             onChange={(text: string) => {
               editUnitDispatch({
                 type: EditUnitAction.SET_DESCRIPTION,
