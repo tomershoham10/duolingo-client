@@ -110,7 +110,7 @@ const StudentUnitSection: React.FC = () => {
             result.lessonId
           )
         ) {
-          console.log('ADD_LOCKED_LESSON', courseDataState.results[r].lessonId);
+          console.log('ADD_LOCKED_LESSON',result.lessonId);
           studentDashboardDispatch({
             type: studentDashboardAction.ADD_LOCKED_LESSON,
             payload: result.lessonId,
