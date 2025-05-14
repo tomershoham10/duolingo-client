@@ -15,7 +15,7 @@ const useUserStoreObj = {
 
 const addAlert = useAlertStore.getState().addAlert;
 
-const host = process.env.NEXT_PUBLIC_HOST;
+const host = process.env.NEXT_PUBLIC_HOST || 'localhost';
 
 const ROUT = `http://${host}:4001`;
 
