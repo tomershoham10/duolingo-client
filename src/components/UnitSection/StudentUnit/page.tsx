@@ -83,8 +83,7 @@ const StudentUnitSection: React.FC = () => {
     if (courseDataState.results && courseDataState.results.length > 0) {
       console.log('courseDataState.results', courseDataState.results);
       for (const result of courseDataState.results) {
-        let numOfResultsInCurrentLesson =
-          result.results.results.length;
+        let numOfResultsInCurrentLesson = result.results.results.length;
 
         const numOfExercisesInCurrentLesson = result.results.numOfExercises;
 
