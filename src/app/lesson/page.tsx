@@ -105,8 +105,10 @@ const Lesson: React.FC = () => {
 
     if (currentExercise) {
       if (currentExercise.type === ExercisesTypes.FSA) {
+        const fsaExer = currentExercise as FsaType;
+        console.log(fsaExer);
       }
-      if (currentExercise.type === ExercisesTypes.SPOTRECC) {
+      else if (currentExercise.type === ExercisesTypes.SPOTRECC) {
         const spotreccExer = currentExercise as SpotreccType;
         console.log(currentSpotreccSubIndex, spotreccExer.subExercises.length);
         if (currentSpotreccSubIndex < spotreccExer.subExercises.length - 1) {
@@ -172,7 +174,7 @@ const Lesson: React.FC = () => {
             </section>
           </>
         ) : (
-          <LessonComplete score={85} />
+          <LessonComplete score={100} />
         )}
         <section id='footer-section'>
           <LessonFooter

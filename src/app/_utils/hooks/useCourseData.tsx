@@ -34,16 +34,7 @@ const useCourseData = (
       }
 
       // Process and dispatch units
-      const units = courseData.units.map(
-        ({ _id, levelsIds, suspendedLevelsIds, guidebookId, description, name }) => ({
-          _id,
-          levelsIds,
-          suspendedLevelsIds,
-          guidebookId,
-          description,
-          name,
-        })
-      );
+      const units = courseData.units;
       courseDataDispatch({
         type: CourseDataActionsList.SET_UNITS,
         payload: units,

@@ -1,6 +1,4 @@
 'use client';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,20 +9,15 @@ import {
   faFolderPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Link from 'next/link';
 import handleLogout from '@/app/_utils/functions/handleLogOut';
 import ItemsList from '../AdminSideBar/ItemsList';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faFolderPlus);
 
 const StudentSideBar: React.FC = () => {
-  const pathname = usePathname();
-
-  const [selected, setSelected] = useState<number>();
 
   const sidebarItems: SidebarItem[] = [
     { name: 'LEARN', icon: faHome, href: '/learn' },
-    { name: 'USERS', icon: faUser, href: '/users' },
   ];
 
   return (
