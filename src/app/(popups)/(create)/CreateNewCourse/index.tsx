@@ -20,13 +20,16 @@ const CreateNewCourse: React.FC = () => {
   const updateCoursesList = useCourseStore.getState().updateCoursesList;
 
   const [courseName, setCourseName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [isFailed, setIsFailed] = useState<boolean>(false);
 
   useEffect(() => {
     if (isFailed) {
-      courseName.length > 3 ? setIsFailed(false) : null;
+      if (courseName.length > 3 && description.length > 3) {
+        setIsFailed(false);
+      }
     }
-  }, [isFailed, courseName]);
+  }, [isFailed, courseName, description]);
 
   const updateCourseStore = useCallback(async () => {
     try {
@@ -50,7 +53,8 @@ const CreateNewCourse: React.FC = () => {
     async (formData: FormData) => {
       try {
         const courseName = formData.get('courseName');
-        console.log('create course:', courseName);
+        const description = formData.get('description');
+        console.log('create course:', courseName, 'description:', description);
 
         if (
           typeof courseName === 'string' &&
@@ -62,7 +66,7 @@ const CreateNewCourse: React.FC = () => {
         }
 
         const response = await pRetry(
-          () => (courseName ? createCourse(courseName.toString()) : null),
+          () => (courseName ? createCourse(courseName.toString(), description?.toString()) : null),
           {
             retries: 5,
           }
@@ -112,7 +116,6 @@ const CreateNewCourse: React.FC = () => {
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
           Course Name:
         </p>
-
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.TEXT}
@@ -122,6 +125,18 @@ const CreateNewCourse: React.FC = () => {
             onChange={(value: string) => setCourseName(value)}
           />
         </div>
+        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+          Description:
+        </p>
+        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
+        <Input
+           type={InputTypes.TEXT}
+            placeholder={'Description'}
+            name={'description'}
+            value={description}
+            onChange={(value: string) => setDescription(value)}
+            />
+          </div>
 
         <div className='col-span-2 col-start-2 mt-2 flex-none justify-center'>
           <Button

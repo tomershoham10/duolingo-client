@@ -13,12 +13,13 @@ interface UnitData extends UnitType {
 }
 
 interface CourseData extends CoursesType {
+    description: string;
     units: UnitData[];
 }
 
-export const createCourse = async (name: string): Promise<number | null> => {
+export const createCourse = async (name: string, description?: string): Promise<number | null> => {
     try {
-        console.log('createCourse', name);
+        console.log('createCourse', name, description);
         const response = await fetch(
             COURSES_SERVICE_ENDPOINTS.COURSES,
             {
@@ -27,7 +28,10 @@ export const createCourse = async (name: string): Promise<number | null> => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name: name })
+                body: JSON.stringify({ 
+                    name: name,
+                    description: description 
+                })
             });
 
         return response.status;
@@ -200,6 +204,7 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
         let fieldsToUpdate: Partial<CoursesType> = {};
 
         course.name ? fieldsToUpdate.name : null;
+        course.description ? fieldsToUpdate.description : null;
         course.unitsIds ? fieldsToUpdate.unitsIds : null;
         course.suspendedUnitsIds ? fieldsToUpdate.suspendedUnitsIds : null;
 
