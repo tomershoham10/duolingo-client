@@ -86,23 +86,17 @@ const StudentUnitSection: React.FC = () => {
         let numOfResultsInCurrentLesson =
           result.results.results.length;
 
-        const numOfExercisesInCurrentLesson =
-          result.results.numOfExercises;
+        const numOfExercisesInCurrentLesson = result.results.numOfExercises;
 
-        for (
-          let t: number = 0;
-          t < result.results.results.length;
-          t++
-        ) {
-          const res = result.results.results[t];
+        for (const res of result.results.results) {
 
           // res.score = -1 means that the user started the exercise but hasnt finished it yet
           // means he still needs to complete the lesson even though he started it
-
           if (res.score === -1) {
             numOfResultsInCurrentLesson = numOfResultsInCurrentLesson - 1;
           }
         }
+
         if (
           nextLessonId !== result.lessonId &&
           numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson &&
@@ -110,7 +104,7 @@ const StudentUnitSection: React.FC = () => {
             result.lessonId
           )
         ) {
-          console.log('ADD_LOCKED_LESSON',result.lessonId);
+          console.log('ADD_LOCKED_LESSON', result.lessonId);
           studentDashboardDispatch({
             type: studentDashboardAction.ADD_LOCKED_LESSON,
             payload: result.lessonId,
