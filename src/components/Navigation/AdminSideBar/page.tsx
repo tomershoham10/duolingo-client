@@ -25,6 +25,7 @@ import { PopupsTypes } from '@/app/store/stores/usePopupStore';
 import { ExercisesTypes } from '@/app/API/classes-service/exercises/functions';
 import CourseList from './CourseList';
 import ItemsList from './ItemsList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase, faUsersRectangle);
 
@@ -168,11 +169,6 @@ const AdminSideBar: React.FC = () => {
         },
       ],
     },
-    {
-      name: 'Settings',
-      icon: faCog,
-      subItems: [{ name: 'Log out', onClick: () => handleLogout() }],
-    },
   ];
 
   return (
@@ -182,7 +178,16 @@ const AdminSideBar: React.FC = () => {
       </label>
       <CourseList coursesList={coursesList} pathname={pathname} />
 
-      <ItemsList itemsList={sidebarItems} />
+      <div className="flex flex-col flex-1">
+        <ItemsList itemsList={sidebarItems} />
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-6 py-4 mt-auto mb-4 text-left text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+        >
+          <FontAwesomeIcon icon={faRightToBracket} className="w-6" />
+          <span>Log out</span>
+        </button>
+      </div>
     </section>
   );
 };
