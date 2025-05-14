@@ -81,19 +81,20 @@ const StudentUnitSection: React.FC = () => {
 
   useEffect(() => {
     if (courseDataState.results && courseDataState.results.length > 0) {
-      for (let r: number = 0; r < courseDataState.results.length; r++) {
+      console.log('courseDataState.results', courseDataState.results);
+      for (const result of courseDataState.results) {
         let numOfResultsInCurrentLesson =
-          courseDataState.results[r].results.results.length;
+          result.results.results.length;
 
         const numOfExercisesInCurrentLesson =
-          courseDataState.results[r].results.numOfExercises;
+          result.results.numOfExercises;
 
         for (
           let t: number = 0;
-          t < courseDataState.results[r].results.results.length;
+          t < result.results.results.length;
           t++
         ) {
-          const res = courseDataState.results[r].results.results[t];
+          const res = result.results.results[t];
 
           // res.score = -1 means that the user started the exercise but hasnt finished it yet
           // means he still needs to complete the lesson even though he started it
@@ -103,16 +104,16 @@ const StudentUnitSection: React.FC = () => {
           }
         }
         if (
-          nextLessonId !== courseDataState.results[r].lessonId &&
+          nextLessonId !== result.lessonId &&
           numOfExercisesInCurrentLesson > numOfResultsInCurrentLesson &&
           !studentDashboardState.lockedLessons.includes(
-            courseDataState.results[r].lessonId
+            result.lessonId
           )
         ) {
           console.log('ADD_LOCKED_LESSON', courseDataState.results[r].lessonId);
           studentDashboardDispatch({
             type: studentDashboardAction.ADD_LOCKED_LESSON,
-            payload: courseDataState.results[r].lessonId,
+            payload: result.lessonId,
           });
         }
       }
@@ -126,10 +127,9 @@ const StudentUnitSection: React.FC = () => {
   useEffect(() => {
     if (nextLessonId && courseDataState.lessons) {
       console.log('current level id 1', nextLessonId, courseDataState);
-      for (let i: number = 0; i < courseDataState.lessons.length; i++) {
-        const lessonsIds = courseDataState.lessons[i].data.map(
-          (lesson) => lesson._id
-        );
+      for (const lesson of courseDataState.lessons) {
+        const lessonsIds = lesson.data.map((lesson) => lesson._id);
+
         console.log(
           'current level id 2',
           courseDataState.lessons,
@@ -137,10 +137,9 @@ const StudentUnitSection: React.FC = () => {
           nextLessonId
         );
         if (lessonsIds.includes(nextLessonId)) {
-          console.log('current level id 3');
           studentDashboardDispatch({
             type: studentDashboardAction.SET_CURRENT_LEVEL_ID,
-            payload: courseDataState.lessons[i].fatherId || '',
+            payload: lesson.fatherId || '',
           });
           return;
         }
@@ -149,19 +148,17 @@ const StudentUnitSection: React.FC = () => {
   }, [nextLessonId, courseDataState.lessons, courseDataState]);
 
   useEffect(() => {
-    console.log('0000000', studentDashboardState);
+    console.log('studentDashboardState', studentDashboardState);
     if (studentDashboardState.currentLevelId && courseDataState.units) {
-      for (let i: number = 0; i < courseDataState.units.length; i++) {
-        console.log('111111111111');
-        const levelsIds = courseDataState.units[i].levelsIds;
+      for (const unit of courseDataState.units) {
+        const levelsIds = unit.levelsIds;
         if (
           levelsIds &&
           levelsIds.includes(studentDashboardState.currentLevelId)
         ) {
-          console.log('22222222222222');
           studentDashboardDispatch({
             type: studentDashboardAction.SET_CURRENT_UNIT_ID,
-            payload: courseDataState.units[i]._id,
+            payload: unit._id,
           });
           const finisedLevels = levelsIds.slice(
             0,
@@ -169,17 +166,16 @@ const StudentUnitSection: React.FC = () => {
           );
 
           console.log('finisedLevels1', levelsIds, finisedLevels);
-          for (let f: number = 0; f < finisedLevels.length; f++) {
-            if (
-              !studentDashboardState.finisedLevelsIds.includes(finisedLevels[f])
-            ) {
-              console.log('33333333333333');
+
+          for (const finishedLevelId of finisedLevels) {
+            if (!studentDashboardState.finisedLevelsIds.includes(finishedLevelId)) {
               studentDashboardDispatch({
                 type: studentDashboardAction.ADD_FINISHED_LEVEL_ID,
-                payload: finisedLevels[f],
+                payload: finishedLevelId,
               });
             }
           }
+
           let lockedLevels: string[];
           if (
             levelsIds.indexOf(studentDashboardState.currentLevelId) + 1 ===
@@ -187,7 +183,7 @@ const StudentUnitSection: React.FC = () => {
           ) {
             lockedLevels = [
               levelsIds[
-                levelsIds.indexOf(studentDashboardState.currentLevelId) + 1
+              levelsIds.indexOf(studentDashboardState.currentLevelId) + 1
               ],
             ];
           } else {
@@ -197,13 +193,12 @@ const StudentUnitSection: React.FC = () => {
           }
           console.log('lockedLevels1', lockedLevels);
 
-          for (let l: number = 0; l < lockedLevels.length; l++) {
-            if (
-              !studentDashboardState.lockedLevelsIds.includes(lockedLevels[l])
-            ) {
+          // add the current level to the locked levels
+          for (const lockedLevel of lockedLevels) {
+            if (!studentDashboardState.lockedLevelsIds.includes(lockedLevel)) {
               studentDashboardDispatch({
                 type: studentDashboardAction.ADD_LOCKED_LEVEL,
-                payload: lockedLevels[l],
+                payload: lockedLevel,
               });
             }
           }
@@ -225,17 +220,12 @@ const StudentUnitSection: React.FC = () => {
       const lockedUnits = unitsIds.slice(activeUnitIndex + 1);
       console.log('activeUnitIndex', activeUnitIndex);
 
-      for (let f: number = 0; f < finisedUnits.length; f++) {
-        const finishedUnit = courseDataState.units.filter(
-          (unit) => unit._id === finisedUnits[f]
-        )[0];
+      for (const fUnit of finisedUnits) {
+        const finishedUnit = courseDataState.units.filter((unit) => unit._id === fUnit)[0];
         const finishedLevels = finishedUnit.levelsIds;
         if (finishedLevels) {
-          for (let fl: number = 0; fl < finishedLevels.length; fl++) {
-            const finishedLevel = finishedLevels[fl];
-            if (
-              !studentDashboardState.finisedLevelsIds.includes(finishedLevel)
-            ) {
+          for (const finishedLevel of finishedLevels) {
+            if (!studentDashboardState.finisedLevelsIds.includes(finishedLevel)) {
               studentDashboardDispatch({
                 type: studentDashboardAction.ADD_FINISHED_LEVEL_ID,
                 payload: finishedLevel,
@@ -244,14 +234,12 @@ const StudentUnitSection: React.FC = () => {
           }
         }
       }
-      for (let l: number = 0; l < lockedUnits.length; l++) {
-        const lockedUnit = courseDataState.units.filter(
-          (unit) => unit._id === lockedUnits[l]
-        )[0];
+
+      for (const lUnit of lockedUnits) {
+        const lockedUnit = courseDataState.units.filter((unit) => unit._id === lUnit)[0];
         const lockedLevels = lockedUnit.levelsIds;
         if (lockedLevels) {
-          for (let ll: number = 0; ll < lockedLevels.length; ll++) {
-            const lockedLevel = lockedLevels[ll];
+          for (const lockedLevel of lockedLevels) {
             if (!lockedLevels.includes(lockedLevel)) {
               studentDashboardDispatch({
                 type: studentDashboardAction.ADD_LOCKED_LEVEL,
@@ -261,6 +249,7 @@ const StudentUnitSection: React.FC = () => {
           }
         }
       }
+
     }
   }, [
     studentDashboardState.currentUnitId,
@@ -348,153 +337,152 @@ const StudentUnitSection: React.FC = () => {
         {courseDataState.units
           ? courseDataState.units.length > 0
             ? courseDataState.units.map((unit, unitIndex) => (
-                <div
+              <div
+                key={unit._id}
+                className='basis-full items-center justify-center'
+              >
+                <section
                   key={unit._id}
-                  className='basis-full items-center justify-center'
+                  className='absolute inset-x-0 top-0 h-full'
                 >
-                  <section
-                    key={unit._id}
-                    className='absolute inset-x-0 top-0 h-full'
-                  >
-                    <div className='grid-col-3 mx-auto grid h-[7rem] w-[38rem] grid-flow-col grid-rows-2 rounded-xl bg-duoGreen-default text-white'>
-                      <label className='col-span-2 flex items-center justify-start pl-4 pt-4 text-2xl font-extrabold'>
-                        Unit {unitIndex + 1}
+                  <div className='grid-col-3 mx-auto grid h-[7rem] w-[38rem] grid-flow-col grid-rows-2 rounded-xl bg-duoGreen-default text-white'>
+                    <label className='col-span-2 flex items-center justify-start pl-4 pt-4 text-2xl font-extrabold'>
+                      Unit {unitIndex + 1}
+                    </label>
+                    {unit.description ? (
+                      <label className='col-span-2 flex items-center justify-start px-4 pb-3'>
+                        {unit.description}
                       </label>
-                      {unit.description ? (
-                        <label className='col-span-2 flex items-center justify-start px-4 pb-3'>
-                          {unit.description}
+                    ) : null}
+                    <div className='row-span-2 mr-4 flex cursor-pointer items-center justify-end'>
+                      <button className='hover:border-duoGreen-borderHover flex w-40 flex-row items-center justify-start rounded-2xl border-[2.5px] border-b-[4px] border-duoGreen-darker bg-duoGreen-button p-3 text-sm font-bold hover:bg-duoGreen-default hover:text-duoGreen-textHover active:border-[2.5px]'>
+                        <FontAwesomeIcon
+                          className='ml-2 mr-2 h-6 w-6'
+                          icon={faBook}
+                        />
+                        <label className='text-md cursor-pointer items-center justify-center text-center font-extrabold'>
+                          GUIDEBOOK
                         </label>
-                      ) : null}
-                      <div className='row-span-2 mr-4 flex cursor-pointer items-center justify-end'>
-                        <button className='hover:border-duoGreen-borderHover flex w-40 flex-row items-center justify-start rounded-2xl border-[2.5px] border-b-[4px] border-duoGreen-darker bg-duoGreen-button p-3 text-sm font-bold hover:bg-duoGreen-default hover:text-duoGreen-textHover active:border-[2.5px]'>
-                          <FontAwesomeIcon
-                            className='ml-2 mr-2 h-6 w-6'
-                            icon={faBook}
-                          />
-                          <label className='text-md cursor-pointer items-center justify-center text-center font-extrabold'>
-                            GUIDEBOOK
-                          </label>
-                        </button>
-                      </div>
+                      </button>
                     </div>
-                    <div className='h-full basis-full'>
-                      {courseDataState.levels &&
+                  </div>
+                  <div className='h-full basis-full'>
+                    {courseDataState.levels &&
                       courseDataState.levels.length > 0
-                        ? courseDataState.levels.map(
-                            (levelsObject, levelsObjectIndex) => (
-                              <div key={levelsObjectIndex} className='h-full'>
-                                {courseDataState.levels.length === 1 ||
-                                (studentDashboardState.lockedLevelsIds.length >
-                                  0 &&
-                                  levelsObject.fatherId === unit._id) ? (
-                                  <div className='my-6 flex h-full flex-col items-center'>
-                                    {levelsObject.data.length > 0
-                                      ? levelsObject.data.map(
-                                          (level, levelIndex) => (
-                                            <section key={level._id}>
-                                              {level &&
-                                              level.lessonsIds &&
-                                              level.lessonsIds.length > 0 ? (
-                                                studentDashboardState.lockedLevelsIds.includes(
-                                                  level._id
-                                                ) ? (
-                                                  <div
-                                                    className={`relative flex ${possitionByModularAddition(
-                                                      levelIndex
-                                                    )} mt-2 h-fit w-fit`}
-                                                  >
-                                                    <LessonButton
-                                                      status={Status.LOCKED}
-                                                    />
-                                                  </div>
-                                                ) : studentDashboardState.finisedLevelsIds.includes(
-                                                    level._id
-                                                  ) ? (
-                                                  <div
-                                                    className={`relative flex ${possitionByModularAddition(
-                                                      levelIndex
-                                                    )} mt-2 h-fit w-fit`}
-                                                  >
-                                                    <LessonButton
-                                                      status={Status.DONE}
-                                                    />
-                                                  </div>
-                                                ) : nextLessonId !==
-                                                  undefined ? (
-                                                  <div
-                                                    className={`relative flex ${possitionByModularAddition(
-                                                      levelIndex
-                                                    )} ${
-                                                      levelIndex === 0
-                                                        ? 'mt-10'
-                                                        : ''
-                                                    } h-fit w-fit`}
-                                                  >
-                                                    <>
-                                                      <section className='absolute left-1/2 z-50'>
-                                                        <Tooltip
-                                                          isFloating={true}
-                                                          color={
-                                                            TooltipColors.GREEN
-                                                          }
-                                                        />
-                                                      </section>
-                                                      <LessonButton
-                                                        status={Status.PROGRESS}
-                                                        numberOfLessonsMade={
-                                                          studentDashboardState.numOfLessonsMade
-                                                        }
-                                                        numberOfTotalLessons={
-                                                          level.lessonsIds
-                                                            .length
-                                                        }
-                                                        onClick={() =>
-                                                          studentDashboardDispatch(
-                                                            {
-                                                              type: studentDashboardAction.TOGGLE_IS_NEXT_LESSON_POPUP_VISIBLE,
-                                                            }
-                                                          )
-                                                        }
-                                                        buttonRef={
-                                                          levelButtonRef
-                                                        }
-                                                      />
-                                                      <StartLessonPopup
-                                                        numberOfLessonsMade={
-                                                          studentDashboardState.numOfLessonsMade +
-                                                          1
-                                                        }
-                                                        numberOfTotalLessons={
-                                                          level.lessonsIds
-                                                            .length
-                                                        }
-                                                        nextLessonId={
-                                                          nextLessonId
-                                                        }
-                                                        startLessonRef={
-                                                          startLessonRef
-                                                        }
-                                                      />
-                                                    </>
-                                                  </div>
-                                                ) : null
-                                              ) : null}
-                                            </section>
-                                          )
-                                        )
-                                      : null}
-                                  </div>
-                                ) : (
-                                  <p>unit finished</p>
-                                )}
+                      ? courseDataState.levels.map(
+                        (levelsObject, levelsObjectIndex) => (
+                          <div key={levelsObjectIndex} className='h-full'>
+                            {courseDataState.levels.length === 1 ||
+                              (studentDashboardState.lockedLevelsIds.length >
+                                0 &&
+                                levelsObject.fatherId === unit._id) ? (
+                              <div className='my-6 flex h-full flex-col items-center'>
+                                {levelsObject.data.length > 0
+                                  ? levelsObject.data.map(
+                                    (level, levelIndex) => (
+                                      <section key={level._id}>
+                                        {level &&
+                                          level.lessonsIds &&
+                                          level.lessonsIds.length > 0 ? (
+                                          studentDashboardState.lockedLevelsIds.includes(
+                                            level._id
+                                          ) ? (
+                                            <div
+                                              className={`relative flex ${possitionByModularAddition(
+                                                levelIndex
+                                              )} mt-2 h-fit w-fit`}
+                                            >
+                                              <LessonButton
+                                                status={Status.LOCKED}
+                                              />
+                                            </div>
+                                          ) : studentDashboardState.finisedLevelsIds.includes(
+                                            level._id
+                                          ) ? (
+                                            <div
+                                              className={`relative flex ${possitionByModularAddition(
+                                                levelIndex
+                                              )} mt-2 h-fit w-fit`}
+                                            >
+                                              <LessonButton
+                                                status={Status.DONE}
+                                              />
+                                            </div>
+                                          ) : nextLessonId !==
+                                            undefined ? (
+                                            <div
+                                              className={`relative flex ${possitionByModularAddition(
+                                                levelIndex
+                                              )} ${levelIndex === 0
+                                                ? 'mt-10'
+                                                : ''
+                                                } h-fit w-fit`}
+                                            >
+                                              <>
+                                                <section className='absolute left-1/2 z-50'>
+                                                  <Tooltip
+                                                    isFloating={true}
+                                                    color={
+                                                      TooltipColors.GREEN
+                                                    }
+                                                  />
+                                                </section>
+                                                <LessonButton
+                                                  status={Status.PROGRESS}
+                                                  numberOfLessonsMade={
+                                                    studentDashboardState.numOfLessonsMade
+                                                  }
+                                                  numberOfTotalLessons={
+                                                    level.lessonsIds
+                                                      .length
+                                                  }
+                                                  onClick={() =>
+                                                    studentDashboardDispatch(
+                                                      {
+                                                        type: studentDashboardAction.TOGGLE_IS_NEXT_LESSON_POPUP_VISIBLE,
+                                                      }
+                                                    )
+                                                  }
+                                                  buttonRef={
+                                                    levelButtonRef
+                                                  }
+                                                />
+                                                <StartLessonPopup
+                                                  numberOfLessonsMade={
+                                                    studentDashboardState.numOfLessonsMade +
+                                                    1
+                                                  }
+                                                  numberOfTotalLessons={
+                                                    level.lessonsIds
+                                                      .length
+                                                  }
+                                                  nextLessonId={
+                                                    nextLessonId
+                                                  }
+                                                  startLessonRef={
+                                                    startLessonRef
+                                                  }
+                                                />
+                                              </>
+                                            </div>
+                                          ) : null
+                                        ) : null}
+                                      </section>
+                                    )
+                                  )
+                                  : null}
                               </div>
-                            )
-                          )
-                        : null}
-                    </div>
-                  </section>
-                </div>
-              ))
+                            ) : (
+                              <p>unit finished</p>
+                            )}
+                          </div>
+                        )
+                      )
+                      : null}
+                  </div>
+                </section>
+              </div>
+            ))
             : null
           : null}
       </div>
