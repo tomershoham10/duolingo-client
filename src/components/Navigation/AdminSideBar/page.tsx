@@ -5,6 +5,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faHome,
   faUser,
+  faChalkboardUser,
   faCog,
   faRightToBracket,
   faSquarePlus,
@@ -129,6 +130,12 @@ const AdminSideBar: React.FC = () => {
       href: '/classroom/',
     },
     {
+      name: 'Courses',
+      popup: PopupsTypes,
+      icon: faChalkboardUser,
+      href: '/courses/',
+    },
+    {
       name: 'Users',
       popup: PopupsTypes,
       icon: faUsersRectangle,
@@ -176,7 +183,7 @@ const AdminSideBar: React.FC = () => {
       <label className='mb-2 mt-2 flex items-center justify-center pb-2 pl-6 pr-6 pt-6 text-xl font-[850] text-duoBlue-default md:text-[1.5rem] lg:text-[2rem]'>
         duolingo
       </label>
-      <CourseList coursesList={coursesList} pathname={pathname} />
+      {/* <CourseList coursesList={coursesList} pathname={pathname} /> */}
 
       <div className="flex flex-col flex-1">
         <ItemsList itemsList={sidebarItems} />

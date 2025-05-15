@@ -260,3 +260,21 @@ export const unsuspendUnit = async (courseId: string, unitId: string): Promise<b
         throw new Error(`error while unsuspend Unit: ${error.message}`);
     }
 }
+
+export const deleteCourse = async (courseId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `${COURSES_SERVICE_ENDPOINTS.COURSES}/${courseId}`,
+            {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error(`Error while deleting course: ${error.message}`);
+    }
+};
