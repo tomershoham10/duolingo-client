@@ -7,7 +7,9 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 type CourseState = {
     selectedCourse: CoursesType | null;
     coursesList: CoursesType[] | null;
+    selectedCourseId: string | null;
 }
+
 type Action = {
     // updateCourseId: (_id: CoursesType['_id']) => void;
     // updateCourseName: (name: CoursesType['name']) => void;
@@ -15,19 +17,20 @@ type Action = {
     // addCourse: (course:) => void;
     updateSelectedCourse: (selectedCourse: CourseState['selectedCourse']) => void;
     updateCoursesList: (coursesList: CourseState['coursesList']) => void;
+    setSelectedCourseId: (courseId: string | null) => void;
 }
-
 
 export const useCourseStore = create<CourseState & Action>(
     (set) => ({
         selectedCourse: null,
         coursesList: null,
-        // updateSelectedCourse: () => set((selectedCourse) => (selectedCourse: selectedCourse)),
+        selectedCourseId: null,
         updateSelectedCourse: (selectedCourse) => set(() => ({ selectedCourse: selectedCourse })),
         // updateCourseName: (name) => set(() => ({ name: name })),
         // updateUnitsList: (units) => set(() => ({ units: units })),
         // addCourse: (course) => set((state) => ({ [...state.coursesList, course] })),
         updateCoursesList: (coursesList) => set(() => ({ coursesList: coursesList })),
+        setSelectedCourseId: (courseId) => set(() => ({ selectedCourseId: courseId })),
     })
 )
 

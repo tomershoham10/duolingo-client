@@ -6,6 +6,7 @@ export enum PopupsTypes {
     CLOSED = "closed",
     NEW_USER = "newUser",
     NEW_COURSE = "newCourse",
+    DELETE_COURSE = 'deleteCourse',
     NEW_UNIT = "newUnit",
     START_LESSON = "startLesson",
     ADMIN_EDIT = "adminEdit",
@@ -13,7 +14,6 @@ export enum PopupsTypes {
     EDIT_METADATA = "editMetadata",
     SONOLIST_METADATA = "sonolistMetadata",
     EDIT_SPOTRECC = "editSpotrecc",
-
     EDIT_LESSON = "editLesson",
     EDIT_LEVEL = "editLevel",
     EDIT_UNIT = "editUnit",

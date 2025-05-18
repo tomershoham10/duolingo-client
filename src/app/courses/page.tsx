@@ -19,19 +19,10 @@ const CoursesPage = () => {
     updateSelectedPopup(PopupsTypes.NEW_COURSE);
   }, [updateSelectedPopup]);
 
-  const handleDeleteCourse = useCallback(async (courseId: string) => {
-    try {
-      const status = await pRetry(() => deleteCourse(courseId), {
-        retries: 5,
-      });
-      if (status) {
-        const updatedCourses = coursesList?.filter(course => course._id !== courseId) || [];
-        updateCoursesList(updatedCourses);
-      }
-    } catch (err) {
-      console.error('Delete course error:', err);
-    }
-  }, [coursesList, updateCoursesList]);
+  const handleDeleteCourse = useCallback((courseId: string) => {
+    updateSelectedPopup(PopupsTypes.DELETE_COURSE);
+    useCourseStore.getState().setSelectedCourseId(courseId);
+  }, [updateSelectedPopup]);
 
   return (
     <main className='flex h-full w-full flex-col items-center justify-start gap-6 p-6'>

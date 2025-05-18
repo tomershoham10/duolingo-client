@@ -4,6 +4,7 @@ import InfoBar from '@/components/InfoBar/page';
 const CreateNewUser = lazy(() => import('../(popups)/(create)/CreateNewUser'));
 const CreateNewCourse = lazy(() => import('../(popups)/(create)/CreateNewCourse'));
 const CreateNewUnit = lazy(() => import('@/app/(popups)/(create)/CreateNewUnit'));
+const DeleteCourse = lazy(() => import('@/app/(popups)/(delete)/DeleteCourse'))
 
 export default function RootLayout({
   children,
@@ -14,6 +15,7 @@ export default function RootLayout({
     <div className='flex h-screen w-screen flex-row'>
       <CreateNewUser />
       <CreateNewCourse />
+      <DeleteCourse />
       <CreateNewUnit />
       <div className='flex h-full w-full flex-row'>
         <div className='basis-1/5 2xl:basis-[15%] 3xl:basis-[10%]'>
