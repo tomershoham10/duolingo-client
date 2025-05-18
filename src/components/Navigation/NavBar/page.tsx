@@ -78,8 +78,12 @@ const NavBar: React.FC = () => {
   return (
     <>
       <div className='block w-full border-b-2 pt-4 dark:border-duoGrayDark-light'>
-        <p className='pb-4 pl-5 pt-2 text-3xl font-extrabold uppercase text-duoGray-darkest dark:text-duoGrayDark-lightest 3xl:pb-10 3xl:pt-5 3xl:text-5xl'>
-          {!!selectedCourse && selectedCourse.name ? selectedCourse.name : null} course
+       
+        <p className='pb-1 pl-6 pt-2 text-2xl font-extrabold capitalize text-duoGray-darkest dark:text-duoGrayDark-lightest lg:text-3xl 3xl:text-4xl'>
+          {!!selectedCourse && selectedCourse.name ? selectedCourse.name : null}
+        </p>
+        <p className='pb-4 pl-6 text-sm font-medium text-duoGray-light/75 dark:text-duoGrayDark-light lg:text-base'>
+          {!!selectedCourse && selectedCourse.description ? selectedCourse.description : null}
         </p>
         <ul
           className='bt-2 relative flex w-max justify-center space-x-5 pb-2 pl-3 pr-3 text-center text-sm 

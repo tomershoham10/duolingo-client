@@ -123,12 +123,12 @@ const AdminSideBar: React.FC = () => {
   }, [coursesList, fetchCoursesList]);
 
   const sidebarItems: SidebarItem[] = [
-    {
-      name: 'Dashboard',
-      popup: PopupsTypes,
-      icon: faHome,
-      href: '/classroom/',
-    },
+    // {
+    //   name: 'Dashboard',
+    //   popup: PopupsTypes,
+    //   icon: faHome,
+    //   href: '/classroom/',
+    // },
     {
       name: 'Courses',
       popup: PopupsTypes,

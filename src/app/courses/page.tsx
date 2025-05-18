@@ -6,8 +6,7 @@ import { usePopupStore } from '../store/stores/usePopupStore';
 import { PopupsTypes } from '../store/stores/usePopupStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { FaTrash } from 'react-icons/fa';
-import { deleteCourse } from '@/app/API/classes-service/courses/functions';
-import pRetry from 'p-retry';
+
 import Link from "next/link";
 
 const CoursesPage = () => {
@@ -37,7 +36,14 @@ const CoursesPage = () => {
 
       <section className='grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {coursesList?.map((item) => (
-          <div key={item._id} className='flex flex-col gap-4 rounded-lg border border-duoGray-light bg-white p-6 shadow-sm transition-all hover:border-duoBlue-light hover:shadow-md dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
+          <div key={item._id} className='relative flex flex-col gap-4 rounded-lg border border-duoGray-light bg-white p-6 shadow-sm transition-all hover:border-duoBlue-light hover:shadow-md dark:border-duoGrayDark-light dark:bg-duoBlueDark-darkest'>
+            <button
+              onClick={() => handleDeleteCourse(item._id)}
+              className='absolute right-4 top-4 text-duoRed-default/60 hover:text-duoRed-dark transition-colors'
+              title='Delete course'
+            >
+              <FaTrash className="h-4 w-4" />
+            </button>
             <div className='flex justify-between items-start'>
               <Link
                 href={`/classroom/courses/${item.name?.toLowerCase()}/students`}
@@ -52,13 +58,6 @@ const CoursesPage = () => {
                   </p>
                 </div>
               </Link>
-              <button
-                onClick={() => handleDeleteCourse(item._id)}
-                className='text-duoRed-default hover:text-duoRed-dark transition-colors p-2'
-                title='Delete course'
-              >
-                <FaTrash />
-              </button>
             </div>
           </div>
         ))}

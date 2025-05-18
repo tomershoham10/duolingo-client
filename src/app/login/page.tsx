@@ -43,6 +43,12 @@ const Login: React.FC = () => {
       suppressHydrationWarning
       action={handleLogin}
     >
+      <label className='flex items-center justify-center pl-6 pr-6 pt-6 text-xl font-[850] text-duoBlue-default md:text-[1.75rem] lg:text-[2.5rem]'>
+        duolingo
+      </label>
+      <span className='mb-6 text-sm text-duoGray-dark/50 dark:text-duoGrayDark-lightest/50'>
+        Sonar Analyst Training System
+      </span>
       <label className='text-2xl font-extrabold'>Log in</label>
       <Input
         type={InputTypes.TEXT}
