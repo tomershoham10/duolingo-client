@@ -9,6 +9,7 @@ import {
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getCourseDataById } from '@/app/API/classes-service/courses/functions';
 import { getResultsByLessonAndUser } from '@/app/API/classes-service/results/functions';
+import { AlertSizes } from '@/app/store/stores/useAlertStore';
 
 const useCourseData = (
   userId: string | undefined,

@@ -7,11 +7,13 @@ import Input, { InputTypes } from '@/components/Input/page';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import Dropdown, { DropdownSizes } from '@/components/Dropdown';
 import useStore from '@/app/store/useStore';
-import { PopupsTypes } from '@/app/store/stores/usePopupStore';
+import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { registerUser } from '@/app/API/users-service/users/functions';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import pRetry from 'p-retry';
 import PopupHeader from '../../PopupHeader/page';
+
+const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
 const CreateNewUser: React.FC = () => {
   const coursesList = useStore(useCourseStore, (state) => state.coursesList);
@@ -104,6 +106,7 @@ const CreateNewUser: React.FC = () => {
         );
         console.log(response);
         if (response === 201) {
+          updateSelectedPopup(PopupsTypes.CLOSED);
           addAlert('User created successfully.', AlertSizes.small);
         }
         if (response === 500 || response === 404 || response === 400) {
@@ -120,6 +123,7 @@ const CreateNewUser: React.FC = () => {
       }
     },
     [addAlert]
+    
   );
 
   return (
