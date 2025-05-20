@@ -190,3 +190,40 @@ export const unsuspendLesson = async (levelId: string, lessonId: string): Promis
         throw new Error(`error while updating level: ${error.message}`);
     }
 }
+
+export const createByCourse = async (courseId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `${LEVELS_API.ADD_LEVEL_BY_COURSE}/${courseId}`,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        return response.status === 201;
+    } catch (error: any) {
+        throw new Error(`error while creating level by course: ${error.message}`);
+    }
+};
+
+export const deleteLevelById = async (levelId: string): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `${LEVELS_API.DELLETE_LEVEL_BY_LEVEL_ID}/${levelId}`,
+            {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.status === 201;
+    } catch (error: any) {
+        throw new Error(`error while deleting level: ${error.message}`);
+    }
+};

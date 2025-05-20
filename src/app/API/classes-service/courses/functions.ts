@@ -8,13 +8,9 @@ interface LevelData extends LevelType {
     lessons: LessonData[];
 }
 
-interface UnitData extends UnitType {
-    levels: LevelData[];
-}
-
 interface CourseData extends CoursesType {
     description: string;
-    units: UnitData[];
+    levels: LevelData[];
 }
 
 export const createCourse = async (name: string, description?: string): Promise<number | null> => {
@@ -106,7 +102,6 @@ export const getCourses = async (): Promise<CoursesType[] | null> => {
 
 export const getCourseByName = async (courseName: string): Promise<CoursesType | null> => {
     try {
-        // console.log("courses api - courseName", courseName);
         const response = await fetch(`${COURSES_API.GET_COURSE_BY_NAME}/${courseName}`, {
             method: "GET",
             credentials: "include",
@@ -114,13 +109,10 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
                 "Content-Type": "application/json",
             },
         });
-        // console.log("courses api - response", response);
 
         if (response.ok) {
             const data = await response.json();
             const course = data.course as CoursesType;
-            // console.log("api getCourseByType", course);
-            // console.log("courses api - course", data, course);
             const storedData = localStorage.getItem('courseData');
             let courseData = storedData ? JSON.parse(storedData) : {};
             courseData['selectedCourse'] = course;
@@ -130,7 +122,6 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
                 "coursesData",
                 JSON.stringify(updatedData),
             );
-            // console.log("getCourseByType", course);
             return course;
         } else {
             console.error("Failed to fetch course.");
@@ -153,49 +144,27 @@ export const getCourseDataById = async (courseId: string): Promise<CourseData | 
                 headers: {
                     "Content-Type": "application/json",
                 },
-            },
+            }
         );
         if (response.ok) {
             const data = await response.json();
-            console.log('getCourseDataById', data);
+            console.log('getCourseDataById RAW RESPONSE:', data);
+            
             const resData = data.courseData[0] as CourseData;
-            // console.log("resUnits", resUnits);
+            
+            // Log difference between levelsIds and actual levels
+            if (resData.levelsIds && resData.levels) {
+                console.log('Course has', resData.levelsIds.length, 'level IDs but', 
+                            resData.levels.length, 'level objects were returned');
+            }
+            
             return resData;
         } else {
             console.error('error while fetching course');
             return null;
         }
     } catch (error: any) {
-        throw new Error(`error while fetching units: ${error.message}`);
-    }
-};
-
-export const getUnsuspendedUnitsData = async (courseId: string): Promise<UnitType[]> => {
-    try {
-        // console.log("getUnsuspendedUnitsData", courseId);
-        const response = await fetch(
-            `${COURSES_API.GET_UNSUSPENDED_UNITS_BY_ID}/${courseId}`,
-            {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
-        );
-        if (response.status === 404) {
-            return [];
-        }
-        if (response.ok) {
-            const data = await response.json();
-            const resUnits = data.units as UnitType[];
-            // console.log("resUnits", resUnits);
-            return resUnits;
-        } else {
-            throw new Error('error while fetching units');
-        }
-    } catch (error: any) {
-        throw new Error(`error while fetching units: ${error.message}`);
+        throw new Error(`error while fetching course data: ${error.message}`);
     }
 };
 
@@ -203,10 +172,10 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
     try {
         let fieldsToUpdate: Partial<CoursesType> = {};
 
-        course.name ? fieldsToUpdate.name : null;
-        course.description ? fieldsToUpdate.description : null;
-        course.unitsIds ? fieldsToUpdate.unitsIds : null;
-        course.suspendedUnitsIds ? fieldsToUpdate.suspendedUnitsIds : null;
+        course.name ? fieldsToUpdate.name = course.name : null;
+        course.description ? fieldsToUpdate.description = course.description : null;
+        course.levelsIds ? fieldsToUpdate.levelsIds = course.levelsIds : null;
+        course.suspendedLevelsIds ? fieldsToUpdate.suspendedLevelsIds = course.suspendedLevelsIds : null;
 
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.COURSES}/${course._id}`,
@@ -222,42 +191,6 @@ export const updateCourse = async (course: Partial<CoursesType>): Promise<boolea
         return response.status === 200;
     } catch (error: any) {
         throw new Error(`error while updating course: ${error.message}`);
-    }
-}
-
-export const suspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
-    try {
-        const response = await fetch(
-            `${COURSES_API.SUSPENDED_UNITS}/${courseId}/${unitId}`,
-            {
-                method: "PUT",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
-        );
-        return response.status === 200;
-    } catch (error: any) {
-        throw new Error(`error while suspend Unit: ${error.message}`);
-    }
-}
-
-export const unsuspendUnit = async (courseId: string, unitId: string): Promise<boolean> => {
-    try {
-        const response = await fetch(
-            `${COURSES_API.UNSUSPENDED_UNIT}/${courseId}/${unitId}`,
-            {
-                method: "PUT",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
-        );
-        return response.status === 200;
-    } catch (error: any) {
-        throw new Error(`error while unsuspend Unit: ${error.message}`);
     }
 }
 

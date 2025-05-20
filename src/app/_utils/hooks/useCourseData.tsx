@@ -34,58 +34,60 @@ const useCourseData = (
         return;
       }
 
-      // Process and dispatch units
-      const units = courseData.units;
-      courseDataDispatch({
-        type: CourseDataActionsList.SET_UNITS,
-        payload: units,
-      });
-      courseDataDispatch({
-        type: CourseDataActionsList.SET_SUSPENDED_UNITS_IDS,
-        payload: courseData.suspendedUnitsIds,
-      });
+      console.log('RAW COURSE DATA:', courseData);
+      console.log('COURSE DATA LEVELS:', courseData.levels);
+      console.log('LEVELS IDS FROM COURSE:', courseData.levelsIds);
+
+      // Check if courseData.levels contains all levels or just one
+      if (courseData.levels && courseData.levelsIds && 
+          courseData.levels.length !== courseData.levelsIds.length) {
+        console.error('WARNING: Number of level objects does not match levelsIds length!');
+        console.error('Levels count:', courseData.levels.length);
+        console.error('LevelsIds count:', courseData.levelsIds.length);
+      }
 
       // Process and dispatch levels
-      const levels = courseData.units.flatMap((unit) => ({
-        fatherId: unit._id,
-        data: unit.levels.map(({ _id, lessonsIds, suspendedLessonsIds }) => ({
+      const levels = [{
+        fatherId: courseDataState.courseId,
+        data: courseData.levels.map(({ _id, name, lessonsIds, suspendedLessonsIds }) => ({
           _id,
+          name,
           lessonsIds,
           suspendedLessonsIds,
         })),
-      }));
+      }];
+      
+      console.log('PROCESSED LEVELS:', levels);
+      console.log('Level count in data array:', levels[0].data.length);
+      
       courseDataDispatch({
         type: CourseDataActionsList.SET_LEVELS,
         payload: levels,
       });
 
       // Process and dispatch lessons
-      const lessons = courseData.units.flatMap((unit) =>
-        unit.levels.flatMap((level) => ({
-          fatherId: level._id,
-          data: level.lessons.map(
-            ({ _id, name, exercisesIds, suspendedExercisesIds }) => ({
-              _id,
-              name,
-              exercisesIds,
-              suspendedExercisesIds,
-            })
-          ),
-        }))
-      );
+      const lessons = courseData.levels.flatMap((level) => ({
+        fatherId: level._id,
+        data: level.lessons.map(
+          ({ _id, name, exercisesIds, suspendedExercisesIds }) => ({
+            _id,
+            name,
+            exercisesIds,
+            suspendedExercisesIds,
+          })
+        ),
+      }));
       courseDataDispatch({
         type: CourseDataActionsList.SET_LESSONS,
         payload: lessons,
       });
 
       // Process and dispatch exercises
-      const exercises = courseData.units.flatMap((unit) =>
-        unit.levels.flatMap((level) =>
-          level.lessons.map((lesson) => ({
-            fatherId: lesson._id,
-            data: lesson.exercises,
-          }))
-        )
+      const exercises = courseData.levels.flatMap((level) =>
+        level.lessons.map((lesson) => ({
+          fatherId: lesson._id,
+          data: lesson.exercises,
+        }))
       );
       courseDataDispatch({
         type: CourseDataActionsList.SET_EXERCISES,

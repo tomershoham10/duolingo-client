@@ -10,8 +10,8 @@ interface CoursesType {
     _id: string;
     name: string;
     description: string;
-    unitsIds: string[];
-    suspendedUnitsIds: string[];
+    levelsIds: string[];
+    suspendedLevelsIds: string[];
 }
 
 // ------ units ------- //
@@ -29,6 +29,7 @@ interface UnitType {
 
 interface LevelType {
     _id: string;
+    name: string;
     lessonsIds: string[];
     suspendedLessonsIds: string[];
 }
