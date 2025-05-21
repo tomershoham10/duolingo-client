@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback, useReducer, lazy } from 'react';
+import { useEffect, useCallback, useReducer, lazy, useRef } from 'react';
 import pRetry from 'p-retry';
 import { TiPlus } from 'react-icons/ti';
 import useStore from '@/app/store/useStore';
@@ -11,6 +11,7 @@ import LodingAdminSection from '@/components/UnitSection/AdminUnit/(components)/
 import {
   CourseDataActionsList,
   courseDataReducer,
+  CourseDataType,
 } from '@/reducers/courseDataReducer';
 import useCourseData from '@/app/_utils/hooks/useCourseData';
 import RoundButton from '@/components/RoundButton';
@@ -18,9 +19,6 @@ import AdminLevel from '@/components/LevelSection/AdminLevel/page';
 
 const EditLevel = lazy(
   () => import('@/app/(popups)/(syllabus)/EditLevel/page')
-);
-const EditLesson = lazy(
-  () => import('@/app/(popups)/(syllabus)/EditLesson/page')
 );
 const AddExercises = lazy(
   () => import('@/app/(popups)/(syllabus)/addExercises/page')
@@ -37,10 +35,9 @@ const Syllabus: React.FC = () => {
 
   const addAlert = useAlertStore.getState().addAlert;
 
-  const initialCourseDataState = {
+  const initialCourseDataState: CourseDataType = {
     courseId: null,
     levels: [{ fatherId: null, data: [] }],
-    lessons: [{ fatherId: null, data: [] }],
     exercises: [{ fatherId: null, data: [] }],
     results: [],
   };
@@ -49,7 +46,11 @@ const Syllabus: React.FC = () => {
     courseDataReducer,
     initialCourseDataState
   );
+  
+  // Use a ref to track if data has been fetched
+  const dataFetchedRef = useRef(false);
 
+  // Update course ID when selected course changes
   useEffect(() => {
     if (selectedCourse && selectedCourse._id) {
       courseDataDispatch({
@@ -57,13 +58,37 @@ const Syllabus: React.FC = () => {
         payload: selectedCourse._id,
       });
     }
-  }, [selectedCourse]);
+  }, [selectedCourse?._id]); // Only depend on the ID, not the entire object
 
   const { fetchCourseData } = useCourseData(
     undefined,
     courseDataState,
     courseDataDispatch
   );
+
+  // Fetch data when course ID changes, but avoid unnecessary refetches
+  useEffect(() => {
+    if (courseDataState.courseId && !dataFetchedRef.current) {
+      dataFetchedRef.current = true;
+      fetchCourseData()
+        .then(() => {
+          console.log("Course data fetch complete");
+        })
+        .catch(err => {
+          console.error("Error fetching course data:", err);
+          dataFetchedRef.current = false; // Reset so we can try again
+        });
+    }
+  }, [courseDataState.courseId, fetchCourseData]);
+
+  // Log the state whenever it changes
+  useEffect(() => {
+    console.log("Current courseDataState:", courseDataState);
+    if (courseDataState.levels && courseDataState.levels[0]) {
+      console.log("Levels data:", courseDataState.levels[0].data);
+      console.log("Number of levels:", courseDataState.levels[0].data.length);
+    }
+  }, [courseDataState]);
 
   const addLevel = useCallback(async () => {
     try {
@@ -75,6 +100,8 @@ const Syllabus: React.FC = () => {
       );
 
       if (status) {
+        // Reset the dataFetchedRef to force a refresh
+        dataFetchedRef.current = false;
         await fetchCourseData();
         addAlert('Level added successfully', AlertSizes.small);
       } else {
@@ -87,14 +114,13 @@ const Syllabus: React.FC = () => {
   }, [addAlert, courseDataState.courseId, fetchCourseData]);
 
   return (
-    <section className='h-full w-full overflow-y-auto'>
+    <section className='h-full w-full overflow-y-auto px-4 py-2'>
       <EditLevel />
-      <EditLesson />
       <AddExercises />
       <DeleteLevel />
       {courseDataState.levels ? (
         courseDataState.levels.length > 0 ? (
-          <section className='felx flex-col pt-6'>
+          <section className='flex flex-col pt-6 pb-4'>
             <AdminLevel
               courseDataState={courseDataState}
               courseDataDispatch={courseDataDispatch}
@@ -102,7 +128,7 @@ const Syllabus: React.FC = () => {
             <RoundButton label='Add Level' Icon={TiPlus} onClick={addLevel} />
           </section>
         ) : (
-          <div className='flex h-full w-full flex-col justify-start'>
+          <div className='flex h-full w-full flex-col justify-start p-6'>
             <span className='flex-none text-2xl font-extrabold text-duoGray-darkest'>
               0 levels
             </span>

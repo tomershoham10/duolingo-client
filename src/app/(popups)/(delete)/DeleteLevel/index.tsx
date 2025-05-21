@@ -9,6 +9,9 @@ import pRetry from 'p-retry';
 import PopupHeader, { PopupSizes } from '../../PopupHeader/page';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
+import useCourseData from '@/app/_utils/hooks/useCourseData';
+import { useReducer } from 'react';
+import { courseDataReducer } from '@/reducers/courseDataReducer';
 
 const DeleteLevelPopup: React.FC = () => {
   const levelId = useStore(useInfoBarStore, (state) => state.syllabusFieldId);
@@ -17,6 +20,28 @@ const DeleteLevelPopup: React.FC = () => {
   const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
   const addAlert = useAlertStore.getState().addAlert;
   const levelIndex = useStore(useInfoBarStore, (state) => state.syllabusFieldIndex);
+
+  // Get the current course ID for refreshing data after deletion
+  const courseId = selectedCourse?._id || null;
+  
+  const initialCourseDataState = {
+    courseId: courseId,
+    levels: [{ fatherId: null, data: [] }],
+    lessons: [{ fatherId: null, data: [] }],
+    exercises: [{ fatherId: null, data: [] }],
+    results: [],
+  };
+
+  const [courseDataState, courseDataDispatch] = useReducer(
+    courseDataReducer,
+    initialCourseDataState
+  );
+  
+  const { fetchCourseData } = useCourseData(
+    undefined,
+    courseDataState,
+    courseDataDispatch
+  );
 
   const handleDelete = useCallback(async () => {
     if (!levelId) return;
@@ -40,6 +65,11 @@ const DeleteLevelPopup: React.FC = () => {
           
           // Update the course store
           updateSelectedCourse(updatedCourse);
+          
+          // Force refresh course data to update the UI
+          if (selectedCourse._id) {
+            window.location.reload();
+          }
         }
 
         updateSelectedPopup(PopupsTypes.CLOSED);
@@ -51,11 +81,11 @@ const DeleteLevelPopup: React.FC = () => {
       console.error('Error deleting level:', error);
       addAlert('Error deleting level', AlertSizes.small);
     }
-  }, [levelId, selectedCourse, addAlert]);
+  }, [levelId, selectedCourse, addAlert, updateSelectedCourse, updateSelectedPopup]);
 
   const handleCancel = useCallback(() => {
     updateSelectedPopup(PopupsTypes.CLOSED);
-  }, []);
+  }, [updateSelectedPopup]);
 
   // Get level name or number from index
   const levelName = levelIndex !== undefined ? `Level ${levelIndex + 1}` : `Level ID: ${levelId?.substring(0, 6)}...`;

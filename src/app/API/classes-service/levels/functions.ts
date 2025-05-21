@@ -212,8 +212,12 @@ export const createByCourse = async (courseId: string): Promise<boolean> => {
 
 export const deleteLevelById = async (levelId: string): Promise<boolean> => {
     try {
+        const host = process.env.NEXT_PUBLIC_HOST || 'localhost';
+        const url = `http://${host}:8080/api/levels/${levelId}`;
+        console.log("Deleting level with ID:", levelId, "using URL:", url);
+        
         const response = await fetch(
-            `${LEVELS_API.DELLETE_LEVEL_BY_LEVEL_ID}/${levelId}`,
+            url,
             {
                 method: "DELETE",
                 credentials: "include",
@@ -222,8 +226,11 @@ export const deleteLevelById = async (levelId: string): Promise<boolean> => {
                 },
             },
         );
-        return response.status === 201;
+        
+        console.log("Delete level response:", response.status, response.statusText);
+        return response.status === 200 || response.status === 201 || response.status === 204;
     } catch (error: any) {
+        console.error("Error deleting level:", error);
         throw new Error(`error while deleting level: ${error.message}`);
     }
 };

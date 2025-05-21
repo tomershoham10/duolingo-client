@@ -8,7 +8,7 @@ import {
 } from '@/reducers/courseDataReducer';
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getCourseDataById } from '@/app/API/classes-service/courses/functions';
-import { getResultsByLessonAndUser } from '@/app/API/classes-service/results/functions';
+import { getResultsByLevelAndUser } from '@/app/API/classes-service/results/functions';
 import { AlertSizes } from '@/app/store/stores/useAlertStore';
 
 const useCourseData = (
@@ -19,22 +19,34 @@ const useCourseData = (
   const addAlert = useAlertStore((state) => state.addAlert);
 
   const fetchCourseData = useCallback(async () => {
-    if (!courseDataState.courseId) return;
+    if (!courseDataState.courseId) {
+      console.log("No course ID provided for data fetch");
+      return;
+    }
 
     try {
+      console.log(`Fetching course data for ID: ${courseDataState.courseId}`);
       const courseData = await pRetry(
         () => getCourseDataById(courseDataState.courseId!),
         {
-          retries: 5,
+          retries: 2,
         }
       );
 
       if (!courseData) {
+        console.error('No course data returned from server');
         addAlert('Server error while fetching data', AlertSizes.small);
         return;
       }
 
       console.log('RAW COURSE DATA:', courseData);
+      
+      // Ensure levels array exists
+      if (!courseData.levels) {
+        console.error('Course data missing levels array');
+        courseData.levels = [];
+      }
+      
       console.log('COURSE DATA LEVELS:', courseData.levels);
       console.log('LEVELS IDS FROM COURSE:', courseData.levelsIds);
 
@@ -46,52 +58,45 @@ const useCourseData = (
         console.error('LevelsIds count:', courseData.levelsIds.length);
       }
 
-      // Process and dispatch levels
+      // Process and dispatch levels - make sure we handle missing data
       const levels = [{
         fatherId: courseDataState.courseId,
-        data: courseData.levels.map(({ _id, name, lessonsIds, suspendedLessonsIds }) => ({
+        data: (courseData.levels || []).map(({ _id, name, exercisesIds, suspendedExercisesIds }) => ({
           _id,
-          name,
-          lessonsIds,
-          suspendedLessonsIds,
+          name: name || 'Unnamed Level',
+          exercisesIds: exercisesIds || [],
+          suspendedExercisesIds: suspendedExercisesIds || [],
         })),
       }];
       
       console.log('PROCESSED LEVELS:', levels);
       console.log('Level count in data array:', levels[0].data.length);
       
+      // If we have level IDs but no actual level data, create placeholder levels
+      if (courseData.levelsIds?.length > 0 && (!courseData.levels || courseData.levels.length === 0)) {
+        console.log('Creating placeholder levels from levelIds');
+        
+        // Create basic placeholder levels from the IDs
+        levels[0].data = courseData.levelsIds.map((levelId, index) => ({
+          _id: levelId,
+          name: `Level ${index + 1}`,
+          exercisesIds: [],
+          suspendedExercisesIds: [],
+        }));
+        
+        console.log('Created', levels[0].data.length, 'placeholder levels');
+      }
+      
+      // Dispatch all data at once to minimize render cycles
       courseDataDispatch({
-        type: CourseDataActionsList.SET_LEVELS,
-        payload: levels,
-      });
-
-      // Process and dispatch lessons
-      const lessons = courseData.levels.flatMap((level) => ({
-        fatherId: level._id,
-        data: level.lessons.map(
-          ({ _id, name, exercisesIds, suspendedExercisesIds }) => ({
-            _id,
-            name,
-            exercisesIds,
-            suspendedExercisesIds,
-          })
-        ),
-      }));
-      courseDataDispatch({
-        type: CourseDataActionsList.SET_LESSONS,
-        payload: lessons,
-      });
-
-      // Process and dispatch exercises
-      const exercises = courseData.levels.flatMap((level) =>
-        level.lessons.map((lesson) => ({
-          fatherId: lesson._id,
-          data: lesson.exercises,
-        }))
-      );
-      courseDataDispatch({
-        type: CourseDataActionsList.SET_EXERCISES,
-        payload: exercises,
+        type: CourseDataActionsList.SET_ALL_DATA,
+        payload: {
+          levels,
+          exercises: (courseData.levels || []).map((level) => ({
+            fatherId: level._id,
+            data: level.exercises || [],
+          }))
+        }
       });
     } catch (error) {
       console.error('Error fetching course data:', error);
@@ -100,32 +105,32 @@ const useCourseData = (
   }, [courseDataState.courseId, courseDataDispatch, addAlert]);
 
   const fetchResults = useCallback(async () => {
-    if (!userId || courseDataState.lessons.length === 0) return;
+    if (!userId || courseDataState.levels.length === 0) return;
 
     try {
-      const lessons = courseDataState.lessons.flatMap((lesson) => lesson.data);
-      const resultsPromises = lessons.map(async (lesson) => {
+      const levels = courseDataState.levels.flatMap((level) => level.data);
+      const resultsPromises = levels.map(async (level) => {
         try {
           const resultsData = await pRetry(
-            () => getResultsByLessonAndUser(lesson._id, userId),
+            () => getResultsByLevelAndUser(level._id, userId),
             { retries: 5 }
           );
           return {
-            lessonId: lesson._id,
+            levelId: level._id,
             results: {
-              numOfExercises: lesson.exercisesIds.length,
+              numOfExercises: level.exercisesIds.length,
               results: resultsData || [],
             },
           };
         } catch (error) {
           console.error(
-            `Error fetching results for lesson: ${lesson._id}`,
+            `Error fetching results for level: ${level._id}`,
             error
           );
           return {
-            lessonId: lesson._id,
+            levelId: level._id,
             results: {
-              numOfExercises: lesson.exercisesIds.length,
+              numOfExercises: level.exercisesIds.length,
               results: [],
             },
           };
@@ -141,7 +146,7 @@ const useCourseData = (
       console.error('Error fetching results:', error);
       addAlert('Error fetching results', AlertSizes.small);
     }
-  }, [userId, courseDataState.lessons, courseDataDispatch, addAlert]);
+  }, [userId, courseDataState.levels, courseDataDispatch, addAlert]);
 
   const shouldFetchCourseData = useMemo(
     () => !!courseDataState.courseId,
@@ -150,9 +155,9 @@ const useCourseData = (
   const shouldFetchResults = useMemo(
     () =>
       !!userId &&
-      courseDataState.lessons.length > 0 &&
-      !!courseDataState.lessons[0].fatherId,
-    [userId, courseDataState.lessons]
+      courseDataState.levels.length > 0 &&
+      !!courseDataState.levels[0].fatherId,
+    [userId, courseDataState.levels]
   );
 
   useEffect(() => {

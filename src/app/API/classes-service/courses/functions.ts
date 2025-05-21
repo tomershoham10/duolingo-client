@@ -1,11 +1,9 @@
 import { COURSES_API, COURSES_SERVICE_ENDPOINTS } from "../apis";
 
-interface LessonData extends LessonType {
-    exercises: ExerciseType[];
-}
-
 interface LevelData extends LevelType {
-    lessons: LessonData[];
+    exercises: ExerciseType[];
+    exercisesIds?: string[];
+    suspendedExercisesIds?: string[];
 }
 
 interface CourseData extends CoursesType {
@@ -135,7 +133,7 @@ export const getCourseByName = async (courseName: string): Promise<CoursesType |
 
 export const getCourseDataById = async (courseId: string): Promise<CourseData | null> => {
     try {
-        console.log("getCourseDataById", courseId);
+        console.log("getCourseDataById - Fetching data for course:", courseId);
         const response = await fetch(
             `${COURSES_API.GET_COURSE_DATA_BY_ID}/${courseId}`,
             {
@@ -146,24 +144,67 @@ export const getCourseDataById = async (courseId: string): Promise<CourseData | 
                 },
             }
         );
+        
+        console.log(`API response status: ${response.status} ${response.statusText}`);
+        
         if (response.ok) {
-            const data = await response.json();
-            console.log('getCourseDataById RAW RESPONSE:', data);
+            let data;
+            
+            try {
+                data = await response.json();
+                console.log('getCourseDataById RAW RESPONSE:', data);
+            } catch (jsonError) {
+                console.error('Failed to parse response JSON:', jsonError);
+                return null;
+            }
+            
+            if (!data.courseData || !Array.isArray(data.courseData) || data.courseData.length === 0) {
+                console.error('Invalid course data format returned from API:', data);
+                return null;
+            }
             
             const resData = data.courseData[0] as CourseData;
             
+            // Ensure all expected arrays exist (defensive coding)
+            resData.levelsIds = resData.levelsIds || [];
+            resData.levels = resData.levels || [];
+            resData.suspendedLevelsIds = resData.suspendedLevelsIds || [];
+            
             // Log difference between levelsIds and actual levels
-            if (resData.levelsIds && resData.levels) {
-                console.log('Course has', resData.levelsIds.length, 'level IDs but', 
-                            resData.levels.length, 'level objects were returned');
+            console.log('Course has', resData.levelsIds.length, 'level IDs and', 
+                        resData.levels.length, 'level objects were returned');
+                        
+            // Ensure each level has the required properties
+            if (resData.levels && resData.levels.length > 0) {
+                resData.levels = resData.levels.map(level => {
+                    if (!level) return null;
+                    
+                    // Ensure required properties exist
+                    return {
+                        ...level,
+                        _id: level._id || '',
+                        exercisesIds: level.exercisesIds || [],
+                        exercises: level.exercises || [],
+                        suspendedExercisesIds: level.suspendedExercisesIds || []
+                    };
+                }).filter(Boolean) as any[]; // Filter out nulls
             }
             
             return resData;
         } else {
-            console.error('error while fetching course');
+            console.error(`Error fetching course data: ${response.status} ${response.statusText}`);
+            
+            try {
+                const errorText = await response.text();
+                console.error('Error response body:', errorText);
+            } catch (err) {
+                console.error('Could not read error response body');
+            }
+            
             return null;
         }
     } catch (error: any) {
+        console.error(`Exception in getCourseDataById: ${error.message}`, error);
         throw new Error(`error while fetching course data: ${error.message}`);
     }
 };

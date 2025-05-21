@@ -1,10 +1,10 @@
 import { COURSES_SERVICE_ENDPOINTS, RESULTS_API } from "../apis";
 
-export const getResultsByLessonAndUser = async (lessonId: string, userId: string): Promise<ResultType[] | null> => {
+export const getResultsByLevelAndUser = async (levelId: string, userId: string): Promise<ResultType[] | null> => {
     try {
-        // console.log(`http://localhost:8080/api/results/getResultsByLessonAndUser/${lessonId}/${userId}`);
+        // console.log(`http://localhost:8080/api/results/getResultsByLessonAndUser/${levelId}/${userId}`);
         const response = await fetch(
-            `${RESULTS_API.GET_RESULTS_BY_LESSON_AND_USER}/${lessonId}/${userId}`,
+            `${RESULTS_API.GET_RESULTS_BY_EXERCISE_AND_USER}/${levelId}/${userId}`,
             {
                 method: "GET",
                 credentials: "include",
@@ -21,19 +21,19 @@ export const getResultsByLessonAndUser = async (lessonId: string, userId: string
                 return results
             } else return null
         } else {
-            console.error("Failed to fetch Results By LessonAndUser.");
+            console.error("Failed to fetch Results By LevelAndUser.");
             return null;
         }
     } catch (error) {
-        console.error("Error fetching ResultsByLessonAndUser:", error);
+        console.error("Error fetching ResultsByLevelAndUser:", error);
         return null;
     }
 };
 
-export const startExercise = async (lessonId: string, exerciseId: string, userId: string): Promise<ResultType | null> => {
+export const startExercise = async (levelId: string, exerciseId: string, userId: string): Promise<ResultType | null> => {
     try {
         console.log("startExercise", "userId:", userId,
-            "lessonId:", lessonId,
+            "levelId:", levelId,
             "exerciseId:", exerciseId,
             "answers:", [],
             "score:", -1)
@@ -47,7 +47,7 @@ export const startExercise = async (lessonId: string, exerciseId: string, userId
                 },
                 body: JSON.stringify({
                     userId: userId,
-                    lessonId: lessonId,
+                    levelId: levelId,
                     exerciseId: exerciseId,
                     answers: [],
                     score: -1
@@ -88,16 +88,16 @@ export const submitExercise = async (resultToSubmit: Partial<ResultType>): Promi
         if (response.ok) {
             const data = await response.json();
             const updatedResult = data.updatedResult;
-            console.log("resopnse", updatedResult)
+            console.log("response", updatedResult)
             if (updatedResult) {
                 return updatedResult;
             } else return null
         } else {
-            console.error("Failed to fetch lessons by id.");
+            console.error("Failed to update result.");
             return null;
         }
     } catch (error) {
-        console.error("Error fetching level:", error);
+        console.error("Error updating result:", error);
         return null;
     }
 };

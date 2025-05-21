@@ -5,11 +5,7 @@ const CreateNewUser = lazy(() => import('../(popups)/(create)/CreateNewUser'));
 const CreateNewCourse = lazy(
   () => import('../(popups)/(create)/CreateNewCourse')
 );
-const CreateNewUnit = lazy(
-  () => import('@/app/(popups)/(create)/CreateNewUnit')
-);
-
-// import { notFound } from 'next/navigation';
+const CreateNewUnit = lazy(  () => import('@/app/(popups)/(create)/CreateNewUnit'));const CreateNewExercise = lazy(  () => import('@/app/(popups)/(create)/CreateNewExercise'));// import { notFound } from 'next/navigation';
 
 export default function RootLayout({
   children,
