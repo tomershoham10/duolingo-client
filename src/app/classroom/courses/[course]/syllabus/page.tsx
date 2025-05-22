@@ -37,8 +37,8 @@ const Syllabus: React.FC = () => {
 
   const initialCourseDataState: CourseDataType = {
     courseId: null,
-    levels: [{ fatherId: null, data: [] }],
-    exercises: [{ fatherId: null, data: [] }],
+    levels: [{ childId: null, data: [] }],
+    exercises: [{ childId: null, data: [] }],
     results: [],
   };
 

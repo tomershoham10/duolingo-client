@@ -1,3 +1,5 @@
+import { ExerciseType, LevelType, ResultType } from "@/app/types";
+
 export enum CourseDataActionsList {
     SET_COURSE_ID = 'setCourseId',
     SET_LEVELS = 'setLevels',
@@ -6,8 +8,8 @@ export enum CourseDataActionsList {
     SET_ALL_DATA = 'setAllData',
 }
 
-export interface DataWithFatherId<T> {
-    fatherId: string | null;
+export interface DataWithChildId<T> {
+    childId: string | null;
     data: T[];
 }
 
@@ -18,21 +20,21 @@ export interface ResultsState {
 
 export type CourseDataAction =
     | { type: CourseDataActionsList.SET_COURSE_ID, payload: string | null }
-    | { type: CourseDataActionsList.SET_LEVELS, payload: DataWithFatherId<LevelType>[] }
-    | { type: CourseDataActionsList.SET_EXERCISES, payload: DataWithFatherId<ExerciseType>[] }
+    | { type: CourseDataActionsList.SET_LEVELS, payload: DataWithChildId<LevelType>[] }
+    | { type: CourseDataActionsList.SET_EXERCISES, payload: DataWithChildId<ExerciseType>[] }
     | { type: CourseDataActionsList.SET_RESULTS, payload: ResultsState[] }
     | { 
         type: CourseDataActionsList.SET_ALL_DATA, 
         payload: {
-            levels: DataWithFatherId<LevelType>[];
-            exercises: DataWithFatherId<ExerciseType>[];
+            levels: DataWithChildId<LevelType>[];
+            exercises: DataWithChildId<ExerciseType>[];
         } 
       }
 
 export interface CourseDataType {
     courseId: string | null,
-    levels: DataWithFatherId<LevelType>[];
-    exercises: DataWithFatherId<ExerciseType>[];
+    levels: DataWithChildId<LevelType>[];
+    exercises: DataWithChildId<ExerciseType>[];
     results: ResultsState[];
 }
 

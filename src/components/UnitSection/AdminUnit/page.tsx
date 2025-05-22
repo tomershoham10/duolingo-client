@@ -110,7 +110,7 @@ const AdminUnit: React.FC<AdminUnitProps> = (props) => {
                       courseDataState.levels.map(
                         (levelsObject, levelsObjectIndex) => (
                           <div key={levelsObjectIndex} className='flex-none'>
-                            {levelsObject.fatherId === unit._id && (
+                            {levelsObject.childId === unit._id && (
                               <AdminUnitLevelsSection
                                 unitId={unit._id}
                                 levelsData={levelsObject.data}

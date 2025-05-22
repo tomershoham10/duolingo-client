@@ -135,8 +135,10 @@ export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> =
     try {
         let fieldsToUpdate: Partial<LevelType> = {};
 
-        level.lessonsIds ? fieldsToUpdate.lessonsIds : null;
-        level.suspendedLessonsIds ? fieldsToUpdate.suspendedLessonsIds : null;
+        if (level.lessonsIds !== undefined) fieldsToUpdate.lessonsIds = level.lessonsIds;
+        if (level.suspendedLessonsIds !== undefined) fieldsToUpdate.suspendedLessonsIds = level.suspendedLessonsIds;
+        if (level.exercisesIds !== undefined) fieldsToUpdate.exercisesIds = level.exercisesIds;
+        if (level.suspendedExercisesIds !== undefined) fieldsToUpdate.suspendedExercisesIds = level.suspendedExercisesIds;
 
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.LEVELS}/${level._id}`,

@@ -99,7 +99,7 @@ const AdminUnitLessonsSection: React.FC<AdminUnitLessonsSectionProps> = (
                   key={exerciseObjectIndex}
                   className='w-full divide-y-2 dark:divide-duoGrayDark-light'
                 >
-                  {exerciseObject.fatherId === lesson._id &&
+                  {exerciseObject.childId === lesson._id &&
                     exerciseObject.data.length > 0 &&
                     exerciseObject.data.map((exercise, exerciseIndex) => (
                       <section key={exerciseIndex}>

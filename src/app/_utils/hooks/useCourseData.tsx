@@ -156,7 +156,7 @@ const useCourseData = (
     () =>
       !!userId &&
       courseDataState.levels.length > 0 &&
-      !!courseDataState.levels[0].fatherId,
+      !!courseDataState.levels[0].childId,
     [userId, courseDataState.levels]
   );
 

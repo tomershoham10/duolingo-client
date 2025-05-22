@@ -368,7 +368,7 @@ const StudentUnitSection: React.FC = () => {
                             {courseDataState.levels.length === 1 ||
                               (studentDashboardState.lockedLevelsIds.length >
                                 0 &&
-                                levelsObject.fatherId === unit._id) ? (
+                                levelsObject.childId === unit._id) ? (
                               <div className='my-6 flex h-full flex-col items-center'>
                                 {levelsObject.data.length > 0
                                   ? levelsObject.data.map(
