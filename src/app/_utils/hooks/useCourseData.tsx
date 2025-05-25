@@ -9,6 +9,7 @@ import {
 import { useAlertStore } from '@/app/store/stores/useAlertStore';
 import { getCourseDataById } from '@/app/API/classes-service/courses/functions';
 import { getResultsByLevelAndUser } from '@/app/API/classes-service/results/functions';
+import { getExercisesByLevelId } from '@/app/API/classes-service/levels/functions';
 import { AlertSizes } from '@/app/store/stores/useAlertStore';
 
 const useCourseData = (
@@ -60,7 +61,7 @@ const useCourseData = (
 
       // Process and dispatch levels - make sure we handle missing data
       const levels = [{
-        fatherId: courseDataState.courseId,
+        childId: courseDataState.courseId,
         data: (courseData.levels || []).map(({ _id, name, exercisesIds, suspendedExercisesIds }) => ({
           _id,
           name: name || 'Unnamed Level',
@@ -93,11 +94,65 @@ const useCourseData = (
         payload: {
           levels,
           exercises: (courseData.levels || []).map((level) => ({
-            fatherId: level._id,
+            childId: level._id,
             data: level.exercises || [],
           }))
         }
       });
+      
+      // After setting the initial data, fetch exercises for each level
+      console.log('Fetching exercises for each level...');
+      
+      // Check if we have levels to fetch exercises for
+      const levelsToFetch = courseData.levels || [];
+      console.log(`Found ${levelsToFetch.length} levels to fetch exercises for`);
+      
+      if (levelsToFetch.length > 0) {
+        const exercisesPromises = levelsToFetch.map(async (level) => {
+          try {
+            console.log(`Fetching exercises for level ${level._id} with ${level.exercisesIds?.length || 0} exercise IDs`);
+            
+            // Only fetch if the level has exercise IDs
+            if (level.exercisesIds && level.exercisesIds.length > 0) {
+              const exercises = await getExercisesByLevelId(level._id);
+              console.log(`Fetched ${exercises.length} exercises for level ${level._id}`);
+              return {
+                childId: level._id,
+                data: exercises
+              };
+            } else {
+              console.log(`Level ${level._id} has no exercise IDs, skipping fetch`);
+              return {
+                childId: level._id,
+                data: []
+              };
+            }
+          } catch (error) {
+            console.error(`Error fetching exercises for level ${level._id}:`, error);
+            return {
+              childId: level._id,
+              data: []
+            };
+          }
+        });
+        
+        const exercisesData = await Promise.all(exercisesPromises);
+        
+        // Filter out any levels that didn't return exercises
+        const validExercisesData = exercisesData.filter(ed => ed.data.length > 0 || levelsToFetch.find(l => l._id === ed.childId)?.exercisesIds?.length === 0);
+        
+        console.log(`Dispatching exercises for ${validExercisesData.length} levels`);
+        
+        // Update the exercises in the state
+        courseDataDispatch({
+          type: CourseDataActionsList.SET_EXERCISES,
+          payload: exercisesData
+        });
+        
+        console.log('All exercises fetched and dispatched');
+      } else {
+        console.log('No levels found to fetch exercises for');
+      }
     } catch (error) {
       console.error('Error fetching course data:', error);
       addAlert('Error fetching course data', AlertSizes.small);
@@ -118,7 +173,7 @@ const useCourseData = (
           return {
             levelId: level._id,
             results: {
-              numOfExercises: level.exercisesIds.length,
+              numOfExercises: level.exercisesIds?.length || 0,
               results: resultsData || [],
             },
           };
@@ -130,7 +185,7 @@ const useCourseData = (
           return {
             levelId: level._id,
             results: {
-              numOfExercises: level.exercisesIds.length,
+              numOfExercises: level.exercisesIds?.length || 0,
               results: [],
             },
           };

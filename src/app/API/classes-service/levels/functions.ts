@@ -1,4 +1,5 @@
 import { COURSES_SERVICE_ENDPOINTS, LEVELS_API } from "../apis";
+import { LevelType, LessonType, ExerciseType } from "@/app/types";
 
 export const getAllLevels = async (): Promise<LevelType[] | null> => {
     try {
@@ -135,10 +136,13 @@ export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> =
     try {
         let fieldsToUpdate: Partial<LevelType> = {};
 
-        if (level.lessonsIds !== undefined) fieldsToUpdate.lessonsIds = level.lessonsIds;
-        if (level.suspendedLessonsIds !== undefined) fieldsToUpdate.suspendedLessonsIds = level.suspendedLessonsIds;
-        if (level.exercisesIds !== undefined) fieldsToUpdate.exercisesIds = level.exercisesIds;
-        if (level.suspendedExercisesIds !== undefined) fieldsToUpdate.suspendedExercisesIds = level.suspendedExercisesIds;
+        if (level.lessonsIds) fieldsToUpdate.lessonsIds = level.lessonsIds;
+        if (level.suspendedLessonsIds) fieldsToUpdate.suspendedLessonsIds = level.suspendedLessonsIds;
+        if (level.exercisesIds) fieldsToUpdate.exercisesIds = level.exercisesIds;
+        if (level.suspendedExercisesIds) fieldsToUpdate.suspendedExercisesIds = level.suspendedExercisesIds;
+        if (level.name) fieldsToUpdate.name = level.name;
+
+        console.log('Updating level with fields:', fieldsToUpdate);
 
         const response = await fetch(
             `${COURSES_SERVICE_ENDPOINTS.LEVELS}/${level._id}`,
@@ -151,8 +155,17 @@ export const updateLevel = async (level: Partial<LevelType>): Promise<boolean> =
                 body: JSON.stringify(fieldsToUpdate)
             },
         );
-        return response.status === 200;
+        
+        if (response.status === 200) {
+            console.log('Level updated successfully, response:', await response.text());
+            // The backend should handle cache clearing, but we'll log to confirm
+            return true;
+        } else {
+            console.error('Failed to update level, status:', response.status);
+            return false;
+        }
     } catch (error: any) {
+        console.error('Error while updating level:', error);
         throw new Error(`error while updating level: ${error.message}`);
     }
 }
@@ -234,5 +247,42 @@ export const deleteLevelById = async (levelId: string): Promise<boolean> => {
     } catch (error: any) {
         console.error("Error deleting level:", error);
         throw new Error(`error while deleting level: ${error.message}`);
+    }
+};
+
+export const getExercisesByLevelId = async (levelId: string): Promise<ExerciseType[]> => {
+    try {
+        const url = `${LEVELS_API.GET_EXERCISES_BY_ID}/${levelId}`;
+        console.log('getExercisesByLevelId - Fetching from URL:', url);
+        
+        const response = await fetch(
+            url,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        console.log('getExercisesByLevelId - Response status:', response.status);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('getExercisesByLevelId - Raw response data:', data);
+            const resExercises = data.exercises || [];
+            console.log(`getExercisesByLevelId - Found ${resExercises.length} exercises for level ${levelId}`);
+            return resExercises;
+        } else if (response.status === 404) {
+            console.log('getExercisesByLevelId - 404: No exercises found for level', levelId);
+            return [];
+        } else {
+            console.error("Failed to fetch exercises by level id. Status:", response.status);
+            return [];
+        }
+    } catch (error: any) {
+        console.error("Error fetching exercises by level id:", error);
+        throw new Error(`error while fetching exercises: ${error.message}`);
     }
 };

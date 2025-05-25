@@ -4,6 +4,7 @@ import pRetry from 'p-retry';
 import { TiPlus } from 'react-icons/ti';
 import useStore from '@/app/store/useStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
+import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { createByCourse } from '@/app/API/classes-service/levels/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
@@ -32,6 +33,11 @@ const Syllabus: React.FC = () => {
     useCourseStore,
     (state) => state.selectedCourse
   );
+  
+  const selectedPopup = useStore(
+    usePopupStore,
+    (state) => state.selectedPopup
+  );
 
   const addAlert = useAlertStore.getState().addAlert;
 
@@ -49,6 +55,7 @@ const Syllabus: React.FC = () => {
   
   // Use a ref to track if data has been fetched
   const dataFetchedRef = useRef(false);
+  const previousPopupRef = useRef(selectedPopup);
 
   // Update course ID when selected course changes
   useEffect(() => {
@@ -89,6 +96,28 @@ const Syllabus: React.FC = () => {
       console.log("Number of levels:", courseDataState.levels[0].data.length);
     }
   }, [courseDataState]);
+
+  // Refresh data when AddExercises popup closes
+  useEffect(() => {
+    // Check if the popup just closed (was ADD_EXERCISES, now is CLOSED)
+    if (
+      previousPopupRef.current === PopupsTypes.ADD_EXERCISES &&
+      selectedPopup === PopupsTypes.CLOSED &&
+      courseDataState.courseId
+    ) {
+      console.log('AddExercises popup closed, refreshing data...');
+      fetchCourseData()
+        .then(() => {
+          console.log('Data refreshed after adding exercises');
+        })
+        .catch(err => {
+          console.error('Error refreshing data after adding exercises:', err);
+        });
+    }
+    
+    // Update the previous popup ref
+    previousPopupRef.current = selectedPopup;
+  }, [selectedPopup, courseDataState.courseId, fetchCourseData]);
 
   const addLevel = useCallback(async () => {
     try {

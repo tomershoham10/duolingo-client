@@ -1,4 +1,5 @@
 import { COURSES_API, COURSES_SERVICE_ENDPOINTS } from "../apis";
+import { LevelType, ExerciseType, CoursesType } from "@/app/types";
 
 interface LevelData extends LevelType {
     exercises: ExerciseType[];

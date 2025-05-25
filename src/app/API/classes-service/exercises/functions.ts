@@ -1,4 +1,5 @@
 import { COURSES_SERVICE_ENDPOINTS, EXERCISES_API } from "@/app/API/classes-service/apis";
+import { ExerciseType, FsaType, SpotreccType } from "@/app/types";
 
 export enum ExercisesTypes {
     FSA = "fsa",
