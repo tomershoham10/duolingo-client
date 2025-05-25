@@ -1,6 +1,7 @@
 "use client"
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { UserType } from '../../types';
 
 export enum PopupsTypes {
     CLOSED = "closed",
@@ -20,19 +21,24 @@ export enum PopupsTypes {
     EDIT_UNIT = "editUnit",
     ADD_EXERCISES = "addExercises",
     PREVIEW = "preview",
+    EDIT_USER = "editUser"
 }
 
 type PopupState = {
     selectedPopup: PopupsTypes;
+    selectedUser: UserType | null;
 }
 type Action = {
     updateSelectedPopup: (selectedPopup: PopupsTypes) => void;
+    setSelectedUser: (user: UserType | null) => void;
 }
 
 export const usePopupStore = create<PopupState & Action>(
     (set) => ({
         selectedPopup: PopupsTypes.CLOSED,
+        selectedUser: null,
         updateSelectedPopup: (selectedPopup) => set(() => ({ selectedPopup: selectedPopup })),
+        setSelectedUser: (user) => set(() => ({ selectedUser: user })),
     })
 )
 

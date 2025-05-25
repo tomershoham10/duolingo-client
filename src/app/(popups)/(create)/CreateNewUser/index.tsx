@@ -16,14 +16,11 @@ import PopupHeader from '../../PopupHeader/page';
 const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 
 const CreateNewUser: React.FC = () => {
-  const coursesList = useStore(useCourseStore, (state) => state.coursesList);
   const addAlert = useAlertStore.getState().addAlert;
 
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [tId, setTId] = useState<string>('');
-  const [role, setRole] = useState<string>('');
-  const [courseId, setCourseId] = useState<string | null>(null);
+  const [role, setRole] = useState<string>('student'); // Default to student
   const [failedFeilds, setFailedFeilds] = useState<string[]>([]);
 
   const handleUserName = (value: string) => {
@@ -34,22 +31,8 @@ const CreateNewUser: React.FC = () => {
     setPassword(value);
   };
 
-  const handleTId = (value: string) => {
-    setTId(value);
-  };
-
   const handleRole = (value: string) => {
     setRole(value);
-  };
-
-  const handleCourseId = (courseName: string) => {
-    if (coursesList && coursesList.length > 0) {
-      const selectedCourse = coursesList.find(
-        (course) => course.name === courseName
-      );
-      console.log('handleCourseId', selectedCourse);
-      selectedCourse && setCourseId(selectedCourse._id);
-    }
   };
 
   const addFailedFields = (value: string) => {
@@ -59,36 +42,34 @@ const CreateNewUser: React.FC = () => {
   const createUser = useCallback(
     async (
       userName: string,
-      tId: string,
       password: string,
-      role: string,
-      courseId?: string
+      role: string
     ) => {
       try {
-        console.log('create user:', userName, tId, password, role, courseId);
+        console.log('create user:', userName, password, role);
         setFailedFeilds([]);
+        
+        // Validation according to Hebrew specs
         if (
-          userName.length < 3 ||
-          (0 < tId.length && tId.length < 9) ||
-          (!tId.includes('t') && tId.length === 9) ||
-          password.length < 8 ||
+          userName.length === 0 ||
+          userName.length > 20 ||
+          password.length === 0 ||
+          password.length > 20 ||
           role === ''
         ) {
-          if (userName.length < 3) {
-            addAlert('Please enter a valid user name.', AlertSizes.small);
+          if (userName.length === 0) {
+            addAlert('Please enter a user name.', AlertSizes.small);
+            addFailedFields('userName');
+          } else if (userName.length > 20) {
+            addAlert('User name must be 20 characters or less.', AlertSizes.small);
             addFailedFields('userName');
           }
 
-          if (
-            (0 < tId.length && tId.length < 9) ||
-            (!tId.includes('t') && tId.length === 9)
-          ) {
-            addAlert('Please enter a valid T-Id.', AlertSizes.small);
-            addFailedFields('tId');
-          }
-
-          if (password.length < 8) {
-            addAlert('Password too short.', AlertSizes.small);
+          if (password.length === 0) {
+            addAlert('Please enter a password.', AlertSizes.small);
+            addFailedFields('password');
+          } else if (password.length > 20) {
+            addAlert('Password must be 20 characters or less.', AlertSizes.small);
             addFailedFields('password');
           }
 
@@ -98,8 +79,9 @@ const CreateNewUser: React.FC = () => {
           }
           return;
         }
+        
         const response = await pRetry(
-          () => registerUser(userName, tId, password, role, courseId),
+          () => registerUser(userName, '', password, role, undefined), // Empty tId and undefined courseId
           {
             retries: 5,
           }
@@ -123,7 +105,6 @@ const CreateNewUser: React.FC = () => {
       }
     },
     [addAlert]
-    
   );
 
   return (
@@ -132,16 +113,14 @@ const CreateNewUser: React.FC = () => {
       header='Create new user'
       onClose={() => {}}
     >
-      {/* <div className='grid-rows-7 ml-[5.5rem] mr-24 grid w-[30rem] px-4 py-4 flex-none grid-cols-4 flex-col items-center justify-center'> */}
-      <div className='mt-12 grid w-full grid-cols-4 grid-rows-6 gap-y-4 px-4 py-4 3xl:gap-y-12'>
+      <div className='mt-12 grid w-full grid-cols-4 grid-rows-4 gap-y-4 px-4 py-4 3xl:gap-y-12'>
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
           User Name:
         </p>
-
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.TEXT}
-            placeholder={'User Name'}
+            placeholder={'User Name (max 20 characters)'}
             value={userName}
             onChange={handleUserName}
             failed={failedFeilds.includes('userName') ? true : false}
@@ -149,66 +128,29 @@ const CreateNewUser: React.FC = () => {
         </div>
 
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-          T-ID:
-        </p>
-
-        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center opacity-90'>
-          <Input
-            type={InputTypes.TEXT}
-            placeholder={'T-ID (optional)'}
-            value={tId}
-            onChange={handleTId}
-            failed={failedFeilds.includes('tId') ? true : false}
-          />
-        </div>
-
-        <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
           Password:
         </p>
-
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.PASSWORD}
-            placeholder={'Password'}
+            placeholder={'Password (max 20 characters)'}
             value={password}
             onChange={handlePassword}
             failed={failedFeilds.includes('password') ? true : false}
           />
         </div>
+
         <p className='col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest'>
-          Role:
+          User Type:
         </p>
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Dropdown
             isSearchable={false}
-            items={['admin', 'teacher', 'crew', 'student']}
-            placeholder='role'
+            items={['admin', 'teacher', 'student']}
+            placeholder='Select user type'
             value={role}
             onChange={handleRole}
             isFailed={failedFeilds.includes('role') ? true : false}
-            size={DropdownSizes.DEFAULT}
-          />
-        </div>
-        <p
-          className={`col-span-1 flex-none text-lg font-bold text-duoGray-darkest dark:text-duoGrayDark-lightest ${
-            role !== 'student' ? 'opacity-50' : ''
-          }`}
-        >
-          Course:
-        </p>
-        <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
-          <Dropdown
-            isSearchable={false}
-            isDisabled={role !== 'student'}
-            items={
-              coursesList
-                ? coursesList.map((course) => (course.name ? course.name : ''))
-                : ['']
-            }
-            placeholder='Course'
-            // value={}
-            onChange={(e) => handleCourseId(e)}
-            isFailed={failedFeilds.includes('course') ? true : false}
             size={DropdownSizes.DEFAULT}
           />
         </div>
@@ -218,13 +160,7 @@ const CreateNewUser: React.FC = () => {
             <Button
               label={'CREATE'}
               color={ButtonColors.BLUE}
-              onClick={() =>
-                role === 'student'
-                  ? courseId !== null
-                    ? createUser(userName, tId, password, role, courseId)
-                    : addAlert('Please select a course.', AlertSizes.small)
-                  : createUser(userName, tId, password, role)
-              }
+              onClick={() => createUser(userName, password, role)}
             />
           </div>
         </div>

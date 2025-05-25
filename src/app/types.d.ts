@@ -290,14 +290,10 @@ interface FileType {
 
 // // users service // //
 
-interface UserType {
+export interface UserType {
     _id: string;
-    tId?: string;
     userName: string;
-    permission: PermissionsTypes;
-    password: string;
-    courseId?: string;
-    nextLessonId?: string;
+    permission: string;
 }
 
 enum PermissionsTypes {

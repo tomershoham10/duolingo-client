@@ -3,6 +3,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 // import { Nunito } from 'next/font/google';
 import ContextMenu from '@/components/ContextMenu/page';
+import EditUserPage from './(popups)/(edit)/EditUser/page';
+import CreateNewUser from './(popups)/(create)/CreateNewUser';
 
 // const nunito = Nunito({ subsets: ['latin'] });
 
@@ -27,6 +29,8 @@ export default function RootLayout({
       >
         <Alert />
         <ContextMenu />
+        <EditUserPage />
+        <CreateNewUser />
         {children}
       </body>
     </html>

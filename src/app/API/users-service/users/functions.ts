@@ -1,5 +1,6 @@
 import { useAlertStore, AlertSizes } from "@/app/store/stores/useAlertStore";
 import { PermissionsTypes, useUserStore } from "@/app/store/stores/useUserStore";
+import { UserType } from "@/app/types";
 import jwt from "jsonwebtoken";
 import Cookies from 'js-cookie';
 
@@ -215,5 +216,40 @@ export const getAllUsers = async (): Promise<UserType[] | null> => {
     catch (error) {
         console.error("getAllUsers Error:", error);
         return null;
+    }
+}
+
+export const updateUser = async (userId: string, userUpdates: Partial<UserType & { password?: string }>): Promise<boolean> => {
+    try {
+        let fieldsToUpdate: any = {};
+
+        if (userUpdates.userName) fieldsToUpdate.userName = userUpdates.userName;
+        if (userUpdates.permission) fieldsToUpdate.permission = userUpdates.permission;
+        if (userUpdates.password) fieldsToUpdate.password = userUpdates.password;
+
+        console.log('Updating user with fields:', fieldsToUpdate);
+
+        const response = await fetch(
+            `${USERS_SERVICE_ENDPOINT}/${userId}`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(fieldsToUpdate)
+            },
+        );
+        
+        if (response.status === 200) {
+            console.log('User updated successfully');
+            return true;
+        } else {
+            console.error('Failed to update user, status:', response.status);
+            return false;
+        }
+    } catch (error: any) {
+        console.error('Error while updating user:', error);
+        throw new Error(`error while updating user: ${error.message}`);
     }
 }
