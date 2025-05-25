@@ -286,3 +286,45 @@ export const getExercisesByLevelId = async (levelId: string): Promise<ExerciseTy
         throw new Error(`error while fetching exercises: ${error.message}`);
     }
 };
+
+export const removeExerciseFromLevel = async (levelId: string, exerciseId: string): Promise<boolean> => {
+    try {
+        console.log('removeExerciseFromLevel called with:', { levelId, exerciseId });
+        
+        // Get the current level data
+        const currentLevel = await getLevelById(levelId);
+        console.log('Current level data:', currentLevel);
+        
+        if (!currentLevel) {
+            console.error('Failed to fetch level data');
+            return false;
+        }
+
+        // Check if exercise exists in the level
+        if (!currentLevel.exercisesIds?.includes(exerciseId)) {
+            console.log('Exercise not found in this level');
+            return false;
+        }
+
+        // Remove the exercise ID from the level's exercisesIds array
+        const updatedExercisesIds = currentLevel.exercisesIds.filter(id => id !== exerciseId);
+        console.log('Updated exercisesIds:', updatedExercisesIds);
+        
+        // Update the level with the new exercisesIds
+        const success = await updateLevel({
+            _id: levelId,
+            exercisesIds: updatedExercisesIds
+        });
+
+        if (success) {
+            console.log('Exercise removed successfully from level');
+            return true;
+        } else {
+            console.error('Failed to update level after removing exercise');
+            return false;
+        }
+    } catch (error) {
+        console.error('Error removing exercise from level:', error);
+        return false;
+    }
+};

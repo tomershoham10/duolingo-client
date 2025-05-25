@@ -8,13 +8,13 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { getExercisesByModelId, getAllExercises } from '@/app/API/classes-service/exercises/functions';
-import { getLevelById, updateLevel } from '@/app/API/classes-service/levels/functions';
+import { getLevelById, updateLevel, removeExerciseFromLevel, getExercisesByLevelId } from '@/app/API/classes-service/levels/functions';
 import { useCallback, useState, useEffect } from 'react';
 import pRetry from 'p-retry';
 import Table from '@/components/Table/page';
 import Link from 'next/link';
 import RoundButton from '@/components/RoundButton';
-import { TiPlus } from 'react-icons/ti';
+import { TiPlus, TiMinus } from 'react-icons/ti';
 import { ExerciseType, TargetType, CountryType, OrganizationType } from '@/app/types';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
@@ -36,7 +36,9 @@ const AddExercises: React.FC = () => {
 
   const [allExercises, setAllExercises] = useState<ExerciseType[] | null>(null);
   const [exercisesList, setExercisesList] = useState<ExerciseType[] | null>(null);
+  const [levelExercises, setLevelExercises] = useState<ExerciseType[]>([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   // Filter state
   const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
@@ -62,10 +64,25 @@ const AddExercises: React.FC = () => {
     }
   }, []);
 
-  // Fetch all exercises on component mount
+  const fetchLevelExercises = useCallback(async () => {
+    if (levelId) {
+      try {
+        const exercises = await pRetry(() => getExercisesByLevelId(levelId), {
+          retries: 5,
+        });
+        setLevelExercises(exercises);
+      } catch (error) {
+        console.error('Error fetching level exercises:', error);
+        setLevelExercises([]);
+      }
+    }
+  }, [levelId]);
+
+  // Fetch all exercises and level exercises on component mount
   useEffect(() => {
     fetchExercises();
-  }, [fetchExercises]);
+    fetchLevelExercises();
+  }, [fetchExercises, fetchLevelExercises]);
 
   // Filter exercises based on selected criteria
   const filterExercises = useCallback((exercises: ExerciseType[]) => {
@@ -266,6 +283,9 @@ const AddExercises: React.FC = () => {
       if (success) {
         addAlert('Exercise added successfully', AlertSizes.small);
         
+        // Refresh the level exercises list
+        await fetchLevelExercises();
+        
         // Close the popup after a short delay
         setTimeout(() => {
           updateSelectedPopup(PopupsTypes.CLOSED);
@@ -281,6 +301,40 @@ const AddExercises: React.FC = () => {
       addAlert('Error adding exercise', AlertSizes.small);
     } finally {
       setIsAdding(false);
+    }
+  };
+
+  const handleRemoveExercise = async (exerciseId: string) => {
+    try {
+      console.log('handleRemoveExercise called with:', { exerciseId, levelId });
+      
+      if (!levelId) {
+        addAlert('No level selected', AlertSizes.small);
+        return;
+      }
+      
+      setIsRemoving(true);
+      
+      const success = await removeExerciseFromLevel(levelId, exerciseId);
+
+      if (success) {
+        addAlert('Exercise removed successfully', AlertSizes.small);
+        
+        // Refresh the level exercises list
+        await fetchLevelExercises();
+        
+        // Close the popup after a short delay
+        setTimeout(() => {
+          updateSelectedPopup(PopupsTypes.CLOSED);
+        }, 1000);
+      } else {
+        addAlert('Failed to remove exercise', AlertSizes.small);
+      }
+    } catch (error) {
+      console.error('Error removing exercise:', error);
+      addAlert('Error removing exercise', AlertSizes.small);
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -398,9 +452,11 @@ const AddExercises: React.FC = () => {
               { key: 'type', label: 'exercise type' },
               { key: 'adminComments', label: 'comments' },
               { key: 'link', label: 'preview' },
-              { key: 'add', label: 'add' },
+              { key: 'add', label: 'action' },
             ]}
             rows={exercisesList.map((exercise) => {
+              const isInLevel = levelExercises.some(levelEx => levelEx._id === exercise._id);
+              
               return {
                 type: exercise.type,
                 adminComments: exercise.adminComments,
@@ -413,7 +469,13 @@ const AddExercises: React.FC = () => {
                     preview
                   </Link>
                 ),
-                add: (
+                add: isInLevel ? (
+                  <RoundButton 
+                    Icon={TiMinus} 
+                    onClick={() => handleRemoveExercise(exercise._id)}
+                    className={`bg-red-500 hover:bg-red-600 ${isRemoving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  />
+                ) : (
                   <RoundButton 
                     Icon={TiPlus} 
                     onClick={() => handleAddExercise(exercise._id)}

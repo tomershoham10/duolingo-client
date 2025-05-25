@@ -3,9 +3,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { CourseDataType, CourseDataAction, CourseDataActionsList } from '@/reducers/courseDataReducer';
 import { LevelType } from '@/app/types';
 
-import { TiPlus, TiTrash, TiArrowSortedDown, TiArrowSortedUp } from 'react-icons/ti';
+import { TiPlus, TiTrash, TiArrowSortedDown, TiArrowSortedUp, TiMinus } from 'react-icons/ti';
 import RoundButton from '@/components/RoundButton';
-import { createByCourse } from '@/app/API/classes-service/levels/functions';
+import { createByCourse, removeExerciseFromLevel } from '@/app/API/classes-service/levels/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import pRetry from 'p-retry';
 import useStore from '@/app/store/useStore';
@@ -28,6 +28,7 @@ const AdminLevel: React.FC<AdminLevelProps> = ({
   const updateSyllabusFieldId = useInfoBarStore.getState().updateSyllabusFieldId;
   const updateSyllabusFieldIndex = useInfoBarStore.getState().updateSyllabusFieldIndex;
   const [expandedLevels, setExpandedLevels] = useState<Record<string, boolean>>({});
+  const [deletingExercises, setDeletingExercises] = useState<Record<string, boolean>>({});
   
   // Use useMemo for derived values to prevent recalculation on every render
   const availableLevelData = useMemo(() => courseDataState.levels[0]?.data || [], [courseDataState.levels]);
@@ -77,6 +78,45 @@ const AdminLevel: React.FC<AdminLevelProps> = ({
     updateSyllabusFieldId(levelId);
     updateSyllabusFieldIndex(levelIndex);
     updateSelectedPopup(PopupsTypes.ADD_EXERCISES);
+  };
+
+  const handleDeleteExercise = async (levelId: string, exerciseId: string) => {
+    try {
+      console.log('handleDeleteExercise called with:', { levelId, exerciseId });
+      
+      setDeletingExercises(prev => ({ ...prev, [exerciseId]: true }));
+      
+      const success = await removeExerciseFromLevel(levelId, exerciseId);
+
+      if (success) {
+        addAlert('Exercise removed successfully', AlertSizes.small);
+        
+        // Update the course data state to reflect the change
+        // Remove the exercise from the exercises list for this level
+        const updatedExercises = courseDataState.exercises.map(exerciseGroup => {
+          if (exerciseGroup.childId === levelId) {
+            return {
+              ...exerciseGroup,
+              data: exerciseGroup.data.filter(exercise => exercise._id !== exerciseId)
+            };
+          }
+          return exerciseGroup;
+        });
+        
+        courseDataDispatch({
+          type: CourseDataActionsList.SET_EXERCISES,
+          payload: updatedExercises
+        });
+        
+      } else {
+        addAlert('Failed to remove exercise', AlertSizes.small);
+      }
+    } catch (error) {
+      console.error('Error removing exercise:', error);
+      addAlert('Error removing exercise', AlertSizes.small);
+    } finally {
+      setDeletingExercises(prev => ({ ...prev, [exerciseId]: false }));
+    }
   };
 
   // Make sure we have data before rendering
@@ -131,11 +171,26 @@ const AdminLevel: React.FC<AdminLevelProps> = ({
                     {exercisesList.map((exercise: any, exIdx: number) => (
                       <div key={exercise._id} className="mb-3 border-l-4 border-duoGreen-light pl-4 py-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-duoGray-darkest">Exercise {exIdx + 1}</span>
-                          <div className="text-xs bg-duoGray-lighter px-2 py-1 rounded text-duoGray-darkText">
-                            {exercise._id.substring(0, 8)}...
+                          <div className="flex items-center gap-3">
+                            <span className="font-medium text-duoGray-darkest">Exercise {exIdx + 1}</span>
+                            <span className="text-sm text-duoGray-dark">({exercise.type})</span>
                           </div>
+                          <button
+                            onClick={() => handleDeleteExercise(level._id, exercise._id)}
+                            disabled={deletingExercises[exercise._id]}
+                            className={`p-1 rounded-full text-red-600 hover:bg-red-100 hover:text-red-800 transition-colors ${
+                              deletingExercises[exercise._id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                            }`}
+                            title="Delete exercise"
+                          >
+                            <TiMinus size={18} />
+                          </button>
                         </div>
+                        {exercise.adminComments && (
+                          <div className="mt-1 text-sm text-duoGray-dark italic">
+                            {exercise.adminComments}
+                          </div>
+                        )}
                       </div>
                     ))}
                     <button 
