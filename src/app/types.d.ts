@@ -63,12 +63,12 @@ interface ResultType {
 
 // ------ exercises ------- //
 
-enum ExercisesTypes {
+export enum ExercisesTypes {
     FSA = "fsa",
     SPOTRECC = "spotrecc"
 }
 
-enum FileTypes {
+export enum FileTypes {
     RECORDS = 'records',
     IMAGES = 'images'
 }
@@ -81,7 +81,7 @@ interface FileRoute {
     objectName: string;
 }
 
-interface ExerciseType {
+export interface ExerciseType {
     _id: string
     dateCreated: Date;
     type: ExercisesTypes;
@@ -104,7 +104,7 @@ interface FeatureObject {
     value: number | string;
 }
 
-interface FsaType extends ExerciseType {
+export interface FsaType extends ExerciseType {
     // targetsList?: string[]; //may be 2 correct answers
     timeBuffers: TimeBuffersType[];
     description?: string;
@@ -122,7 +122,7 @@ interface SpotreccSubExercise {
     bufferTime: number; // in seconds
 }
 
-interface SpotreccType extends ExerciseType {
+export interface SpotreccType extends ExerciseType {
     subExercises: SpotreccSubExercise[];
 }
 
@@ -139,7 +139,7 @@ interface ResultType {
 
 // ------ targets ------- //
 
-interface ResponseTargetType extends TargetType {
+export interface ResponseTargetType extends TargetType {
     __v: number
 }
 
@@ -165,7 +165,7 @@ enum TypesOfSonars {
     REGULAR = "regular"
 }
 
-interface TargetType {
+export interface TargetType {
     // as in posi
     _id: string;
     name: string;
@@ -384,13 +384,13 @@ enum PermissionsTypes {
 
 // // AudioPlayer // //
 
-enum AudioPlayerSizes {
+export enum AudioPlayerSizes {
     SMALL = 'small',
     MEDIUM = 'medium',
     LARGE = 'large',
 }
 
-interface AudioPlayerProps {
+export interface AudioPlayerProps {
     src: string;
     isDisabled?: boolean;
     isPauseable?: boolean;

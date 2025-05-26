@@ -4,6 +4,7 @@ import {
   getExerciseById,
 } from '@/app/API/classes-service/exercises/functions';
 import FsaPage from '@/app/lesson/(exercises)/_fsa/page';
+import { ExerciseType, FsaType } from '@/app/types';
 
 const fetchData = async (exerciseId: string): Promise<ExerciseType | null> => {
   try {

@@ -1,13 +1,16 @@
 'use client';
 import pRetry from "p-retry";
 import { useCallback, useEffect, useState } from "react";
-import { getAllUsers } from "../API/users-service/users/functions";
+import { getAllUsers, deleteUser } from "../API/users-service/users/functions";
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { PopupsTypes, usePopupStore } from "../store/stores/usePopupStore";
 import { UserType } from "../types";
-
+import { FaUserEdit, FaTrash } from "react-icons/fa";
+import RoundButton from "@/components/RoundButton";
+import { useAlertStore, AlertSizes } from "../store/stores/useAlertStore";
 const updateSelectedPopup = usePopupStore.getState().updateSelectedPopup;
 const setSelectedUser = usePopupStore.getState().setSelectedUser;
+const addAlert = useAlertStore.getState().addAlert;
 
 const Users: React.FC = () => {
     const [users, setUsers] = useState<UserType[]>([]);
@@ -54,6 +57,24 @@ const Users: React.FC = () => {
     const handleEditUser = (user: UserType) => {
         setSelectedUser(user);
         updateSelectedPopup(PopupsTypes.EDIT_USER);
+    };
+
+    const handleDeleteUser = async (user: UserType) => {
+        const confirmed = window.confirm(`Are you sure you want to delete user "${user.userName}"? This action cannot be undone.`);
+        if (!confirmed) return;
+
+        try {
+            const success = await pRetry(() => deleteUser(user._id), { retries: 3 });
+            if (success) {
+                addAlert(`User ${user.userName} deleted successfully`, AlertSizes.small);
+                fetchData();
+            } else {
+                addAlert('Failed to delete user. Please try again.', AlertSizes.small);
+            }
+        } catch (err) {
+            console.error('handleDeleteUser error:', err);
+            addAlert('Error deleting user. Please try again.', AlertSizes.small);
+        }
     };
 
     return (
@@ -122,12 +143,16 @@ const Users: React.FC = () => {
                                             <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">{row.permission}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-200">{row.userName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                    className="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 transition"
-                                                    onClick={() => handleEditUser(row)}
-                                                >
-                                                    Edit
-                                                </button>
+                                                <div className="flex gap-2">
+                                                    <RoundButton
+                                                        onClick={() => handleEditUser(row)}
+                                                        Icon={FaUserEdit}
+                                                    />
+                                                    <RoundButton
+                                                        onClick={() => handleDeleteUser(row)}
+                                                        Icon={FaTrash}
+                                                    />
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

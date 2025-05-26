@@ -106,7 +106,7 @@ const EditUserPopup: React.FC<EditUserPopupProps> = ({ user, onClose, onSave }) 
                 <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
                     <Input
                         type={InputTypes.TEXT}
-                        placeholder={'User Name (max 20 characters)'}
+                        placeholder={'Username'}
                         value={userName}
                         onChange={handleUserName}
                         failed={failedFields.includes('userName') ? true : false}
@@ -119,7 +119,7 @@ const EditUserPopup: React.FC<EditUserPopupProps> = ({ user, onClose, onSave }) 
                 <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
                     <Input
                         type={InputTypes.PASSWORD}
-                        placeholder={'New Password (max 20 characters, leave empty to keep current)'}
+                        placeholder={'New Password'}
                         value={password}
                         onChange={handlePassword}
                         failed={failedFields.includes('password') ? true : false}

@@ -1,4 +1,5 @@
 import { COURSES_SERVICE_ENDPOINTS } from "../../apis";
+import { TargetType, ResponseTargetType } from "@/app/types.d";
 
 export const getTargetsList = async (): Promise<TargetType[] | null> => {
     try {

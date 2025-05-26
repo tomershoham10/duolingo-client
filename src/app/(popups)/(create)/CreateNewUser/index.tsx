@@ -120,7 +120,7 @@ const CreateNewUser: React.FC = () => {
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.TEXT}
-            placeholder={'User Name (max 20 characters)'}
+            placeholder={'Username'}
             value={userName}
             onChange={handleUserName}
             failed={failedFeilds.includes('userName') ? true : false}
@@ -133,7 +133,7 @@ const CreateNewUser: React.FC = () => {
         <div className='col-span-3 mx-4 flex flex-none flex-col items-center justify-center'>
           <Input
             type={InputTypes.PASSWORD}
-            placeholder={'Password (max 20 characters)'}
+            placeholder={'Password'}
             value={password}
             onChange={handlePassword}
             failed={failedFeilds.includes('password') ? true : false}

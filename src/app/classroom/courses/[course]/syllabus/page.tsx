@@ -8,7 +8,7 @@ import { usePopupStore, PopupsTypes } from '@/app/store/stores/usePopupStore';
 import Button, { ButtonColors } from '@/components/(buttons)/Button/page';
 import { createByCourse } from '@/app/API/classes-service/levels/functions';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
-import LodingAdminSection from '@/components/UnitSection/AdminUnit/(components)/LodingAdminSection/page';
+import LoadingSkeleton from '@/components/Loading/LoadingSkeleton';
 import {
   CourseDataActionsList,
   courseDataReducer,
@@ -170,7 +170,7 @@ const Syllabus: React.FC = () => {
           </div>
         )
       ) : (
-        <LodingAdminSection />
+        <LoadingSkeleton />
       )}
     </section>
   );

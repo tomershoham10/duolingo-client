@@ -4,6 +4,7 @@ import Image from 'next/image';
 import playing from '../../../public/svgs/audioPlayer/playing.svg';
 import AnimatedSVG from '../../../public/svgs/audioPlayer/animatedSVG';
 import { useKeyDown } from '@/app/_utils/hooks/useKeyDown';
+import { AudioPlayerProps } from '@/app/types';
 
 export enum AudioPlayerSizes {
   SMALL = 'small',
