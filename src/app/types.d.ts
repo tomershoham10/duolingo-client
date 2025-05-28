@@ -294,6 +294,8 @@ export interface UserType {
     _id: string;
     userName: string;
     permission: string;
+    courseId?: string;
+    nextLessonId?: string;
 }
 
 enum PermissionsTypes {

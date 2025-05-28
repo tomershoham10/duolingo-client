@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import ContextMenu from '@/components/ContextMenu/page';
 import EditUserPage from './(popups)/(edit)/EditUser/page';
 import CreateNewUser from './(popups)/(create)/CreateNewUser';
+import DeleteUserPopup from './(popups)/(delete)/DeleteUser';
 
 // const nunito = Nunito({ subsets: ['latin'] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         <ContextMenu />
         <EditUserPage />
         <CreateNewUser />
+        <DeleteUserPopup />
         {children}
       </body>
     </html>

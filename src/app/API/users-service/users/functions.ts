@@ -253,3 +253,43 @@ export const updateUser = async (userId: string, userUpdates: Partial<UserType &
         throw new Error(`error while updating user: ${error.message}`);
     }
 }
+
+export const deleteUser = async (userId: string): Promise<boolean> => {
+    try {
+        console.log('Deleting user with ID:', userId);
+
+        // Get the JWT token from localStorage or cookies
+        const token = localStorage.getItem('jwtToken') || Cookies.get('jwtToken');
+        
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+        };
+        
+        // Add Authorization header if token exists
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(
+            `${USERS_SERVICE_ENDPOINT}/${userId}`,
+            {
+                method: "DELETE",
+                credentials: "include",
+                headers: headers,
+            },
+        );
+        
+        if (response.status === 200) {
+            console.log('User deleted successfully');
+            return true;
+        } else {
+            console.error('Failed to delete user, status:', response.status);
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            return false;
+        }
+    } catch (error: any) {
+        console.error('Error while deleting user:', error);
+        throw new Error(`error while deleting user: ${error.message}`);
+    }
+}

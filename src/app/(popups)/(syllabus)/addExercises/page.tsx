@@ -8,13 +8,13 @@ import { PopupsTypes, usePopupStore } from '@/app/store/stores/usePopupStore';
 import { useStore } from 'zustand';
 import { useInfoBarStore } from '@/app/store/stores/useInfoBarStore';
 import { getExercisesByModelId, getAllExercises } from '@/app/API/classes-service/exercises/functions';
-import { getLevelById, updateLevel, removeExerciseFromLevel, getExercisesByLevelId } from '@/app/API/classes-service/levels/functions';
+import { getLevelById, updateLevel, getExercisesByLevelId } from '@/app/API/classes-service/levels/functions';
 import { useCallback, useState, useEffect } from 'react';
 import pRetry from 'p-retry';
 import Table from '@/components/Table/page';
 import Link from 'next/link';
 import RoundButton from '@/components/RoundButton';
-import { TiPlus, TiMinus } from 'react-icons/ti';
+import { TiPlus } from 'react-icons/ti';
 import { ExerciseType, TargetType, CountryType, OrganizationType } from '@/app/types';
 import { AlertSizes, useAlertStore } from '@/app/store/stores/useAlertStore';
 import { useCourseStore } from '@/app/store/stores/useCourseStore';
@@ -38,7 +38,6 @@ const AddExercises: React.FC = () => {
   const [exercisesList, setExercisesList] = useState<ExerciseType[] | null>(null);
   const [levelExercises, setLevelExercises] = useState<ExerciseType[]>([]);
   const [isAdding, setIsAdding] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
 
   // Filter state
   const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(null);
@@ -304,39 +303,7 @@ const AddExercises: React.FC = () => {
     }
   };
 
-  const handleRemoveExercise = async (exerciseId: string) => {
-    try {
-      console.log('handleRemoveExercise called with:', { exerciseId, levelId });
-      
-      if (!levelId) {
-        addAlert('No level selected', AlertSizes.small);
-        return;
-      }
-      
-      setIsRemoving(true);
-      
-      const success = await removeExerciseFromLevel(levelId, exerciseId);
 
-      if (success) {
-        addAlert('Exercise removed successfully', AlertSizes.small);
-        
-        // Refresh the level exercises list
-        await fetchLevelExercises();
-        
-        // Close the popup after a short delay
-        setTimeout(() => {
-          updateSelectedPopup(PopupsTypes.CLOSED);
-        }, 1000);
-      } else {
-        addAlert('Failed to remove exercise', AlertSizes.small);
-      }
-    } catch (error) {
-      console.error('Error removing exercise:', error);
-      addAlert('Error removing exercise', AlertSizes.small);
-    } finally {
-      setIsRemoving(false);
-    }
-  };
 
   return (
     <PopupHeader
@@ -470,11 +437,7 @@ const AddExercises: React.FC = () => {
                   </Link>
                 ),
                 add: isInLevel ? (
-                  <RoundButton 
-                    Icon={TiMinus} 
-                    onClick={() => handleRemoveExercise(exercise._id)}
-                    className={`bg-red-500 hover:bg-red-600 ${isRemoving ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  />
+                  <span className="text-duoGreen-default text-sm font-medium">Already added</span>
                 ) : (
                   <RoundButton 
                     Icon={TiPlus} 

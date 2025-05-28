@@ -9,6 +9,7 @@ export enum PopupsTypes {
     NEW_COURSE = "newCourse",
     DELETE_COURSE = 'deleteCourse',
     DELETE_LEVEL = 'deleteLevel',
+    DELETE_USER = 'deleteUser',
     NEW_UNIT = "newUnit",
     START_LESSON = "startLesson",
     ADMIN_EDIT = "adminEdit",
