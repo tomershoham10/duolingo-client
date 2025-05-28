@@ -12,6 +12,7 @@ import {
   faDatabase,
   faUsersRectangle,
   faMicrophone,
+  faChartBar,
 } from '@fortawesome/free-solid-svg-icons';
 
 import pRetry from 'p-retry';
@@ -30,7 +31,7 @@ import ItemsList from './ItemsList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserStore } from '@/app/store/stores/useUserStore';
 
-library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase, faUsersRectangle, faMicrophone);
+library.add(faHome, faUser, faCog, faRightToBracket, faSquarePlus, faDatabase, faUsersRectangle, faMicrophone, faChartBar);
 
 const AdminSideBar: React.FC = () => {
   const pathname = usePathname();
@@ -149,6 +150,12 @@ const AdminSideBar: React.FC = () => {
       popup: PopupsTypes.CLOSED,
       icon: faMicrophone,
       href: '/recordings/',
+    },
+    {
+      name: 'Reports',
+      popup: PopupsTypes.CLOSED,
+      icon: faChartBar,
+      href: '/reports/',
     },
     {
       name: 'Files',
