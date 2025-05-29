@@ -245,6 +245,15 @@ const Users: React.FC = () => {
                                     key={user._id} 
                                     className='group relative overflow-hidden rounded-xl border border-duoGray-light bg-white shadow-sm transition-all duration-300 hover:border-duoBlue-light hover:shadow-lg hover:-translate-y-1 dark:border-duoGrayDark-light dark:bg-duoGrayDark-darkest dark:hover:border-duoBlueDark-text'
                                 >
+                                    {/* Edit Button - Moved to upper left */}
+                                    <button
+                                        onClick={() => handleEditUser(user)}
+                                        className='absolute left-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-duoBlue-default opacity-0 transition-all duration-200 hover:bg-duoBlue-lighter hover:text-duoBlue-darker group-hover:opacity-100 dark:bg-duoGrayDark-darkest/80 dark:hover:bg-duoBlue-default dark:hover:text-white'
+                                        title='Edit user'
+                                    >
+                                        <FaUserEdit className="h-3 w-3" />
+                                    </button>
+
                                     {/* Delete Button */}
                                     <button
                                         onClick={() => handleDeleteUser(user)}
@@ -281,25 +290,27 @@ const Users: React.FC = () => {
                                                 </span>
                                             </div>
                                             
-                                            {/* User Actions */}
-                                            <div className='flex items-center justify-between pt-3 border-t border-duoGray-light dark:border-duoGrayDark-light'>
-                                                <button
-                                                    onClick={() => handleEditUser(user)}
-                                                    className='flex items-center gap-2 py-2 px-3 rounded-lg transition-all hover:bg-duoBlue-lightest dark:hover:bg-duoBlueDark-dark hover:text-duoBlue-dark dark:hover:text-duoBlueDark-text'
-                                                >
-                                                    <div className='flex h-6 w-6 items-center justify-center rounded-full bg-duoBlue-lightest dark:bg-duoBlueDark-dark'>
-                                                        <FaUserEdit className='h-3 w-3 text-duoBlue-default dark:text-duoBlueDark-text' />
+                                            {/* Student-specific information */}
+                                            {user.permission.toLowerCase() === 'student' && (
+                                                <div className='flex flex-col gap-2 pt-3 border-t border-duoGray-light dark:border-duoGrayDark-light'>
+                                                    <div className='flex items-center gap-2'>
+                                                        <span className='text-xs font-medium text-duoGray-dark dark:text-duoGrayDark-light'>
+                                                            Course:
+                                                        </span>
+                                                        <span className='text-xs text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+                                                            {user.courseId ? (courseNames[user.courseId] || `Loading...`) : 'No course'}
+                                                        </span>
                                                     </div>
-                                                    <span className='text-xs font-medium text-duoGray-dark dark:text-duoGrayDark-light'>
-                                                        Edit
-                                                    </span>
-                                                </button>
-                                                {user.permission.toLowerCase() === 'student' && (
-                                                    <div className='text-xs text-duoGray-dark dark:text-duoGrayDark-light'>
-                                                        {user.courseId ? (courseNames[user.courseId] || `Loading...`) : 'No course'}
+                                                    <div className='flex items-center gap-2'>
+                                                        <span className='text-xs font-medium text-duoGray-dark dark:text-duoGrayDark-light'>
+                                                            Level:
+                                                        </span>
+                                                        <span className='text-xs text-duoGray-darkest dark:text-duoGrayDark-lightest'>
+                                                            {user.level || ''}
+                                                        </span>
                                                     </div>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

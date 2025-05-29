@@ -296,6 +296,7 @@ export interface UserType {
     permission: string;
     courseId?: string;
     nextLessonId?: string;
+   level?: string;
 }
 
 enum PermissionsTypes {
