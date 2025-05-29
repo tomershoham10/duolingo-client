@@ -24,9 +24,6 @@ export default function RootLayout({
         <div className='basis-3/5 overflow-y-auto bg-duoGray-lighter dark:bg-duoBlueDark-darker 2xl:basis-[67.5%] 3xl:basis-[77.5%]'>
           {children}
         </div>
-        <div className='basis-1/5 2xl:basis-[17.5%] 3xl:basis-[12.5%]'>
-          <InfoBar />
-        </div>
       </div>
     </div>
   );
