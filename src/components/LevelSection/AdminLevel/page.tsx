@@ -153,13 +153,15 @@ const AdminLevel: React.FC<AdminLevelProps> = ({
                 <span className="text-sm bg-duoGreen-dark text-white px-2 py-0.5 rounded-full">{exercisesCount} exercises</span>
               </div>
               <div className="flex items-center">
-                
-                <button 
-                  onClick={(e) => {e.stopPropagation(); handleDeleteLevel(level._id, idx);}}
-                  className="p-2 mx-1 rounded-full hover:bg-duoGreen-darker text-white"
-                >
-                  <TiTrash size={20} />
-                </button>
+                {exercisesCount === 0 && (
+                  <button 
+                    onClick={(e) => {e.stopPropagation(); handleDeleteLevel(level._id, idx);}}
+                    className="p-2 mx-1 rounded-full hover:bg-duoRed-default text-white bg-duoRed-default/80"
+                    title="Delete empty level"
+                  >
+                    <TiTrash size={20} />
+                  </button>
+                )}
                 {isExpanded ? <TiArrowSortedUp size={20} className="text-white" /> : <TiArrowSortedDown size={20} className="text-white" />}
               </div>
             </div>

@@ -17,6 +17,7 @@ import {
 import useCourseData from '@/app/_utils/hooks/useCourseData';
 import RoundButton from '@/components/RoundButton';
 import AdminLevel from '@/components/LevelSection/AdminLevel/page';
+import Link from 'next/link';
 
 const EditLevel = lazy(
   () => import('@/app/(popups)/(syllabus)/EditLevel/page')
@@ -115,6 +116,21 @@ const Syllabus: React.FC = () => {
         });
     }
     
+    // Check if the popup just closed (was DELETE_LEVEL, now is CLOSED)
+    if (
+      previousPopupRef.current === PopupsTypes.DELETE_LEVEL &&
+      courseDataState.courseId
+    ) {
+      console.log('DeleteLevel refreshing data...');
+      fetchCourseData()
+        .then(() => {
+          console.log('Data refreshed after deleting level');
+        })
+        .catch(err => {
+          console.error('Error refreshing data after deleting level:', err);
+        });
+    }
+    
     // Update the previous popup ref
     previousPopupRef.current = selectedPopup;
   }, [selectedPopup, courseDataState.courseId, fetchCourseData]);
@@ -154,24 +170,41 @@ const Syllabus: React.FC = () => {
               courseDataState={courseDataState}
               courseDataDispatch={courseDataDispatch}
             />
-            <RoundButton label='Add Level' Icon={TiPlus} onClick={addLevel} />
+            <div className="flex justify-between items-center mt-8 mb-4">
+              <RoundButton label='Add Level' Icon={TiPlus} onClick={addLevel} />
+            </div>
           </section>
         ) : (
           <div className='flex h-full w-full flex-col justify-start p-6'>
             <span className='flex-none text-2xl font-extrabold text-duoGray-darkest'>
               0 levels
             </span>
-            <Button
-              label={'START COURSE'}
-              color={ButtonColors.BLUE}
-              onClick={addLevel}
-              className='items-cetnter mx-auto mt-[] flex w-44 flex-none justify-center'
-            />
+            <div className="flex flex-col items-center gap-6 mt-8">
+              <Button
+                label={'START COURSE'}
+                color={ButtonColors.BLUE}
+                onClick={addLevel}
+                className='items-cetnter mx-auto mt-[] flex w-44 flex-none justify-center'
+              />
+            </div>
           </div>
         )
       ) : (
         <LoadingSkeleton />
       )}
+      
+      {/* Back button outside conditional rendering */}
+      <div className="flex justify-center mt-8 mb-4">
+        <Link 
+          href="/courses"
+          className="flex items-center gap-2 px-6 py-3 bg-duoBlue-lightest hover:bg-duoBlue-light text-duoBlue-default hover:text-duoBlue-dark rounded-lg shadow-sm transition-all duration-200 dark:bg-duoBlueDark-dark dark:hover:bg-duoBlueDark-default dark:text-duoBlueDark-text dark:hover:text-white"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span className="font-medium">Back to Courses</span>
+        </Link>
+      </div>
     </section>
   );
 };
